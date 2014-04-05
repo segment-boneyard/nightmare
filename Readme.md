@@ -30,7 +30,8 @@ function login(done) {
         .type('#email', email)
         .type('#password', password)
         .click('#login-submit')
-      .wait(done);
+      .wait()
+      .done(done);
 }
 ```
 
@@ -44,7 +45,8 @@ function submit(nightmare, description, path, done) {
         .type('#body', description)
         .upload('.uploader__button > input', path)
         .click('#task-pay-button')
-      .wait(done)
+      .wait()
+      .done(done);
 }
 ```
 
@@ -65,7 +67,7 @@ Enters the `text` provided into the `selector` element.
 #### .upload(selector, path)
 Specify the `path` to upload into a file input `selector` element.
 
-#### .wait([options], callback)
+#### .wait([options])
 Wait until a page finishes loading, typically after a `.click()`.
 
 The possible `options` are:
@@ -82,8 +84,11 @@ nightmare.wait({
 });
 ```
 
+#### .done(callback)
+Doesn't do anything, except call your `callback` when the script reaches it. The method signature is `(err, nightmare)`.
+
 #### .error(handler)
-Set the `handler` for any errors that occur on this instance.
+Set the `handler` for any errors that occur on this instance. The method signature is `(err, nightmare)`.
 
 ## License (MIT)
 
