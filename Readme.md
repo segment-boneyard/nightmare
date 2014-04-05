@@ -75,6 +75,7 @@ The possible `options` are:
 * `dictionary`: specify a combination of the above options
 
 ```js
+// waits for all before proceding
 nightmare.wait({
   page: true,
   timeout: 150,
