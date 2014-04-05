@@ -3,7 +3,7 @@ Nightmare
 
 Nightmare is a high level wrapper for [PhantomJS]() that lets you automate browser tasks, including testing.
 
-The goal is to expose just a few simple methods, and have an API that feels synchronous, rather than deeply nested callbacks.
+The goal is to expose just a few simple methods, and have an API that feels synchronous for each block of scripting, rather than deeply nested callbacks.
 
 ## Examples
 
