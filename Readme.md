@@ -68,6 +68,20 @@ Specify the `path` to upload into a file input `selector` element.
 #### .wait([options], callback)
 Wait until a page finishes loading, typically after a `.click()`.
 
+The possible `options` are:
+* `null` or not passed: wait for a new page to load
+* `number`: wait for that many milliseconds
+* `string`: wait until that element selector is present
+* `dictionary`: specify a combination of the above options
+
+```js
+nightmare.wait({
+  page: true,
+  timeout: 150,
+  selector: '.order-complete-image'
+});
+```
+
 #### .error(handler)
 Set the `handler` for any errors that occur on this instance.
 
