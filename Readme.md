@@ -57,7 +57,7 @@ Create a new instance that can navigate around the web.
 Load the page at `url`.
 
 #### .click(selector)
-Clicks the `selector` element.
+Clicks the `selector` element once.
 
 #### .type(selector, text)
 Enters the `text` provided into the `selector` element.
