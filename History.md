@@ -1,4 +1,10 @@
 
+n.n.n / 2014-04-05 
+==================
+
+  * fixing tests and getting screen working
+  * fixing history again
+
 0.0.2 / 2014-04-05 
 ==================
 
