@@ -1,4 +1,11 @@
 
+n.n.n / 2014-04-05 
+==================
+
+  * updating readme for screen and options
+  * fixing timeout and adding debug for .screen() method
+  * fixing history
+
 0.0.7 / 2014-04-05 
 ==================
 
