@@ -14,7 +14,7 @@ describe('Nightmare', function(){
 
   describe('methods', function(){
 
-    it('should goto wikipedia.org correctly', function(done) {
+    it('should goto wikipedia.org', function(done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
         .done(function (nightmare) {
@@ -33,6 +33,17 @@ describe('Nightmare', function(){
           nightmare.should.be.ok;
           done();
         });
+    });
+
+    it('should allow you to extract the title', function(done) {
+      new Nightmare()
+        .goto('http://www.wikipedia.org/')
+        .run(function (parameter) {
+          return document.title + ' -- ' + parameter;
+        }, function (err, title) {
+          title.should.equal('Wikipedia -- testparameter');
+          done();
+        }, 'testparameter');
     });
 
     it('should take a screenshot', function(done) {

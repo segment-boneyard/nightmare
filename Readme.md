@@ -73,6 +73,9 @@ Enters the `text` provided into the `selector` element.
 #### .upload(selector, path)
 Specify the `path` to upload into a file input `selector` element.
 
+#### .run(fn, cb, [arg1, arg2,...])
+Invokes `fn` on the page with `args`. On completion it passes the return value of `fn` as to `cb(err, res)`. Useful for extracting information from the page.
+
 #### .wait([options])
 Wait until a page finishes loading, typically after a `.click()`.
 
