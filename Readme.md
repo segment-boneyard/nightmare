@@ -80,7 +80,7 @@ The possible `options` are:
 * `null` or not passed: wait for a new page to load
 * `number`: wait for that many milliseconds
 * `string`: wait until that element selector is present
-* `dictionary`: specify a combination of the above options, waits for all before proceding
+* `dictionary` (not yet implemented): specify a combination of the above options, waits for all before proceding
 
 ```js
 nightmare.wait({
