@@ -1,5 +1,5 @@
 
-n.n.n / 2014-04-05 
+0.0.4 / 2014-04-05 
 ==================
 
   * fixing main for require to work
