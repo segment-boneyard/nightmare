@@ -87,11 +87,11 @@ The possible `options` are:
 #### .screen(path)
 Saves a screenshot of the current page to the specified `path`. Useful for debugging.
 
-#### .done(callback)
-Doesn't do anything, except call your `callback` when the script reaches it. The method signature is `(nightmare)`.
+#### .done(cb)
+Doesn't do anything, except call your `cb` when the script reaches it. The method signature is `cb(nightmare)`.
 
-#### .error(handler)
-Set the `handler` for any errors that occur on this instance. The method signature is `(err, nightmare)`.
+#### .error(cb)
+Set the `cb` for any errors that occur on this instance. The method signature is `cb(err, nightmare)`.
 
 ## License (MIT)
 
