@@ -85,7 +85,7 @@ nightmare.wait({
 ```
 
 #### .done(callback)
-Doesn't do anything, except call your `callback` when the script reaches it. The method signature is `(err, nightmare)`.
+Doesn't do anything, except call your `callback` when the script reaches it. The method signature is `(nightmare)`.
 
 #### .error(handler)
 Set the `handler` for any errors that occur on this instance. The method signature is `(err, nightmare)`.
