@@ -2,9 +2,9 @@
 Nightmare
 =========
 
-Nightmare is a high level wrapper for [PhantomJS]() that lets you automate browser tasks, including testing.
+Nightmare is a high level wrapper for [PhantomJS]() that lets you automate browser tassks.
 
-The goal is to expose just a few simple methods, and have an API that feels synchronous for each block of scripting, rather than deeply nested callbacks.
+The goal is to expose just a few simple methods, and have an API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
 
 ## Examples
 
