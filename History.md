@@ -1,4 +1,12 @@
 
+n.n.n / 2014-04-06 
+==================
+
+  * making debug output consistent
+  * consistent naming
+  * fixing .wait() readme docs
+  * fixing history
+
 0.0.10 / 2014-04-06 
 ==================
 
