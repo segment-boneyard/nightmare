@@ -1,4 +1,10 @@
 
+n.n.n / 2014-04-05 
+==================
+
+  * adding better debug logs for page load detection
+  * fixing history
+
 0.0.5 / 2014-04-05 
 ==================
 
