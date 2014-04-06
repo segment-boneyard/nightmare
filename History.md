@@ -1,4 +1,10 @@
 
+n.n.n / 2014-04-05 
+==================
+
+  * fixing main for require to work
+  * fixing history
+
 0.0.3 / 2014-04-05 
 ==================
 
