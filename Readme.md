@@ -56,6 +56,11 @@ function submit(nightmare, description, path, done) {
 #### new Nightmare(options)
 Create a new instance that can navigate around the web.
 
+The available options are:
+* `timeout`: how long to wait for page loads, default `5000ms`
+* `interval`: how frequently to poll for page load state, default `50ms`
+* `viewport`: dictionary with `height` and `width`, useful with `.screen()`
+
 #### .goto(url)
 Load the page at `url`.
 
@@ -84,6 +89,9 @@ nightmare.wait({
   selector: '.order-complete-image'
 });
 ```
+
+#### .screen(path)
+Saves a screenshot of the current page to the specified `path`. Useful for debugging.
 
 #### .done(callback)
 Doesn't do anything, except call your `callback` when the script reaches it. The method signature is `(nightmare)`.
