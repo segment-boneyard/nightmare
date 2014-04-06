@@ -1,5 +1,5 @@
 
-n.n.n / 2014-04-05 
+0.0.6 / 2014-04-05 
 ==================
 
   * adding better debug logs for page load detection
