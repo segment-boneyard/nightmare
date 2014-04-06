@@ -1,7 +1,8 @@
 test: node_modules
+	@pkill phantomjs &
 	@node_modules/.bin/mocha \
 		--require should
-	@pkill phantomjs
+	@pkill phantomjs &
 
 # After tests run this:
 # kill $(ps aux | grep 'phantomjs' | awk '{print $2}')

@@ -2,9 +2,9 @@ var Nightmare = require('../lib');
 
 describe('Nightmare', function(){
   this.timeout(11000);
-  var nightmare = new Nightmare();
 
   it('should be constructable', function(){
+    var nightmare = new Nightmare();
     nightmare.should.be.ok;
   });
 
@@ -15,7 +15,7 @@ describe('Nightmare', function(){
   describe('methods', function(){
 
     it('should goto wikipedia.org correctly', function(done) {
-      nightmare
+      new Nightmare()
         .goto('http://www.wikipedia.org/')
         .done(function (nightmare) {
           nightmare.should.be.ok;
@@ -24,7 +24,7 @@ describe('Nightmare', function(){
     });
 
     it('should goto yahoo.com and type and click', function(done) {
-      nightmare
+      new Nightmare()
         .goto('http://yahoo.com')
           .type('.input-query', 'github nightmare')
           .click('.searchsubmit')
