@@ -80,18 +80,9 @@ Invokes `fn` on the page with `args`. On completion it passes the return value o
 Wait until a page finishes loading, typically after a `.click()`.
 
 The possible `options` are:
-* `null` or not passed: wait for a new page to load
-* `number`: wait for that many milliseconds
-* `string`: wait until that element selector is present
-* `dictionary` (not yet implemented): specify a combination of the above options, waits for all before proceding
-
-```js
-nightmare.wait({
-  page: true,
-  timeout: 150,
-  selector: '.order-complete-image'
-});
-```
+* `null` or not passed: wait for a new page to load e.g. `.wait()`
+* `number`: wait for that many milliseconds e.g. `.wait(150)`
+* `string`: wait until that element selector is present e.g. `.wait('#pay-button')`
 
 #### .screen(path)
 Saves a screenshot of the current page to the specified `path`. Useful for debugging.
