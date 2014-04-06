@@ -1,4 +1,11 @@
 
+n.n.n / 2014-04-06 
+==================
+
+  * adding .run() method with docs and test. fixes #1
+  * Update Readme.md
+  * fixing history
+
 0.0.9 / 2014-04-05 
 ==================
 
