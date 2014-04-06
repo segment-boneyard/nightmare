@@ -1,4 +1,10 @@
 
+n.n.n / 2014-04-05 
+==================
+
+  * adding more debug statements
+  * fixing history
+
 0.0.8 / 2014-04-05 
 ==================
 
