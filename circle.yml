@@ -1,0 +1,21 @@
+machine:
+  node:
+    version: 0.10.26
+checkout:
+  post:
+    - echo "_auth = `printf $AUTH`" > npmrc
+dependencies:
+  pre:
+    - wget https://s3.amazonaws.com/bitly-downloads/nsq/nsq-0.2.27.linux-amd64.go1.2.tar.gz
+    - tar xvzf nsq-0.2.27.linux-amd64.go1.2.tar.gz
+    - cp nsq-0.2.27.linux-amd64.go1.2/bin/* .
+    - ./nsqlookupd:
+        background: true
+    - ./nsqd --lookupd-tcp-address=127.0.0.1:4160 --tcp-address=127.0.0.1:5001 --max-rdy-count=1000000:
+        background: true
+    - npm install -g component
+    - npm install -g component-test
+  cache_directories:
+    - nsq-0.2.27.linux-amd64.go1.2
+  override:
+    - npm install --userconfig npmrc --registry https://segmentio.registry.nodejitsu.com --no-strict-ssl --always-auth
