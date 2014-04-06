@@ -1,5 +1,5 @@
 
-n.n.n / 2014-04-05 
+0.0.3 / 2014-04-05 
 ==================
 
   * fixing tests and getting screen working
