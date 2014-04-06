@@ -1,3 +1,10 @@
+
+n.n.n / 2014-04-05 
+==================
+
+  * pkilling phantomjs more aggressively
+  * fixing phantom singletons
+  * fixing history.md
 0.0.1 / 2014-04-05 
 ==================
 
