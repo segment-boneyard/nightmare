@@ -35,6 +35,17 @@ describe('Nightmare', function(){
         });
     });
 
+    it('should take a screenshot', function(done) {
+      new Nightmare()
+        .goto('http://yahoo.com')
+          .type('.input-query', 'github nightmare')
+          .screen('test/test.png')
+        .done(function (nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
   });
 
 });
