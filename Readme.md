@@ -59,7 +59,6 @@ Create a new instance that can navigate around the web.
 The available options are:
 * `timeout`: how long to wait for page loads, default `5000ms`
 * `interval`: how frequently to poll for page load state, default `50ms`
-* `viewport`: dictionary with `height` and `width`, useful with `.screen()`
 
 #### .goto(url)
 Load the page at `url`.
@@ -86,6 +85,12 @@ The possible `options` are:
 
 #### .screen(path)
 Saves a screenshot of the current page to the specified `path`. Useful for debugging.
+
+#### .agent(userAgent)
+Set the `userAgent` used by PhantomJS.
+
+#### .viewport(width, height)
+Set the `width` and `height` of the viewport, useful for screenshotting.
 
 #### .done(cb)
 Doesn't do anything, except call your `cb` when the script reaches it. The method signature is `cb(nightmare)`.

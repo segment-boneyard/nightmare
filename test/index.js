@@ -23,6 +23,17 @@ describe('Nightmare', function(){
         });
     });
 
+    it('should set viewport and agent', function(done) {
+      new Nightmare()
+        .viewport(400, 1000)
+        .agent('firefox')
+        .goto('http://www.wikipedia.org/')
+        .done(function (nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
     it('should goto yahoo.com and type and click', function(done) {
       new Nightmare()
         .goto('http://yahoo.com')
@@ -48,6 +59,7 @@ describe('Nightmare', function(){
 
     it('should take a screenshot', function(done) {
       new Nightmare()
+        .viewport(400, 1200)
         .goto('http://yahoo.com')
           .type('.input-query', 'github nightmare')
           .screen('test/test.png')
