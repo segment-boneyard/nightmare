@@ -46,6 +46,24 @@ describe('Nightmare', function(){
         }, 'testparameter');
     });
 
+    it('should set the viewport', function (done) {
+      var size = { width: 500, height: 400 };
+
+      new Nightmare()
+        .goto('http://www.wikipedia.org/')
+          .viewport(size.width, size.height)
+        .run(function () {
+          return {
+            width: window.innerWidth,
+            height: window.innerHeight
+          };
+        }, function (err, res) {
+          if (err) throw err;
+          res.should.eql(size);
+          done();
+        });
+    });
+
     it('should take a screenshot', function(done) {
       new Nightmare()
         .goto('http://yahoo.com')
