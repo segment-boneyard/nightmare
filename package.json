@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "async-series": "~0.0.1",
-    "node-phantom": "~0.2.5",
+    "phantom": "~0.5.7",
     "debug": "^0.7.4",
     "defaults": "~1.0.0",
     "clone": "~0.1.11"

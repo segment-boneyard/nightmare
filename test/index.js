@@ -51,7 +51,7 @@ describe('Nightmare', function(){
         .goto('http://www.wikipedia.org/')
         .run(function (parameter) {
           return document.title + ' -- ' + parameter;
-        }, function (err, title) {
+        }, function (title) {
           title.should.equal('Wikipedia -- testparameter');
           done();
         }, 'testparameter');
