@@ -40,6 +40,11 @@ describe('Nightmare', function(){
           .type('.input-query', 'github nightmare')
           .click('.searchsubmit')
         .wait()
+          .run(function () {
+            return document.title;
+          }, function (title) {
+            title.should.equal('github nightmare - Yahoo Search Results');
+          })
         .done(function (nightmare) {
           nightmare.should.be.ok;
           done();
@@ -53,8 +58,11 @@ describe('Nightmare', function(){
           return document.title + ' -- ' + parameter;
         }, function (title) {
           title.should.equal('Wikipedia -- testparameter');
+        }, 'testparameter')
+        .done(function (nightmare) {
+          nightmare.should.be.ok;
           done();
-        }, 'testparameter');
+        });
     });
 
     it('should take a screenshot', function(done) {
