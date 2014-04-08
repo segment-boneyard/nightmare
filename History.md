@@ -1,5 +1,5 @@
 
-n.n.n / 2014-04-08 
+0.1.1 / 2014-04-08 
 ==================
 
   * adding test to duplicate queue ordering issue, fixing issue, fixes #9
