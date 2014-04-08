@@ -1,4 +1,11 @@
 
+n.n.n / 2014-04-08 
+==================
+
+  * adding test to duplicate queue ordering issue, fixing issue, fixes #9
+  * adding nightmare-swiftly plugin mention with docs
+  * fixing history
+
 0.1.0 / 2014-04-07 
 ==================
 
