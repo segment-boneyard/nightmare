@@ -104,6 +104,9 @@ Set the `userAgent` used by PhantomJS.
 #### .viewport(width, height)
 Set the `width` and `height` of the viewport, useful for screenshotting.
 
+#### .use(plugin)
+Useful for using repeated code blocks, see the example with Swiftly login and task creation in the docs above.
+
 #### .run(cb)
 Executes the queue of functions, and calls your `cb` when the script hits an error or completes the queue. The callback signature is `cb(err, nightmare)`.
 
