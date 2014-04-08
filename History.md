@@ -1,4 +1,14 @@
 
+n.n.n / 2014-04-07 
+==================
+
+  * Merge pull request #6 from segmentio/phantomjs-node
+  * fixing done callback, fixing agent setting and adding tests. fixes #4, #2, #3.
+  * fixing run callback hanging, fixes #3
+  * experimenting with phantomjs-node, for #5
+  * Merge branch 'master' of https://github.com/segmentio/nightmare
+  * Update Readme.md
+
 n.n.n / 2014-04-06 
 ==================
 
