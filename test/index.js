@@ -62,6 +62,22 @@ describe('Nightmare', function(){
         });
     });
 
+    it('should execute the queue in order', function(done) {
+      var queue = [];
+      new Nightmare()
+        .goto('http://expedia.com')
+        .evaluate(function () {
+          return document.title;
+        }, function (title) {
+          queue.push(1);
+        })
+        .run(function (err, nightmare) {
+          queue.push(2);
+          queue.should.eql([1, 2]);
+          done();
+        });
+    });
+
     it('should allow you to extract the title with evaluate', function(done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
