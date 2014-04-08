@@ -82,6 +82,32 @@ describe('Nightmare', function(){
         .run(done);
     });
 
+    it ('should be pluggable with .use()', function(done) {
+      function search(term) {
+        return function(nightmare) {
+          nightmare
+            .goto('http://yahoo.com')
+              .type('.input-query', term)
+              .click('.searchsubmit')
+            .wait();
+        };
+      }
+      function testTitle(term) {
+        return function(nightmare) {
+          nightmare
+            .evaluate(function () {
+              return document.title;
+            }, function (title) {
+              title.should.equal(term + ' - Yahoo Search Results');
+            });
+        };
+      }
+      new Nightmare()
+        .use(search('test term'))
+        .use(testTitle('test term'))
+        .run(done);
+    });
+
   });
 
 });
