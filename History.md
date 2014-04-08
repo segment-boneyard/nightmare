@@ -1,5 +1,5 @@
 
-n.n.n / 2014-04-07 
+0.0.13 / 2014-04-07 
 ==================
 
   * Merge pull request #6 from segmentio/phantomjs-node
@@ -9,7 +9,7 @@ n.n.n / 2014-04-07
   * Merge branch 'master' of https://github.com/segmentio/nightmare
   * Update Readme.md
 
-n.n.n / 2014-04-06 
+0.0.12 / 2014-04-06 
 ==================
 
   * adding .viewport() and .agent(), fixes #2
