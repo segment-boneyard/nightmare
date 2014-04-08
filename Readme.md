@@ -73,7 +73,7 @@ Enters the `text` provided into the `selector` element.
 Specify the `path` to upload into a file input `selector` element.
 
 #### .run(fn, cb, [arg1, arg2,...])
-Invokes `fn` on the page with `args`. On completion it passes the return value of `fn` as to `cb(err, res)`. Useful for extracting information from the page.
+Invokes `fn` on the page with `args`. On completion it passes the return value of `fn` as to `cb(res)`. Useful for extracting information from the page.
 
 #### .wait([options])
 Wait until a page finishes loading, typically after a `.click()`.
@@ -93,7 +93,7 @@ Set the `userAgent` used by PhantomJS.
 Set the `width` and `height` of the viewport, useful for screenshotting.
 
 #### .done(cb)
-Doesn't do anything, except call your `cb` when the script reaches it. The method signature is `cb(nightmare)`.
+Doesn't do anything, except call your `cb` when the script reaches it. The method signature is `cb(err, nightmare)`.
 
 #### .error(cb)
 Set the `cb` for any errors that occur on this instance. The method signature is `cb(err, nightmare)`.
