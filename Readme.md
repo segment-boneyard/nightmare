@@ -20,6 +20,8 @@ new Nightmare()
 Or, here's how you might automate a nicely abstracted login + task on Swiftly:
 
 ```js
+var Swiftly = require('nightmare-swiftly');
+
 new Nightmare()
   .use(Swiftly.login(email, password))
   .use(Swiftly.task(description, paths))
@@ -29,39 +31,7 @@ new Nightmare()
   });
 ```
 
-```js
-exports.login = function(email, password){
-  return function(nightmare) {
-    nightmare
-      .goto('https://swiftly.com/login')
-        .type('#username', email)
-        .type('#password', password)
-        .click('.button--primary')
-      .wait();
-  };
-}
- 
-exports.task = function(description, paths){
-  return function(nightmare){
-    nightmare
-      .goto('https://swiftly.com/create')
-      .wait(2000)
-      .type('#body', description);
-        
-    paths.forEach(function (path) {
-      nightmare.upload('input[name=qqfile]', path);
-    });
-    
-    nightmare
-      .wait(5000)
-      .click('#task-pay-button')
-      .wait(500)
-      .click('#pay-button')
-      .wait();
-    }
-  };
-}
-```
+And [here's the `nightmare-swiftly` plugin](https://github.com/segmentio/nightmare-swiftly).
 
 ## API
 
@@ -109,6 +79,12 @@ Useful for using repeated code blocks, see the example with Swiftly login and ta
 
 #### .run(cb)
 Executes the queue of functions, and calls your `cb` when the script hits an error or completes the queue. The callback signature is `cb(err, nightmare)`.
+
+## Plugins
+
+Here's a list of plugins, pull request to add your own to the list :)
+
+* [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly)
 
 ## License (MIT)
 
