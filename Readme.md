@@ -17,37 +17,49 @@ new Nightmare()
     .click('button#gbqfba');
 ```
 
-Or, here's how you might run a simple login sequence:
+Or, here's how you might automate a nicely abstracted login + task on Swiftly:
 
-```javascript
-var Nightmare = require('nightmare');
-
-function login(done) {
-    new Nightmare()
-      .error(done)
-      .goto('https://swiftly.com/')
-        .click('#asdf')
-      .wait()
-        .type('#email', email)
-        .type('#password', password)
-        .click('#login-submit')
-      .wait()
-      .done(done);
-}
+```js
+new Nightmare()
+  .use(Swiftly.login(email, password))
+  .use(Swiftly.task(description, paths))
+  .run(function(err, nightmare){
+    if (err) return fn(err);
+    fn();
+  });
 ```
 
-Then later you could then use that same nightmare page to submit a complex form:
-
-```javascript
-function submit(nightmare, description, path, done) {
+```js
+exports.login = function(email, password){
+  return function(nightmare) {
     nightmare
-      .error(done)
+      .goto('https://swiftly.com/login')
+        .type('#username', email)
+        .type('#password', password)
+        .click('.button--primary')
+      .wait();
+  };
+}
+ 
+exports.task = function(description, paths){
+  return function(nightmare){
+    nightmare
       .goto('https://swiftly.com/create')
-        .type('#body', description)
-        .upload('.uploader__button > input', path)
-        .click('#task-pay-button')
-      .wait()
-      .done(done);
+      .wait(2000)
+      .type('#body', description);
+        
+    paths.forEach(function (path) {
+      nightmare.upload('input[name=qqfile]', path);
+    });
+    
+    nightmare
+      .wait(5000)
+      .click('#task-pay-button')
+      .wait(500)
+      .click('#pay-button')
+      .wait();
+    }
+  };
 }
 ```
 
@@ -72,7 +84,7 @@ Enters the `text` provided into the `selector` element.
 #### .upload(selector, path)
 Specify the `path` to upload into a file input `selector` element.
 
-#### .run(fn, cb, [arg1, arg2,...])
+#### .evaluate(fn, cb, [arg1, arg2,...])
 Invokes `fn` on the page with `args`. On completion it passes the return value of `fn` as to `cb(res)`. Useful for extracting information from the page.
 
 #### .wait([options])
@@ -92,11 +104,8 @@ Set the `userAgent` used by PhantomJS.
 #### .viewport(width, height)
 Set the `width` and `height` of the viewport, useful for screenshotting.
 
-#### .done(cb)
-Doesn't do anything, except call your `cb` when the script reaches it. The method signature is `cb(err, nightmare)`.
-
-#### .error(cb)
-Set the `cb` for any errors that occur on this instance. The method signature is `cb(err, nightmare)`.
+#### .run(cb)
+Executes the queue of functions, and calls your `cb` when the script hits an error or completes the queue. The callback signature is `cb(err, nightmare)`.
 
 ## License (MIT)
 
