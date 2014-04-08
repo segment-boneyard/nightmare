@@ -17,7 +17,7 @@ describe('Nightmare', function(){
     it('should goto wikipedia.org', function(done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
-        .done(done);
+        .run(done);
     });
 
     it('should set viewport and agent', function(done) {
@@ -26,7 +26,7 @@ describe('Nightmare', function(){
         .viewport(size.width, size.height)
         .agent('firefox')
         .goto('http://www.wikipedia.org/')
-        .run(function () {
+        .evaluate(function () {
           return {
             width: window.innerWidth,
             height: window.innerHeight
@@ -34,12 +34,12 @@ describe('Nightmare', function(){
         }, function (res) {
           res.should.eql(size);
         })
-        .run(function () {
+        .evaluate(function () {
           return window.navigator.userAgent;
         }, function (res) {
           res.should.eql('firefox');
         })
-        .done(function (err, nightmare) {
+        .run(function (err, nightmare) {
           nightmare.should.be.ok;
           done();
         });
@@ -51,26 +51,26 @@ describe('Nightmare', function(){
           .type('.input-query', 'github nightmare')
           .click('.searchsubmit')
         .wait()
-          .run(function () {
-            return document.title;
-          }, function (title) {
-            title.should.equal('github nightmare - Yahoo Search Results');
-          })
-        .done(function (err, nightmare) {
+        .evaluate(function () {
+          return document.title;
+        }, function (title) {
+          title.should.equal('github nightmare - Yahoo Search Results');
+        })
+        .run(function (err, nightmare) {
           nightmare.should.be.ok;
           done();
         });
     });
 
-    it('should allow you to extract the title', function(done) {
+    it('should allow you to extract the title with evaluate', function(done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
-        .run(function (parameter) {
+        .evaluate(function (parameter) {
           return document.title + ' -- ' + parameter;
         }, function (title) {
           title.should.equal('Wikipedia -- testparameter');
         }, 'testparameter')
-        .done(done);
+        .run(done);
     });
 
     it('should take a screenshot', function(done) {
@@ -79,7 +79,7 @@ describe('Nightmare', function(){
         .goto('http://yahoo.com')
           .type('.input-query', 'github nightmare')
           .screen('test/test.png')
-        .done(done);
+        .run(done);
     });
 
   });
