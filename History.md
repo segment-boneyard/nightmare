@@ -1,4 +1,13 @@
 
+n.n.n / 2014-04-07 
+==================
+
+  * adding .use() to docs
+  * Merge pull request #8 from segmentio/use-rewrite
+  * adding test for .use() pluggability
+  * changes .run() to .evaluate(), removes .error() and cleans up internal wrapping
+  * fixing history
+
 0.0.13 / 2014-04-07 
 ==================
 
