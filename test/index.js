@@ -9,10 +9,10 @@ describe('Nightmare', function(){
   });
 
   /**
-   * methods
+   * navigation
    */
 
-  describe('methods', function(){
+  describe('navigation', function(){
 
     it('should goto wikipedia.org', function(done) {
       new Nightmare()
@@ -20,34 +20,28 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should set viewport and agent', function(done) {
-      var size = { width : 400, height: 1000 };
-      new Nightmare()
-        .viewport(size.width, size.height)
-        .agent('firefox')
-        .goto('http://www.wikipedia.org/')
-        .evaluate(function () {
-          return {
-            width: window.innerWidth,
-            height: window.innerHeight
-          };
-        }, function (res) {
-          res.should.eql(size);
-        })
-        .evaluate(function () {
-          return window.navigator.userAgent;
-        }, function (res) {
-          res.should.eql('firefox');
-        })
-        .run(function (err, nightmare) {
-          nightmare.should.be.ok;
-          done();
-        });
+  });
+
+  /**
+   * manipulation
+   */
+  
+  describe('manipulation', function(){
+
+    var nightmare = new Nightmare().goto('http://yahoo.com');
+
+    it('should evaluate javascript on the page, with parameters', function(done) {
+      nightmare
+        .evaluate(function (parameter) {
+          return document.title + ' -- ' + parameter;
+        }, function (title) {
+          title.should.equal('Yahoo -- testparameter');
+        }, 'testparameter')
+        .run(done);
     });
 
-    it('should goto yahoo.com and type and click', function(done) {
-      new Nightmare()
-        .goto('http://yahoo.com')
+    it('should type and click', function(done) {
+        nightmare
           .type('.input-query', 'github nightmare')
           .click('.searchsubmit')
         .wait()
@@ -61,6 +55,56 @@ describe('Nightmare', function(){
           done();
         });
     });
+
+    it('should take a screenshot', function(done) {
+      nightmare
+        .screen('test/test.png')
+        .run(done);
+    });
+
+  });
+
+  /**
+   * options
+   */
+  
+  describe('options', function(){
+
+    it('should set agemt', function(done) {
+      new Nightmare()
+        .agent('firefox')
+        .goto('http://www.wikipedia.org/')
+        .evaluate(function () {
+          return window.navigator.userAgent;
+        }, function (res) {
+          res.should.eql('firefox');
+        })
+        .run(done);
+    });
+
+    it('should set viewport', function(done) {
+      var size = { width : 400, height: 1000 };
+      new Nightmare()
+        .viewport(size.width, size.height)
+        .goto('http://www.wikipedia.org/')
+        .evaluate(function () {
+          return {
+            width: window.innerWidth,
+            height: window.innerHeight
+          };
+        }, function (res) {
+          res.should.eql(size);
+        })
+        .run(done);
+    });
+
+  });
+
+  /**
+   * queue
+   */
+  
+  describe('queue', function(){
 
     it('should execute the queue in order', function(done) {
       var queue = [];
@@ -76,26 +120,6 @@ describe('Nightmare', function(){
           queue.should.eql([1, 2]);
           done();
         });
-    });
-
-    it('should allow you to extract the title with evaluate', function(done) {
-      new Nightmare()
-        .goto('http://www.wikipedia.org/')
-        .evaluate(function (parameter) {
-          return document.title + ' -- ' + parameter;
-        }, function (title) {
-          title.should.equal('Wikipedia -- testparameter');
-        }, 'testparameter')
-        .run(done);
-    });
-
-    it('should take a screenshot', function(done) {
-      new Nightmare()
-        .viewport(400, 1200)
-        .goto('http://yahoo.com')
-          .type('.input-query', 'github nightmare')
-          .screen('test/test.png')
-        .run(done);
     });
 
     it ('should be pluggable with .use()', function(done) {
