@@ -24,7 +24,7 @@ var Swiftly = require('nightmare-swiftly');
 
 new Nightmare()
   .use(Swiftly.login(email, password))
-  .use(Swiftly.task(description, paths))
+  .use(Swiftly.task(instructions, uploads, path))
   .run(function(err, nightmare){
     if (err) return fn(err);
     fn();
@@ -57,13 +57,17 @@ Specify the `path` to upload into a file input `selector` element.
 #### .evaluate(fn, cb, [arg1, arg2,...])
 Invokes `fn` on the page with `args`. On completion it passes the return value of `fn` as to `cb(res)`. Useful for extracting information from the page.
 
-#### .wait([options])
+#### .wait()
 Wait until a page finishes loading, typically after a `.click()`.
 
-The possible `options` are:
-* `null` or not passed: wait for a new page to load e.g. `.wait()`
-* `number`: wait for that many milliseconds e.g. `.wait(150)`
-* `string`: wait until that element selector is present e.g. `.wait('#pay-button')`
+#### .wait(ms)
+Wait for `ms` milliseconds e.g. `.wait(5000)`
+
+#### .wait(selector)
+Wait until the element `selector` is present e.g. `.wait('#pay-button')`
+
+#### .wait(fn, value, [refresh, between])
+Wait until the `fn` evaluated on the page returns `value`. Optionally `refresh` the page between calls to `fn`, separated by `between` milliseconds.
 
 #### .screen(path)
 Saves a screenshot of the current page to the specified `path`. Useful for debugging.
