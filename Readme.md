@@ -70,7 +70,7 @@ Wait for `ms` milliseconds e.g. `.wait(5000)`
 Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 
 #### .wait(fn, value, [delay])
-Wait until the `fn` evaluated on the page returns `value`. Optionally refresh the page after `delay` milliseconds calls to `fn`, separated by `between` milliseconds.
+Wait until the `fn` evaluated on the page returns `value`. Optionally, refresh the page every `delay` milliseconds, and only check after each refresh.
 
 #### .screen(path)
 Saves a screenshot of the current page to the specified `path`. Useful for debugging.
