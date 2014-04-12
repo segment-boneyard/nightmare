@@ -1,7 +1,7 @@
 var Nightmare = require('../lib');
 
 describe('Nightmare', function(){
-  this.timeout(11000);
+  this.timeout(30000);
 
   it('should be constructable', function(){
     var nightmare = new Nightmare();
@@ -17,6 +17,13 @@ describe('Nightmare', function(){
     it('should goto wikipedia.org', function(done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
+        .run(done);
+    });
+
+    it('should refresh the page', function(done) {
+      new Nightmare()
+        .goto('http://www.wikipedia.org/')
+        .refresh()
         .run(done);
     });
 
@@ -59,6 +66,34 @@ describe('Nightmare', function(){
     it('should take a screenshot', function(done) {
       nightmare
         .screen('test/test.png')
+        .run(done);
+    });
+
+    it('should wait until specific text is present', function(done) {
+      var seconds = function () {
+        var gifs = document.querySelectorAll('img');
+        var split = gifs[gifs.length-2].src.split('.gif')[0];
+        var seconds = split.split('.com/c')[1];
+        return parseInt(seconds, 10);
+      };
+
+      nightmare = new Nightmare()
+        .goto('http://onlineclock.net/')
+        .wait(seconds, 1)
+        .run(done);
+    });
+
+    it('should wait until specific text is present', function(done) {
+      var seconds = function () {
+        var text = document.querySelectorAll('b')[0].textContent;
+        var splits = text.split(/\s/);
+        var seconds = splits[splits.length-2].split(':')[2];
+        return parseInt(seconds, 10)%10;
+      };
+
+      nightmare = new Nightmare()
+        .goto('http://www.whattimeisit.com/')
+        .wait(seconds, 1, 1500)
         .run(done);
     });
 

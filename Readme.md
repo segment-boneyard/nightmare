@@ -45,6 +45,9 @@ The available options are:
 #### .goto(url)
 Load the page at `url`.
 
+#### .refresh()
+Refresh the current page.
+
 #### .click(selector)
 Clicks the `selector` element once.
 
@@ -66,8 +69,8 @@ Wait for `ms` milliseconds e.g. `.wait(5000)`
 #### .wait(selector)
 Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 
-#### .wait(fn, value, [refresh, between])
-Wait until the `fn` evaluated on the page returns `value`. Optionally `refresh` the page between calls to `fn`, separated by `between` milliseconds.
+#### .wait(fn, value, [delay])
+Wait until the `fn` evaluated on the page returns `value`. Optionally refresh the page after `delay` milliseconds calls to `fn`, separated by `between` milliseconds.
 
 #### .screen(path)
 Saves a screenshot of the current page to the specified `path`. Useful for debugging.
