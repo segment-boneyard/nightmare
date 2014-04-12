@@ -1,4 +1,13 @@
 
+n.n.n / 2014-04-11 
+==================
+
+  * clarifying readme
+  * adding refresh method and wait for fn on page refresh
+  * reworking wait function to make room for a new wait overload
+  * refactoring tests into sections
+  * fixing history
+
 0.1.1 / 2014-04-08 
 ==================
 
