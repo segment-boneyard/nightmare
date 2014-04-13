@@ -27,6 +27,15 @@ describe('Nightmare', function(){
         .run(done);
     });
 
+    it('should get the url', function(done) {
+      new Nightmare()
+        .goto('http://www.wikipedia.org/')
+        .url(function (url) {
+          url.should.eql('http://www.wikipedia.org/');
+        })
+        .run(done);
+    });
+
   });
 
   /**
