@@ -1,4 +1,10 @@
 
+n.n.n / 2014-04-12 
+==================
+
+  * fixing impatient to only apply to upload since it breaks wait
+  * fixing history
+
 0.1.4 / 2014-04-12 
 ==================
 
