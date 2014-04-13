@@ -1,4 +1,10 @@
 
+n.n.n / 2014-04-13 
+==================
+
+  * adding .url(), more debug()s and a test for .url()
+  * fxiing histoyr
+
 0.1.5 / 2014-04-12 
 ==================
 
