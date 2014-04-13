@@ -1,11 +1,11 @@
 
-n.n.n / 2014-04-12 
+0.1.4 / 2014-04-12 
 ==================
 
   * making callbacks impatient based on timeouts
   * fixing history
 
-1.0.3 / 2014-04-12 
+0.1.3 / 2014-04-12 
 ==================
 
   * fixing upload not having a callback
