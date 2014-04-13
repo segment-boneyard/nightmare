@@ -1,4 +1,10 @@
 
+n.n.n / 2014-04-12 
+==================
+
+  * making callbacks impatient based on timeouts
+  * fixing history
+
 1.0.3 / 2014-04-12 
 ==================
 
