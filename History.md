@@ -1,5 +1,5 @@
 
-n.n.n / 2014-04-12 
+1.0.3 / 2014-04-12 
 ==================
 
   * fixing upload not having a callback
