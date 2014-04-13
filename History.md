@@ -1,4 +1,10 @@
 
+n.n.n / 2014-04-12 
+==================
+
+  * fixing upload not having a callback
+  * fixing history
+
 0.1.2 / 2014-04-11 
 ==================
 
