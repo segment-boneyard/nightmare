@@ -1,5 +1,5 @@
 
-n.n.n / 2014-04-13 
+0.1.6 / 2014-04-13 
 ==================
 
   * adding .url(), more debug()s and a test for .url()
