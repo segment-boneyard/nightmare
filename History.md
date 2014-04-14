@@ -1,4 +1,11 @@
 
+n.n.n / 2014-04-14 
+==================
+
+  * Merge pull request #14 from queckezz/update/allow-no-args
+  * allow no args and fix debug for .evaluate()
+  * fixing history
+
 0.1.6 / 2014-04-13 
 ==================
 
