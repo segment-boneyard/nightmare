@@ -41,7 +41,7 @@ describe('Nightmare', function(){
   /**
    * manipulation
    */
-  
+
   describe('manipulation', function(){
 
     var nightmare = new Nightmare().goto('http://yahoo.com');
@@ -111,10 +111,10 @@ describe('Nightmare', function(){
   /**
    * options
    */
-  
+
   describe('options', function(){
 
-    it('should set agemt', function(done) {
+    it('should set agent', function(done) {
       new Nightmare()
         .agent('firefox')
         .goto('http://www.wikipedia.org/')
@@ -147,7 +147,7 @@ describe('Nightmare', function(){
   /**
    * queue
    */
-  
+
   describe('queue', function(){
 
     it('should execute the queue in order', function(done) {
@@ -166,24 +166,26 @@ describe('Nightmare', function(){
         });
     });
 
-    it ('should be pluggable with .use()', function(done) {
+    it('should be pluggable with .use()', function(done) {
       function search(term) {
-        return function(nightmare) {
+        return function(nightmare, done) {
           nightmare
             .goto('http://yahoo.com')
               .type('.input-query', term)
               .click('.searchsubmit')
-            .wait();
+            .wait()
+            .run(done);
         };
       }
       function testTitle(term) {
-        return function(nightmare) {
+        return function(nightmare, done) {
           nightmare
             .evaluate(function () {
               return document.title;
             }, function (title) {
               title.should.equal(term + ' - Yahoo Search Results');
-            });
+            })
+            .run(done);
         };
       }
       new Nightmare()
@@ -192,6 +194,28 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-  });
+    it('should execute the plugins in order', function (done) {
+      var queue = [];
 
+      new Nightmare()
+        .goto('http://yahoo.com')
+        .use(function (nightmare, done) {
+          // do some random work
+          setTimeout(done, 500);
+          queue.push(1);
+        })
+        .type('.input-query', 'github nightmare')
+        .use(function (nightmare, done) {
+          setTimeout(done, 200);
+          queue.push(2);
+        })
+        .click('.searchsubmit')
+        .wait()
+        .run(function (err, nightmare) {
+          queue.push(3);
+          queue.should.eql([1, 2, 3]);
+          done();
+        });
+    });
+  });
 });
