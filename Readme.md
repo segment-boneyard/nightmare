@@ -41,6 +41,7 @@ Create a new instance that can navigate around the web.
 The available options are:
 * `timeout`: how long to wait for page loads, default `5000ms`
 * `interval`: how frequently to poll for page load state, default `50ms`
+* `port`: port to mount the phantomjs instance to, default `12301`
 
 #### .goto(url)
 Load the page at `url`.
