@@ -1,4 +1,13 @@
 
+n.n.n / 2014-05-10 
+==================
+
+  * fixing queueing and .use() call order
+  * Merge pull request #15 from queckezz/fix/use-queueing
+  * fixing tests
+  * fixing history
+  * queue .use(). Closes #10
+
 1.0.0 / 2014-05-10 
 ==================
 
