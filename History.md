@@ -1,5 +1,5 @@
 
-n.n.n / 2014-05-10 
+1.0.1 / 2014-05-10 
 ==================
 
   * fixing queueing and .use() call order

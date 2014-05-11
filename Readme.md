@@ -11,6 +11,7 @@ The goal is to expose just a few simple methods, and have an API that feels sync
 Let's search on Google:
 
 ```js
+var Nightmare = require('nightmare');
 new Nightmare()
   .goto('https://google.com')
     .type('input#gbqfq', 'github nightmare')
@@ -20,8 +21,8 @@ new Nightmare()
 Or, here's how you might automate a nicely abstracted login + task on Swiftly:
 
 ```js
+var Nightmare = require('nightmare');
 var Swiftly = require('nightmare-swiftly');
-
 new Nightmare()
   .use(Swiftly.login(email, password))
   .use(Swiftly.task(instructions, uploads, path))
