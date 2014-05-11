@@ -1,5 +1,5 @@
 
-n.n.n / 2014-05-10 
+1.0.0 / 2014-05-10 
 ==================
 
   * renaming methods, fixes #18 and #19
@@ -8,7 +8,7 @@ n.n.n / 2014-05-10
   * update phantomjs-node for 0.11.x support
   * add instance option for phantomjs port
 
-n.n.n / 2014-04-14 
+0.1.7 / 2014-04-14 
 ==================
 
   * Merge pull request #14 from queckezz/update/allow-no-args
