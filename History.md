@@ -1,4 +1,13 @@
 
+n.n.n / 2014-05-10 
+==================
+
+  * renaming methods, fixes #18 and #19
+  * Merge pull request #17 from queckezz/update/phantomjs-node
+  * Merge pull request #16 from stevenschobert/master
+  * update phantomjs-node for 0.11.x support
+  * add instance option for phantomjs port
+
 n.n.n / 2014-04-14 
 ==================
 
