@@ -168,24 +168,22 @@ describe('Nightmare', function(){
 
     it('should be pluggable with .use()', function(done) {
       function search(term) {
-        return function(nightmare, done) {
+        return function(nightmare) {
           nightmare
             .goto('http://yahoo.com')
               .type('.input-query', term)
               .click('.searchsubmit')
-            .wait()
-            .run(done);
+            .wait();
         };
       }
       function testTitle(term) {
-        return function(nightmare, done) {
+        return function(nightmare) {
           nightmare
             .evaluate(function () {
               return document.title;
             }, function (title) {
               title.should.equal(term + ' - Yahoo Search Results');
-            })
-            .run(done);
+            });
         };
       }
       new Nightmare()
@@ -196,23 +194,35 @@ describe('Nightmare', function(){
 
     it('should execute the plugins in order', function (done) {
       var queue = [];
-
       new Nightmare()
         .goto('http://yahoo.com')
-        .use(function (nightmare, done) {
-          // do some random work
-          setTimeout(done, 500);
+        .evaluate(function () {
+          window.testQueue = [];
+          window.testQueue.push(1); 
+        }, function () {
           queue.push(1);
         })
-        .type('.input-query', 'github nightmare')
-        .use(function (nightmare, done) {
-          setTimeout(done, 200);
+        .use(function (nightmare) {
+          nightmare
+            .evaluate(function () {
+              window.testQueue.push(2);
+            });
           queue.push(2);
         })
-        .click('.searchsubmit')
-        .wait()
-        .run(function (err, nightmare) {
+        .type('.input-query', 'github nightmare')
+        .use(function (nightmare) {
+          nightmare
+            .evaluate(function () {
+              window.testQueue.push(3);
+            });
           queue.push(3);
+        })
+        .evaluate(function () {
+          return window.testQueue;
+        }, function (testQueue) {
+          testQueue.should.eql([1, 2, 3]);
+        })
+        .run(function (err, nightmare) {
           queue.should.eql([1, 2, 3]);
           done();
         });
