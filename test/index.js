@@ -74,7 +74,7 @@ describe('Nightmare', function(){
 
     it('should take a screenshot', function(done) {
       nightmare
-        .screen('test/test.png')
+        .screenshot('test/test.png')
         .run(done);
     });
 
@@ -116,7 +116,7 @@ describe('Nightmare', function(){
 
     it('should set agemt', function(done) {
       new Nightmare()
-        .agent('firefox')
+        .useragent('firefox')
         .goto('http://www.wikipedia.org/')
         .evaluate(function () {
           return window.navigator.userAgent;
