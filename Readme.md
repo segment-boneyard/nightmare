@@ -76,11 +76,11 @@ Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 #### .wait(fn, value, [delay])
 Wait until the `fn` evaluated on the page returns `value`. Optionally, refresh the page every `delay` milliseconds, and only check after each refresh.
 
-#### .screen(path)
+#### .screenshot(path)
 Saves a screenshot of the current page to the specified `path`. Useful for debugging.
 
-#### .agent(userAgent)
-Set the `userAgent` used by PhantomJS.
+#### .useragent(useragent)
+Set the `useragent` used by PhantomJS.
 
 #### .viewport(width, height)
 Set the `width` and `height` of the viewport, useful for screenshotting.
