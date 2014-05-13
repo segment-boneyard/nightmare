@@ -1,7 +1,7 @@
 var Nightmare = require('../lib');
 
 describe('Nightmare', function(){
-  this.timeout(30000);
+  this.timeout(5000);
 
   it('should be constructable', function(){
     var nightmare = new Nightmare();
@@ -148,7 +148,7 @@ describe('Nightmare', function(){
    * queue
    */
 
-  describe('queue', function(){
+ describe('queue', function(){
 
     it('should execute the queue in order', function(done) {
       var queue = [];

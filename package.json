@@ -12,7 +12,6 @@
     "url": "https://github.com/segmentio/nightmare.git"
   },
   "dependencies": {
-    "async-series": "~0.0.1",
     "phantom": "~0.6.1",
     "debug": "^0.7.4",
     "defaults": "~1.0.0",
