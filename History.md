@@ -1,4 +1,11 @@
 
+1.0.2 / 2014-05-12
+==================
+
+ * fixing concat in place
+ * cleaning up naming, whitespace, structure.. thanks @ianstormtaylor!
+ * fixing readme and history
+
 1.0.1 / 2014-05-10 
 ==================
 
