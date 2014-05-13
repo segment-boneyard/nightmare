@@ -1,7 +1,7 @@
 var Nightmare = require('../lib');
 
 describe('Nightmare', function(){
-  this.timeout(5000);
+  this.timeout(30000);
 
   it('should be constructable', function(){
     var nightmare = new Nightmare();
