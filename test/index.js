@@ -150,6 +150,12 @@ describe('Nightmare', function(){
 
  describe('queue', function(){
 
+    it('should be ok with no callback to run', function(done){
+      var nightmare = new Nightmare().goto('http://expedia.com');
+      nightmare.run();
+      setTimeout(done, 4000);
+    });
+
     it('should execute the queue in order', function(done) {
       var queue = [];
       new Nightmare()
