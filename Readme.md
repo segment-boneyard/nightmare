@@ -60,7 +60,10 @@ Clicks the `selector` element once.
 Enters the `text` provided into the `selector` element.
 
 #### .check(selector)
-Toggles the `checkbox` provided into the `selector` element.
+Toggles the `selector` checkbox element.
+
+#### .select(selector, option)
+Changes the `selector` dropdown element to the option with attribute [value=`option`]
 
 #### .upload(selector, path)
 Specify the `path` to upload into a file input `selector` element.

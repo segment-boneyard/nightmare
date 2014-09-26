@@ -56,7 +56,7 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should type, check, and click', function(done) {
+    it('should type, check, select and click', function(done) {
         nightmare
         //type
         .type('#text', 'github nightmare')
@@ -68,9 +68,16 @@ describe('Nightmare', function(){
         //check
         .check('#check')
           .evaluate(function () {
-            return document.querySelector('#checked').value;
+            return document.querySelector('#check').value;
           }, function (checked) {
             checked.should.equal(true);
+          })
+        //select
+        .select('.dropdown', 2)
+          .evaluate(function () {
+            return document.querySelector('.dropdown').value;
+          }, function (value) {
+            value.should.equal(2);
           })
         //click
         .click('a#btn')
