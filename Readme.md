@@ -59,6 +59,9 @@ Clicks the `selector` element once.
 #### .type(selector, text)
 Enters the `text` provided into the `selector` element.
 
+#### .check(selector)
+Toggles the `checkbox` provided into the `selector` element.
+
 #### .upload(selector, path)
 Specify the `path` to upload into a file input `selector` element.
 

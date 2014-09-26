@@ -44,28 +44,42 @@ describe('Nightmare', function(){
 
   describe('manipulation', function(){
 
-    var nightmare = new Nightmare().goto('http://yahoo.com');
+    var nightmare = new Nightmare().goto('http://jsfiddle.net/sperand_io/f1wa3on1/9/embedded/result/');
 
     it('should evaluate javascript on the page, with parameters', function(done) {
       nightmare
         .evaluate(function (parameter) {
           return document.title + ' -- ' + parameter;
         }, function (title) {
-          title.should.equal('Yahoo -- testparameter');
+          title.should.equal(' - jsFiddle demo by sperand_io -- testparameter');
         }, 'testparameter')
         .run(done);
     });
 
-    it('should type and click', function(done) {
+    it('should type, check, and click', function(done) {
         nightmare
-          .type('.input-query', 'github nightmare')
-          .click('.searchsubmit')
-        .wait()
-        .evaluate(function () {
-          return document.title;
-        }, function (title) {
-          title.should.equal('github nightmare - Yahoo Search Results');
-        })
+        //type
+        .type('#text', 'github nightmare')
+          .evaluate(function () {
+            return document.querySelector('#text').value;
+          }, function (text) {
+            text.should.equal('github nightmare');
+          })
+        //check
+        .check('#check')
+          .evaluate(function () {
+            return document.querySelector('#checked').value;
+          }, function (checked) {
+            checked.should.equal(true);
+          })
+        //click
+        .click('a#btn')
+          .wait()
+          .evaluate(function () {
+            return document.title;
+          }, function (title) {
+            title.should.equal('Github');
+          })
         .run(function (err, nightmare) {
           nightmare.should.be.ok;
           done();
@@ -204,7 +218,7 @@ describe('Nightmare', function(){
         .goto('http://yahoo.com')
         .evaluate(function () {
           window.testQueue = [];
-          window.testQueue.push(1); 
+          window.testQueue.push(1);
         }, function () {
           queue.push(1);
         })
