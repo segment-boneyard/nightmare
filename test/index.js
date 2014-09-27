@@ -44,7 +44,7 @@ describe('Nightmare', function(){
 
   describe('manipulation', function(){
 
-    var nightmare = new Nightmare().goto('http://jsfiddle.net/sperand_io/f1wa3on1/9/embedded/result/');
+    var nightmare = new Nightmare().goto('http://fiddle.jshell.net/sperand_io/f1wa3on1/10/show/');
 
     it('should evaluate javascript on the page, with parameters', function(done) {
       nightmare
