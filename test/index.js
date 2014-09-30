@@ -14,6 +14,14 @@ describe('Nightmare', function(){
 
   describe('navigation', function(){
 
+    it('should click on a link and then go back', function(done) {
+      new Nightmare()
+        .goto('https://segment.io/')
+        .click('a[href="/docs"]')
+        .goBack()
+        .run(done);
+    });
+
     it('should goto wikipedia.org', function(done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
@@ -57,19 +65,19 @@ describe('Nightmare', function(){
     });
 
     it('should type and click', function(done) {
-        nightmare
-          .type('.input-query', 'github nightmare')
-          .click('.searchsubmit')
-        .wait()
-        .evaluate(function () {
-          return document.title;
-        }, function (title) {
-          title.should.equal('github nightmare - Yahoo Search Results');
-        })
-        .run(function (err, nightmare) {
-          nightmare.should.be.ok;
-          done();
-        });
+      nightmare
+        .type('.input-query', 'github nightmare')
+        .click('.searchsubmit')
+      .wait()
+      .evaluate(function () {
+        return document.title;
+      }, function (title) {
+        title.should.equal('github nightmare - Yahoo Search Results');
+      })
+      .run(function (err, nightmare) {
+        nightmare.should.be.ok;
+        done();
+      });
     });
 
     it('should take a screenshot', function(done) {
@@ -204,7 +212,7 @@ describe('Nightmare', function(){
         .goto('http://yahoo.com')
         .evaluate(function () {
           window.testQueue = [];
-          window.testQueue.push(1); 
+          window.testQueue.push(1);
         }, function () {
           queue.push(1);
         })
