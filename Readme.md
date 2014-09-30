@@ -15,7 +15,11 @@ var Nightmare = require('nightmare');
 new Nightmare()
   .goto('https://google.com')
     .type('input#gbqfq', 'github nightmare')
-    .click('button#gbqfba');
+    .click('button#gbqfba')
+    .run(function(err, nightmare) {
+      if (err) return fn(err);
+      fn();
+    });
 ```
 
 Or, here's how you might automate a nicely abstracted login + task on Swiftly:
@@ -46,6 +50,9 @@ The available options are:
 
 #### .goto(url)
 Load the page at `url`.
+
+#### .goBack()
+Go back to the previous page.
 
 #### .refresh()
 Refresh the current page.
