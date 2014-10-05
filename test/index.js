@@ -18,7 +18,7 @@ describe('Nightmare', function(){
       new Nightmare()
         .goto('https://segment.io/')
         .click('a[href="/docs"]')
-        .goBack()
+        .back()
         .run(done);
     });
 
