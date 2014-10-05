@@ -51,7 +51,7 @@ The available options are:
 #### .goto(url)
 Load the page at `url`.
 
-#### .goBack()
+#### .back()
 Go back to the previous page.
 
 #### .refresh()
