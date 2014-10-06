@@ -1,7 +1,7 @@
 var Nightmare = require('../lib');
 
 describe('Nightmare', function(){
-  this.timeout(30000);
+  this.timeout(20000);
 
   it('should be constructable', function(){
     var nightmare = new Nightmare();
@@ -52,10 +52,11 @@ describe('Nightmare', function(){
 
   describe('manipulation', function(){
 
-    var nightmare = new Nightmare().goto('http://yahoo.com');
+    var nightmare = new Nightmare();
 
     it('should evaluate javascript on the page, with parameters', function(done) {
       nightmare
+        .goto('http://yahoo.com')
         .evaluate(function (parameter) {
           return document.title + ' -- ' + parameter;
         }, function (title) {
@@ -66,7 +67,8 @@ describe('Nightmare', function(){
 
     it('should type and click', function(done) {
       nightmare
-        .type('.input-query', 'github nightmare')
+        .goto('http://yahoo.com')
+        .type('input[title="Search"]', 'github nightmare')
         .click('.searchsubmit')
       .wait()
       .evaluate(function () {
@@ -82,6 +84,7 @@ describe('Nightmare', function(){
 
     it('should take a screenshot', function(done) {
       nightmare
+        .goto('http://yahoo.com')
         .screenshot('test/test.png')
         .run(done);
     });
@@ -159,7 +162,7 @@ describe('Nightmare', function(){
  describe('queue', function(){
 
     it('should be ok with no callback to run', function(done){
-      var nightmare = new Nightmare().goto('http://expedia.com');
+      var nightmare = new Nightmare().goto('http://yahoo.com');
       nightmare.run();
       setTimeout(done, 4000);
     });
@@ -167,7 +170,7 @@ describe('Nightmare', function(){
     it('should execute the queue in order', function(done) {
       var queue = [];
       new Nightmare()
-        .goto('http://expedia.com')
+        .goto('http://www.kayak.com/')
         .evaluate(function () {
           return document.title;
         }, function (title) {
