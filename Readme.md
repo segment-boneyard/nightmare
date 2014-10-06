@@ -105,6 +105,15 @@ Here's a list of plugins, pull request to add your own to the list :)
 
 * [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly)
 
+## Usage
+
+You'll need to include the nightmare module, and already have phantomjs itself installed:
+
+```bash
+$ sudo brew update && brew install phantomjs
+$ npm install --save nightmare
+```
+
 ## License (MIT)
 
 ```
