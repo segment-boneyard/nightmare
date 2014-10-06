@@ -1,3 +1,10 @@
+
+1.1.0 / 2014-10-05
+==================
+
+ * changing run structure to auto-terminate phantomjs instances
+ * naming goBack to back
+  
 1.0.5 / 2014-09-30
 ==================
 
