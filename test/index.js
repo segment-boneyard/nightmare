@@ -56,41 +56,47 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should type, check, select and click', function(done) {
+    it('should type', function(done) {
         nightmare
-        //type
         .type('#text', 'github nightmare')
           .evaluate(function () {
             return document.querySelector('#text').value;
           }, function (text) {
             text.should.equal('github nightmare');
           })
-        //check
+          .run(done);
+    });
+    it('should check', function(done){
+        nightmare
         .check('#check')
           .evaluate(function () {
-            return document.querySelector('#check').checked;
-          }, function (checked) {
-            checked.should.be.true;
+            var test = document.querySelector('#check');
+            return test.checked;
+          }, function (check) {
+            check.should.be.true;
           })
-        //select
+        .run(done);
+    });
+    it('should select', function(done){
+        nightmare
         .select('.dropdown', 2)
           .evaluate(function () {
             return document.querySelector('.dropdown').value;
           }, function (value) {
             value.should.equal(2);
           })
-        //click
-        .click('a#btn')
+        .run(done);
+    });
+    it('should click', function(done){
+        nightmare
+        .click('#link')
           .wait()
           .evaluate(function () {
             return document.title;
           }, function (title) {
             title.should.equal('GitHub · Build software better, together.');
           })
-        .run(function (err, nightmare) {
-          nightmare.should.be.ok;
-          done();
-        });
+        .run(done);
     });
 
     it('should take a screenshot', function(done) {
