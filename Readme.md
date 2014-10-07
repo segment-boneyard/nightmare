@@ -22,6 +22,20 @@ new Nightmare()
     });
 ```
 
+Or, let's extract the entirety of Kayak's home page after everything has rendered:
+
+```js
+var Nightmare = require('nightmare');
+new Nightmare()
+  .goto('http://kayak.com')
+  .evaluate(function (page) {
+    return document.documentElement.innerHTML;
+  }, function (res) {
+    console.log(res);
+  })
+  .run();
+```
+
 Or, here's how you might automate a nicely abstracted login + task on Swiftly:
 
 ```js
