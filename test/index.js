@@ -1,4 +1,5 @@
 var Nightmare = require('../lib');
+var should = require('should');
 
 describe('Nightmare', function(){
   this.timeout(20000);
@@ -62,6 +63,18 @@ describe('Nightmare', function(){
         }, function (title) {
           title.should.equal('Yahoo -- testparameter');
         }, 'testparameter')
+        .run(done);
+    });
+
+    it('should inject javascript onto the page', function( done ){
+      nightmare
+        .goto('http://yahoo.com')
+        .injectJs('files/jquery-2.1.1.min.js')
+        .evaluate( function(){
+          return $("a").length;
+        }, function( numAnchors ){
+          numAnchors.should.be.greaterThan( 0 );
+        })
         .run(done);
     });
 
