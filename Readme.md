@@ -8,17 +8,17 @@ The goal is to expose just a few simple methods, and have an API that feels sync
 
 ## Examples
 
-Let's search on Google:
+Let's search on Yahoo:
 
 ```js
 var Nightmare = require('nightmare');
 new Nightmare()
-  .goto('https://google.com')
-    .type('input#gbqfq', 'github nightmare')
-    .click('button#gbqfba')
-    .run(function(err, nightmare) {
-      if (err) return fn(err);
-      fn();
+  .goto('http://yahoo.com')
+    .type('input[title="Search"]', 'github nightmare')
+    .click('.searchsubmit')
+    .run(function (err, nightmare) {
+      if (err) return console.log(err);
+      console.log('Done!');
     });
 ```
 
