@@ -91,7 +91,7 @@ Saves a screenshot of the current page to the specified `path`. Useful for debug
 Set the `useragent` used by PhantomJS.
 
 #### .viewport(width, height)
-Set the `width` and `height` of the viewport, useful for screenshotting.
+Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly, you have to set the viewport before calling `.goto()`.
 
 #### .use(plugin)
 Useful for using repeated code blocks, see the example with Swiftly login and task creation in the docs above.
