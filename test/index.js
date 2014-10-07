@@ -44,14 +44,14 @@ describe('Nightmare', function(){
 
   describe('manipulation', function(){
 
-    var nightmare = new Nightmare().goto('http://fiddle.jshell.net/sperand_io/f1wa3on1/10/show/');
+    var nightmare = new Nightmare().goto('http://wheels.sperand.io.s3.amazonaws.com/test.html');
 
     it('should evaluate javascript on the page, with parameters', function(done) {
       nightmare
         .evaluate(function (parameter) {
           return document.title + ' -- ' + parameter;
         }, function (title) {
-          title.should.equal(' - jsFiddle demo by sperand_io -- testparameter');
+          title.should.equal('Test -- testparameter');
         }, 'testparameter')
         .run(done);
     });
@@ -85,7 +85,7 @@ describe('Nightmare', function(){
           .evaluate(function () {
             return document.title;
           }, function (title) {
-            title.should.equal('Github');
+            title.should.equal('GitHub · Build software better, together.');
           })
         .run(function (err, nightmare) {
           nightmare.should.be.ok;
