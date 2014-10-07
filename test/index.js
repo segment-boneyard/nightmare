@@ -68,9 +68,9 @@ describe('Nightmare', function(){
         //check
         .check('#check')
           .evaluate(function () {
-            return document.querySelector('#check').value;
+            return document.querySelector('#check').checked;
           }, function (checked) {
-            checked.should.equal(true);
+            checked.should.be.true;
           })
         //select
         .select('.dropdown', 2)
