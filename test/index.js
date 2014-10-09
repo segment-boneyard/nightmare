@@ -16,8 +16,8 @@ describe('Nightmare', function(){
 
     it('should click on a link and then go back', function(done) {
       new Nightmare()
-        .goto('https://segment.io/')
-        .click('a[href="/docs"]')
+        .goto('http://www.nightmarejs.org/')
+        .click('a')
         .back()
         .run(done);
     });
@@ -52,10 +52,8 @@ describe('Nightmare', function(){
 
   describe('manipulation', function(){
 
-    var nightmare = new Nightmare();
-
     it('should evaluate javascript on the page, with parameters', function(done) {
-      nightmare
+      new Nightmare()
         .goto('http://yahoo.com')
         .evaluate(function (parameter) {
           return document.title + ' -- ' + parameter;
@@ -66,7 +64,7 @@ describe('Nightmare', function(){
     });
 
     it('should type and click', function(done) {
-      nightmare
+      new Nightmare()
         .goto('http://yahoo.com')
         .type('input[title="Search"]', 'github nightmare')
         .click('.searchsubmit')
@@ -83,9 +81,16 @@ describe('Nightmare', function(){
     });
 
     it('should take a screenshot', function(done) {
-      nightmare
+      new Nightmare()
         .goto('http://yahoo.com')
         .screenshot('test/test.png')
+        .run(done);
+    });
+
+    it('should wait until element is present', function(done) {
+      new Nightmare()
+        .goto('http://www.google.com/')
+        .wait('input')
         .run(done);
     });
 
@@ -97,7 +102,7 @@ describe('Nightmare', function(){
         return parseInt(seconds, 10);
       };
 
-      nightmare = new Nightmare()
+      new Nightmare()
         .goto('http://onlineclock.net/')
         .wait(seconds, 1)
         .run(done);
@@ -111,7 +116,7 @@ describe('Nightmare', function(){
         return parseInt(seconds, 10)%10;
       };
 
-      nightmare = new Nightmare()
+      new Nightmare()
         .goto('http://www.whattimeisit.com/')
         .wait(seconds, 1, 1500)
         .run(done);
