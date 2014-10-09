@@ -65,10 +65,9 @@ describe('Nightmare', function(){
     });
 
     it('should inject javascript onto the page', function( done ){
-
       new Nightmare()
-        .goto('http://yahoo.com')
-        .injectJs('test/files/jquery-2.1.1.min.js')
+        .goto('http://google.com')
+        .inject('js', 'test/files/jquery-2.1.1.min.js')
         .evaluate( function(){
           return $("a").length;
         }, function( numAnchors ){
@@ -77,6 +76,19 @@ describe('Nightmare', function(){
         .run(done);
     });
 
+    it('should inject css onto the page', function( done ){
+      new Nightmare()
+        .goto('http://google.com')
+        .inject('js', 'test/files/jquery-2.1.1.min.js')
+        .inject('css', 'test/files/test.css')
+        .evaluate( function(){          
+          return $("body").css("background-color");
+        }, function( color ){
+          color.should.equal("rgb(255, 0, 0)");
+        })
+        .run(done);
+    });
+  
     it('should type and click', function(done) {
       new Nightmare()
         .goto('http://yahoo.com')
