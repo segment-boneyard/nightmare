@@ -1,4 +1,13 @@
 
+1.1.1 / 2014-10-08
+==================
+
+  * adding wait(selector) test and clojure fix, fixes #39
+  * adding extraction readme example
+  * adding caveat to viewport docs, fixes #33
+  * updating readme example
+  * Remove OSX .DS_Store file
+
 1.1.0 / 2014-10-05
 ==================
 
