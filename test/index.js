@@ -1,5 +1,4 @@
 var Nightmare = require('../lib');
-var should = require('should');
 
 describe('Nightmare', function(){
   this.timeout(20000);
@@ -65,9 +64,9 @@ describe('Nightmare', function(){
     });
 
     it('should inject javascript onto the page', function( done ){
-      nightmare
+      new Nightmare()
         .goto('http://yahoo.com')
-        .injectJs('files/jquery-2.1.1.min.js')
+        .injectJs('test/files/jquery-2.1.1.min.js')
         .evaluate( function(){
           return $("a").length;
         }, function( numAnchors ){
