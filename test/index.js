@@ -125,6 +125,155 @@ describe('Nightmare', function(){
   });
 
   /**
+   * events
+   */
+
+  describe('events', function(){
+    var step1url = "http://en.wikipedia.org/wiki/DOM_events",
+        step2url = "http://en.wikipedia.org/wiki/DOM_events#Event_flow";
+    
+    it('should fire an event on initialized', function(done) {
+      var fired = false;
+      new Nightmare()
+        .on("initialized", function(){
+          fired = true;          
+        })
+        .goto("http://www.yahoo.com")
+        .run(function(){
+          fired.should.be.true;
+          done();
+        });
+    });
+
+    it('should fire an event on load started', function(done) {
+      var fired = false;
+      new Nightmare()
+        .on("loadStarted", function(){          
+          fired = true;
+        })
+        .goto("http://www.yahoo.com")
+        .run(function(){
+          fired.should.be.true;
+          done();
+        });
+    });
+
+    it('should fire an event on load finished', function(done) {
+      var fired = false;
+      new Nightmare()
+        .on("loadFinished", function(status){
+          fired = (status === "success");
+        })
+        .goto("http://www.yahoo.com")
+        .run(function(){
+          fired.should.be.true;
+          done();
+        });
+    });
+
+    it('should fire an event when a resource is requested', function(done) {
+      var fired = false;
+      new Nightmare()
+        .on("resourceRequested", function(){          
+          fired = true;
+        })
+        .goto("http://www.yahoo.com")
+        .run(function(){
+          fired.should.be.true;
+          done();
+        });
+    });
+
+    it('should fire an event when a resource is received', function(done) {
+      var fired = false;
+      new Nightmare()
+        .on("resourceReceived", function(){          
+          fired = true;
+        })
+        .goto("http://www.yahoo.com")
+        .run(function(){
+          fired.should.be.true;
+          done();
+        });
+    });
+
+    it('should fire an event when navigation requested', function(done) {
+      var fired = false;
+      new Nightmare()
+        .on("navigationRequested", function(url){
+          fired = (url==="https://www.yahoo.com/");
+        })
+        .goto("https://www.yahoo.com")
+        .run(function(){
+          fired.should.be.true;
+          done();
+        });
+    });
+
+    it('should fire an event when the url changes', function(done) {
+      var fired = false;
+      new Nightmare()
+        .on("urlChanged", function(url){
+          fired = (url==="https://www.yahoo.com/");
+        })
+        .goto("https://www.yahoo.com")
+        .run(function(){
+          fired.should.be.true;
+          done();
+        });
+    });
+
+    it.skip('should fire an event when a console message is seen', function(done) {
+      var fired = false;
+      new Nightmare()
+        .on("consoleMessage", function(){
+          console.log("output")
+          fired = true;
+        })
+        .goto("http://www.yahoo.com")
+        .evaluate( function(){
+          console.log("message");
+        })
+        .run(function(){
+          fired.should.be.true;
+          done();
+        });
+    });
+
+    it.skip('should fire an event when an alert is seen', function(done) {
+      var fired = false;
+      new Nightmare()
+        .on("alert", function(){
+          fired = true;
+        })
+        .goto("http://www.yahoo.com")
+        .evaluate( function(){
+          alert("onno");
+        })
+        .run(function(){
+          fired.should.be.true;
+          done();
+        });
+    });
+
+    it.skip('should fire an event when a prompt is seen', function(done) {
+      var fired = false;
+      new Nightmare()
+        .on("prompt", function(){          
+          fired = true;
+        })
+        .goto("http://www.yahoo.com")
+        .evaluate( function(){
+          prompt("onno");
+        })
+        .run(function(){
+          fired.should.be.true;
+          done();
+        });
+    });
+  });
+
+  /**
    * options
    */
 
