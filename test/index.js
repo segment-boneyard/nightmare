@@ -22,6 +22,15 @@ describe('Nightmare', function(){
         .run(done);
     });
 
+    it('should click on a link, go back, and then go forward', function(done) {
+      new Nightmare()
+        .goto('http://www.google.com/')
+        .click('a')
+        .back()
+        .forward()
+        .run(done);
+    });
+
     it('should goto wikipedia.org', function(done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
