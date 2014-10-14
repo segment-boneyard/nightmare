@@ -360,6 +360,18 @@ describe('Nightmare', function(){
         .run(done);
     });
 
+    it('should set authentication', function(done) {
+      new Nightmare()
+        .authentication('my','auth')
+        .goto('http://httpbin.org/basic-auth/my/auth')
+        .evaluate(function(){
+          return document.body.innerHTML;
+        }, function( data ){
+          data.length.should.be.above(0);
+        })
+        .run(done);
+    });
+
     it('should set viewport', function(done) {
       var size = { width : 400, height: 1000 };
       new Nightmare()
