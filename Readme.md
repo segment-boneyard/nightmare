@@ -146,6 +146,20 @@ If you save it as `myfile.js`, you can run it by typing `node myfile.js`.
 #### Debug
 To run the same file in Debug mode, type `DEBUG=nightmare node test.js`.
 
+This will print out some additional information which what's going on:
+
+```bash
+nightmare queueing action "goto" +0ms
+  nightmare run +3ms
+  nightmare .setup() creating phantom instance on port 12301 +1ms
+  nightmare .setup() phantom instance created +145ms
+  nightmare .setup() phantom page created +4ms
+  nightmare .goto() url: http://kayak.com +2ms
+  nightmare .goto() page loaded: success +1s
+  nightmare .teardownInstance() tearing down and bumping port to 12302 +501ms
+all done
+```
+
 ## License (MIT)
 
 ```
