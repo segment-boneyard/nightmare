@@ -121,6 +121,10 @@ Here's a list of plugins, pull request to add your own to the list :)
 
 ## Usage
 #### Installation
+Nightmare is a Node.js module, so you'll need to have Node.js installed.
+
+http://nodejs.org/
+
 You'll need to include the nightmare module, and already have phantomjs itself installed:
 
 ```bash
