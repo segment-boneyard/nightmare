@@ -120,13 +120,31 @@ Here's a list of plugins, pull request to add your own to the list :)
 * [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly)
 
 ## Usage
-
+#### Installation
 You'll need to include the nightmare module, and already have phantomjs itself installed:
 
 ```bash
 $ sudo brew update && brew install phantomjs
 $ npm install --save nightmare
 ```
+#### Execution
+Nightmare is run the same as a normal Node.js file.
+
+Let's say you have a simple script to open a web page:
+```js
+var Nightmare = require('nightmare');
+var nightmare = new Nightmare();
+
+nightmare
+  .goto('http://kayak.com')
+  .run(function( err, nightmare){
+    console.log('all done');
+  });
+```
+If you save it as `myfile.js`, you can run it by typing `node myfile.js`.
+
+#### Debug
+To run the same file in Debug mode, type `DEBUG=nightmare node test.js`.
 
 ## License (MIT)
 
