@@ -167,6 +167,19 @@ nightmare queueing action "goto" +0ms
 all done
 ```
 
+#### Tests
+The included automated tests are run using Mocha and Should.  To run the tests, just do `make test`.
+
+When the tests are done, you'll see something like this:
+
+```bash
+make test
+
+  ․․․․․․․․․․․․․․․․․
+
+  17 passing (46s)
+```
+
 ## License (MIT)
 
 ```
