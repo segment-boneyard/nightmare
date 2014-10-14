@@ -88,6 +88,19 @@ describe('Nightmare', function(){
         })
         .run(done);
     });
+
+    it('should not inject unsupported types onto the page', function( done ){
+      new Nightmare()
+        .goto('http://google.com')
+        .inject('js', 'test/files/jquery-2.1.1.min.js')
+        .inject('pdf', 'test/files/test.css')
+        .evaluate( function(){          
+          return $("body").css("background-color");
+        }, function( color ){
+          color.should.not.equal("rgb(255, 0, 0)");
+        })
+        .run(done);
+    });
   
     it('should type and click', function(done) {
       new Nightmare()
