@@ -120,6 +120,7 @@ Respond to page events with the callback. Supported eventTypes are:
 * `alert` - callback(msg)
 * `confirm` - callback(msg)
 * `prompt` - callback(msg, defaultVal)
+
 For a more in depth description, see https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list.
 
 #### .use(plugin)
