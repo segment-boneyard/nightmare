@@ -109,19 +109,17 @@ Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly
 
 #### .on(eventType, callback)
 Respond to page events with the callback. Supported eventTypes are: 
-<ul>
-  <li>`initialized` - callback()</li>
-  <li>`loadStarted` - callback()</li>
-  <li>`loadFinished` - callback(status)</li>
-  <li>`urlChanged` - callback(targetUrl)</li>
-  <li>`navigationRequested` - callback(url, type, willNavigate, main)</li>
-  <li>`resourceRequested` - callback(requestData, networkRequest)</li>
-  <li>`resourceReceived` - callback(response)</li>
-  <li>`consoleMessage` - callback(msg, lineNum, sourceId)</li>
-  <li>`alert` - callback(msg)</li>
-  <li>`confirm` - callback(msg)</li>
-  <li>`prompt` - callback(msg, defaultVal)</li>
-</ul>
+* `initialized` - callback()
+* `loadStarted` - callback()
+* `loadFinished` - callback(status)
+* `urlChanged` - callback(targetUrl)
+* `navigationRequested` - callback(url, type, willNavigate, main)
+* `resourceRequested` - callback(requestData, networkRequest)
+* `resourceReceived` - callback(response)
+* `consoleMessage` - callback(msg, lineNum, sourceId)
+* `alert` - callback(msg)
+* `confirm` - callback(msg)
+* `prompt` - callback(msg, defaultVal)
 For a more in depth description, see https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list.
 
 #### .use(plugin)
