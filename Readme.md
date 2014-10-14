@@ -168,7 +168,7 @@ all done
 ```
 
 #### Tests
-The included automated tests are run using Mocha and Should.  To run the tests, just do `make test`.
+The included automated tests are run using [Mocha](http://visionmedia.github.io/mocha/) and [Should](https://github.com/shouldjs/should.js), both of which come with Nightmare when you install it via NPM. To run the tests, just do `make test`.
 
 When the tests are done, you'll see something like this:
 
