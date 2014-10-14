@@ -127,6 +127,9 @@ You'll need to include the nightmare module, and already have phantomjs itself i
 $ sudo brew update && brew install phantomjs
 $ npm install --save nightmare
 ```
+You can also get the latest version of Phantom JS from
+http://phantomjs.org/
+
 #### Execution
 Nightmare is run the same as a normal Node.js file.
 
