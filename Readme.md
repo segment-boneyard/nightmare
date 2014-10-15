@@ -61,6 +61,7 @@ var nightmare = new Nightmare();
 
 var linkCount = 0, pageNum = 0; 
 
+//Moves Nightmare to the next search results page.
 function getNextPage(callback){
   nightmare
     .click("#pg-next") //Click the Next Page link
@@ -69,16 +70,20 @@ function getNextPage(callback){
       callback();
     },false); //Don't teardown this instance
 }
-
+//Counts the number of links on a search results page.
 function scrape(){
-  var hasNextPage;
   console.log("on page number " + (++pageNum));
+
+  var hasNextPage;
+  
   nightmare
+    //Count the number of links in the page, and update linkCount
     .evaluate(function(){
       return document.querySelectorAll("a.spt").length;
     }, function(numLinks){
       linkCount += numLinks;
     })
+    //Determine if there is a Next Page link
     .evaluate(function(){
       return (document.querySelectorAll("#pg-next").length > 0);
     }, function( bool ){
@@ -86,7 +91,7 @@ function scrape(){
     })
     .run(function(){      
       if ( linkCount < 30 && hasNextPage){
-        getNextPage( scrape );
+        getNextPage(scrape);
       } else {
         console.log("scrapping done.");
         console.log("found " + linkCount);
