@@ -1,7 +1,7 @@
 {
   "name": "nightmare",
-  "version": "1.1.1",
-  "author": "Segment.io",
+  "version": "1.2.0",
+  "author": "Segment",
   "keywords": [
     "nightmare",
     "phantomjs"

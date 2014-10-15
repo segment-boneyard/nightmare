@@ -68,6 +68,9 @@ Load the page at `url`.
 #### .back()
 Go back to the previous page.
 
+#### .forward()
+Go forward to the next page.
+
 #### .refresh()
 Refresh the current page.
 
@@ -105,7 +108,7 @@ Wait until the `fn` evaluated on the page returns `value`. Optionally, refresh t
 Saves a screenshot of the current page to the specified `path`. Useful for debugging.
 
 #### .useragent(useragent)
-Set the `useragent` used by PhantomJS.
+Set the `useragent` used by PhantomJS. You have to set the useragent before calling `.goto()`.
 
 #### .viewport(width, height)
 Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly, you have to set the viewport before calling `.goto()`.

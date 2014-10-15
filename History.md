@@ -1,4 +1,10 @@
 
+1.2.0 / 2014-10-15
+==================
+
+  * adding .forward() method with test
+  * adding .inject() action, test, and updated readme
+
 1.1.1 / 2014-10-08
 ==================
 
