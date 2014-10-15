@@ -142,12 +142,64 @@ Here's a list of plugins, pull request to add your own to the list :)
 * [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly)
 
 ## Usage
+#### Installation
+Nightmare is a Node.js module, so you'll need to have Node.js installed.
+
+http://nodejs.org/
 
 You'll need to include the nightmare module, and already have phantomjs itself installed:
 
 ```bash
 $ sudo brew update && brew install phantomjs
 $ npm install --save nightmare
+```
+You can also get the latest version of Phantom JS from
+http://phantomjs.org/
+
+#### Execution
+Nightmare is run the same as a normal Node.js file.
+
+Let's say you have a simple script to open a web page:
+```js
+var Nightmare = require('nightmare');
+var nightmare = new Nightmare();
+
+nightmare
+  .goto('http://kayak.com')
+  .run(function( err, nightmare){
+    console.log('all done');
+  });
+```
+If you save it as `myfile.js`, you can run it by typing `node myfile.js`.
+
+#### Debug
+To run the same file in Debug mode, type `DEBUG=nightmare node test.js`.
+
+This will print out some additional information which what's going on:
+
+```bash
+nightmare queueing action "goto" +0ms
+  nightmare run +3ms
+  nightmare .setup() creating phantom instance on port 12301 +1ms
+  nightmare .setup() phantom instance created +145ms
+  nightmare .setup() phantom page created +4ms
+  nightmare .goto() url: http://kayak.com +2ms
+  nightmare .goto() page loaded: success +1s
+  nightmare .teardownInstance() tearing down and bumping port to 12302 +501ms
+all done
+```
+
+#### Tests
+The included automated tests are run using [Mocha](http://visionmedia.github.io/mocha/) and [Should](https://github.com/shouldjs/should.js), both of which come with Nightmare when you install it via NPM. To run the tests, just do `make test`.
+
+When the tests are done, you'll see something like this:
+
+```bash
+make test
+
+  ․․․․․․․․․․․․․․․․․
+
+  17 passing (46s)
 ```
 
 ## License (MIT)
