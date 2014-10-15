@@ -90,7 +90,9 @@ function scrape(){
       } else {
         console.log("scrapping done.");
         console.log("found " + linkCount);
-        nightmare.teardownInstance();//Tells Nightmare to destroy the Phantomjs instance.
+        //Tell Nightmare to destroy the Phantomjs instance since we've
+        //found enough links.
+        nightmare.teardownInstance();
       }
       
     }, false);
@@ -191,6 +193,9 @@ Useful for using repeated code blocks, see the example with Swiftly login and ta
 Executes the queue of functions, and calls your `cb` when the script hits an error or completes the queue. The callback signature is `cb(err, nightmare)`.
 
 `teardown` is a boolean that tells Nightmare whether it should destroy the Phantomjs instance it's using when the run is complete. You can pass in `false` to reuse the same Nightmare instance between runs. Defaults to `true` if not provided.
+
+#### .teardownInstance()
+Destroys the PhantomJS instance used by Nightmare. This is called by default when .run() is complete, but you can call this method directly if it makes sense with your control flow.
 
 ## Plugins
 
