@@ -1,9 +1,14 @@
 
+1.3.0 / 2014-10-15
+==================
+
+  * adding a on() action to handle phantom page events (by @johntitus)
+
 1.2.0 / 2014-10-15
 ==================
 
-  * adding .forward() method with test
-  * adding .inject() action, test, and updated readme
+  * adding .forward() method with test (by @stevenmiller888)
+  * adding .inject() action, test, and updated readme (by @johntitus)
 
 1.1.1 / 2014-10-08
 ==================
