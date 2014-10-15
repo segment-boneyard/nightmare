@@ -122,6 +122,9 @@ new Nightmare()
   });
 ```
 
+#### .authentication(userName, password)
+Set the `userName` and `password` for accessing a web page using basic authentication.
+
 #### .viewport(width, height)
 Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly, you have to set the viewport before calling `.goto()`.
 
