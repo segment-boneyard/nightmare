@@ -61,7 +61,7 @@ The available options are:
 * `timeout`: how long to wait for page loads, default `5000ms`
 * `interval`: how frequently to poll for page load state, default `50ms`
 * `port`: port to mount the phantomjs instance to, default `12301`
-* `dnodeOpts`: set dnode options. for windows users setting `{weak:false}` will fix cpp compilation issues. default `{}`
+* `weak`: set dnode weak option. For windows users, will fix cpp compilation issues. default `true`
 
 #### .goto(url)
 Load the page at `url`.
