@@ -28,7 +28,7 @@ Or, let's extract the entirety of Kayak's home page after everything has rendere
 var Nightmare = require('nightmare');
 new Nightmare()
   .goto('http://kayak.com')
-  .evaluate(function (page) {
+  .evaluate(function () {
     return document.documentElement.innerHTML;
   }, function (res) {
     console.log(res);
