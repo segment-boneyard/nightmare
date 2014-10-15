@@ -54,11 +54,24 @@ describe('Nightmare', function(){
         .run(done);
     });
 
+
     it('should get the title', function(done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
         .title(function (title) {
           title.should.eql('Wikipedia');
+        })
+        .run(done);
+    });
+
+    it('should check if the selector exists', function(done) {
+      new Nightmare()
+        .goto('http://www.wikipedia.org/')
+        .exists("a.link-box", function (exists) {
+          exists.should.be.true;
+        })
+        .exists("a.blahblahblah", function (exists) {
+          exists.should.be.false;
         })
         .run(done);
     });

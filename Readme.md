@@ -78,8 +78,12 @@ Refresh the current page.
 #### .url(cb)
 Get the url of the current page, the signature of the callback is `cb(url)`.
 
+
 #### .title(cb)
 Get the title of the current page, the signature of the callback is `cb(title)`.
+
+#### .exists(selector,cb)
+Determines if the selector exists, or not, on the page. The signature of the callback is `cb(boolean)`.
 
 #### .click(selector)
 Clicks the `selector` element once.
