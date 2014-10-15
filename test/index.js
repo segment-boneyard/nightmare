@@ -54,6 +54,18 @@ describe('Nightmare', function(){
         .run(done);
     });
 
+    it('should check if an element is visible', function(done) {
+      new Nightmare()
+        .goto('http://www.wikipedia.org/')
+        .visible("input[type='hidden']",function (visible) {
+          visible.should.be.false;
+        })
+        .visible("#searchInput",function (visible) {
+          visible.should.be.true;
+        })
+        .run(done);
+    });
+
   });
 
   /**

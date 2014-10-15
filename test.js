@@ -1,9 +1,13 @@
 var Nightmare = require("./lib/index");
 
+var selector="#gs_st0"
+
 new Nightmare()
-	.agent("firefox")
-	.goto("https://www.google.com")
-	.visible("#gs_sc0", function( exists){
-		console.log( "vis? " + exists);
+	.goto("http://www.wikipedia.org")
+	.visible("input[type='hidden']",function (visible) {
+		console.log(visible);
+	})
+	.visible("#searchInput",function (visible) {
+		console.log(visible);
 	})
 	.run();
