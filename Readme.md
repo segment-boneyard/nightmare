@@ -110,6 +110,22 @@ Set the `useragent` used by PhantomJS.
 #### .viewport(width, height)
 Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly, you have to set the viewport before calling `.goto()`.
 
+#### .on(eventType, callback)
+Respond to page events with the callback. Supported eventTypes are: 
+* `initialized` - callback()
+* `loadStarted` - callback()
+* `loadFinished` - callback(status)
+* `urlChanged` - callback(targetUrl)
+* `navigationRequested` - callback(url, type, willNavigate, main)
+* `resourceRequested` - callback(requestData, networkRequest)
+* `resourceReceived` - callback(response)
+* `consoleMessage` - callback(msg, lineNum, sourceId)
+* `alert` - callback(msg)
+* `confirm` - callback(msg)
+* `prompt` - callback(msg, defaultVal)
+
+For a more in depth description, see https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list.
+
 #### .use(plugin)
 Useful for using repeated code blocks, see the example with Swiftly login and task creation in the docs above.
 
