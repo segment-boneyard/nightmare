@@ -103,9 +103,7 @@ nightmare
   .type("input[name=p]", "nightmare")
   .click("#search-submit")
   .wait()
-  .run(function(){
-    scrape();
-  }, false);//Don't teardown the instance after run is complete.
+  .run(scrape, false);//Don't teardown the instance after run is complete.
 
 ```
 
