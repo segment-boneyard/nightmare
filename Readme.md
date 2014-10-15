@@ -110,8 +110,17 @@ Saves a screenshot of the current page to the specified `path`. Useful for debug
 #### .useragent(useragent)
 Set the `useragent` used by PhantomJS. You have to set the useragent before calling `.goto()`.
 
-#### .authentication(userName, password)
-Set the `userName` and `password` for accessing a web page using basic authentication.
+#### .authentication(user, password)
+Set the `user` and `password` for accessing a web page using basic authentication. Be sure to set it before calling `.goto(url)`.
+
+```js
+new Nightmare()
+  .authentication('myUserName','myPassword')
+  .goto('http://httpbin.org/basic-auth/myUserName/myPassword')  
+  .run(function( err, nightmare){
+    console.log("done");
+  });
+```
 
 #### .viewport(width, height)
 Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly, you have to set the viewport before calling `.goto()`.
