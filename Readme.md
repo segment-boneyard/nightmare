@@ -143,39 +143,31 @@ Here's a list of plugins, pull request to add your own to the list :)
 
 ## Usage
 #### Installation
-Nightmare is a Node.js module, so you'll need to have Node.js installed.
-
-http://nodejs.org/
-
-You'll need to include the nightmare module, and already have phantomjs itself installed:
+Nightmare is a Node.js module, so you'll need to [have Node.js installed](http://nodejs.org/). You'll also need to have phantomjs itself installed:
 
 ```bash
 $ sudo brew update && brew install phantomjs
 $ npm install --save nightmare
 ```
-You can also get the latest version of Phantom JS from
-http://phantomjs.org/
+Alternatively, you can download Phantom JS from http://phantomjs.org
 
 #### Execution
-Nightmare is run the same as a normal Node.js file.
-
-Let's say you have a simple script to open a web page:
+Nightmare is a node module that can be used in a Node.js script or module. Here's a simple script to open a web page:
 ```js
 var Nightmare = require('nightmare');
 var nightmare = new Nightmare();
-
 nightmare
   .goto('http://kayak.com')
-  .run(function( err, nightmare){
-    console.log('all done');
+  .run(function(err, nightmare){
+    console.log('Done.');
   });
 ```
-If you save it as `myfile.js`, you can run it by typing `node myfile.js`.
+If you save this as `kayak.js`, you can run it on the command line like this: `node kayak.js`.
 
 #### Debug
-To run the same file in Debug mode, type `DEBUG=nightmare node test.js`.
+To run the same file with debugging output, run it like this `DEBUG=nightmare node kayak.js`.
 
-This will print out some additional information which what's going on:
+This will print out some additional information about what's going on:
 
 ```bash
 nightmare queueing action "goto" +0ms
@@ -186,20 +178,18 @@ nightmare queueing action "goto" +0ms
   nightmare .goto() url: http://kayak.com +2ms
   nightmare .goto() page loaded: success +1s
   nightmare .teardownInstance() tearing down and bumping port to 12302 +501ms
-all done
+Done.
 ```
 
 #### Tests
-The included automated tests are run using [Mocha](http://visionmedia.github.io/mocha/) and [Should](https://github.com/shouldjs/should.js), both of which come with Nightmare when you install it via NPM. To run the tests, just do `make test`.
+Automated tests for nightmare itself are run using [Mocha](http://visionmedia.github.io/mocha/) and [Should](https://github.com/shouldjs/should.js), both of which will be installed via `npm install`. To run nightmare's tests, just do `make test`.
 
 When the tests are done, you'll see something like this:
 
 ```bash
 make test
-
   ․․․․․․․․․․․․․․․․․
-
-  17 passing (46s)
+  28 passing (46s)
 ```
 
 ## License (MIT)
@@ -217,7 +207,7 @@ WWWWWW||WWWWWW
        (__|__|(__|__|
 ```
 
-Copyright (c) 2014 Segment.io Inc. <friends@segment.io>
+Copyright (c) 2014 Segment.io Inc. <friends@segment.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
