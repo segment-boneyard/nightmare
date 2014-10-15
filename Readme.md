@@ -70,6 +70,7 @@ function getNextPage(callback){
       callback();
     },false); //Don't teardown this instance
 }
+
 //Counts the number of links on a search results page.
 function scrape(){
   console.log("on page number " + (++pageNum));
@@ -89,7 +90,8 @@ function scrape(){
     }, function( bool ){
       hasNextPage = bool;
     })
-    .run(function(){      
+    .run(function(){
+      //Keep going to the Next Page until we have at least 30 results.
       if ( linkCount < 30 && hasNextPage){
         getNextPage(scrape);
       } else {
