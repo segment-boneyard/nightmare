@@ -13,7 +13,7 @@ describe('Nightmare', function(){
    * navigation
    */
 
-  describe.skip('navigation', function(){
+  describe('navigation', function(){
 
     it('should click on a link and then go back', function(done) {
       new Nightmare()
@@ -60,7 +60,7 @@ describe('Nightmare', function(){
    * manipulation
    */
 
-  describe.skip('manipulation', function(){
+  describe('manipulation', function(){
 
     it('should evaluate javascript on the page, with parameters', function(done) {
       new Nightmare()
@@ -176,7 +176,7 @@ describe('Nightmare', function(){
    * events
    */
 
-  describe.skip('events', function(){
+  describe('events', function(){
     var step1url = "http://en.wikipedia.org/wiki/DOM_events",
         step2url = "http://en.wikipedia.org/wiki/DOM_events#Event_flow";
     
@@ -325,7 +325,7 @@ describe('Nightmare', function(){
    * options
    */
 
-  describe.skip('options', function(){
+  describe('options', function(){
 
     it('should set agent', function(done) {
       new Nightmare()
