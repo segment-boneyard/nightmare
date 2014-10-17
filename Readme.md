@@ -87,12 +87,12 @@ function scrape(){
     //Determine if there is a Next Page link
     .evaluate(function(){
       return (document.querySelectorAll("#pg-next").length > 0);
-    }, function( bool ){
+    }, function(bool){
       hasNextPage = bool;
     })
     .run(function(){
       //Keep going to the Next Page until we have at least 30 results.
-      if ( linkCount < 30 && hasNextPage){
+      if (linkCount < 30 && hasNextPage){
         getNextPage(scrape);
       } else {
         console.log("scrapping done.");
