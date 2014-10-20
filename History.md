@@ -1,4 +1,12 @@
 
+1.3.3 / 2014-10-20
+==================
+
+  * Merge pull request #54 from securingsincity/feature/without-weak
+  * style fixes
+  * Change setting to weak from dnodeOpts. this is far more elegant
+  * fix for 'Option to run phantom without weak'
+
 1.3.2 / 2014-10-15
 ==================
 
