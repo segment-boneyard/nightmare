@@ -78,7 +78,6 @@ Refresh the current page.
 #### .url(cb)
 Get the url of the current page, the signature of the callback is `cb(url)`.
 
-
 #### .title(cb)
 Get the title of the current page, the signature of the callback is `cb(title)`.
 
