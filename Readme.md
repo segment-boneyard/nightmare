@@ -81,11 +81,19 @@ Get the url of the current page, the signature of the callback is `cb(url)`.
 #### .title(cb)
 Get the title of the current page, the signature of the callback is `cb(title)`.
 
+#### .html([selector], [parent=false], cb)
+Retrieves HTML contents matching a given optional `selector`. By default, it outputs the whole page HTML contents.
+The `parent` argument allows to retrieve the parent HTML contents of the matching element.
+
 #### .click(selector)
 Clicks the `selector` element once.
 
 #### .type(selector, text)
 Enters the `text` provided into the `selector` element.
+
+#### .fill(selector, data, [submit=false])
+Fills the fields of a form with given values and optionally submits it. Fields are referenced by their name attribute.
+//TODO: support select/checkbox/radio, single/multiple
 
 #### .upload(selector, path)
 Specify the `path` to upload into a file input `selector` element.
