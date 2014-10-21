@@ -87,6 +87,10 @@ Clicks the `selector` element once.
 #### .type(selector, text)
 Enters the `text` provided into the `selector` element.
 
+#### .fill(selector, data, [submit=false])
+Fills the fields of a form with given values and optionally submits it. Fields are referenced by their name attribute.
+//TODO: support select/checkbox/radio, single/multiple
+
 #### .upload(selector, path)
 Specify the `path` to upload into a file input `selector` element.
 

@@ -137,6 +137,41 @@ describe('Nightmare', function(){
       });
     });
 
+    it('should fill form', function(done) {
+      new Nightmare()
+        .goto('http://google.com/ncr')
+        .fill('form[name=f]', {
+          q: 'github nightmare'
+        })
+        .evaluate(function () {
+          return document.querySelector('form[name=f] input[name=q]').value;
+        }, function (title) {
+          title.should.equal('github nightmare');
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
+    it('should fill form and submit', function(done) {
+      new Nightmare()
+        .goto('http://google.com/ncr')
+        .fill('form[name=f]', {
+          q: 'github nightmare'
+        }, true)
+        .wait()
+        .evaluate(function () {
+          return document.title;
+        }, function (title) {
+          title.should.equal('github nightmare - Google Search');
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
     it('should take a screenshot', function(done) {
       new Nightmare()
         .goto('http://yahoo.com')
