@@ -1,8 +1,27 @@
 var Nightmare = require('../lib');
 var should = require('should');
+var express = require('express');
+var path = require('path');
 
 describe('Nightmare', function(){
   this.timeout(20000);
+
+  var app, server, serverUrl;
+
+  before(function(done){
+    app = express();
+    var port = process.env.PORT || 4567;
+    app.use(express.static(path.join(__dirname, 'files')));
+    server = app.listen(port, function() {
+      serverUrl = 'http://localhost:' + port + '/';
+      console.log('test server listening on port %s', port);
+      done();
+    });
+  });
+
+  after(function(done){
+    server.close(done);
+  });
 
   it('should be constructable', function(){
     var nightmare = new Nightmare();
@@ -135,6 +154,80 @@ describe('Nightmare', function(){
         nightmare.should.be.ok;
         done();
       });
+    });
+
+    it('should get html', function(done){
+      new Nightmare()
+        .goto('http://google.com/ncr')
+        .wait()
+        .html(function(str){
+          str.indexOf('<html').should.equal(0);
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
+    it('should get html on selector', function(done){
+      new Nightmare()
+        .goto('http://google.com/ncr')
+        .wait()
+        .html('form[name=f]', function(str){
+          str.indexOf('<form').should.equal(0);
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
+    it('should get html on selector\'s parent', function(done){
+      new Nightmare()
+        .goto('http://google.com/ncr')
+        .wait()
+        .html('body', true, function(str){
+          str.indexOf('<html').should.equal(0);
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
+    it('should fill form', function(done) {
+      new Nightmare()
+        .goto('http://google.com/ncr')
+        .fill('form[name=f]', {
+          q: 'github nightmare'
+        })
+        .evaluate(function () {
+          return document.querySelector('form[name=f] input[name=q]').value;
+        }, function (title) {
+          title.should.equal('github nightmare');
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
+    it('should fill form and submit', function(done) {
+      new Nightmare()
+        .goto('http://google.com/ncr')
+        .fill('form[name=f]', {
+          q: 'github nightmare'
+        }, true)
+        .wait()
+        .evaluate(function () {
+          return document.title;
+        }, function (title) {
+          title.should.equal('github nightmare - Google Search');
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
     });
 
     it('should take a screenshot', function(done) {
