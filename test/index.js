@@ -137,6 +137,45 @@ describe('Nightmare', function(){
       });
     });
 
+    it('should get html', function(done){
+      new Nightmare()
+        .goto('http://google.com/ncr')
+        .wait()
+        .html(function(str){
+          str.indexOf('<html').should.equal(0);
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
+    it('should get html on selector', function(done){
+      new Nightmare()
+        .goto('http://google.com/ncr')
+        .wait()
+        .html('form[name=f]', function(str){
+          str.indexOf('<form').should.equal(0);
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
+    it('should get html on selector\'s parent', function(done){
+      new Nightmare()
+        .goto('http://google.com/ncr')
+        .wait()
+        .html('body', true, function(str){
+          str.indexOf('<html').should.equal(0);
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
     it('should fill form', function(done) {
       new Nightmare()
         .goto('http://google.com/ncr')
