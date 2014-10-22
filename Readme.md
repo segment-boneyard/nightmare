@@ -84,6 +84,9 @@ Get the title of the current page, the signature of the callback is `cb(title)`.
 #### .visible(selector,cb)
 Determines if a selector is visible, or not, on the page. The signature of the callback is `cb(boolean)`.
 
+#### .exists(selector,cb)
+Determines if the selector exists, or not, on the page. The signature of the callback is `cb(boolean)`.
+
 #### .click(selector)
 Clicks the `selector` element once.
 
