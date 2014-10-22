@@ -128,6 +128,9 @@ Saves a screenshot of the current page to the specified `path`. Useful for debug
 #### .useragent(useragent)
 Set the `useragent` used by PhantomJS. You have to set the useragent before calling `.goto()`.
 
+#### .cookie(callback)
+Get the `cookies` of the current page, the signature of the callback is `cb(cookies)`, if callback return something, then will update.
+
 #### .authentication(user, password)
 Set the `user` and `password` for accessing a web page using basic authentication. Be sure to set it before calling `.goto(url)`.
 
