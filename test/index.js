@@ -203,11 +203,13 @@ describe('Nightmare', function(){
       var seconds = function () {
         var gifs = document.querySelectorAll('img');
         var split = gifs[gifs.length-2].src.split('.gif')[0];
-        var seconds = split.split('.com/c')[1];
+        var seconds = split.split('als/c')[1]
         return parseInt(seconds, 10);
       };
 
-      new Nightmare()
+      new Nightmare({
+          timeout: 11000
+        })
         .goto('http://onlineclock.net/')
         .wait(seconds, 1)
         .run(done);
