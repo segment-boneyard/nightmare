@@ -58,10 +58,17 @@ And [here's the `nightmare-swiftly` plugin](https://github.com/segmentio/nightma
 Create a new instance that can navigate around the web.
 
 The available options are:
-* `timeout`: how long to wait for page loads, default `5000ms`
-* `interval`: how frequently to poll for page load state, default `50ms`
-* `port`: port to mount the phantomjs instance to, default `12301`
-* `weak`: set dnode weak option. For windows users, will fix cpp compilation issues. default `true`
+* `timeout`: how long to wait for page loads, default `5000ms`.
+* `interval`: how frequently to poll for page load state, default `50ms`.
+* `port`: port to mount the phantomjs instance to, default `12301`.
+* `weak`: set dnode weak option to `false` to fix cpp compilation for windows users, default `true`.
+* `loadImages`: load all inlined images, default `true`.
+* `ignoreSslErrors`: ignores SSL errors, such as expired or self-signed certificate errors, default `true`.
+* `sslProtocol`: sets the SSL protocol for secure connections `[sslv3|sslv2|tlsv1|any]`, default `sslv3`.
+* `proxy`: specify the proxy server to use `address:port`, default not set.
+* `proxyType`: specify the proxy server type `[http|socks5|none]`, default not set.
+* `proxyAuth`: specify the auth information for the proxy `user:pass`, default not set.
+* `cookiesFile`: specify the file to store the persistent cookies, default not set.
 
 #### .goto(url)
 Load the page at `url`.
