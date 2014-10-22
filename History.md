@@ -1,4 +1,25 @@
 
+1.4.0 / 2014-10-22
+==================
+
+  * Merge pull request #65 from johntitus/auth
+  * merging
+  * Merge branch 'johntitus-vis'
+  * Merge pull request #67 from johntitus/ex
+  * added .exists()
+  * Added .visible(selector)
+  * Added .authentication(user,password)
+  * Merge remote-tracking branch 'upstream/master'
+  * Release 1.3.3
+  * style fixes
+  * bumping version with clarified readm
+  * clearing up #55
+  * added .title() method, similar to .url
+  * Change setting to weak from dnodeOpts. this is far more elegant
+  * fix for 'Option to run phantom without weak'
+  * Merge pull request #56 from johntitus/title
+  * added .title() method, similar to .url
+
 1.3.3 / 2014-10-20
 ==================
 
