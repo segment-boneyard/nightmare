@@ -20,7 +20,9 @@
   },
   "devDependencies": {
     "should": "~2.1.1",
-    "mocha": "~1.17.0"
+    "mocha": "~1.17.0",
+    "body-parser": "^1.9.0",
+    "express": "^4.9.8"
   },
   "main": "lib/index"
 }
