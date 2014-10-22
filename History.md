@@ -1,32 +1,20 @@
 
+1.5.0 / 2014-10-22
+==================
+
+  * adding docs and support for ssl, proxy and other cli args
+
 1.4.0 / 2014-10-22
 ==================
 
-  * Merge pull request #65 from johntitus/auth
-  * merging
-  * Merge branch 'johntitus-vis'
-  * Merge pull request #67 from johntitus/ex
-  * added .exists()
-  * Added .visible(selector)
-  * Added .authentication(user,password)
-  * Merge remote-tracking branch 'upstream/master'
-  * Release 1.3.3
-  * style fixes
-  * bumping version with clarified readm
-  * clearing up #55
-  * added .title() method, similar to .url
-  * Change setting to weak from dnodeOpts. this is far more elegant
-  * fix for 'Option to run phantom without weak'
-  * Merge pull request #56 from johntitus/title
-  * added .title() method, similar to .url
+  * added .exists() (by @johntitus)
+  * Added .visible(selector) (by @johntitus)
+  * Added .authentication(user,password) (by @johntitus)
 
 1.3.3 / 2014-10-20
 ==================
 
-  * Merge pull request #54 from securingsincity/feature/without-weak
-  * style fixes
-  * Change setting to weak from dnodeOpts. this is far more elegant
-  * fix for 'Option to run phantom without weak'
+  * fix for 'Option to run phantom without weak' (by @securingsincity)
 
 1.3.2 / 2014-10-15
 ==================
