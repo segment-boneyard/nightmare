@@ -64,7 +64,8 @@ The available options are:
 * `weak`: set dnode weak option to `false` to fix cpp compilation for windows users, default `true`.
 * `loadImages`: load all inlined images, default `true`.
 * `ignoreSslErrors`: ignores SSL errors, such as expired or self-signed certificate errors, default `true`.
-* `sslProtocol`: sets the SSL protocol for secure connections `[sslv3|sslv2|tlsv1|any]`, default `sslv3`.
+* `sslProtocol`: sets the SSL protocol for secure connections `[sslv3|sslv2|tlsv1|any]`, default `any`.
+* `webSecurity`: enables web security and forbids cross-domain XHR, default `true`.
 * `proxy`: specify the proxy server to use `address:port`, default not set.
 * `proxyType`: specify the proxy server type `[http|socks5|none]`, default not set.
 * `proxyAuth`: specify the auth information for the proxy `user:pass`, default not set.
