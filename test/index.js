@@ -213,20 +213,6 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should wait until specific text is present', function(done) {
-      var seconds = function () {
-        var text = document.querySelectorAll('b')[0].textContent;
-        var splits = text.split(/\s/);
-        var seconds = splits[splits.length-2].split(':')[2];
-        return parseInt(seconds, 10)%10;
-      };
-
-      new Nightmare()
-        .goto('http://www.whattimeisit.com/')
-        .wait(seconds, 1, 1500)
-        .run(done);
-    });
-
   });
 
   /**
