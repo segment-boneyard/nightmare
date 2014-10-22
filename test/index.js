@@ -161,25 +161,25 @@ describe('Nightmare', function(){
       });
     });
 
-    it('should upload a file', function( done ){
+    it('should upload a file', function(done) {
       new Nightmare()
-        .goto("http://encodable.com/uploaddemo/")
-        .upload("#uploadname1","test/files/jquery-2.1.1.min.js")
+        .goto('http://validator.w3.org/#validate_by_upload')
+        .upload('#uploaded_file', 'test/files/jquery-2.1.1.min.js')
         .evaluate(function(){
-          return document.getElementById("uploadname1").value;
+          return document.getElementById('uploaded_file').value;
         }, function(value){
           // For a 'C:\fakepath\' explanation, see:
           // http://davidwalsh.name/fakepath
-          value.should.equal("C:\\fakepath\\jquery-2.1.1.min.js")
+          value.should.equal('C:\\fakepath\\jquery-2.1.1.min.js')
         })
         .run(done);
     });
 
-    it('should verify a file exists before upload', function( done ){
+    it('should verify a file exists before upload', function(done) {
       new Nightmare()
-          .goto("http://encodable.com/uploaddemo/")
-          .upload("#uploadname1","nope.jpg")
-          .run(function( err ){
+          .goto('http://validator.w3.org/#validate_by_upload')
+          .upload('#uploaded_file', 'nope.jpg')
+          .run(function(err){
             err.should.exist;
             done();
           });      
@@ -210,20 +210,6 @@ describe('Nightmare', function(){
       new Nightmare()
         .goto('http://onlineclock.net/')
         .wait(seconds, 1)
-        .run(done);
-    });
-
-    it('should wait until specific text is present', function(done) {
-      var seconds = function () {
-        var text = document.querySelectorAll('b')[0].textContent;
-        var splits = text.split(/\s/);
-        var seconds = splits[splits.length-2].split(':')[2];
-        return parseInt(seconds, 10)%10;
-      };
-
-      new Nightmare()
-        .goto('http://www.whattimeisit.com/')
-        .wait(seconds, 1, 1500)
         .run(done);
     });
 
