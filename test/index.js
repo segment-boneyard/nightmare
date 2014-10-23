@@ -229,6 +229,70 @@ describe('Nightmare', function(){
         .run(done);
     });
 
+    it('should call the onTimeout function if the check does not pass while waiting for selector', function(done) {
+      var timeoutMsgReceived = false;
+      new Nightmare({
+          timeout : 1000
+        })
+        .on("timeout", function(msg){
+          timeoutMsgReceived = true;
+        })
+        .goto('http://www.google.com/')
+        .wait('bbb')
+        .run(function(){
+          timeoutMsgReceived.should.be.true;
+          done();
+        });
+    });
+
+    it('should call the onTimeout function if the check does not pass while waiting for fn==val', function(done) {
+      var seconds = function () {
+        var gifs = document.querySelectorAll('img');
+        var split = gifs[gifs.length-2].src.split('.gif')[0];
+        var seconds = split.split('als/c')[1]
+        return parseInt(seconds, 10);
+      };
+
+      var timeoutMsgReceived = false;
+
+      new Nightmare({
+          timeout: 1000
+        })
+        .on("timeout", function(msg){
+          timeoutMsgReceived = true;
+        })
+        .goto('http://onlineclock.net/')
+        .wait(seconds, 1)
+        .run(function(){
+          timeoutMsgReceived.should.be.true;
+          done();
+        });
+    });
+
+    it('should call the onTimeout function if the check does not pass while waiting for fn==val while refreshing', function(done) {
+      var seconds = function () {
+        var text = document.querySelectorAll('b')[0].textContent;
+        var splits = text.split(/\s/);
+        var seconds = splits[splits.length-2].split(':')[2];
+        return parseInt(seconds, 10)%10;
+      };
+      
+      var timeoutMsgReceived = false;
+
+      new Nightmare({
+          timeout : 1000
+        })
+        .on("timeout", function(msg){
+          timeoutMsgReceived = true;
+        })
+        .goto('http://www.whattimeisit.com/')
+        .wait(seconds, "a", 1500)
+        .run(function(){
+          timeoutMsgReceived.should.be.true;
+          done();
+        });
+    });
+
   });
 
   /**

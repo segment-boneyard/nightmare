@@ -156,6 +156,7 @@ Respond to page events with the callback. Supported events are:
 * `alert` - callback(msg)
 * `confirm` - callback(msg)
 * `prompt` - callback(msg, defaultValue)
+* `timeout` - callback(msg) - fired when a .wait() does not pass before timeout period has elapsed
 
 For a more in depth description, see [the full callbacks list for phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list).
 
