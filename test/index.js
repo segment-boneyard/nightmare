@@ -168,6 +168,34 @@ describe('Nightmare', function(){
         .run(done);
     });
 
+    it.only('should read cookies', function(done) {
+      var name;
+      var newValue = 'just a test';
+      new Nightmare()
+        .goto('http://www.google.com')
+        .cookies(function(cookies){
+          cookies[0].should.have.property('name');
+          cookies[0].should.have.property('value');
+          cookies[0].should.have.property('path');
+          cookies[1].value = newValue;
+          name = cookies[1].name;
+          return cookies;
+        })
+        .evaluate(function () {
+          return document.cookie;
+        }, function (cookie) {
+          function getCookie(cookie, name) {
+            var match = cookie.match(RegExp('(?:^|;\\s*)' + name + '=([^;]*)'));
+            return match ? match[1] : null;
+          }
+          getCookie(cookie, name).should.equal(newValue);
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
     it('should wait until element is present', function(done) {
       new Nightmare()
         .goto('http://www.google.com/')
