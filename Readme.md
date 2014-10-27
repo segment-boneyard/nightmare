@@ -89,6 +89,10 @@ Get the url of the current page, the signature of the callback is `cb(url)`.
 #### .title(cb)
 Get the title of the current page, the signature of the callback is `cb(title)`.
 
+#### .html([selector], [parent=false], cb)
+Retrieves HTML contents matching a given optional `selector`. By default, it outputs the whole page HTML contents.
+The `parent` argument allows to retrieve the parent HTML contents of the matching element.
+
 #### .visible(selector,cb)
 Determines if a selector is visible, or not, on the page. The signature of the callback is `cb(boolean)`.
 
