@@ -1,3 +1,8 @@
+1.5.1 / 2014-10-26
+==================
+
+  * making clicks cancelable to allow for ajax forms
+
 
 1.5.0 / 2014-10-22
 ==================
