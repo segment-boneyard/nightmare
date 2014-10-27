@@ -1,8 +1,27 @@
 var Nightmare = require('../lib');
 var should = require('should');
+var express = require('express');
+var path = require('path');
 
 describe('Nightmare', function(){
   this.timeout(20000);
+
+  var app, server, serverUrl;
+
+  before(function(done){
+    app = express();
+    var port = process.env.PORT || 4567;
+    app.use(express.static(path.join(__dirname, 'files')));
+    server = app.listen(port, function() {
+      serverUrl = 'http://localhost:' + port + '/';
+      console.log('test server listening on port %s', port);
+      done();
+    });
+  });
+
+  after(function(done){
+    server.close(done);
+  });
 
   it('should be constructable', function(){
     var nightmare = new Nightmare();
