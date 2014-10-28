@@ -414,6 +414,17 @@ describe('Nightmare', function(){
       setTimeout(done, 4000);
     });
 
+    it('should allow for no teardown', function(done){
+      var nightmare = new Nightmare();
+      nightmare
+        .goto('http://yahoo.com')
+        .run(function(){
+          nightmare
+            .goto("http://www.google.com")
+            .run(done)
+        },false);      
+    });
+
     it('should execute the queue in order', function(done) {
       var queue = [];
       new Nightmare()

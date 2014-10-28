@@ -52,6 +52,68 @@ new Nightmare()
 
 And [here's the `nightmare-swiftly` plugin](https://github.com/segmentio/nightmare-swiftly).
 
+And here's a larger example, using a delayed teardown and control flow to page through
+some Yahoo search results.
+```js
+var Nightmare = require("nightmare");
+
+var nightmare = new Nightmare();
+
+var linkCount = 0, pageNum = 0; 
+
+//Moves Nightmare to the next search results page.
+function getNextPage(callback){
+  nightmare
+    .click("#pg-next") //Click the Next Page link
+    .wait() //Wait for the page to load
+    .run(function(){
+      callback();
+    },false); //Don't teardown this instance
+}
+
+//Counts the number of links on a search results page.
+function scrape(){
+  console.log("on page number " + (++pageNum));
+
+  var hasNextPage;
+  
+  nightmare
+    //Count the number of links in the page, and update linkCount
+    .evaluate(function(){
+      return document.querySelectorAll("a.spt").length;
+    }, function(numLinks){
+      linkCount += numLinks;
+    })
+    //Determine if there is a Next Page link
+    .evaluate(function(){
+      return (document.querySelectorAll("#pg-next").length > 0);
+    }, function(bool){
+      hasNextPage = bool;
+    })
+    .run(function(){
+      //Keep going to the Next Page until we have at least 30 results.
+      if (linkCount < 30 && hasNextPage){
+        getNextPage(scrape);
+      } else {
+        console.log("scrapping done.");
+        console.log("found " + linkCount);
+        //Tell Nightmare to destroy the Phantomjs instance since we've
+        //found enough links.
+        nightmare.teardownInstance();
+      }
+      
+    }, false);
+}
+
+nightmare
+  .goto("https://www.yahoo.com")
+  .type("input[name=p]", "nightmare")
+  .click("#search-submit")
+  .wait()
+  .run(scrape, false);//Don't teardown the instance after run is complete.
+
+```
+
 ## API
 
 #### new Nightmare(options)
@@ -162,8 +224,13 @@ For a more in depth description, see [the full callbacks list for phantomjs](htt
 #### .use(plugin)
 Useful for using repeated code blocks, see the example with Swiftly login and task creation in the docs above.
 
-#### .run(cb)
+#### .run(cb, teardown)
 Executes the queue of functions, and calls your `cb` when the script hits an error or completes the queue. The callback signature is `cb(err, nightmare)`.
+
+`teardown` is a boolean that tells Nightmare whether it should destroy the Phantomjs instance it's using when the run is complete. You can pass in `false` to reuse the same Nightmare instance between runs. Defaults to `true` if not provided.
+
+#### .teardownInstance()
+Destroys the PhantomJS instance used by Nightmare. This is called by default when .run() is complete, but you can call this method directly if it makes sense with your control flow.
 
 ## Plugins
 
