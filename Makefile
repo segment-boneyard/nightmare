@@ -1,6 +1,8 @@
+GREP ?=.
+
 test: node_modules
 	@pkill phantomjs &
-	@node_modules/.bin/mocha --require should
+	@node_modules/.bin/mocha --grep "$(GREP)" --require should
 	@pkill phantomjs &
 
 # After tests run this:
