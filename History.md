@@ -1,3 +1,12 @@
+
+1.5.2 / 2014-11-02
+==================
+
+  * updating readme with before .got() for .on()
+  * fixing callbacks for .waits()
+  * adding grep to makefile tests, fixes #11
+  * Fixes #79. Updates Readme with on error description, and adds a test for it.
+
 1.5.1 / 2014-10-26
 ==================
 
