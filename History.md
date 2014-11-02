@@ -1,11 +1,16 @@
 
+1.5.3 / 2014-11-02
+==================
+
+  * Add ability to specify a custom PhantomJS path (by @kevva)
+
 1.5.2 / 2014-11-02
 ==================
 
-  * updating readme with before .got() for .on()
-  * fixing callbacks for .waits()
-  * adding grep to makefile tests, fixes #11
-  * Fixes #79. Updates Readme with on error description, and adds a test for it.
+  * updating readme to explain .on() before .goto()
+  * fixing callbacks for .wait()
+  * adding grep to makefile tests
+  * adding check for file existence before file upload, fixes #11
 
 1.5.1 / 2014-10-26
 ==================
