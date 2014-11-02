@@ -266,29 +266,6 @@ describe('Nightmare', function () {
         });
     });
 
-    it('should emit the timeout event if the check does not pass while waiting for fn==val while refreshing', function (done) {
-      var seconds = function () {
-        var text = document.querySelectorAll('b')[0].textContent;
-        var splits = text.split(/\s/);
-        var seconds = splits[splits.length-2].split(':')[2];
-        return parseInt(seconds, 10)%10;
-      };
-      
-      var timeoutMessageReceived = false;
-      new Nightmare({
-          timeout : 1000
-        })
-        .on('timeout', function (message) {
-          timeoutMessageReceived = true;
-        })
-        .goto('http://www.whattimeisit.com/')
-        .wait(seconds, 'a', 1500)
-        .run(function () {
-          timeoutMessageReceived.should.be.true;
-          done();
-        });
-    });
-
   });
 
   /**
