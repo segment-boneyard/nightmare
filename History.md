@@ -1,4 +1,10 @@
 
+1.6.0 / 2014-11-02
+==================
+
+  * adding timeout handling (by @johntitus)
+  * cleaning up styles in tests, adding tests for timeout event
+
 1.5.3 / 2014-11-02
 ==================
 
