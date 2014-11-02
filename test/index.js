@@ -1,10 +1,10 @@
 var Nightmare = require('../lib');
 var should = require('should');
 
-describe('Nightmare', function(){
+describe('Nightmare', function () {
   this.timeout(20000);
 
-  it('should be constructable', function(){
+  it('should be constructable', function () {
     var nightmare = new Nightmare();
     nightmare.should.be.ok;
   });
@@ -13,9 +13,9 @@ describe('Nightmare', function(){
    * navigation
    */
 
-  describe('navigation', function(){
+  describe('navigation', function () {
 
-    it('should click on a link and then go back', function(done) {
+    it('should click on a link and then go back', function (done) {
       new Nightmare()
         .goto('http://www.nightmarejs.org/')
         .click('a')
@@ -23,7 +23,7 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should click on a link, go back, and then go forward', function(done) {
+    it('should click on a link, go back, and then go forward', function (done) {
       new Nightmare()
         .goto('http://www.google.com/')
         .click('a')
@@ -32,20 +32,20 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should goto wikipedia.org', function(done) {
+    it('should goto wikipedia.org', function (done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
         .run(done);
     });
 
-    it('should refresh the page', function(done) {
+    it('should refresh the page', function (done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
         .refresh()
         .run(done);
     });
 
-    it('should get the url', function(done) {
+    it('should get the url', function (done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
         .url(function (url) {
@@ -54,19 +54,19 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should check if the selector exists', function(done) {
+    it('should check if the selector exists', function (done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
-        .exists("a.link-box", function (exists) {
+        .exists('a.link-box', function (exists) {
           exists.should.be.true;
         })
-        .exists("a.blahblahblah", function (exists) {
+        .exists('a.blahblahblah', function (exists) {
           exists.should.be.false;
         })
         .run(done);
     });
 
-    it('should get the title', function(done) {
+    it('should get the title', function (done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
         .title(function (title) {
@@ -75,13 +75,13 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should check if an element is visible', function(done) {
+    it('should check if an element is visible', function (done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
-        .visible("input[type='hidden']",function(visible) {
+        .visible('input[type="hidden"]',function(visible) {
           visible.should.be.false;
         })
-        .visible("#searchInput",function(visible) {
+        .visible('#searchInput',function(visible) {
           visible.should.be.true;
         })
         .run(done);
@@ -93,9 +93,9 @@ describe('Nightmare', function(){
    * manipulation
    */
 
-  describe('manipulation', function(){
+  describe('manipulation', function () {
 
-    it('should evaluate javascript on the page, with parameters', function(done) {
+    it('should evaluate javascript on the page, with parameters', function (done) {
       new Nightmare()
         .goto('http://yahoo.com')
         .evaluate(function (parameter) {
@@ -106,45 +106,45 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should inject javascript onto the page', function( done ){
+    it('should inject javascript onto the page', function (done) {
       new Nightmare()
         .goto('http://google.com')
         .inject('js', 'test/files/jquery-2.1.1.min.js')
-        .evaluate( function(){
-          return $("a").length;
-        }, function( numAnchors ){
-          numAnchors.should.be.greaterThan( 0 );
+        .evaluate(function () {
+          return $('a').length;
+        }, function (numAnchors) {
+          numAnchors.should.be.greaterThan(0);
         })
         .run(done);
     });
 
-    it('should inject css onto the page', function( done ){
+    it('should inject css onto the page', function (done) {
       new Nightmare()
         .goto('http://google.com')
         .inject('js', 'test/files/jquery-2.1.1.min.js')
         .inject('css', 'test/files/test.css')
-        .evaluate( function(){          
-          return $("body").css("background-color");
-        }, function( color ){
-          color.should.equal("rgb(255, 0, 0)");
+        .evaluate(function () {          
+          return $('body').css('background-color');
+        }, function (color) {
+          color.should.equal('rgb(255, 0, 0)');
         })
         .run(done);
     });
 
-    it('should not inject unsupported types onto the page', function( done ){
+    it('should not inject unsupported types onto the page', function (done) {
       new Nightmare()
         .goto('http://google.com')
         .inject('js', 'test/files/jquery-2.1.1.min.js')
         .inject('pdf', 'test/files/test.css')
-        .evaluate( function(){          
-          return $("body").css("background-color");
-        }, function( color ){
-          color.should.not.equal("rgb(255, 0, 0)");
+        .evaluate(function () {          
+          return $('body').css('background-color');
+        }, function (color) {
+          color.should.not.equal('rgb(255, 0, 0)');
         })
         .run(done);
     });
   
-    it('should type and click', function(done) {
+    it('should type and click', function (done) {
       new Nightmare()
         .goto('http://yahoo.com')
         .type('input[title="Search"]', 'github nightmare')
@@ -161,7 +161,7 @@ describe('Nightmare', function(){
       });
     });
 
-    it('should upload a file', function(done) {
+    it('should upload a file', function (done) {
       new Nightmare()
         .goto('http://validator.w3.org/#validate_by_upload')
         .upload('#uploaded_file', 'test/files/jquery-2.1.1.min.js')
@@ -175,7 +175,7 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should verify a file exists before upload', function(done) {
+    it('should verify a file exists before upload', function (done) {
       new Nightmare()
           .goto('http://validator.w3.org/#validate_by_upload')
           .upload('#uploaded_file', 'nope.jpg')
@@ -185,21 +185,21 @@ describe('Nightmare', function(){
           });      
     });
 
-    it('should take a screenshot', function(done) {
+    it('should take a screenshot', function (done) {
       new Nightmare()
         .goto('http://yahoo.com')
         .screenshot('test/test.png')
         .run(done);
     });
 
-    it('should wait until element is present', function(done) {
+    it('should wait until element is present', function (done) {
       new Nightmare()
         .goto('http://www.google.com/')
         .wait('input')
         .run(done);
     });
 
-    it('should wait until specific text is present', function(done) {
+    it('should wait until specific text is present', function (done) {
       var seconds = function () {
         var gifs = document.querySelectorAll('img');
         var split = gifs[gifs.length-2].src.split('.gif')[0];
@@ -213,7 +213,7 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should wait until specific text is present', function(done) {
+    it('should refresh the page until specific text is present', function (done) {
       var seconds = function () {
         var text = document.querySelectorAll('b')[0].textContent;
         var splits = text.split(/\s/);
@@ -227,167 +227,205 @@ describe('Nightmare', function(){
         .run(done);
     });
 
+    it('should emit the timeout event if the check does not pass while waiting for selector', function (done) {
+      var timeoutMessageReceived = false;
+      new Nightmare({
+          timeout: 1000
+        })
+        .on('timeout', function (msg) {
+          timeoutMessageReceived = true;
+        })
+        .goto('http://www.google.com/')
+        .wait('bbb')
+        .run(function () {
+          timeoutMessageReceived.should.be.true;
+          done();
+        });
+    });
+
+    it('should emit the timeout event if the check does not pass while waiting for fn==val', function (done) {
+      var seconds = function () {
+        var gifs = document.querySelectorAll('img');
+        var split = gifs[gifs.length-2].src.split('.gif')[0];
+        var seconds = split.split('als/c')[1]
+        return parseInt(seconds, 10);
+      };
+
+      var timeoutMessageReceived = false;
+      new Nightmare({
+          timeout: 1000
+        })
+        .on('timeout', function (message) {
+          timeoutMessageReceived = true;
+        })
+        .goto('http://onlineclock.net/')
+        .wait(seconds, 1)
+        .run(function () {
+          timeoutMessageReceived.should.be.true;
+          done();
+        });
+    });
+
   });
 
   /**
    * events
    */
 
-  describe('events', function(){
-    var step1url = "http://en.wikipedia.org/wiki/DOM_events",
-        step2url = "http://en.wikipedia.org/wiki/DOM_events#Event_flow";
+  describe('events', function () {
+    var step1url = 'http://en.wikipedia.org/wiki/DOM_events';
+    var step2url = 'http://en.wikipedia.org/wiki/DOM_events#Event_flow';
     
-    it('should fire an event on initialized', function(done) {
+    it('should fire an event on initialized', function (done) {
       var fired = false;
       new Nightmare()
-        .on("initialized", function(){
+        .on('initialized', function () {
           fired = true;          
         })
-        .goto("http://www.yahoo.com")
-        .run(function(){
+        .goto('http://www.yahoo.com')
+        .run(function () {
           fired.should.be.true;
           done();
         });
     });
 
-    it('should fire an event on load started', function(done) {
+    it('should fire an event on load started', function (done) {
       var fired = false;
       new Nightmare()
-        .on("loadStarted", function(){          
+        .on('loadStarted', function () {          
           fired = true;
         })
-        .goto("http://www.yahoo.com")
-        .run(function(){
+        .goto('http://www.yahoo.com')
+        .run(function () {
           fired.should.be.true;
           done();
         });
     });
 
-    it('should fire an event on load finished', function(done) {
+    it('should fire an event on load finished', function (done) {
       var fired = false;
       new Nightmare()
-        .on("loadFinished", function(status){
-          fired = (status === "success");
+        .on('loadFinished', function (status) {
+          fired = (status === 'success');
         })
-        .goto("http://www.yahoo.com")
-        .run(function(){
+        .goto('http://www.yahoo.com')
+        .run(function () {
           fired.should.be.true;
           done();
         });
     });
 
-    it('should fire an event when a resource is requested', function(done) {
+    it('should fire an event when a resource is requested', function (done) {
       var fired = false;
       new Nightmare()
-        .on("resourceRequested", function(){          
+        .on('resourceRequested', function () {          
           fired = true;
         })
-        .goto("http://www.yahoo.com")
-        .run(function(){
+        .goto('http://www.yahoo.com')
+        .run(function () {
           fired.should.be.true;
           done();
         });
     });
 
-    it('should fire an event when a resource is received', function(done) {
+    it('should fire an event when a resource is received', function (done) {
       var fired = false;
       new Nightmare()
-        .on("resourceReceived", function(){          
+        .on('resourceReceived', function () {          
           fired = true;
         })
-        .goto("http://www.yahoo.com")
-        .run(function(){
+        .goto('http://www.yahoo.com')
+        .run(function () {
           fired.should.be.true;
           done();
         });
     });
 
-    it('should fire an event when navigation requested', function(done) {
+    it('should fire an event when navigation requested', function (done) {
       var fired = false;
       new Nightmare()
-        .on("navigationRequested", function(url){
-          fired = (url==="https://www.yahoo.com/");
+        .on('navigationRequested', function (url) {
+          fired = (url === 'https://www.yahoo.com/');
         })
-        .goto("https://www.yahoo.com")
-        .run(function(){
+        .goto('https://www.yahoo.com')
+        .run(function () {
           fired.should.be.true;
           done();
         });
     });
 
-    it('should fire an event when the url changes', function(done) {
+    it('should fire an event when the url changes', function (done) {
       var fired = false;
       new Nightmare()
-        .on("urlChanged", function(url){
-          fired = (url==="https://www.yahoo.com/");
+        .on('urlChanged', function (url) {
+          fired = (url === 'https://www.yahoo.com/');
         })
-        .goto("https://www.yahoo.com")
-        .run(function(){
+        .goto('https://www.yahoo.com')
+        .run(function () {
           fired.should.be.true;
           done();
         });
     });
 
-    it.skip('should fire an event when a console message is seen', function(done) {
+    it.skip('should fire an event when a console message is seen', function (done) {
       var fired = false;
       new Nightmare()
-        .on("consoleMessage", function(){
-          console.log("output")
+        .on('consoleMessage', function () {
           fired = true;
         })
-        .goto("http://www.yahoo.com")
-        .evaluate( function(){
-          console.log("message");
+        .goto('http://www.yahoo.com')
+        .evaluate(function () {
+          console.log('message');
         })
-        .run(function(){
+        .run(function () {
           fired.should.be.true;
           done();
         });
     });
 
-    it.skip('should fire an event when an alert is seen', function(done) {
+    it.skip('should fire an event when an alert is seen', function (done) {
       var fired = false;
       new Nightmare()
-        .on("alert", function(){
+        .on('alert', function () {
           fired = true;
         })
-        .goto("http://www.yahoo.com")
-        .evaluate( function(){
-          alert("onno");
+        .goto('http://www.yahoo.com')
+        .evaluate( function () {
+          alert('ohno');
         })
-        .run(function(){
+        .run(function () {
           fired.should.be.true;
           done();
         });
     });
 
-    it.skip('should fire an event when a prompt is seen', function(done) {
+    it.skip('should fire an event when a prompt is seen', function (done) {
       var fired = false;
       new Nightmare()
-        .on("prompt", function(){          
+        .on('prompt', function () {          
           fired = true;
         })
-        .goto("http://www.yahoo.com")
-        .evaluate( function(){
-          prompt("onno");
+        .goto('http://www.yahoo.com')
+        .evaluate(function () {
+          prompt('whowhatwherehow???');
         })
-        .run(function(){
+        .run(function () {
           fired.should.be.true;
           done();
         });
     });
 
-    it('should fire an event when an error occurs', function(done) {
+    it('should fire an event when an error occurs', function (done) {
       var fired = false;
       new Nightmare()
-        .on("error", function(){
+        .on('error', function () {
           fired = true;          
         })
-        .goto("http://www.google.com")
-        .evaluate(function(){
+        .goto('http://www.google.com')
+        .evaluate(function () {
           return aaa;
         })
-        .run(function(){
+        .run(function () {
           fired.should.be.true;
           done();
         });
@@ -398,9 +436,9 @@ describe('Nightmare', function(){
    * options
    */
 
-  describe('options', function(){
+  describe('options', function () {
 
-    it('should set agent', function(done) {
+    it('should set agent', function (done) {
       new Nightmare()
         .useragent('firefox')
         .goto('http://www.wikipedia.org/')
@@ -412,11 +450,11 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should set authentication', function(done) {
+    it('should set authentication', function (done) {
       new Nightmare()
         .authentication('my','auth')
         .goto('http://httpbin.org/basic-auth/my/auth')
-        .evaluate(function(){
+        .evaluate(function () {
           return document.body.innerHTML;
         }, function (data){
           data.length.should.be.above(0);
@@ -424,7 +462,7 @@ describe('Nightmare', function(){
         .run(done);
     });
 
-    it('should set viewport', function(done) {
+    it('should set viewport', function (done) {
       var size = { width : 400, height: 1000 };
       new Nightmare()
         .viewport(size.width, size.height)
@@ -446,15 +484,15 @@ describe('Nightmare', function(){
    * queue
    */
 
- describe('queue', function(){
+ describe('queue', function () {
 
-    it('should be ok with no callback to run', function(done){
+    it('should be ok with no callback to run', function (done) {
       var nightmare = new Nightmare().goto('http://yahoo.com');
       nightmare.run();
       setTimeout(done, 4000);
     });
 
-    it('should execute the queue in order', function(done) {
+    it('should execute the queue in order', function (done) {
       var queue = [];
       new Nightmare()
         .goto('http://www.kayak.com/')
@@ -470,9 +508,9 @@ describe('Nightmare', function(){
         });
     });
 
-    it('should be pluggable with .use()', function(done) {
+    it('should be pluggable with .use()', function (done) {
       function search(term) {
-        return function(nightmare) {
+        return function (nightmare) {
           nightmare
             .goto('http://yahoo.com')
               .type('.input-query', term)
@@ -481,7 +519,7 @@ describe('Nightmare', function(){
         };
       }
       function testTitle(term) {
-        return function(nightmare) {
+        return function (nightmare) {
           nightmare
             .evaluate(function () {
               return document.title;

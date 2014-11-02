@@ -158,8 +158,9 @@ Capture page events with the callback. You have to call `.on()` before calling `
 * `confirm` - callback(msg)
 * `prompt` - callback(msg, defaultValue)
 * `error` - callback(msg, trace)
+* `timeout` - callback(msg) fired when a .wait() times out before condition becomes true
 
-For a more in depth description, see [the full callbacks list for phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list).
+For a more in-depth description, see [the full callbacks list for phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list).
 
 #### .use(plugin)
 Useful for using repeated code blocks, see the example with Swiftly login and task creation in the docs above.
