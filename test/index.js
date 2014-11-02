@@ -376,6 +376,22 @@ describe('Nightmare', function(){
           done();
         });
     });
+
+    it('should fire an event when an error occurs', function(done) {
+      var fired = false;
+      new Nightmare()
+        .on("error", function(){
+          fired = true;          
+        })
+        .goto("http://www.google.com")
+        .evaluate(function(){
+          return aaa;
+        })
+        .run(function(){
+          fired.should.be.true;
+          done();
+        });
+    });
   });
 
   /**
