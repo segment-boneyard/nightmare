@@ -70,6 +70,7 @@ The available options are:
 * `proxyType`: specify the proxy server type `[http|socks5|none]`, default not set.
 * `proxyAuth`: specify the auth information for the proxy `user:pass`, default not set.
 * `cookiesFile`: specify the file to store the persistent cookies, default not set.
+* `phantomPath`: specify a custom path to PhantomJS, default not set.
 
 #### .goto(url)
 Load the page at `url`.
@@ -134,7 +135,7 @@ Set the `user` and `password` for accessing a web page using basic authenticatio
 ```js
 new Nightmare()
   .authentication('myUserName','myPassword')
-  .goto('http://httpbin.org/basic-auth/myUserName/myPassword')  
+  .goto('http://httpbin.org/basic-auth/myUserName/myPassword')
   .run(function( err, nightmare){
     console.log("done");
   });
