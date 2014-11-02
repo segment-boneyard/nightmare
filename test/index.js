@@ -161,6 +161,30 @@ describe('Nightmare', function(){
       });
     });
 
+    it('should upload a file', function(done) {
+      new Nightmare()
+        .goto('http://validator.w3.org/#validate_by_upload')
+        .upload('#uploaded_file', 'test/files/jquery-2.1.1.min.js')
+        .evaluate(function () {
+          return document.getElementById('uploaded_file').value;
+        }, function (value) {
+          // For a 'C:\fakepath\' explanation, see:
+          // http://davidwalsh.name/fakepath
+          value.should.equal('C:\\fakepath\\jquery-2.1.1.min.js')
+        })
+        .run(done);
+    });
+
+    it('should verify a file exists before upload', function(done) {
+      new Nightmare()
+          .goto('http://validator.w3.org/#validate_by_upload')
+          .upload('#uploaded_file', 'nope.jpg')
+          .run(function (err) {
+            err.should.exist;
+            done();
+          });      
+    });
+
     it('should take a screenshot', function(done) {
       new Nightmare()
         .goto('http://yahoo.com')
