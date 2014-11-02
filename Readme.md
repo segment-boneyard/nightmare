@@ -144,7 +144,7 @@ new Nightmare()
 Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly, you have to set the viewport before calling `.goto()`.
 
 #### .on(event, callback)
-Respond to page events with the callback. Supported events are:
+Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are:
 * `initialized` - callback()
 * `loadStarted` - callback()
 * `loadFinished` - callback(status)
