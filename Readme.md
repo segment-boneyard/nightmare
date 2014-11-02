@@ -153,6 +153,7 @@ Capture page events with the callback. You have to call `.on()` before calling `
 * `navigationRequested` - callback(url, type, willNavigate, main)
 * `resourceRequested` - callback(requestData, networkRequest)
 * `resourceReceived` - callback(response)
+* `resourceError` - callback(resourceError)
 * `consoleMessage` - callback(msg, lineNumber, sourceId)
 * `alert` - callback(msg)
 * `confirm` - callback(msg)
