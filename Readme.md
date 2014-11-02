@@ -70,7 +70,7 @@ The available options are:
 * `proxyType`: specify the proxy server type `[http|socks5|none]`, default not set.
 * `proxyAuth`: specify the auth information for the proxy `user:pass`, default not set.
 * `cookiesFile`: specify the file to store the persistent cookies, default not set.
-* `phantomPath`: specify a custom path to PhantomJS, default not set.
+* `phantomPath`: specify a different custom path to PhantomJS, default not set.
 
 #### .goto(url)
 Load the page at `url`.
