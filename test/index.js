@@ -149,16 +149,35 @@ describe('Nightmare', function () {
         .goto('http://yahoo.com')
         .type('input[title="Search"]', 'github nightmare')
         .click('.searchsubmit')
-      .wait()
-      .evaluate(function () {
-        return document.title;
-      }, function (title) {
-        title.should.equal('github nightmare - Yahoo Search Results');
-      })
-      .run(function (err, nightmare) {
-        nightmare.should.be.ok;
-        done();
-      });
+        .wait()
+        .evaluate(function () {
+          return document.title;
+        }, function (title) {
+          title.should.equal('github nightmare - Yahoo Search Results');
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
+    it('should fire a keypress when typing', function(done) {
+      new Nightmare()
+        .goto("http://www.yahoo.com")
+        .evaluate(function(){
+          window.keypressed = false;
+          var element = document.querySelector("input[title='Search']");
+          element.onkeypress = function(){
+            window.keypressed = true;
+          }
+        })            
+        .type("input[title='Search']", "github")
+        .evaluate(function(){
+          return window.keypressed;
+        }, function(keypressed){
+          keypressed.should.be.true;
+        })
+        .run(done);
     });
 
     it('should upload a file', function (done) {
