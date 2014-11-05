@@ -1,11 +1,12 @@
 var Nightmare = require('../lib');
 var should = require('should');
+var phantomPath = require('phantomjs').path;
 
 describe('Nightmare', function () {
   this.timeout(20000);
 
   it('should be constructable', function () {
-    var nightmare = new Nightmare();
+    var nightmare = new Nightmare({phantomPath: phantomPath});
     nightmare.should.be.ok;
   });
 
@@ -16,7 +17,7 @@ describe('Nightmare', function () {
   describe('navigation', function () {
 
     it('should click on a link and then go back', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://www.nightmarejs.org/')
         .click('a')
         .back()
@@ -24,7 +25,7 @@ describe('Nightmare', function () {
     });
 
     it('should click on a link, go back, and then go forward', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://www.google.com/')
         .click('a')
         .back()
@@ -33,20 +34,20 @@ describe('Nightmare', function () {
     });
 
     it('should goto wikipedia.org', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://www.wikipedia.org/')
         .run(done);
     });
 
     it('should refresh the page', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://www.wikipedia.org/')
         .refresh()
         .run(done);
     });
 
     it('should get the url', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://www.wikipedia.org/')
         .url(function (url) {
           url.should.eql('http://www.wikipedia.org/');
@@ -55,9 +56,9 @@ describe('Nightmare', function () {
     });
 
     it('should check if the selector exists', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://www.wikipedia.org/')
-        .exists('a.link-box', function (exists) {
+        .exists('a.lisk-box', function (exists) {
           exists.should.be.true;
         })
         .exists('a.blahblahblah', function (exists) {
@@ -67,7 +68,7 @@ describe('Nightmare', function () {
     });
 
     it('should get the title', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://www.wikipedia.org/')
         .title(function (title) {
           title.should.eql('Wikipedia');
@@ -76,7 +77,7 @@ describe('Nightmare', function () {
     });
 
     it('should check if an element is visible', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://www.wikipedia.org/')
         .visible('input[type="hidden"]',function(visible) {
           visible.should.be.false;
@@ -96,7 +97,7 @@ describe('Nightmare', function () {
   describe('manipulation', function () {
 
     it('should evaluate javascript on the page, with parameters', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://yahoo.com')
         .evaluate(function (parameter) {
           return document.title + ' -- ' + parameter;
@@ -107,7 +108,7 @@ describe('Nightmare', function () {
     });
 
     it('should inject javascript onto the page', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://google.com')
         .inject('js', 'test/files/jquery-2.1.1.min.js')
         .evaluate(function () {
@@ -119,7 +120,7 @@ describe('Nightmare', function () {
     });
 
     it('should inject css onto the page', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://google.com')
         .inject('js', 'test/files/jquery-2.1.1.min.js')
         .inject('css', 'test/files/test.css')
@@ -132,7 +133,7 @@ describe('Nightmare', function () {
     });
 
     it('should not inject unsupported types onto the page', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://google.com')
         .inject('js', 'test/files/jquery-2.1.1.min.js')
         .inject('pdf', 'test/files/test.css')
@@ -145,7 +146,7 @@ describe('Nightmare', function () {
     });
   
     it('should type and click', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://yahoo.com')
         .type('input[title="Search"]', 'github nightmare')
         .click('.searchsubmit')
@@ -162,7 +163,7 @@ describe('Nightmare', function () {
     });
 
     it('should upload a file', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://validator.w3.org/#validate_by_upload')
         .upload('#uploaded_file', 'test/files/jquery-2.1.1.min.js')
         .evaluate(function () {
@@ -176,7 +177,7 @@ describe('Nightmare', function () {
     });
 
     it('should verify a file exists before upload', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
           .goto('http://validator.w3.org/#validate_by_upload')
           .upload('#uploaded_file', 'nope.jpg')
           .run(function (err) {
@@ -186,14 +187,14 @@ describe('Nightmare', function () {
     });
 
     it('should take a screenshot', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://yahoo.com')
         .screenshot('test/test.png')
         .run(done);
     });
 
     it('should wait until element is present', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://www.google.com/')
         .wait('input')
         .run(done);
@@ -207,7 +208,7 @@ describe('Nightmare', function () {
         return parseInt(seconds, 10);
       };
 
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://onlineclock.net/')
         .wait(seconds, 1)
         .run(done);
@@ -221,7 +222,7 @@ describe('Nightmare', function () {
         return parseInt(seconds, 10)%10;
       };
 
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://www.whattimeisit.com/')
         .wait(seconds, 1, 1500)
         .run(done);
@@ -229,7 +230,7 @@ describe('Nightmare', function () {
 
     it('should emit the timeout event if the check does not pass while waiting for selector', function (done) {
       var timeoutMessageReceived = false;
-      new Nightmare({
+      new Nightmare({phantomPath: phantomPath})({
           timeout: 1000
         })
         .on('timeout', function (msg) {
@@ -252,7 +253,7 @@ describe('Nightmare', function () {
       };
 
       var timeoutMessageReceived = false;
-      new Nightmare({
+      new Nightmare({phantomPath: phantomPath})({
           timeout: 1000
         })
         .on('timeout', function (message) {
@@ -278,7 +279,7 @@ describe('Nightmare', function () {
     
     it('should fire an event on initialized', function (done) {
       var fired = false;
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .on('initialized', function () {
           fired = true;          
         })
@@ -291,7 +292,7 @@ describe('Nightmare', function () {
 
     it('should fire an event on load started', function (done) {
       var fired = false;
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .on('loadStarted', function () {          
           fired = true;
         })
@@ -304,7 +305,7 @@ describe('Nightmare', function () {
 
     it('should fire an event on load finished', function (done) {
       var fired = false;
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .on('loadFinished', function (status) {
           fired = (status === 'success');
         })
@@ -317,7 +318,7 @@ describe('Nightmare', function () {
 
     it('should fire an event when a resource is requested', function (done) {
       var fired = false;
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .on('resourceRequested', function () {          
           fired = true;
         })
@@ -330,7 +331,7 @@ describe('Nightmare', function () {
 
     it('should fire an event when a resource is received', function (done) {
       var fired = false;
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .on('resourceReceived', function () {          
           fired = true;
         })
@@ -343,7 +344,7 @@ describe('Nightmare', function () {
 
     it('should fire an event when navigation requested', function (done) {
       var fired = false;
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .on('navigationRequested', function (url) {
           fired = (url === 'https://www.yahoo.com/');
         })
@@ -356,7 +357,7 @@ describe('Nightmare', function () {
 
     it('should fire an event when the url changes', function (done) {
       var fired = false;
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .on('urlChanged', function (url) {
           fired = (url === 'https://www.yahoo.com/');
         })
@@ -369,7 +370,7 @@ describe('Nightmare', function () {
 
     it.skip('should fire an event when a console message is seen', function (done) {
       var fired = false;
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .on('consoleMessage', function () {
           fired = true;
         })
@@ -385,7 +386,7 @@ describe('Nightmare', function () {
 
     it.skip('should fire an event when an alert is seen', function (done) {
       var fired = false;
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .on('alert', function () {
           fired = true;
         })
@@ -401,7 +402,7 @@ describe('Nightmare', function () {
 
     it.skip('should fire an event when a prompt is seen', function (done) {
       var fired = false;
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .on('prompt', function () {          
           fired = true;
         })
@@ -417,7 +418,7 @@ describe('Nightmare', function () {
 
     it('should fire an event when an error occurs', function (done) {
       var fired = false;
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .on('error', function () {
           fired = true;          
         })
@@ -439,7 +440,7 @@ describe('Nightmare', function () {
   describe('options', function () {
 
     it('should set agent', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .useragent('firefox')
         .goto('http://www.wikipedia.org/')
         .evaluate(function () {
@@ -451,7 +452,7 @@ describe('Nightmare', function () {
     });
 
     it('should set authentication', function (done) {
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .authentication('my','auth')
         .goto('http://httpbin.org/basic-auth/my/auth')
         .evaluate(function () {
@@ -464,7 +465,7 @@ describe('Nightmare', function () {
 
     it('should set viewport', function (done) {
       var size = { width : 400, height: 1000 };
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .viewport(size.width, size.height)
         .goto('http://www.wikipedia.org/')
         .evaluate(function () {
@@ -487,14 +488,14 @@ describe('Nightmare', function () {
  describe('queue', function () {
 
     it('should be ok with no callback to run', function (done) {
-      var nightmare = new Nightmare().goto('http://yahoo.com');
+      var nightmare = new Nightmare({phantomPath: phantomPath}).goto('http://yahoo.com');
       nightmare.run();
       setTimeout(done, 4000);
     });
 
     it('should execute the queue in order', function (done) {
       var queue = [];
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .goto('http://www.kayak.com/')
         .evaluate(function () {
           return document.title;
@@ -528,7 +529,7 @@ describe('Nightmare', function () {
             });
         };
       }
-      new Nightmare()
+      new Nightmare({phantomPath: phantomPath})
         .use(search('test term'))
         .use(testTitle('test term'))
         .run(done);
