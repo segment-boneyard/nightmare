@@ -3,7 +3,7 @@ var should = require('should');
 var after = require('after');
 
 describe('Nightmare', function () {
-  this.timeout(20000);
+  this.timeout(30000);
 
   it('should be constructable', function () {
     var nightmare = new Nightmare();
