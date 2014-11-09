@@ -1,4 +1,10 @@
 
+1.6.3 / 2014-11-09
+==================
+
+  * bumping circleci test version and timeout
+  * eliminating global phantom instance and state, fixes #104
+
 1.6.2 / 2014-11-09
 ==================
 
