@@ -79,10 +79,16 @@ describe('Nightmare', function () {
     it('should check if an element is visible', function (done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
-        .visible('input[type="hidden"]',function(visible) {
+        // hidden element
+        .visible('input[type="hidden"]', function (visible) {
           visible.should.be.false;
         })
-        .visible('#searchInput',function(visible) {
+        // non-existent element
+        .visible('#asdfasdfasdf', function (visible) {
+          visible.should.be.false;
+        })
+        // visible element
+        .visible('#searchInput', function (visible) {
           visible.should.be.true;
         })
         .run(done);
