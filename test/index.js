@@ -163,18 +163,18 @@ describe('Nightmare', function () {
 
     it('should fire a keypress when typing', function(done) {
       new Nightmare()
-        .goto("http://www.yahoo.com")
-        .evaluate(function(){
+        .goto('http://www.yahoo.com')
+        .evaluate(function () {
           window.keypressed = false;
-          var element = document.querySelector("input[title='Search']");
-          element.onkeypress = function(){
+          var element = document.querySelector('input[title="Search"]');
+          element.onkeypress = function () {
             window.keypressed = true;
-          }
-        })            
-        .type("input[title='Search']", "github")
-        .evaluate(function(){
+          };
+        })
+        .type('input[title="Search"]', 'github')
+        .evaluate(function () {
           return window.keypressed;
-        }, function(keypressed){
+        }, function (keypressed) {
           keypressed.should.be.true;
         })
         .run(done);
