@@ -1,4 +1,9 @@
 
+1.6.2 / 2014-11-09
+==================
+
+  * .type() now uses uses phantom's sendEvent to trigger keypress events. Fixes #81. (by @johntitus)
+
 1.6.1 / 2014-11-09
 ==================
 
