@@ -1,5 +1,6 @@
 var Nightmare = require('../lib');
 var should = require('should');
+var after = require('after');
 
 describe('Nightmare', function () {
   this.timeout(20000);
@@ -497,6 +498,35 @@ describe('Nightmare', function () {
         .run(done);
     });
 
+  });
+
+  /**
+   * multiple
+   */
+  
+  describe('multiple', function () {
+
+    it('should run fine with two instances in parallel', function (done) {
+      var partiallyDone = after(2, done);
+      new Nightmare()
+        .goto('http://www.nytimes.com/')
+        .evaluate(function () {
+          return document.documentElement.innerHTML;
+        }, function (res) {
+          res.length.should.be.greaterThan(1);
+          partiallyDone();
+        })
+        .run();
+      new Nightmare()
+        .goto('http://www.gnu.org/')
+        .evaluate(function () {
+          return document.documentElement.innerHTML;
+        }, function (res) {
+          res.length.should.be.greaterThan(1);
+          partiallyDone();
+        })
+        .run();
+    });
   });
 
   /**
