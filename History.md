@@ -1,4 +1,11 @@
 
+1.6.1 / 2014-11-09
+==================
+
+  * bumping phantom to ~0.7.0, fixes #101
+  * readme tweaks
+  * adding resourceError event to docs
+
 1.6.0 / 2014-11-02
 ==================
 
