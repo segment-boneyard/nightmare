@@ -168,6 +168,25 @@ describe('Nightmare', function () {
         });
     });
 
+    it('should type and click several times', function (done) {
+      new Nightmare()
+        .goto('http://yahoo.com')
+        .type('input[title="Search"]', 'github nightmare')
+        .click('.searchsubmit')
+        .wait()
+        .click('.breadcrumb_link')
+        .wait()
+        .evaluate(function () {
+          return document.title;
+        }, function (title) {
+          title.should.equal('Segment · GitHub');
+        })
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
     it('should fire a keypress when typing', function(done) {
       new Nightmare()
         .goto('http://www.yahoo.com')
