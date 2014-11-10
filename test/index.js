@@ -81,6 +81,9 @@ describe('Nightmare', function () {
         .visible('input[type="hidden"]',function(visible) {
           visible.should.be.false;
         })
+        .visible('.suggestions',function(visible) {
+          visible.should.be.false;
+        })
         .visible('#searchInput',function(visible) {
           visible.should.be.true;
         })
@@ -101,7 +104,7 @@ describe('Nightmare', function () {
         .evaluate(function (parameter) {
           return document.title + ' -- ' + parameter;
         }, function (title) {
-          title.should.equal('Yahoo -- testparameter');
+          title.should.endWith('testparameter');
         }, 'testparameter')
         .run(done);
     });
@@ -153,7 +156,7 @@ describe('Nightmare', function () {
       .evaluate(function () {
         return document.title;
       }, function (title) {
-        title.should.equal('github nightmare - Yahoo Search Results');
+        title.should.startWith('github nightmare -');
       })
       .run(function (err, nightmare) {
         nightmare.should.be.ok;
@@ -345,7 +348,7 @@ describe('Nightmare', function () {
       var fired = false;
       new Nightmare()
         .on('navigationRequested', function (url) {
-          fired = (url === 'https://www.yahoo.com/');
+          fired = /yahoo/.test(url);
         })
         .goto('https://www.yahoo.com')
         .run(function () {
@@ -358,7 +361,7 @@ describe('Nightmare', function () {
       var fired = false;
       new Nightmare()
         .on('urlChanged', function (url) {
-          fired = (url === 'https://www.yahoo.com/');
+          fired = /yahoo/.test(url);
         })
         .goto('https://www.yahoo.com')
         .run(function () {
@@ -524,7 +527,7 @@ describe('Nightmare', function () {
             .evaluate(function () {
               return document.title;
             }, function (title) {
-              title.should.equal(term + ' - Yahoo Search Results');
+              title.should.startWith(term);
             });
         };
       }
