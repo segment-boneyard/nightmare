@@ -83,12 +83,19 @@ describe('Nightmare', function () {
         .visible('input[type="hidden"]', function (visible) {
           visible.should.be.false;
         })
+<<<<<<< HEAD
         // non-existent element
         .visible('#asdfasdfasdf', function (visible) {
           visible.should.be.false;
         })
         // visible element
         .visible('#searchInput', function (visible) {
+=======
+        .visible('.suggestions',function(visible) {
+          visible.should.be.false;
+        })
+        .visible('#searchInput',function(visible) {
+>>>>>>> Update tests
           visible.should.be.true;
         })
         .run(done);
@@ -108,7 +115,7 @@ describe('Nightmare', function () {
         .evaluate(function (parameter) {
           return document.title + ' -- ' + parameter;
         }, function (title) {
-          title.should.equal('Yahoo -- testparameter');
+          title.should.endWith('testparameter');
         }, 'testparameter')
         .run(done);
     });
@@ -156,6 +163,7 @@ describe('Nightmare', function () {
         .goto('http://yahoo.com')
         .type('input[title="Search"]', 'github nightmare')
         .click('.searchsubmit')
+<<<<<<< HEAD
         .wait()
         .evaluate(function () {
           return document.title;
@@ -204,6 +212,18 @@ describe('Nightmare', function () {
           keypressed.should.be.true;
         })
         .run(done);
+=======
+      .wait()
+      .evaluate(function () {
+        return document.title;
+      }, function (title) {
+        title.should.startWith('github nightmare -');
+      })
+      .run(function (err, nightmare) {
+        nightmare.should.be.ok;
+        done();
+      });
+>>>>>>> Update tests
     });
 
     it('should upload a file', function (done) {
@@ -390,7 +410,7 @@ describe('Nightmare', function () {
       var fired = false;
       new Nightmare()
         .on('navigationRequested', function (url) {
-          fired = (url === 'https://www.yahoo.com/');
+          fired = /yahoo/.test(url);
         })
         .goto('https://www.yahoo.com')
         .run(function () {
@@ -403,7 +423,7 @@ describe('Nightmare', function () {
       var fired = false;
       new Nightmare()
         .on('urlChanged', function (url) {
-          fired = (url === 'https://www.yahoo.com/');
+          fired = /yahoo/.test(url);
         })
         .goto('https://www.yahoo.com')
         .run(function () {
@@ -620,7 +640,7 @@ describe('Nightmare', function () {
             .evaluate(function () {
               return document.title;
             }, function (title) {
-              title.should.equal(term + ' - Yahoo Search Results');
+              title.should.startWith(term);
             });
         };
       }
