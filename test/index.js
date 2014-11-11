@@ -552,32 +552,27 @@ describe('Nightmare', function () {
         })
         .run();
     });
-  });
 
-  /**
-   * sequential runs
-   */
-  describe('sequential runs', function () {
-    it('should be able to process 2 run operations sequentially', function (done) {
+    it('should run fine with one instance in sequence', function (done) {
       new Nightmare()
-          .goto('http://www.nytimes.com/')
-          .evaluate(function () {
-            return document.documentElement.innerHTML;
-          }, function (res) {
-            res.length.should.be.greaterThan(1);
-          })
-          .run(function (err, nightmare) {
+        .goto('http://www.nytimes.com/')
+        .evaluate(function () {
+          return document.documentElement.innerHTML;
+        }, function (res) {
+          res.length.should.be.greaterThan(1);
+        })
+        .run(function (err, nightmare) {
 
-            nightmare.goto('http://www.gnu.org/')
-                .evaluate(function () {
-                  return document.documentElement.innerHTML;
-                }, function (res) {
-                  res.length.should.be.greaterThan(1);
-                }).run(function (err, nightmare) {
-                  done();
-                });
+          nightmare.goto('http://www.yahoo.com/')
+            .evaluate(function () {
+              return document.documentElement.innerHTML;
+            }, function (res) {
+              res.length.should.be.greaterThan(1);
+            }).run(function (err, nightmare) {
+              done();
+            });
 
-          });
+        });
     });
   });
 
