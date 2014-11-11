@@ -79,26 +79,13 @@ describe('Nightmare', function () {
     it('should check if an element is visible', function (done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
-        // hidden element
         .visible('input[type="hidden"]', function (visible) {
-          visible.should.be.false;
-        })
-<<<<<<< HEAD
-        // non-existent element
-        .visible('#asdfasdfasdf', function (visible) {
-          visible.should.be.false;
-        })
-        // visible element
-        .visible('#searchInput', function (visible) {
-=======
-        .visible('.suggestions',function(visible) {
           visible.should.be.false;
         })
         .visible('.suggestions',function(visible) {
           visible.should.be.false;
         })
         .visible('#searchInput',function(visible) {
->>>>>>> Update tests
           visible.should.be.true;
         })
         .run(done);
@@ -166,7 +153,6 @@ describe('Nightmare', function () {
         .goto('http://yahoo.com')
         .type('input[title="Search"]', 'github nightmare')
         .click('.searchsubmit')
-<<<<<<< HEAD
         .wait()
         .evaluate(function () {
           return document.title;
@@ -215,18 +201,6 @@ describe('Nightmare', function () {
           keypressed.should.be.true;
         })
         .run(done);
-=======
-      .wait()
-      .evaluate(function () {
-        return document.title;
-      }, function (title) {
-        title.should.startWith('github nightmare -');
-      })
-      .run(function (err, nightmare) {
-        nightmare.should.be.ok;
-        done();
-      });
->>>>>>> Update tests
     });
 
     it('should upload a file', function (done) {
