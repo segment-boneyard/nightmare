@@ -128,6 +128,9 @@ Wait until the `fn` evaluated on the page returns `value`. Optionally, refresh t
 #### .screenshot(path)
 Saves a screenshot of the current page to the specified `path`. Useful for debugging.
 
+#### .pdf(path)
+Saves a PDF with A4 size pages of the current page to the specified `path`.
+
 #### .useragent(useragent)
 Set the `useragent` used by PhantomJS. You have to set the useragent before calling `.goto()`.
 
