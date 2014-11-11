@@ -94,6 +94,9 @@ describe('Nightmare', function () {
         .visible('.suggestions',function(visible) {
           visible.should.be.false;
         })
+        .visible('.suggestions',function(visible) {
+          visible.should.be.false;
+        })
         .visible('#searchInput',function(visible) {
 >>>>>>> Update tests
           visible.should.be.true;
