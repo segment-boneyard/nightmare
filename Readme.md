@@ -6,7 +6,7 @@ Nightmare is a high level wrapper for [PhantomJS](http://phantomjs.org/) that le
 
 The goal is to expose just a few simple methods, and have an API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
 
-[Daydream](https://github.com/segmentio/daydream) is a complementary chrome extension built by [@StevenMiller888](https://github.com/stevenmiller888), to write Nightmare scripts while browsing.
+[Daydream](https://github.com/segmentio/daydream) is a complementary chrome extension built by [@StevenMiller888](https://github.com/stevenmiller888) to write Nightmare scripts while browsing.
 
 ## Examples
 
