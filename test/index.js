@@ -530,6 +530,24 @@ describe('Nightmare', function () {
         .run(done);
     });
 
+    it('should set headers', function (done) {
+      var headers = {
+        'X-Nightmare-Header': 'hello world'
+      };
+      new Nightmare()
+        .headers(headers)
+        .goto('http://httpbin.org/headers')
+        .evaluate(function () {
+          return document.body.children[0].innerHTML;
+        }, function (data) {
+          var json = JSON.parse(data);
+          json.should.have.property('headers');
+          json.headers.should.have.property('X-Nightmare-Header');
+          json.headers['X-Nightmare-Header'].should.equal('hello world');
+        })
+        .run(done);
+    });
+
   });
 
   /**
