@@ -197,6 +197,8 @@ Set the `useragent` used by PhantomJS. You have to set the useragent before call
 #### .viewport(width, height)
 Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly, you have to set the viewport before calling `.goto()`.
 
+#### .headers(headers)
+Set the request `headers`. You have to call this before calling `.goto()`.
 
 ## Plugins
 
