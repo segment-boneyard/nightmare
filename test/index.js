@@ -237,6 +237,13 @@ describe('Nightmare', function () {
         .run(done);
     });
 
+    it('should render a PDF', function (done) {
+      new Nightmare()
+        .goto('http://yahoo.com')
+        .pdf('test/test.pdf')
+        .run(done);
+    });
+
     it('should wait until element is present', function (done) {
       new Nightmare()
         .goto('http://www.google.com/')
