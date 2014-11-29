@@ -24,18 +24,29 @@ new Nightmare()
     });
 ```
 
-Or, let's extract the entirety of Kayak's home page after everything has rendered:
+Or, let's run some mocha tests:
 
 ```js
 var Nightmare = require('nightmare');
-new Nightmare()
-  .goto('http://kayak.com')
-  .evaluate(function () {
-    return document.documentElement.innerHTML;
-  }, function (res) {
-    console.log(res);
-  })
-  .run();
+var expect = require('chai').expect; // jshint ignore:line
+
+describe('test yahoo search results', function() {
+  this.timeout(30000);
+  
+  it('should find the nightmare github link first', function(done) {
+    new Nightmare()
+      .goto('http://yahoo.com')
+        .type('input[title="Search"]', 'github nightmare')
+        .click('.searchsubmit')
+        .wait('.url.breadcrumb')
+        .evaluate(function () {
+          return document.querySelector('.url.breadcrumb').innerText;
+        }, function (breadcrumb) {
+          expect(breadcrumb).to.equal('github.com');
+        })
+        .run(done);
+  });
+});
 ```
 
 Or, here's how you might automate a nicely abstracted login + task on Swiftly:
@@ -74,6 +85,9 @@ The available options are:
 * `cookiesFile`: specify the file to store the persistent cookies, default not set.
 * `phantomPath`: specify a different custom path to PhantomJS, default not set.
 
+
+### Interact 
+
 #### .goto(url)
 Load the page at `url`.
 
@@ -85,18 +99,6 @@ Go forward to the next page.
 
 #### .refresh()
 Refresh the current page.
-
-#### .url(cb)
-Get the url of the current page, the signature of the callback is `cb(url)`.
-
-#### .title(cb)
-Get the title of the current page, the signature of the callback is `cb(title)`.
-
-#### .visible(selector,cb)
-Determines if a selector is visible, or not, on the page. The signature of the callback is `cb(boolean)`.
-
-#### .exists(selector,cb)
-Determines if the selector exists, or not, on the page. The signature of the callback is `cb(boolean)`.
 
 #### .click(selector)
 Clicks the `selector` element once.
@@ -125,29 +127,20 @@ Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 #### .wait(fn, value, [delay])
 Wait until the `fn` evaluated on the page returns `value`. Optionally, refresh the page every `delay` milliseconds, and only check after each refresh.
 
-#### .screenshot(path)
-Saves a screenshot of the current page to the specified `path`. Useful for debugging.
+#### .use(plugin)
+Useful for using repeated code blocks, see the example with Swiftly login and task creation in the docs above.
 
-#### .pdf(path)
-Saves a PDF with A4 size pages of the current page to the specified `path`.
+#### .run(cb)
+Executes the queue of functions, and calls your `cb` when the script hits an error or completes the queue. The callback signature is `cb(err, nightmare)`.
 
-#### .useragent(useragent)
-Set the `useragent` used by PhantomJS. You have to set the useragent before calling `.goto()`.
 
-#### .authentication(user, password)
-Set the `user` and `password` for accessing a web page using basic authentication. Be sure to set it before calling `.goto(url)`.
+### Extract
 
-```js
-new Nightmare()
-  .authentication('myUserName','myPassword')
-  .goto('http://httpbin.org/basic-auth/myUserName/myPassword')
-  .run(function( err, nightmare){
-    console.log("done");
-  });
-```
+#### .exists(selector,cb)
+Determines if the selector exists, or not, on the page. The signature of the callback is `cb(boolean)`.
 
-#### .viewport(width, height)
-Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly, you have to set the viewport before calling `.goto()`.
+#### .visible(selector,cb)
+Determines if a selector is visible, or not, on the page. The signature of the callback is `cb(boolean)`.
 
 #### .on(event, callback)
 Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are:
@@ -168,11 +161,40 @@ Capture page events with the callback. You have to call `.on()` before calling `
 
 For a more in-depth description, see [the full callbacks list for phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list).
 
-#### .use(plugin)
-Useful for using repeated code blocks, see the example with Swiftly login and task creation in the docs above.
+#### .screenshot(path)
+Saves a screenshot of the current page to the specified `path`. Useful for debugging.
 
-#### .run(cb)
-Executes the queue of functions, and calls your `cb` when the script hits an error or completes the queue. The callback signature is `cb(err, nightmare)`.
+#### .pdf(path)
+Saves a PDF with A4 size pages of the current page to the specified `path`.
+
+#### .title(cb)
+Get the title of the current page, the callback signature is `cb(title)`.
+
+#### .url(cb)
+Get the url of the current page, the signature of the callback is `cb(url)`.
+
+
+### Settings
+These functions must be called _before_ `.goto(url)`.
+
+#### .authentication(user, password)
+Set the `user` and `password` for accessing a web page using basic authentication. Be sure to set it before calling `.goto(url)`.
+
+```js
+new Nightmare()
+  .authentication('myUserName','myPassword')
+  .goto('http://httpbin.org/basic-auth/myUserName/myPassword')
+  .run(function( err, nightmare){
+    console.log("done");
+  });
+```
+
+#### .useragent(useragent)
+Set the `useragent` used by PhantomJS. You have to set the useragent before calling `.goto()`.
+
+#### .viewport(width, height)
+Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly, you have to set the viewport before calling `.goto()`.
+
 
 ## Plugins
 
@@ -227,8 +249,8 @@ When the tests are done, you'll see something like this:
 
 ```bash
 make test
-  ․․․․․․․․․․․․․․․․․
-  28 passing (46s)
+  ․․․․․․․․․․․․․․․․․․․․․․․․․․
+  42 passing (3m)
 ```
 
 ## License (MIT)
