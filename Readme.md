@@ -32,7 +32,7 @@ var expect = require('chai').expect; // jshint ignore:line
 
 describe('test yahoo search results', function() {
   this.timeout(30000);
-  
+
   it('should find the nightmare github link first', function(done) {
     new Nightmare()
       .goto('http://yahoo.com')
@@ -64,6 +64,8 @@ new Nightmare()
 ```
 
 And [here's the `nightmare-swiftly` plugin](https://github.com/segmentio/nightmare-swiftly).
+
+You can see examples of every function [in the tests here](https://github.com/segmentio/nightmare/blob/master/test/index.js).
 
 ## API
 
