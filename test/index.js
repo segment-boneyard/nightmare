@@ -237,6 +237,16 @@ describe('Nightmare', function () {
         .run(done);
     });
 
+    it('should take a screenshot and output in base64', function (done) {
+      new Nightmare()
+        .goto('http://yahoo.com')
+        .screenshotBase64('png')
+        .run(function (err, nightmare) {
+          nightmare.should.be.ok;
+          done();
+        });
+    });
+
     it('should render a PDF', function (done) {
       new Nightmare()
         .goto('http://yahoo.com')
