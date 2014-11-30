@@ -130,7 +130,7 @@ describe('Nightmare', function () {
         .goto('http://google.com')
         .inject('js', 'test/files/jquery-2.1.1.min.js')
         .inject('css', 'test/files/test.css')
-        .evaluate(function () {          
+        .evaluate(function () {
           return $('body').css('background-color');
         }, function (color) {
           color.should.equal('rgb(255, 0, 0)');
@@ -143,14 +143,14 @@ describe('Nightmare', function () {
         .goto('http://google.com')
         .inject('js', 'test/files/jquery-2.1.1.min.js')
         .inject('pdf', 'test/files/test.css')
-        .evaluate(function () {          
+        .evaluate(function () {
           return $('body').css('background-color');
         }, function (color) {
           color.should.not.equal('rgb(255, 0, 0)');
         })
         .run(done);
     });
-  
+
     it('should type and click', function (done) {
       new Nightmare()
         .goto('http://yahoo.com')
@@ -227,7 +227,7 @@ describe('Nightmare', function () {
           .run(function (err) {
             err.should.exist;
             done();
-          });      
+          });
     });
 
     it('should take a screenshot', function (done) {
@@ -327,12 +327,12 @@ describe('Nightmare', function () {
   describe('events', function () {
     var step1url = 'http://en.wikipedia.org/wiki/DOM_events';
     var step2url = 'http://en.wikipedia.org/wiki/DOM_events#Event_flow';
-    
+
     it('should fire an event on initialized', function (done) {
       var fired = false;
       new Nightmare()
         .on('initialized', function () {
-          fired = true;          
+          fired = true;
         })
         .goto('http://www.yahoo.com')
         .run(function () {
@@ -344,7 +344,7 @@ describe('Nightmare', function () {
     it('should fire an event on load started', function (done) {
       var fired = false;
       new Nightmare()
-        .on('loadStarted', function () {          
+        .on('loadStarted', function () {
           fired = true;
         })
         .goto('http://www.yahoo.com')
@@ -370,7 +370,7 @@ describe('Nightmare', function () {
     it('should fire an event when a resource is requested', function (done) {
       var fired = false;
       new Nightmare()
-        .on('resourceRequested', function () {          
+        .on('resourceRequested', function () {
           fired = true;
         })
         .goto('http://www.yahoo.com')
@@ -383,7 +383,7 @@ describe('Nightmare', function () {
     it('should fire an event when a resource is received', function (done) {
       var fired = false;
       new Nightmare()
-        .on('resourceReceived', function () {          
+        .on('resourceReceived', function () {
           fired = true;
         })
         .goto('http://www.yahoo.com')
@@ -454,7 +454,7 @@ describe('Nightmare', function () {
     it.skip('should fire an event when a prompt is seen', function (done) {
       var fired = false;
       new Nightmare()
-        .on('prompt', function () {          
+        .on('prompt', function () {
           fired = true;
         })
         .goto('http://www.yahoo.com')
@@ -471,7 +471,7 @@ describe('Nightmare', function () {
       var fired = false;
       new Nightmare()
         .on('error', function () {
-          fired = true;          
+          fired = true;
         })
         .goto('http://www.google.com')
         .evaluate(function () {
@@ -535,7 +535,7 @@ describe('Nightmare', function () {
   /**
    * multiple
    */
-  
+
   describe('multiple', function () {
 
     it('should run fine with two instances in parallel', function (done) {
