@@ -540,7 +540,10 @@ describe('Nightmare', function () {
         .evaluate(function () {
           return document.body.children[0].innerHTML;
         }, function (data) {
-          var json = JSON.parse(data);
+          var json = null;
+          (function () {
+            json = JSON.parse(data);
+          }).should.not.throw();
           json.should.have.property('headers');
           json.headers.should.have.property('X-Nightmare-Header');
           json.headers['X-Nightmare-Header'].should.equal('hello world');
