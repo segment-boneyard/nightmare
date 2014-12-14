@@ -197,6 +197,23 @@ Set the `useragent` used by PhantomJS. You have to set the useragent before call
 #### .viewport(width, height)
 Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly, you have to set the viewport before calling `.goto()`.
 
+#### .zoom(zoomFactor)
+Set the amount of zoom on the page. Default for a page is zoomFactor = 1. To zoom to 200%, set zoomFactor to 2. Combine with larger viewports to produce high DPI screenshots.
+
+```js
+new Nightmare()
+  //double DPI render of 1600x900
+  .viewport(3200, 1800)
+  .zoom(2)
+  .goto('http://www.wikipedia.org')
+  .wait()
+  .screenshot('test/testScaleIs2.png')
+  .run(function( err, nightmare){
+    console.log("done");
+  });
+```
+
+
 #### .headers(headers)
 Set the request `headers`. You have to call this before calling `.goto()`.
 

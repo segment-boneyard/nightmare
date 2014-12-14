@@ -530,6 +530,20 @@ describe('Nightmare', function () {
         .run(done);
     });
 
+    it('should scale the window contents', function(done) {
+      new Nightmare()
+          .viewport(1600, 900)
+          .goto('http://www.wikipedia.org')
+          .wait()
+          .screenshot('test/testScaleDefault.png')
+          .viewport(3200, 1800)
+          .zoom(2)
+          .goto('http://www.wikipedia.org')
+          .wait()
+          .screenshot('test/testScaleIs2.png')
+          .run(done);
+    });
+
     it('should set headers', function (done) {
       var headers = {
         'X-Nightmare-Header': 'hello world'
