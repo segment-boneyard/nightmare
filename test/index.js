@@ -206,6 +206,33 @@ describe('Nightmare', function () {
         .run(done);
     });
 
+    it('should scroll to specified position', function(done) {
+      new Nightmare()
+          .viewport(320, 320)
+          .goto('http://www.yahoo.com')
+          .wait()
+          .evaluate(function () {
+            return {
+              top: document.body.scrollTop,
+              left: document.body.scrollLeft
+            };
+          }, function (coordinates) {
+            coordinates.top.should.equal(0);
+            coordinates.left.should.equal(0);
+          })
+          .scrollTo(100,50)
+          .evaluate(function () {
+            return {
+              top: document.body.scrollTop,
+              left: document.body.scrollLeft
+            };
+          }, function (coordinates) {
+            coordinates.top.should.equal(100);
+            coordinates.left.should.equal(50);
+          })
+          .run(done);
+    });
+
     it('should upload a file', function (done) {
       new Nightmare()
         .goto('http://validator.w3.org/#validate_by_upload')
