@@ -111,6 +111,9 @@ Enters the `text` provided into the `selector` element.
 #### .upload(selector, path)
 Specify the `path` to upload into a file input `selector` element.
 
+#### .scrollTo(top, left)
+Scrolls the page to desired position. `top` and `left` are always relative to the top left corner of the document.
+
 #### .inject(type, file)
 Inject a local `file` onto the current page. The file `type` must be either 'js' or 'css'.
 
