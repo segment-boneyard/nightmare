@@ -167,7 +167,7 @@ Capture page events with the callback. You have to call `.on()` before calling `
 For a more in-depth description, see [the full callbacks list for phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list).
 
 #### .screenshot(path)
-Saves a screenshot of the current page to the specified `path`. Useful for debugging.
+Saves a screenshot of the current page to the specified `path`. Useful for debugging. Note the path must include the file extension. Supported formats include .png, .gif, .jpeg, and .pdf.
 
 #### .pdf(path)
 Saves a PDF with A4 size pages of the current page to the specified `path`.
@@ -177,7 +177,6 @@ Get the title of the current page, the callback signature is `cb(title)`.
 
 #### .url(cb)
 Get the url of the current page, the signature of the callback is `cb(url)`.
-
 
 ### Settings
 These functions must be called _before_ `.goto(url)`.
