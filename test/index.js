@@ -3,7 +3,7 @@ var should = require('should');
 var after = require('after');
 
 describe('Nightmare', function () {
-  this.timeout(40000);
+  this.timeout(10000);
 
   it('should be constructable', function () {
     var nightmare = new Nightmare();
@@ -388,6 +388,26 @@ describe('Nightmare', function () {
           fired = (status === 'success');
         })
         .goto('http://www.yahoo.com')
+        .run(function () {
+          fired.should.be.true;
+          done();
+        });
+    });
+
+    it('should fire an event when a resource request is started', function (done) {
+      var fired = false;
+      new Nightmare()
+        .on('resourceRequestStarted', function (requestData, networkRequest) {          
+          if (requestData.url.indexOf('yui') !== 0) {
+            networkRequest.abort();
+          }
+        })
+        .goto('http://www.yahoo.com')
+        .evaluate(function () {
+          return window.YUI;
+        }, function (yui) {
+          fired = !yui;
+        })
         .run(function () {
           fired.should.be.true;
           done();
