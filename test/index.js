@@ -3,7 +3,7 @@ var should = require('should');
 var after = require('after');
 
 describe('Nightmare', function () {
-  this.timeout(30000);
+  this.timeout(40000);
 
   it('should be constructable', function () {
     var nightmare = new Nightmare();
@@ -222,6 +222,33 @@ describe('Nightmare', function () {
         .run(done);
     });
 
+    it('should scroll to specified position', function(done) {
+      new Nightmare()
+          .viewport(320, 320)
+          .goto('http://www.yahoo.com')
+          .wait()
+          .evaluate(function () {
+            return {
+              top: document.body.scrollTop,
+              left: document.body.scrollLeft
+            };
+          }, function (coordinates) {
+            coordinates.top.should.equal(0);
+            coordinates.left.should.equal(0);
+          })
+          .scrollTo(100,50)
+          .evaluate(function () {
+            return {
+              top: document.body.scrollTop,
+              left: document.body.scrollLeft
+            };
+          }, function (coordinates) {
+            coordinates.top.should.equal(100);
+            coordinates.left.should.equal(50);
+          })
+          .run(done);
+    });
+
     it('should upload a file', function (done) {
       new Nightmare()
         .goto('http://validator.w3.org/#validate_by_upload')
@@ -250,6 +277,13 @@ describe('Nightmare', function () {
       new Nightmare()
         .goto('http://yahoo.com')
         .screenshot('test/test.png')
+        .run(done);
+    });
+
+    it('should render a PDF', function (done) {
+      new Nightmare()
+        .goto('http://yahoo.com')
+        .pdf('test/test.pdf')
         .run(done);
     });
 
@@ -370,6 +404,26 @@ describe('Nightmare', function () {
           fired = (status === 'success');
         })
         .goto('http://www.yahoo.com')
+        .run(function () {
+          fired.should.be.true;
+          done();
+        });
+    });
+
+    it('should fire an event when a resource request is started', function (done) {
+      var fired = false;
+      new Nightmare()
+        .on('resourceRequestStarted', function (requestData, networkRequest) {          
+          if (requestData.url.indexOf('yui') !== 0) {
+            networkRequest.abort();
+          }
+        })
+        .goto('http://www.yahoo.com')
+        .evaluate(function () {
+          return window.YUI;
+        }, function (yui) {
+          fired = !yui;
+        })
         .run(function () {
           fired.should.be.true;
           done();
@@ -539,6 +593,41 @@ describe('Nightmare', function () {
         .run(done);
     });
 
+    it('should scale the window contents', function(done) {
+      new Nightmare()
+          .viewport(1600, 900)
+          .goto('http://www.wikipedia.org')
+          .wait()
+          .screenshot('test/testScaleDefault.png')
+          .viewport(3200, 1800)
+          .zoom(2)
+          .goto('http://www.wikipedia.org')
+          .wait()
+          .screenshot('test/testScaleIs2.png')
+          .run(done);
+    });
+
+    it('should set headers', function (done) {
+      var headers = {
+        'X-Nightmare-Header': 'hello world'
+      };
+      new Nightmare()
+        .headers(headers)
+        .goto('http://httpbin.org/headers')
+        .evaluate(function () {
+          return document.body.children[0].innerHTML;
+        }, function (data) {
+          var json = null;
+          (function () {
+            json = JSON.parse(data);
+          }).should.not.throw();
+          json.should.have.property('headers');
+          json.headers.should.have.property('X-Nightmare-Header');
+          json.headers['X-Nightmare-Header'].should.equal('hello world');
+        })
+        .run(done);
+    });
+
   });
 
   /**
@@ -567,6 +656,28 @@ describe('Nightmare', function () {
           partiallyDone();
         })
         .run();
+    });
+
+    it('should run fine with one instance in sequence', function (done) {
+      new Nightmare()
+        .goto('http://www.nytimes.com/')
+        .evaluate(function () {
+          return document.documentElement.innerHTML;
+        }, function (res) {
+          res.length.should.be.greaterThan(1);
+        })
+        .run(function (err, nightmare) {
+
+          nightmare.goto('http://www.yahoo.com/')
+            .evaluate(function () {
+              return document.documentElement.innerHTML;
+            }, function (res) {
+              res.length.should.be.greaterThan(1);
+            }).run(function (err, nightmare) {
+              done();
+            });
+
+        });
     });
   });
 

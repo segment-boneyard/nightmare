@@ -1,4 +1,11 @@
 
+1.6.5 / 2014-11-11
+==================
+
+  * updating tests and fixing global port issue
+  * Adding sequential test case
+  * adding multiple clicks across multiple pages test
+
 1.6.4 / 2014-11-10
 ==================
 
