@@ -8,6 +8,15 @@ The goal is to expose just a few simple methods, and have an API that feels sync
 
 [Daydream](https://github.com/segmentio/daydream) is a complementary chrome extension built by [@stevenmiller888](https://github.com/stevenmiller888) that generates Nightmare scripts for you while you browse.
 
+* [Examples](#examples)
+* [API](#api)
+  - [Create](#new-nightmareoptions)
+  - [Interact](#interact)
+  - [Extract](#extract)
+  - [Settings](#settings)
+* [Plugins](#plugins)
+* [Usage](#usage)
+
 ## Examples
 
 Let's search on Yahoo:
@@ -154,7 +163,8 @@ Capture page events with the callback. You have to call `.on()` before calling `
 * `loadFinished` - callback(status)
 * `urlChanged` - callback(targetUrl)
 * `navigationRequested` - callback(url, type, willNavigate, main)
-* `resourceRequested` - callback(requestData, networkRequest)
+* `resourceRequestStarted` - callback(requestData, networkRequest), inside phantomjs context, useful for aborting `networkRequest.abort()` or changing requests `networkRequest.changeUrl(url)`, `networkRequest.setHeader(key, value)`
+* `resourceRequested` - callback(requestData), outside phantomjs context, useful for listening for resourceRequests
 * `resourceReceived` - callback(response)
 * `resourceError` - callback(resourceError)
 * `consoleMessage` - callback(msg, lineNumber, sourceId)
@@ -291,7 +301,7 @@ WWWWWW||WWWWWW
        (__|__|(__|__|
 ```
 
-Copyright (c) 2014 Segment.io Inc. <friends@segment.com>
+Copyright (c) 2015 Segment.io, Inc. <friends@segment.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

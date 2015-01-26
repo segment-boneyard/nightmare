@@ -394,6 +394,26 @@ describe('Nightmare', function () {
         });
     });
 
+    it('should fire an event when a resource request is started', function (done) {
+      var fired = false;
+      new Nightmare()
+        .on('resourceRequestStarted', function (requestData, networkRequest) {          
+          if (requestData.url.indexOf('yui') !== 0) {
+            networkRequest.abort();
+          }
+        })
+        .goto('http://www.yahoo.com')
+        .evaluate(function () {
+          return window.YUI;
+        }, function (yui) {
+          fired = !yui;
+        })
+        .run(function () {
+          fired.should.be.true;
+          done();
+        });
+    });
+
     it('should fire an event when a resource is requested', function (done) {
       var fired = false;
       new Nightmare()
