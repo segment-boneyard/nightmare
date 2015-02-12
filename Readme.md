@@ -1,4 +1,6 @@
 [![Build Status](https://circleci.com/gh/segmentio/nightmare.png?circle-token=dbb94336673268633371a89865e008b70ffedf6d)](https://circleci.com/gh/segmentio/nightmare)
+[![Inline docs](http://inch-ci.org/github/segmentio/nightmare.svg?branch=master)](http://inch-ci.org/github/segmentio/nightmare)
+
 Nightmare
 =========
 
