@@ -10,9 +10,9 @@ The goal is to expose just a few simple methods, and have an API that feels sync
 
 * [Examples](#examples)
 * [API](#api)
-  - [Create](#new-nightmareoptions)
-  - [Interact](#interact)
-  - [Extract](#extract)
+  - [Create an instance](#new-nightmareoptions)
+  - [Interact with the page](#interact)
+  - [Extract from the page](#extract)
   - [Settings](#settings)
 * [Plugins](#plugins)
 * [Usage](#usage)
@@ -97,7 +97,7 @@ The available options are:
 * `phantomPath`: specify a different custom path to PhantomJS, default not set.
 
 
-### Interact 
+### Interact with the Page
 
 #### .goto(url)
 Load the page at `url`.
@@ -132,8 +132,24 @@ Scrolls the page to desired position. `top` and `left` are always relative to th
 #### .inject(type, file)
 Inject a local `file` onto the current page. The file `type` must be either 'js' or 'css'.
 
-#### .evaluate(fn, cb, [arg1, arg2,...])
-Invokes `fn` on the page with `args`. On completion it passes the return value of `fn` as to `cb(res)`. Useful for extracting information from the page.
+#### .evaluate(fn, cb, arg1, arg2,...)
+Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On completion it passes the return value of `fn` as to `cb(res)`. Useful for extracting information from the page. Here's an example:
+
+```js
+var p1 = 1;
+var p2 = 2;
+
+nightmare
+  .evaluate(function (param1, param2) {
+        // now we're executing inside the browser scope.
+        return param1 + param2;
+     }, function (result) {
+        // now we're inside Node scope again
+        console.log( result);
+     }, p1, p2 // <-- that's how you pass parameters from Node scope to browser scope
+  ) // end evaluate
+  .run();
+```
 
 #### .wait()
 Wait until a page finishes loading, typically after a `.click()`.
@@ -154,7 +170,7 @@ Useful for using repeated code blocks, see the example with Swiftly login and ta
 Executes the queue of functions, and calls your `cb` when the script hits an error or completes the queue. The callback signature is `cb(err, nightmare)`.
 
 
-### Extract
+### Extract from the Page
 
 #### .exists(selector,cb)
 Determines if the selector exists, or not, on the page. The signature of the callback is `cb(boolean)`.
