@@ -55,6 +55,15 @@ describe('Nightmare', function () {
         .run(done);
     });
 
+    it('should get the status', function (done) {
+      new Nightmare()
+        .goto('http://www.google.com/')
+        .status(function (status) {
+          status.should.eql(200);
+        })
+        .run(done);
+    });
+
     it('should check if the selector exists', function (done) {
       new Nightmare()
         .goto('http://www.wikipedia.org/')
