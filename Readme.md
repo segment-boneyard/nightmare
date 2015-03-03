@@ -256,6 +256,7 @@ Set the request `headers`. You have to call this before calling `.goto()`.
 Here's a list of plugins, pull request to add your own to the list :)
 
 * [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly)
+* [nightmare-google-oauth2](https://github.com/h2non/nightmare-google-oauth2)
 
 ## Usage
 #### Installation
