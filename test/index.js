@@ -3,7 +3,7 @@ var should = require('should');
 var after = require('after');
 
 describe('Nightmare', function () {
-  this.timeout(30000);
+  this.timeout(40000);
 
   it('should be constructable', function () {
     var nightmare = new Nightmare();
@@ -130,7 +130,7 @@ describe('Nightmare', function () {
         .goto('http://google.com')
         .inject('js', 'test/files/jquery-2.1.1.min.js')
         .inject('css', 'test/files/test.css')
-        .evaluate(function () {          
+        .evaluate(function () {
           return $('body').css('background-color');
         }, function (color) {
           color.should.equal('rgb(255, 0, 0)');
@@ -143,14 +143,14 @@ describe('Nightmare', function () {
         .goto('http://google.com')
         .inject('js', 'test/files/jquery-2.1.1.min.js')
         .inject('pdf', 'test/files/test.css')
-        .evaluate(function () {          
+        .evaluate(function () {
           return $('body').css('background-color');
         }, function (color) {
           color.should.not.equal('rgb(255, 0, 0)');
         })
         .run(done);
     });
-  
+
     it('should type and click', function (done) {
       new Nightmare()
         .goto('http://yahoo.com')
@@ -187,6 +187,22 @@ describe('Nightmare', function () {
         });
     });
 
+    it('should check and select', function(done){
+        new Nightmare()
+        .goto('https://twitter.com/search-advanced')
+        .type('input[name="to"]', "@segment")
+        .check('input[name="attd"][value=":)"]')
+        .select('#lang', 'en')
+        .click('button[value="go"]')
+        .wait()
+        .evaluate(function () {
+            return document.title;
+          }, function (title) {
+            title.should.equal('lang:en to:segment :) - Twitter Search');
+          })
+        .run(done);
+    });
+
     it('should fire a keypress when typing', function(done) {
       new Nightmare()
         .goto('http://www.yahoo.com')
@@ -204,6 +220,33 @@ describe('Nightmare', function () {
           keypressed.should.be.true;
         })
         .run(done);
+    });
+
+    it('should scroll to specified position', function(done) {
+      new Nightmare()
+          .viewport(320, 320)
+          .goto('http://www.yahoo.com')
+          .wait()
+          .evaluate(function () {
+            return {
+              top: document.body.scrollTop,
+              left: document.body.scrollLeft
+            };
+          }, function (coordinates) {
+            coordinates.top.should.equal(0);
+            coordinates.left.should.equal(0);
+          })
+          .scrollTo(100,50)
+          .evaluate(function () {
+            return {
+              top: document.body.scrollTop,
+              left: document.body.scrollLeft
+            };
+          }, function (coordinates) {
+            coordinates.top.should.equal(100);
+            coordinates.left.should.equal(50);
+          })
+          .run(done);
     });
 
     it('should upload a file', function (done) {
@@ -227,13 +270,20 @@ describe('Nightmare', function () {
           .run(function (err) {
             err.should.exist;
             done();
-          });      
+          });
     });
 
     it('should take a screenshot', function (done) {
       new Nightmare()
         .goto('http://yahoo.com')
         .screenshot('test/test.png')
+        .run(done);
+    });
+
+    it('should render a PDF', function (done) {
+      new Nightmare()
+        .goto('http://yahoo.com')
+        .pdf('test/test.pdf')
         .run(done);
     });
 
@@ -320,12 +370,12 @@ describe('Nightmare', function () {
   describe('events', function () {
     var step1url = 'http://en.wikipedia.org/wiki/DOM_events';
     var step2url = 'http://en.wikipedia.org/wiki/DOM_events#Event_flow';
-    
+
     it('should fire an event on initialized', function (done) {
       var fired = false;
       new Nightmare()
         .on('initialized', function () {
-          fired = true;          
+          fired = true;
         })
         .goto('http://www.yahoo.com')
         .run(function () {
@@ -337,7 +387,7 @@ describe('Nightmare', function () {
     it('should fire an event on load started', function (done) {
       var fired = false;
       new Nightmare()
-        .on('loadStarted', function () {          
+        .on('loadStarted', function () {
           fired = true;
         })
         .goto('http://www.yahoo.com')
@@ -360,10 +410,30 @@ describe('Nightmare', function () {
         });
     });
 
+    it('should fire an event when a resource request is started', function (done) {
+      var fired = false;
+      new Nightmare()
+        .on('resourceRequestStarted', function (requestData, networkRequest) {          
+          if (requestData.url.indexOf('yui') !== 0) {
+            networkRequest.abort();
+          }
+        })
+        .goto('http://www.yahoo.com')
+        .evaluate(function () {
+          return window.YUI;
+        }, function (yui) {
+          fired = !yui;
+        })
+        .run(function () {
+          fired.should.be.true;
+          done();
+        });
+    });
+
     it('should fire an event when a resource is requested', function (done) {
       var fired = false;
       new Nightmare()
-        .on('resourceRequested', function () {          
+        .on('resourceRequested', function () {
           fired = true;
         })
         .goto('http://www.yahoo.com')
@@ -376,7 +446,7 @@ describe('Nightmare', function () {
     it('should fire an event when a resource is received', function (done) {
       var fired = false;
       new Nightmare()
-        .on('resourceReceived', function () {          
+        .on('resourceReceived', function () {
           fired = true;
         })
         .goto('http://www.yahoo.com')
@@ -447,7 +517,7 @@ describe('Nightmare', function () {
     it.skip('should fire an event when a prompt is seen', function (done) {
       var fired = false;
       new Nightmare()
-        .on('prompt', function () {          
+        .on('prompt', function () {
           fired = true;
         })
         .goto('http://www.yahoo.com')
@@ -464,7 +534,7 @@ describe('Nightmare', function () {
       var fired = false;
       new Nightmare()
         .on('error', function () {
-          fired = true;          
+          fired = true;
         })
         .goto('http://www.google.com')
         .evaluate(function () {
@@ -519,6 +589,41 @@ describe('Nightmare', function () {
           };
         }, function (res) {
           res.should.eql(size);
+        })
+        .run(done);
+    });
+
+    it('should scale the window contents', function(done) {
+      new Nightmare()
+          .viewport(1600, 900)
+          .goto('http://www.wikipedia.org')
+          .wait()
+          .screenshot('test/testScaleDefault.png')
+          .viewport(3200, 1800)
+          .zoom(2)
+          .goto('http://www.wikipedia.org')
+          .wait()
+          .screenshot('test/testScaleIs2.png')
+          .run(done);
+    });
+
+    it('should set headers', function (done) {
+      var headers = {
+        'X-Nightmare-Header': 'hello world'
+      };
+      new Nightmare()
+        .headers(headers)
+        .goto('http://httpbin.org/headers')
+        .evaluate(function () {
+          return document.body.children[0].innerHTML;
+        }, function (data) {
+          var json = null;
+          (function () {
+            json = JSON.parse(data);
+          }).should.not.throw();
+          json.should.have.property('headers');
+          json.headers.should.have.property('X-Nightmare-Header');
+          json.headers['X-Nightmare-Header'].should.equal('hello world');
         })
         .run(done);
     });

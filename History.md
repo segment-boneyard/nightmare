@@ -1,4 +1,23 @@
 
+1.7.0 / 2015-01-26
+==================
+
+  * adding pdf ignore, fixing test timeout
+  * adding new resourceRequestStarted event for executing in phantomjs context
+  * Add scrollTo feature. Resolves #130.
+  * Adds zoom feature. Resolves #136.
+  * added error handling for requiring file extension in screenshot
+  * added documentation for supported filetypes for .screenshot
+  * add json parsing guard to test
+  * adding link to tests for more examples
+  * updating readme with clearer function lists and sections, and mocha test example
+  * add readme for headers()
+  * add tests for headers()
+  * add headers method
+  * upping timeouts
+  * Add ability to save an A4 sized PDF
+  * add check and select
+
 1.6.5 / 2014-11-11
 ==================
 

@@ -8,6 +8,15 @@ The goal is to expose just a few simple methods, and have an API that feels sync
 
 [Daydream](https://github.com/segmentio/daydream) is a complementary chrome extension built by [@stevenmiller888](https://github.com/stevenmiller888) that generates Nightmare scripts for you while you browse.
 
+* [Examples](#examples)
+* [API](#api)
+  - [Create an instance](#new-nightmareoptions)
+  - [Interact with the page](#interact-with-the-page)
+  - [Extract from the page](#extract-from-the-page)
+  - [Settings](#settings)
+* [Plugins](#plugins)
+* [Usage](#usage)
+
 ## Examples
 
 Let's search on Yahoo:
@@ -24,18 +33,29 @@ new Nightmare()
     });
 ```
 
-Or, let's extract the entirety of Kayak's home page after everything has rendered:
+Or, let's run some mocha tests:
 
 ```js
 var Nightmare = require('nightmare');
-new Nightmare()
-  .goto('http://kayak.com')
-  .evaluate(function () {
-    return document.documentElement.innerHTML;
-  }, function (res) {
-    console.log(res);
-  })
-  .run();
+var expect = require('chai').expect; // jshint ignore:line
+
+describe('test yahoo search results', function() {
+  this.timeout(30000);
+
+  it('should find the nightmare github link first', function(done) {
+    new Nightmare()
+      .goto('http://yahoo.com')
+        .type('input[title="Search"]', 'github nightmare')
+        .click('.searchsubmit')
+        .wait('.url.breadcrumb')
+        .evaluate(function () {
+          return document.querySelector('.url.breadcrumb').innerText;
+        }, function (breadcrumb) {
+          expect(breadcrumb).to.equal('github.com');
+        })
+        .run(done);
+  });
+});
 ```
 
 Or, here's how you might automate a nicely abstracted login + task on Swiftly:
@@ -53,6 +73,8 @@ new Nightmare()
 ```
 
 And [here's the `nightmare-swiftly` plugin](https://github.com/segmentio/nightmare-swiftly).
+
+You can see examples of every function [in the tests here](https://github.com/segmentio/nightmare/blob/master/test/index.js).
 
 ## API
 
@@ -74,6 +96,9 @@ The available options are:
 * `cookiesFile`: specify the file to store the persistent cookies, default not set.
 * `phantomPath`: specify a different custom path to PhantomJS, default not set.
 
+
+### Interact with the Page
+
 #### .goto(url)
 Load the page at `url`.
 
@@ -86,32 +111,45 @@ Go forward to the next page.
 #### .refresh()
 Refresh the current page.
 
-#### .url(cb)
-Get the url of the current page, the signature of the callback is `cb(url)`.
-
-#### .title(cb)
-Get the title of the current page, the signature of the callback is `cb(title)`.
-
-#### .visible(selector,cb)
-Determines if a selector is visible, or not, on the page. The signature of the callback is `cb(boolean)`.
-
-#### .exists(selector,cb)
-Determines if the selector exists, or not, on the page. The signature of the callback is `cb(boolean)`.
-
 #### .click(selector)
 Clicks the `selector` element once.
 
 #### .type(selector, text)
 Enters the `text` provided into the `selector` element.
 
+#### .check(selector)
+Toggles the `selector` checkbox element.
+
+#### .select(selector, option)
+Changes the `selector` dropdown element to the option with attribute [value=`option`]
+
 #### .upload(selector, path)
 Specify the `path` to upload into a file input `selector` element.
+
+#### .scrollTo(top, left)
+Scrolls the page to desired position. `top` and `left` are always relative to the top left corner of the document.
 
 #### .inject(type, file)
 Inject a local `file` onto the current page. The file `type` must be either 'js' or 'css'.
 
-#### .evaluate(fn, cb, [arg1, arg2,...])
-Invokes `fn` on the page with `args`. On completion it passes the return value of `fn` as to `cb(res)`. Useful for extracting information from the page.
+#### .evaluate(fn, cb, arg1, arg2,...)
+Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On completion it passes the return value of `fn` as to `cb(res)`. Useful for extracting information from the page. Here's an example:
+
+```js
+var p1 = 1;
+var p2 = 2;
+
+nightmare
+  .evaluate(function (param1, param2) {
+        // now we're executing inside the browser scope.
+        return param1 + param2;
+     }, function (result) {
+        // now we're inside Node scope again
+        console.log( result);
+     }, p1, p2 // <-- that's how you pass parameters from Node scope to browser scope
+  ) // end evaluate
+  .run();
+```
 
 #### .wait()
 Wait until a page finishes loading, typically after a `.click()`.
@@ -125,11 +163,55 @@ Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 #### .wait(fn, value, [delay])
 Wait until the `fn` evaluated on the page returns `value`. Optionally, refresh the page every `delay` milliseconds, and only check after each refresh.
 
-#### .screenshot(path)
-Saves a screenshot of the current page to the specified `path`. Useful for debugging.
+#### .use(plugin)
+Useful for using repeated code blocks, see the example with Swiftly login and task creation in the docs above.
 
-#### .useragent(useragent)
-Set the `useragent` used by PhantomJS. You have to set the useragent before calling `.goto()`.
+#### .run(cb)
+Executes the queue of functions, and calls your `cb` when the script hits an error or completes the queue. The callback signature is `cb(err, nightmare)`.
+
+
+### Extract from the Page
+
+#### .exists(selector,cb)
+Determines if the selector exists, or not, on the page. The signature of the callback is `cb(boolean)`.
+
+#### .visible(selector,cb)
+Determines if a selector is visible, or not, on the page. The signature of the callback is `cb(boolean)`.
+
+#### .on(event, callback)
+Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are:
+* `initialized` - callback()
+* `loadStarted` - callback()
+* `loadFinished` - callback(status)
+* `urlChanged` - callback(targetUrl)
+* `navigationRequested` - callback(url, type, willNavigate, main)
+* `resourceRequestStarted` - callback(requestData, networkRequest), inside phantomjs context, useful for aborting `networkRequest.abort()` or changing requests `networkRequest.changeUrl(url)`, `networkRequest.setHeader(key, value)`
+* `resourceRequested` - callback(requestData), outside phantomjs context, useful for listening for resourceRequests
+* `resourceReceived` - callback(response)
+* `resourceError` - callback(resourceError)
+* `consoleMessage` - callback(msg, lineNumber, sourceId)
+* `alert` - callback(msg)
+* `confirm` - callback(msg)
+* `prompt` - callback(msg, defaultValue)
+* `error` - callback(msg, trace)
+* `timeout` - callback(msg) fired when a .wait() times out before condition becomes true
+
+For a more in-depth description, see [the full callbacks list for phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list).
+
+#### .screenshot(path)
+Saves a screenshot of the current page to the specified `path`. Useful for debugging. Note the path must include the file extension. Supported formats include .png, .gif, .jpeg, and .pdf.
+
+#### .pdf(path)
+Saves a PDF with A4 size pages of the current page to the specified `path`.
+
+#### .title(cb)
+Get the title of the current page, the callback signature is `cb(title)`.
+
+#### .url(cb)
+Get the url of the current page, the signature of the callback is `cb(url)`.
+
+### Settings
+These functions must be called _before_ `.goto(url)`.
 
 #### .authentication(user, password)
 Set the `user` and `password` for accessing a web page using basic authentication. Be sure to set it before calling `.goto(url)`.
@@ -143,33 +225,31 @@ new Nightmare()
   });
 ```
 
+#### .useragent(useragent)
+Set the `useragent` used by PhantomJS. You have to set the useragent before calling `.goto()`.
+
 #### .viewport(width, height)
 Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly, you have to set the viewport before calling `.goto()`.
 
-#### .on(event, callback)
-Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are:
-* `initialized` - callback()
-* `loadStarted` - callback()
-* `loadFinished` - callback(status)
-* `urlChanged` - callback(targetUrl)
-* `navigationRequested` - callback(url, type, willNavigate, main)
-* `resourceRequested` - callback(requestData, networkRequest)
-* `resourceReceived` - callback(response)
-* `resourceError` - callback(resourceError)
-* `consoleMessage` - callback(msg, lineNumber, sourceId)
-* `alert` - callback(msg)
-* `confirm` - callback(msg)
-* `prompt` - callback(msg, defaultValue)
-* `error` - callback(msg, trace)
-* `timeout` - callback(msg) fired when a .wait() times out before condition becomes true
+#### .zoom(zoomFactor)
+Set the amount of zoom on the page. Default for a page is zoomFactor = 1. To zoom to 200%, set zoomFactor to 2. Combine with larger viewports to produce high DPI screenshots.
 
-For a more in-depth description, see [the full callbacks list for phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list).
+```js
+new Nightmare()
+  //double DPI render of 1600x900
+  .viewport(3200, 1800)
+  .zoom(2)
+  .goto('http://www.wikipedia.org')
+  .wait()
+  .screenshot('test/testScaleIs2.png')
+  .run(function( err, nightmare){
+    console.log("done");
+  });
+```
 
-#### .use(plugin)
-Useful for using repeated code blocks, see the example with Swiftly login and task creation in the docs above.
 
-#### .run(cb)
-Executes the queue of functions, and calls your `cb` when the script hits an error or completes the queue. The callback signature is `cb(err, nightmare)`.
+#### .headers(headers)
+Set the request `headers`. You have to call this before calling `.goto()`.
 
 ## Plugins
 
@@ -224,8 +304,8 @@ When the tests are done, you'll see something like this:
 
 ```bash
 make test
-  ․․․․․․․․․․․․․․․․․
-  28 passing (46s)
+  ․․․․․․․․․․․․․․․․․․․․․․․․․․
+  42 passing (3m)
 ```
 
 ## License (MIT)
@@ -243,7 +323,7 @@ WWWWWW||WWWWWW
        (__|__|(__|__|
 ```
 
-Copyright (c) 2014 Segment.io Inc. <friends@segment.com>
+Copyright (c) 2015 Segment.io, Inc. <friends@segment.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
