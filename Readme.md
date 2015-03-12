@@ -195,6 +195,7 @@ Capture page events with the callback. You have to call `.on()` before calling `
 * `prompt` - callback(msg, defaultValue)
 * `error` - callback(msg, trace)
 * `timeout` - callback(msg) fired when a .wait() times out before condition becomes true
+* `exit` - callback(code, signal) fired when the underlying phantom process dies unexpectedly (if not handled, this will become an uncaught exception)
 
 For a more in-depth description, see [the full callbacks list for phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list).
 
