@@ -502,7 +502,6 @@ describe('Nightmare', function () {
     it('should fire the exit handler once the process exits', function (done) {
       new Nightmare()
         .on('exit', function (code, signal) {
-          code.should.equal(1);
           done();
         })
         .goto('http://example.com')
@@ -535,8 +534,7 @@ describe('Nightmare', function () {
         });
 
       function checkError(err) {
-        err.message.should.equal('the phantomjs process ended unexpectedly')
-        err.code.should.equal(1);
+        err.message.should.equal('the phantomjs process ended unexpectedly');
         done();
       }
     });
