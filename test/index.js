@@ -283,7 +283,11 @@ describe('Nightmare', function () {
     it('should render a PDF', function (done) {
       new Nightmare()
         .goto('http://yahoo.com')
-        .pdf('test/test.pdf')
+        .pdf('test/test.pdf', {
+          format: 'A4',
+          orientation: 'portrait',
+          margin: 0
+        })
         .run(done);
     });
 

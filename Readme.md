@@ -201,8 +201,27 @@ For a more in-depth description, see [the full callbacks list for phantomjs](htt
 #### .screenshot(path)
 Saves a screenshot of the current page to the specified `path`. Useful for debugging. Note the path must include the file extension. Supported formats include .png, .gif, .jpeg, and .pdf.
 
-#### .pdf(path)
-Saves a PDF with A4 size pages of the current page to the specified `path`.
+#### .pdf(path, paperSize)
+Saves a PDF with paper size defined by `paperSize` of the current page to the specified `path`.
+The given object should be in either this format: 
+```js
+{
+  width: '200px',
+  height: '300px',
+  margin: '0px'
+}
+```
+or this format
+```js
+{
+  format: 'A4',
+  orientation: 'portrait',
+  margin: '1cm'
+}
+```
+Supported formats are: `A3`, `A4`, `A5`, `Legal`, `Letter`, `Tabloid`.
+Orientation (`portrait`, `landscape`) is optional and defaults to 'portrait'.
+
 
 #### .title(cb)
 Get the title of the current page, the callback signature is `cb(title)`.
