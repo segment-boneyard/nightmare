@@ -12,11 +12,17 @@
     "url": "https://github.com/segmentio/nightmare.git"
   },
   "dependencies": {
+<<<<<<< HEAD
     "once": "1.3.0",
     "phantom": "^0.7.0",
+=======
+    "clone": "~0.1.11",
+>>>>>>> 8d0278f6b03edeb00f4446c9801e7657cb2a636b
     "debug": "^0.7.4",
     "defaults": "~1.0.0",
-    "clone": "~0.1.11"
+    "once": "1.3.0",
+    "phantom": "~0.6.1",
+    "phantomjs": "~1.9.12"
   },
   "devDependencies": {
     "should": "~2.1.1",
