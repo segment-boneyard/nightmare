@@ -300,7 +300,7 @@ Done.
 ```
 
 #### Tests
-Automated tests for nightmare itself are run using [Mocha](http://visionmedia.github.io/mocha/) and [Should](https://github.com/shouldjs/should.js), both of which will be installed via `npm install`. To run nightmare's tests, just do `make test`.
+Automated tests for nightmare itself are run using [Mocha](http://mochajs.org/) and [Should](https://github.com/shouldjs/should.js), both of which will be installed via `npm install`. To run nightmare's tests, just do `make test`.
 
 When the tests are done, you'll see something like this:
 
