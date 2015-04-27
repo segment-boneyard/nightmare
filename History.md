@@ -1,4 +1,10 @@
 
+1.8.1 / 2015-04-27
+==================
+
+  * Fix escaping of selectors in .wait(selector) thanks @thotypous
+  * Updated Mocha link thanks @mortonfox
+
 1.8.0 / 2015-03-23
 ==================
 
