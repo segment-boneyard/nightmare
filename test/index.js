@@ -57,6 +57,13 @@ describe('Nightmare', function () {
         .run(done);
     });
 
+    it('should escape the css selector correctly when waiting for an element', function (done) {
+      new Nightmare()
+        .goto(fixture('navigation'))
+        .wait('#escaping\\:test')
+        .run(done);
+    });
+
     it('should wait until evaluate returns the right value', function (done) {
       new Nightmare()
         .goto(fixture('navigation'))
