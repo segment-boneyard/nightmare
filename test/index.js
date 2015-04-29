@@ -739,6 +739,40 @@ describe('Nightmare', function () {
         });
     });
   });
+
+  describe('instance reuse', function (done) {
+
+    var nightmare = new Nightmare();
+
+    before(function(done) {
+      nightmare
+        .goto(fixture('simple'))
+        .setup(done);
+    });
+
+    after(function() {
+      nightmare.teardownInstance();
+    });
+
+    it('should support instance reuse', function (done) {
+      nightmare.evaluate(function() {
+        localStorage.setItem('hello', 'world');
+        return localStorage.getItem('hello');
+      }, function(world) {
+        world.should.eql('world');
+      }).exec(done);
+    });
+
+    it('should access localStorage from previous test case', function (done) {
+      nightmare.evaluate(function() {
+        return localStorage.getItem('hello');
+      }, function(world) {
+        world.should.eql('world');
+      }).exec(done);
+    });
+
+  });
+
 });
 
 /**
