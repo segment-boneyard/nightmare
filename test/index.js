@@ -305,6 +305,19 @@ describe('Nightmare', function () {
           })
           .run(done);
     });
+
+    it('should hover over an element', function(done) {
+      new Nightmare()
+        .goto(fixture('manipulation'))
+        .mouseover('h1')
+        .evaluate(function () {
+          var element = document.querySelector('h1');
+          return element.style.background;
+        }, function(h1Color){
+          h1Color.should.equal('rgb(102, 255, 102)');
+        })
+        .run(done);
+    });
   });
 
   describe('upload', function () {
