@@ -195,6 +195,7 @@ Capture page events with the callback. You have to call `.on()` before calling `
 * `prompt` - callback(msg, defaultValue)
 * `error` - callback(msg, trace)
 * `timeout` - callback(msg) fired when a .wait() times out before condition becomes true
+* `exit` - callback(code, signal) fired when the underlying phantom process dies unexpectedly (if not handled, this will become an uncaught exception)
 
 For a more in-depth description, see [the full callbacks list for phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list).
 
@@ -256,6 +257,7 @@ Set the request `headers`. You have to call this before calling `.goto()`.
 Here's a list of plugins, pull request to add your own to the list :)
 
 * [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly)
+* [nightmare-google-oauth2](https://github.com/h2non/nightmare-google-oauth2)
 
 ## Usage
 #### Installation
@@ -298,7 +300,7 @@ Done.
 ```
 
 #### Tests
-Automated tests for nightmare itself are run using [Mocha](http://visionmedia.github.io/mocha/) and [Should](https://github.com/shouldjs/should.js), both of which will be installed via `npm install`. To run nightmare's tests, just do `make test`.
+Automated tests for nightmare itself are run using [Mocha](http://mochajs.org/) and [Should](https://github.com/shouldjs/should.js), both of which will be installed via `npm install`. To run nightmare's tests, just do `make test`.
 
 When the tests are done, you'll see something like this:
 

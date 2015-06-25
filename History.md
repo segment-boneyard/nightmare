@@ -1,4 +1,24 @@
 
+1.8.2 / 2015-06-01
+==================
+
+
+
+1.8.1 / 2015-04-27
+==================
+
+  * Fix escaping of selectors in .wait(selector) thanks @thotypous
+  * Updated Mocha link thanks @mortonfox
+
+1.8.0 / 2015-03-23
+==================
+
+  * handling phantom crashes more gracefully
+  * fixing tests by using a local server and static fixtures
+  * feat(docs): add google-oauth2 plugin
+  * fixing links
+  * clearer ToC and clearer evaluate docs from #89
+
 1.7.0 / 2015-01-26
 ==================
 
