@@ -260,25 +260,6 @@ describe('Nightmare', function () {
         .run(done);
     });
 
-    it('should fire a keypress when typing', function(done) {
-      new Nightmare()
-        .goto(fixture('manipulation'))
-        .evaluate(function () {
-          window.keypressed = false;
-          var element = document.querySelector('input[type=search]');
-          element.onkeypress = function () {
-            window.keypressed = true;
-          };
-        })
-        .type('input[type=search]', 'nightmare')
-        .evaluate(function () {
-          return window.keypressed;
-        }, function (keypressed) {
-          keypressed.should.be.true;
-        })
-        .run(done);
-    });
-
     it('should scroll to specified position', function(done) {
       new Nightmare()
           .viewport(320, 320)
