@@ -1,0 +1,15 @@
+{
+  "name": "stellar",
+  "version": "0.0.0",
+  "dependencies": {
+    "debug": "^2.2.0",
+    "electron-prebuilt": "^0.29.2",
+    "function-source": "^0.1.0",
+    "minstache": "^1.2.0",
+    "multiline": "^1.0.2",
+    "selenium-webdriver": "^2.46.1",
+    "sliced": "0.0.5",
+    "subs": "^1.0.2",
+    "which": "^1.1.1"
+  }
+}
