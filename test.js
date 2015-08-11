@@ -10,23 +10,22 @@ vo(run)(function(err, result) {
 function *run() {
   var stellar = Stellar();
 
-  console.time('stellar');
   var first = yield stellar
     .goto('http://cnn.com')
     .evaluate(function() {
       return document.title;
     })
-    .end()
-  console.timeEnd('stellar');
 
-  // var second = yield stellar
-  //   .goto('http://facebook.com')
-  //   .evaluate(function() {
-  //     return document.title;
-  //   })
+  var second = yield stellar
+    .goto('http://facebook.com')
+    .evaluate(function() {
+      return document.title;
+    })
 
+  // disconnect
+  yield stellar.end()
 
-  // return first + ' | ' + second;
+  return first + ' | ' + second;
 }
 
 // var nightmare = new Nightmare();
