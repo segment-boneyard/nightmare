@@ -1,0 +1,3 @@
+--slow 3s
+--timeout 40s
+--require co-mocha
