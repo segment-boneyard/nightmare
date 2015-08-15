@@ -1,7 +1,8 @@
 {
   "name": "nightmare",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "main": "lib/nightmare.js",
+  "repository": "https://github.com/segmentio/nightmare",
   "dependencies": {
     "debug": "^2.2.0",
     "electron-prebuilt": "^0.29.2",
@@ -13,7 +14,15 @@
     "yieldly": "0.0.1"
   },
   "devDependencies": {
-    "vo": "^1.0.3",
-    "nightmare": "^1.8.2"
+    "after": "~0.8.1",
+    "basic-auth": "^1.0.0",
+    "basic-auth-connect": "^1.0.0",
+    "express": "^4.12.3",
+    "mocha": "2.x",
+    "co-mocha": "^1.0.1",
+    "multer": "^0.1.8",
+    "serve-static": "^1.9.2",
+    "chai": "^2.2.0",
+    "vo": "^1.0.3"
   }
 }
