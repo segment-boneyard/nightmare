@@ -10,6 +10,12 @@ var url = require('url');
 var server = require('./server');
 
 /**
+ * Get rid of a warning.
+ */
+
+process.setMaxListeners(0);
+
+/**
  * Locals.
  */
 
@@ -154,7 +160,7 @@ describe('Nightmare', function () {
       exists.should.be.false;
     });
 
-    /*it('should check if an element is visible', function*() {
+    it('should check if an element is visible', function*() {
       // visible element
       var visible = yield nightmare
         .goto(fixture('evaluation'))
@@ -179,23 +185,31 @@ describe('Nightmare', function () {
           return document.title + ' -- ' + parameter;
         }, 'testparameter');
       title.should.equal('Evaluation -- testparameter');
-    });*/
+    });
   });
 
-  /*describe('manipulation', function () {
-    it('should inject javascript onto the page', function (done) {
-      new Nightmare()
+  describe('manipulation', function () {
+    var nightmare;
+
+    beforeEach(function() {
+      nightmare = Nightmare();
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
+    it('should inject javascript onto the page', function*() {
+      var numAnchors = yield nightmare
         .goto(fixture('manipulation'))
         .inject('js', 'test/files/jquery-2.1.1.min.js')
         .evaluate(function () {
           return $('h1').length;
-        }, function (numAnchors) {
-          numAnchors.should.equal(1);
-        })
-        .run(done);
+        });
+      numAnchors.should.equal(1);
     });
 
-    it('should inject css onto the page', function (done) {
+    /*it('should inject css onto the page', function*() {
       new Nightmare()
       .goto(fixture('manipulation'))
         .inject('js', 'test/files/jquery-2.1.1.min.js')
@@ -208,7 +222,7 @@ describe('Nightmare', function () {
         .run(done);
     });
 
-    it('should not inject unsupported types onto the page', function (done) {
+    it('should not inject unsupported types onto the page', function*() {
       new Nightmare()
         .goto(fixture('manipulation'))
         .inject('js', 'test/files/jquery-2.1.1.min.js')
@@ -221,7 +235,7 @@ describe('Nightmare', function () {
         .run(done);
     });
 
-    it('should type and click', function (done) {
+    it('should type and click', function*() {
       new Nightmare()
         .goto(fixture('manipulation'))
         .type('input[type=search]', 'nightmare')
@@ -233,7 +247,7 @@ describe('Nightmare', function () {
         .run(done);
     });
 
-    it('should type and click several times', function (done) {
+    it('should type and click several times', function*() {
       new Nightmare()
         .goto(fixture('manipulation'))
         .type('input[type=search]', 'github nightmare')
@@ -328,10 +342,10 @@ describe('Nightmare', function () {
           h1Color.should.equal('rgb(102, 255, 102)');
         })
         .run(done);
-    });
+    });*/
   });
 
-  describe('upload', function () {
+  /*describe('upload', function () {
     it('should upload a file', function (done) {
       new Nightmare()
         .goto(fixture('upload'))
