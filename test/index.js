@@ -52,21 +52,19 @@ describe('Nightmare', function () {
         .forward();
     });
 
-    /*it('should refresh the page', function (done) {
-      new Nightmare()
+    it('should refresh the page', function*() {
+      yield nightmare
         .goto(fixture('navigation'))
-        .refresh()
-        .run(done);
+        .refresh();
     });
 
-    it('should wait until element is present', function (done) {
-      new Nightmare()
+    it('should wait until element is present', function*() {
+      yield nightmare
         .goto(fixture('navigation'))
-        .wait('a')
-        .run(done);
+        .wait('a');
     });
 
-    it('should escape the css selector correctly when waiting for an element', function (done) {
+    /*it('should escape the css selector correctly when waiting for an element', function (done) {
       new Nightmare()
         .goto(fixture('navigation'))
         .wait('#escaping\\:test')
