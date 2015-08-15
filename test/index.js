@@ -27,25 +27,32 @@ describe('Nightmare', function () {
   });
 
   describe('navigation', function () {
-    it('should click on a link and then go back', function *() {
-      var nightmare = Nightmare();
+    var nightmare;
+
+    beforeEach(function() {
+      nightmare = Nightmare();
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
+    it('should click on a link and then go back', function*() {
       yield nightmare
         .goto(fixture('navigation'))
         .click('a')
         .back();
-      yield nightmare.end();
     });
 
-    /*it('should click on a link, go back, and then go forward', function (done) {
-      new Nightmare()
+    it('should click on a link, go back, and then go forward', function*() {
+      yield nightmare
         .goto(fixture('navigation'))
         .click('a')
         .back()
-        .forward()
-        .run(done);
+        .forward();
     });
 
-    it('should refresh the page', function (done) {
+    /*it('should refresh the page', function (done) {
       new Nightmare()
         .goto(fixture('navigation'))
         .refresh()
