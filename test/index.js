@@ -58,13 +58,13 @@ describe('Nightmare', function () {
         .refresh();
     });
 
-    it('should wait until element is present', function*() {
+    /*it('should wait until element is present', function*() {
       yield nightmare
         .goto(fixture('navigation'))
         .wait('a');
     });
 
-    /*it('should escape the css selector correctly when waiting for an element', function (done) {
+    it('should escape the css selector correctly when waiting for an element', function (done) {
       new Nightmare()
         .goto(fixture('navigation'))
         .wait('#escaping\\:test')
@@ -117,68 +117,72 @@ describe('Nightmare', function () {
     });*/
   });
 
-  /*describe('evaluation', function () {
-    it('should get the title', function (done) {
-      new Nightmare()
-        .goto(fixture('evaluation'))
-        .title(function (title) {
-          title.should.eql('Evaluation');
-        })
-        .run(done);
+  describe('evaluation', function () {
+    var nightmare;
+
+    beforeEach(function() {
+      nightmare = Nightmare();
     });
 
-    it('should get the url', function (done) {
-      new Nightmare()
-        .goto(fixture('evaluation'))
-        .url(function (url) {
-          url.should.startWith(fixture('evaluation'));
-        })
-        .run(done);
+    afterEach(function*() {
+      yield nightmare.end();
     });
 
-    it('should check if the selector exists', function (done) {
-      new Nightmare()
+    it('should get the title', function*() {
+      var title = yield nightmare
         .goto(fixture('evaluation'))
-        .exists('h1.title', function (exists) {
-          exists.should.be.true;
-        })
-        .exists('a.blahblahblah', function (exists) {
-          exists.should.be.false;
-        })
-        .run(done);
+        .title();
+      title.should.eql('Evaluation');
     });
 
-    it('should check if an element is visible', function (done) {
-      new Nightmare()
+    it('should get the url', function*() {
+      var url = yield nightmare
         .goto(fixture('evaluation'))
-        // visible element
-        .visible('h1.title', function (visible) {
-          visible.should.be.true;
-        })
-        // hidden element
-        .visible('.hidden', function (visible) {
-          visible.should.be.false;
-        })
+        .url();
+      url.should.have.string(fixture('evaluation'));
+    });
+
+    it('should check if the selector exists', function*() {
+      // existent element
+      var exists = yield nightmare
+        .goto(fixture('evaluation'))
+        .exists('h1.title');
+      exists.should.be.true;
+
+      // non-existent element
+      exists = yield nightmare.exists('a.blahblahblah');
+      exists.should.be.false;
+    });
+
+    /*it('should check if an element is visible', function*() {
+      // visible element
+      var visible = yield nightmare
+        .goto(fixture('evaluation'))
+        .visible('h1.title');
+      visible.should.be.true;
+
+      // hidden element
+      visible = yield nightmare
+        .visible('.hidden');
+      visible.should.be.false;
+
         // non-existent element
-        .visible('#asdfasdfasdf', function (visible) {
-          visible.should.be.false;
-        })
-        .run(done);
+      visible = yield nightmare
+        .visible('#asdfasdfasdf');
+      visible.should.be.false;
     });
 
-    it('should evaluate javascript on the page, with parameters', function (done) {
-      new Nightmare()
+    it('should evaluate javascript on the page, with parameters', function*() {
+      var title = yield nightmare
         .goto(fixture('evaluation'))
         .evaluate(function (parameter) {
           return document.title + ' -- ' + parameter;
-        }, function (title) {
-          title.should.equal('Evaluation -- testparameter');
-        }, 'testparameter')
-        .run(done);
-    });
+        }, 'testparameter');
+      title.should.equal('Evaluation -- testparameter');
+    });*/
   });
 
-  describe('manipulation', function () {
+  /*describe('manipulation', function () {
     it('should inject javascript onto the page', function (done) {
       new Nightmare()
         .goto(fixture('manipulation'))
