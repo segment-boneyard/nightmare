@@ -1,7 +1,7 @@
 {
-  "name": "stellar",
+  "name": "nightmare",
   "version": "0.0.0",
-  "main": "lib/stellar.js",
+  "main": "lib/nightmare.js",
   "dependencies": {
     "debug": "^2.2.0",
     "electron-prebuilt": "^0.29.2",
