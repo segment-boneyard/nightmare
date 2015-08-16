@@ -210,7 +210,7 @@ describe('Nightmare', function () {
       
       var numAnchors = yield nightmare
         .goto(fixture('manipulation'))
-        .inject('js', 'test/files/jquery-2.1.4.js')
+        .inject('js', 'test/files/jquery-2.1.1.min.js')
         .evaluate(function () {
           return $('h1').length;
         });
@@ -239,114 +239,87 @@ describe('Nightmare', function () {
       color.should.not.equal('rgb(255, 0, 0)');
     });
 
-    /*it('should type and click', function*() {
-      new Nightmare()
+    it('should type and click', function*() {
+      var title = yield nightmare
         .goto(fixture('manipulation'))
         .type('input[type=search]', 'nightmare')
         .click('button[type=submit]')
-        .wait(1000)
-        .title(function (title) {
-          title.should.equal('Manipulation - Results');
-        })
-        .run(done);
+        .wait(500)
+        .title();
+
+      title.should.equal('Manipulation - Results');
     });
 
     it('should type and click several times', function*() {
-      new Nightmare()
+      var title = yield nightmare
         .goto(fixture('manipulation'))
         .type('input[type=search]', 'github nightmare')
         .click('button[type=submit]')
-        .wait(1000)
+        .wait(500)
         .click('a')
-        .wait(1000)
-        .title(function (title) {
-          title.should.equal('Manipulation - Result - Nightmare');
-        })
-        .run(done);
+        .wait(500)
+        .title();
+      title.should.equal('Manipulation - Result - Nightmare');
     });
 
-    it('should check', function(done){
-        new Nightmare()
+    it('should checkbox', function*() {
+      var checkbox = yield nightmare
         .goto(fixture('manipulation'))
         .check('input[type=checkbox]')
         .evaluate(function () {
-            return document.querySelector('input[type=checkbox]').checked;
-          }, function (value) {
-            value.should.be.true;
-          })
-        .run(done);
+          return document.querySelector('input[type=checkbox]').checked;
+        });
+      checkbox.should.be.true;
     });
 
-    it('should select', function(done){
-        new Nightmare()
+    it('should select', function*() {
+      var select = yield nightmare
         .goto(fixture('manipulation'))
         .select('select', 'b')
         .evaluate(function () {
-            return document.querySelector('select').value;
-          }, function (value) {
-            value.should.equal('b');
-          })
-        .run(done);
+          return document.querySelector('select').value;
+        });
+      select.should.equal('b');
     });
 
-    it('should fire a keypress when typing', function(done) {
-      new Nightmare()
+    it('should scroll to specified position', function*() {
+      // start at the top
+      var coordinates = yield nightmare
+        .viewport(320, 320)
         .goto(fixture('manipulation'))
         .evaluate(function () {
-          window.keypressed = false;
-          var element = document.querySelector('input[type=search]');
-          element.onkeypress = function () {
-            window.keypressed = true;
+          return {
+            top: document.body.scrollTop,
+            left: document.body.scrollLeft
           };
-        })
-        .type('input[type=search]', 'nightmare')
+        });
+      coordinates.top.should.equal(0);
+      coordinates.left.should.equal(0);
+
+      // scroll down a bit
+      coordinates = yield nightmare
+        .scrollTo(100, 50)
         .evaluate(function () {
-          return window.keypressed;
-        }, function (keypressed) {
-          keypressed.should.be.true;
-        })
-        .run(done);
+          return {
+            top: document.body.scrollTop,
+            left: document.body.scrollLeft
+          };
+        });
+      coordinates.top.should.equal(100);
+      // TODO: fix this in the fixture
+      // coordinates.left.should.equal(50);
     });
 
-    it('should scroll to specified position', function(done) {
-      new Nightmare()
-          .viewport(320, 320)
-          .goto(fixture('manipulation'))
-          .evaluate(function () {
-            return {
-              top: document.body.scrollTop,
-              left: document.body.scrollLeft
-            };
-          }, function (coordinates) {
-            coordinates.top.should.equal(0);
-            coordinates.left.should.equal(0);
-          })
-          .scrollTo(100, 50)
-          .evaluate(function () {
-            return {
-              top: document.body.scrollTop,
-              left: document.body.scrollLeft
-            };
-          }, function (coordinates) {
-            coordinates.top.should.equal(100);
-            // TODO: fix this in the fixture
-            // coordinates.left.should.equal(50);
-          })
-          .run(done);
-    });
-
-    it('should hover over an element', function(done) {
-      new Nightmare()
+    it('should hover over an element', function*() {
+      var color = yield nightmare
         .goto(fixture('manipulation'))
         .mouseover('h1')
         .evaluate(function () {
           var element = document.querySelector('h1');
           return element.style.background;
-        }, function(h1Color){
-          h1Color.should.equal('rgb(102, 255, 102)');
-        })
-        .run(done);
-    });*/
+        });
+      color.should.equal('rgb(102, 255, 102)');
+    });
   });
 
   /*describe('upload', function () {
