@@ -2,7 +2,7 @@
 Nightmare
 =========
 
-Nightmare is a high level browser automation library.
+Nightmare is a high-level browser automation library.
 
 The goal is to expose just a few simple methods, and have an API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
 
@@ -119,9 +119,6 @@ var text = yield nightmare
    }, selector); // <-- that's how you pass parameters from Node scope to browser scope
 ```
 
-#### .wait()
-Wait until a page finishes loading, typically after a `.click()`.
-
 #### .wait(ms)
 Wait for `ms` milliseconds e.g. `.wait(5000)`
 
@@ -131,20 +128,14 @@ Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 #### .wait(fn, value, [delay])
 Wait until the `fn` evaluated on the page returns `value`. Optionally, refresh the page every `delay` milliseconds, and only check after each refresh.
 
-#### .use(plugin)
-Useful for using repeated code blocks, see the example with Swiftly login and task creation in the docs above.
-
-#### .run(cb)
-Executes the queue of functions, and calls your `cb` when the script hits an error or completes the queue. The callback signature is `cb(err, nightmare)`.
-
 
 ### Extract from the Page
 
-#### .exists(selector,cb)
-Determines if the selector exists, or not, on the page. The signature of the callback is `cb(boolean)`.
+#### .exists(selector)
+Returns whether the selector exists or not on the page.
 
-#### .visible(selector,cb)
-Determines if a selector is visible, or not, on the page. The signature of the callback is `cb(boolean)`.
+#### .visible(selector)
+Returns whether the selector is visible or not
 
 #### .on(event, callback)
 Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are:
@@ -173,11 +164,11 @@ Saves a screenshot of the current page to the specified `path`. Useful for debug
 #### .pdf(path)
 Saves a PDF with A4 size pages of the current page to the specified `path`.
 
-#### .title(cb)
-Get the title of the current page, the callback signature is `cb(title)`.
+#### .title()
+Returns the title of the current page.
 
-#### .url(cb)
-Get the url of the current page, the signature of the callback is `cb(url)`.
+#### .url()
+Returns the url of the current page.
 
 ### Settings
 These functions must be called _before_ `.goto(url)`.
@@ -227,33 +218,40 @@ $ npm install --save nightmare
 #### Execution
 Nightmare is a node module that can be used in a Node.js script or module. Here's a simple script to open a web page:
 ```js
-var Nightmare = require('nightmare');
-var nightmare = Nightmare();
-var title = yield nightmare
+var Nightmare = require('../nightmare');
+var vo = require('vo');
+
+vo(run)(function(err, result) {
+  if (err) throw err;
+});
+
+function *run() {
+  var nightmare = Nightmare();
+  var title = yield nightmare
     .goto('http://cnn.com')
     .evaluate(function() {
       return document.title;
     });
-console.log(title);
-yield nightmare.end();
+  console.log(title);
+  yield nightmare.end();
+}
 ```
-If you save this as `cnn.js`, you can run it on the command line like this: `node cnn.js`.
+If you save this as `cnn.js`, you can run it on the command line like this:
+
+```bash
+npm install vo nightmare
+node --harmony cnn.js
+```
 
 #### Debug
-To run the same file with debugging output, run it like this `DEBUG=nightmare node cnn.js`.
+To run the same file with debugging output, run it like this `DEBUG=nightmare node --harmony cnn.js`.
 
 This will print out some additional information about what's going on:
 
 ```bash
-nightmare queueing action "goto" +0ms
-  nightmare run +3ms
-  nightmare .setup() creating phantom instance on port 12301 +1ms
-  nightmare .setup() phantom instance created +145ms
-  nightmare .setup() phantom page created +4ms
-  nightmare .goto() url: http://cnn.com +2ms
-  nightmare .goto() page loaded: success +1s
-  nightmare .teardownInstance() tearing down and bumping port to 12302 +501ms
-Done.
+  nightmare queueing action "goto" +0ms
+  nightmare queueing action "evaluate" +4ms
+  Breaking News, U.S., World, Weather, Entertainment & Video News - CNN.com
 ```
 
 #### Tests
@@ -263,8 +261,8 @@ When the tests are done, you'll see something like this:
 
 ```bash
 make test
-  ․․․․․․․․․․․․․․․․․․․․․․․․․․
-  42 passing (3m)
+  ․․․․․․․․․․․․․․․․․․
+  18 passing (1m)
 ```
 
 ## License (MIT)
