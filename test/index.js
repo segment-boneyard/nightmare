@@ -200,42 +200,46 @@ describe('Nightmare', function () {
     });
 
     it('should inject javascript onto the page', function*() {
+      var globalNumber = yield nightmare
+        .goto(fixture('manipulation'))
+        .inject('js', 'test/files/globals.js')
+        .evaluate(function () {
+          return globalNumber;
+        });
+      globalNumber.should.equal(7);
+      
       var numAnchors = yield nightmare
         .goto(fixture('manipulation'))
-        .inject('js', 'test/files/jquery-2.1.1.min.js')
+        .inject('js', 'test/files/jquery-2.1.4.js')
         .evaluate(function () {
           return $('h1').length;
         });
       numAnchors.should.equal(1);
     });
 
-    /*it('should inject css onto the page', function*() {
-      new Nightmare()
-      .goto(fixture('manipulation'))
+    it('should inject css onto the page', function*() {
+      var color = yield nightmare
+        .goto(fixture('manipulation'))
         .inject('js', 'test/files/jquery-2.1.1.min.js')
         .inject('css', 'test/files/test.css')
         .evaluate(function () {
           return $('body').css('background-color');
-        }, function (color) {
-          color.should.equal('rgb(255, 0, 0)');
-        })
-        .run(done);
+        });
+      color.should.equal('rgb(255, 0, 0)');
     });
 
     it('should not inject unsupported types onto the page', function*() {
-      new Nightmare()
+      var color = yield nightmare
         .goto(fixture('manipulation'))
         .inject('js', 'test/files/jquery-2.1.1.min.js')
         .inject('pdf', 'test/files/test.css')
         .evaluate(function () {
           return $('body').css('background-color');
-        }, function (color) {
-          color.should.not.equal('rgb(255, 0, 0)');
-        })
-        .run(done);
+        });
+      color.should.not.equal('rgb(255, 0, 0)');
     });
 
-    it('should type and click', function*() {
+    /*it('should type and click', function*() {
       new Nightmare()
         .goto(fixture('manipulation'))
         .type('input[type=search]', 'nightmare')
