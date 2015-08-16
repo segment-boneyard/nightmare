@@ -2,9 +2,11 @@
 Nightmare
 =========
 
-Nightmare is a high level wrapper for [Electron](http://electron.atom.io/) (similar to phantomjs) that lets you automate browser tasks.
+Nightmare is a high level browser automation library.
 
 The goal is to expose just a few simple methods, and have an API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
+
+Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but faster and more modern.
 
 [Daydream](https://github.com/segmentio/daydream) is a complementary chrome extension built by [@stevenmiller888](https://github.com/stevenmiller888) that generates Nightmare scripts for you while you browse.
 
@@ -14,7 +16,6 @@ The goal is to expose just a few simple methods, and have an API that feels sync
   - [Interact with the page](#interact-with-the-page)
   - [Extract from the page](#extract-from-the-page)
   - [Settings](#settings)
-* [Plugins](#plugins)
 * [Usage](#usage)
 
 ## Examples
@@ -23,15 +24,10 @@ Let's search on Yahoo:
 
 ```js
 var Nightmare = require('nightmare');
-var nightmare = Nightmare()
-yield nightmare
+yield Nightmare()
   .goto('http://yahoo.com')
-    .type('input[title="Search"]', 'github nightmare')
-    .click('.searchsubmit')
-    .run(function (err, nightmare) {
-      if (err) return console.log(err);
-      console.log('Done!');
-    });
+  .type('input[title="Search"]', 'github nightmare')
+  .click('.searchsubmit');
 ```
 
 Or, let's run some mocha tests:
@@ -41,36 +37,20 @@ var Nightmare = require('nightmare');
 var expect = require('chai').expect; // jshint ignore:line
 
 describe('test yahoo search results', function() {
-  this.timeout(30000);
-
   it('should find the nightmare github link first', function*() {
     var nightmare = Nightmare()
-    yield nightmare
+    var breadcrumb = yield nightmare
       .goto('http://yahoo.com')
-        .type('input[title="Search"]', 'github nightmare')
-        .click('.searchsubmit')
-        .wait('.url.breadcrumb')
-        .evaluate(function () {
-          return document.querySelector('.url.breadcrumb').innerText;
-        }, function (breadcrumb) {
-          expect(breadcrumb).to.equal('github.com');
-        });
+      .type('input[title="Search"]', 'github nightmare')
+      .click('.searchsubmit')
+      .wait('.url.breadcrumb')
+      .evaluate(function () {
+        return document.querySelector('.url.breadcrumb').innerText;
+      });
+    expect(breadcrumb).to.equal('github.com');
   });
 });
 ```
-
-Or, here's how you might automate a nicely abstracted login + task on Swiftly:
-
-```js
-var Nightmare = require('nightmare');
-var Swiftly = require('nightmare-swiftly');
-var nightmare = Nightmare();
-yield nightmare()
-  .use(Swiftly.login(email, password))
-  .use(Swiftly.task(instructions, uploads, path));
-```
-
-And [here's the `nightmare-swiftly` plugin](https://github.com/segmentio/nightmare-swiftly).
 
 You can see examples of every function [in the tests here](https://github.com/segmentio/nightmare/blob/master/test/index.js).
 
@@ -121,31 +101,22 @@ Toggles the `selector` checkbox element.
 #### .select(selector, option)
 Changes the `selector` dropdown element to the option with attribute [value=`option`]
 
-#### .upload(selector, path)
-Specify the `path` to upload into a file input `selector` element.
-
 #### .scrollTo(top, left)
 Scrolls the page to desired position. `top` and `left` are always relative to the top left corner of the document.
 
 #### .inject(type, file)
 Inject a local `file` onto the current page. The file `type` must be either 'js' or 'css'.
 
-#### .evaluate(fn, cb, arg1, arg2,...)
-Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On completion it passes the return value of `fn` as to `cb(res)`. Useful for extracting information from the page. Here's an example:
+#### .evaluate(fn, arg1, arg2,...)
+Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On completion it returns the return value of `fn`. Useful for extracting information from the page. Here's an example:
 
 ```js
-var p1 = 1;
-var p2 = 2;
-
-yield nightmare
-  .evaluate(function (param1, param2) {
-        // now we're executing inside the browser scope.
-        return param1 + param2;
-     }, function (result) {
-        // now we're inside Node scope again
-        console.log( result);
-     }, p1, p2 // <-- that's how you pass parameters from Node scope to browser scope
-  );
+var selector = 'h1';
+var text = yield nightmare
+  .evaluate(function (selector) {
+    // now we're executing inside the browser scope.
+    return document.querySelector(selector).innerText;
+   }, selector); // <-- that's how you pass parameters from Node scope to browser scope
 ```
 
 #### .wait()
@@ -244,13 +215,6 @@ yield nightmare
 
 #### .headers(headers)
 Set the request `headers`. You have to call this before calling `.goto()`.
-
-## Plugins
-
-Here's a list of plugins, pull request to add your own to the list :)
-
-* [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly)
-* [nightmare-google-oauth2](https://github.com/h2non/nightmare-google-oauth2)
 
 ## Usage
 #### Installation
