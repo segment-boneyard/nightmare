@@ -8,6 +8,8 @@ var should = require('chai').should();
 var after = require('after');
 var url = require('url');
 var server = require('./server');
+var fs = require('fs');
+var util = require('util');
 
 /**
  * Get rid of a warning.
@@ -64,29 +66,28 @@ describe('Nightmare', function () {
         .refresh();
     });
 
-    /*it('should wait until element is present', function*() {
+    it('should wait until element is present', function*() {
       yield nightmare
         .goto(fixture('navigation'))
         .wait('a');
     });
 
-    it('should escape the css selector correctly when waiting for an element', function (done) {
-      new Nightmare()
+    it('should escape the css selector correctly when waiting for an element', function*() {
+      yield nightmare
         .goto(fixture('navigation'))
-        .wait('#escaping\\:test')
-        .run(done);
+        .wait('#escaping\\:test');
     });
 
-    it('should wait until evaluate returns the right value', function (done) {
-      new Nightmare()
+    it('should wait until evaluate returns the right value', function*() {
+      yield nightmare
         .goto(fixture('navigation'))
         .wait(function () {
-          return document.querySelector('a').textContent;
-        }, 'A')
-        .run(done);
+          var text = document.querySelector('a').textContent;
+          return (text === 'A');
+        });
     });
 
-    it('should emit the timeout event if the check does not pass while waiting for selector', function (done) {
+    /*it('should emit the timeout event if the check does not pass while waiting for selector', function (done) {
       var timeoutMessageReceived = false;
 
       new Nightmare({
@@ -123,7 +124,7 @@ describe('Nightmare', function () {
     });*/
   });
 
-  describe('evaluation', function () {
+  /*describe('evaluation', function () {
     var nightmare;
 
     beforeEach(function() {
@@ -320,21 +321,34 @@ describe('Nightmare', function () {
         });
       color.should.equal('rgb(102, 255, 102)');
     });
-  });
+  });*/
 
-  /*
-  describe('rendering', function () {
-    it('should take a screenshot', function (done) {
-      new Nightmare()
-        .goto(fixture('manipulation'))
-        .screenshot('/tmp/nightmare/test.png')
-        .run(done);
+  
+  /*describe('rendering', function () {
+    var nightmare;
+
+    beforeEach(function() {
+      nightmare = Nightmare();
     });
 
-    it('should render a PDF', function (done) {
-      new Nightmare()
-        .pdf('/tmp/nightmare/test.pdf')
-        .run(done);
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
+    it('should take a screenshot', function*() {
+      yield nightmare
+        .goto(fixture('manipulation'))
+        .screenshot('/tmp/nightmare/test.png');
+      var stats = util.inspect(fs.statSync('/tmp/nightmare/test.png'));
+      stats.size.should.not.be(0);
+    });
+
+    it('should render a PDF', function*() {
+      yield nightmare
+        .goto(fixture('manipulation'))
+        .pdf('/tmp/nightmare/test.pdf');
+      var stats = util.inspect(fs.statSync('/tmp/nightmare/test.pdf'));
+      stats.size.should.not.be(0);
     });
   });
 

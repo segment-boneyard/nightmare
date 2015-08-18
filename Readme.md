@@ -56,7 +56,7 @@ You can see examples of every function [in the tests here](https://github.com/se
 
 ## API
 
-#### new Nightmare(options)
+#### Nightmare(options)
 Create a new instance that can navigate around the web.
 
 The available options are:
@@ -125,8 +125,8 @@ Wait for `ms` milliseconds e.g. `.wait(5000)`
 #### .wait(selector)
 Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 
-#### .wait(fn, value, [delay])
-Wait until the `fn` evaluated on the page returns `value`. Optionally, refresh the page every `delay` milliseconds, and only check after each refresh.
+#### .wait(fn)
+Wait until the `fn` evaluated on the page returns `true`.
 
 
 ### Extract from the Page
