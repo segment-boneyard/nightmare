@@ -24,7 +24,8 @@
     "basic-auth": "^1.0.0",
     "basic-auth-connect": "^1.0.0",
     "express": "^4.12.3",
-    "mocha": "~1.17.0",
+    "mocha": "~2.2.5",
+    "mocha.parallel": "^0.6.3",
     "multer": "^0.1.8",
     "serve-static": "^1.9.2",
     "should": "~2.1.1"

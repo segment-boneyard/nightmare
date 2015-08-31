@@ -8,6 +8,7 @@ var should = require('should');
 var after = require('after');
 var server = require('./server');
 var url = require('url');
+var parallel = require('mocha.parallel');
 
 /**
  * Locals.
@@ -25,7 +26,7 @@ describe('Nightmare', function () {
     nightmare.should.be.ok;
   });
 
-  describe('navigation', function () {
+  parallel('navigation', function () {
     it('should click on a link and then go back', function (done) {
       new Nightmare()
         .goto(fixture('navigation'))
@@ -110,7 +111,7 @@ describe('Nightmare', function () {
     });
   });
 
-  describe('evaluation', function () {
+  parallel('evaluation', function () {
     it('should get the title', function (done) {
       new Nightmare()
         .goto(fixture('evaluation'))
@@ -171,7 +172,7 @@ describe('Nightmare', function () {
     });
   });
 
-  describe('manipulation', function () {
+  parallel('manipulation', function () {
     it('should inject javascript onto the page', function (done) {
       new Nightmare()
         .goto(fixture('manipulation'))
@@ -320,7 +321,7 @@ describe('Nightmare', function () {
     });
   });
 
-  describe('upload', function () {
+  parallel('upload', function () {
     it('should upload a file', function (done) {
       new Nightmare()
         .goto(fixture('upload'))
@@ -346,7 +347,7 @@ describe('Nightmare', function () {
     });
   });
 
-  describe('rendering', function () {
+  parallel('rendering', function () {
     it('should take a screenshot', function (done) {
       new Nightmare()
         .goto(fixture('manipulation'))
@@ -561,7 +562,7 @@ describe('Nightmare', function () {
 
   });
 
-  describe('options', function () {
+  parallel('options', function () {
     it('should set agent', function (done) {
       new Nightmare()
         .useragent('firefox')
@@ -678,7 +679,7 @@ describe('Nightmare', function () {
     });
   });
 
-  describe('queue', function () {
+  parallel('queue', function () {
     it('should be ok with no callback to run', function (done) {
       var nightmare = new Nightmare()
         .goto(fixture('simple'))
