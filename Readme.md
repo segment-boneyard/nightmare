@@ -283,7 +283,7 @@ nightmare
 If you save this as `kayak.js`, you can run it on the command line like this: `node kayak.js`.
 
 #### Debug
-To run the same file with debugging output, run it like this `DEBUG=nightmare node kayak.js`.
+To run the same file with debugging output, run it like this `DEBUG=nightmare node kayak.js` (on Widnows use `set DEBUG=nightmare & node kayak.js`).
 
 This will print out some additional information about what's going on:
 
