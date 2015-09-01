@@ -416,6 +416,22 @@ describe('Nightmare', function () {
         });
     });
 
+    it('should also execute a resourceRequested callback on resourceRequestStarted', function (done) {
+      var fired = false;
+      new Nightmare()
+          .on('resourceRequestStarted',
+          function () {
+
+          }, function() {
+            fired = true;
+          })
+          .goto(fixture('events'))
+          .run(function () {
+            fired.should.be.true;
+            done();
+          });
+    });
+
     it('should fire an event when a resource is received', function (done) {
       var fired = false;
       new Nightmare()
