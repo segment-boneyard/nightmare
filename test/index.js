@@ -60,6 +60,21 @@ describe('Nightmare', function () {
       title.should.equal('Navigation')
     });
 
+    it('should work for links that dont go anywhere', function*() {
+      var title = yield nightmare
+        .goto(fixture('navigation'))
+        .click('a')
+        .title()
+
+      title.should.equal('A')
+
+      var title = yield nightmare
+        .click('.d')
+        .title()
+
+      title.should.equal('A')
+    })
+
     it('should click on a link, go back, and then go forward', function*() {
       yield nightmare
         .goto(fixture('navigation'))
