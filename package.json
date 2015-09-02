@@ -11,19 +11,17 @@
     "jsesc": "^0.5.0",
     "minstache": "^1.2.0",
     "once": "^1.3.2",
-    "sliced": "0.0.5",
-    "vo": "^1.0.3",
-    "yieldly": "0.0.1"
+    "sliced": "0.0.5"
   },
   "devDependencies": {
     "after": "~0.8.1",
-    "basic-auth": "^1.0.0",
+    "basic-auth": "^1.0.3",
     "basic-auth-connect": "^1.0.0",
-    "express": "^4.12.3",
-    "mocha": "2.x",
+    "chai": "^2.2.0",
     "co-mocha": "^1.0.1",
-    "multer": "^0.1.8",
-    "serve-static": "^1.9.2",
-    "chai": "^2.2.0"
+    "express": "^4.13.3",
+    "mocha": "^2.3.0",
+    "multer": "0.1.8",
+    "serve-static": "^1.10.0"
   }
 }
