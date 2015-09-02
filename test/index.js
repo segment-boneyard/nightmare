@@ -46,10 +46,18 @@ describe('Nightmare', function () {
     });
 
     it('should click on a link and then go back', function*() {
-      yield nightmare
+      var title = yield nightmare
         .goto(fixture('navigation'))
         .click('a')
-        .back();
+        .title()
+
+      title.should.equal('A')
+
+      var title = yield nightmare
+        .back()
+        .title()
+
+      title.should.equal('Navigation')
     });
 
     it('should click on a link, go back, and then go forward', function*() {
@@ -208,7 +216,7 @@ describe('Nightmare', function () {
           return globalNumber;
         });
       globalNumber.should.equal(7);
-      
+
       var numAnchors = yield nightmare
         .goto(fixture('manipulation'))
         .inject('js', 'test/files/jquery-2.1.1.min.js')
@@ -323,7 +331,7 @@ describe('Nightmare', function () {
     });
   });*/
 
-  
+
   /*describe('rendering', function () {
     var nightmare;
 
