@@ -12,10 +12,9 @@ Under the covers it uses [Electron](http://electron.atom.io/), which is similar 
 
 * [Examples](#examples)
 * [API](#api)
-  - [Create an instance](#new-nightmareoptions)
+  - [Set up an instance](#new-nightmareoptions)
   - [Interact with the page](#interact-with-the-page)
   - [Extract from the page](#extract-from-the-page)
-  - [Settings](#settings)
 * [Usage](#usage)
 
 ## Examples
@@ -57,9 +56,7 @@ You can see examples of every function [in the tests here](https://github.com/se
 ## API
 
 #### Nightmare(options)
-Create a new instance that can navigate around the web.
-
-The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions).
+Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions).
 
 ### Interact with the Page
 
@@ -91,7 +88,7 @@ Changes the `selector` dropdown element to the option with attribute [value=`opt
 Scrolls the page to desired position. `top` and `left` are always relative to the top left corner of the document.
 
 #### .inject(type, file)
-Inject a local `file` onto the current page. The file `type` must be either 'js' or 'css'.
+Inject a local `file` onto the current page. The file `type` must be either `js` or `css`.
 
 #### .evaluate(fn, arg1, arg2,...)
 Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On completion it returns the return value of `fn`. Useful for extracting information from the page. Here's an example:
@@ -155,43 +152,6 @@ Returns the title of the current page.
 
 #### .url()
 Returns the url of the current page.
-
-### Settings
-These functions must be called _before_ `.goto(url)`.
-
-#### .authentication(user, password)
-Set the `user` and `password` for accessing a web page using basic authentication. Be sure to set it before calling `.goto(url)`.
-
-```js
-var nightmare = Nightmare();
-yield nightmare
-  .authentication('myUserName','myPassword')
-  .goto('http://httpbin.org/basic-auth/myUserName/myPassword');
-```
-
-#### .useragent(useragent)
-Set the `useragent` used by PhantomJS. You have to set the useragent before calling `.goto()`.
-
-#### .viewport(width, height)
-Set the `width` and `height` of the viewport, useful for screenshotting. Weirdly, you have to set the viewport before calling `.goto()`.
-
-#### .zoom(zoomFactor)
-Set the amount of zoom on the page. Default for a page is zoomFactor = 1. To zoom to 200%, set zoomFactor to 2. Combine with larger viewports to produce high DPI screenshots.
-
-```js
-var nightmare = Nightmare();
-yield nightmare
-  //double DPI render of 1600x900
-  .viewport(3200, 1800)
-  .zoom(2)
-  .goto('http://www.wikipedia.org')
-  .wait()
-  .screenshot('test/testScaleIs2.png');
-```
-
-
-#### .headers(headers)
-Set the request `headers`. You have to call this before calling `.goto()`.
 
 ## Usage
 #### Installation

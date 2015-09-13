@@ -360,14 +360,14 @@ describe('Nightmare', function () {
       yield nightmare.end();
     });
 
-    /*it('should take a screenshot', function*() {
+    it('should take a screenshot', function*() {
       yield mkdirp('/tmp/nightmare');
       yield nightmare
         .goto('http://google.com/')
         .screenshot('/tmp/nightmare/test.png');
       var stats = fs.statSync('/tmp/nightmare/test.png');
       stats.size.should.be.at.least(1000);
-    });*/
+    });
 
     it('should render a PDF', function*() {
       yield mkdirp('/tmp/nightmare');
