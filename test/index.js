@@ -344,6 +344,7 @@ describe('Nightmare', function () {
   });
 
   describe('events', function () {
+
     it('should fire an event on page load complete', function*() {
       var fired = false;
       var nightmare = Nightmare()
@@ -352,6 +353,17 @@ describe('Nightmare', function () {
         });
       yield nightmare
         .goto(fixture('events'));
+      fired.should.be.true;
+    });
+
+    it('should fire an event on page load failure', function*() {
+      var fired = false;
+      var nightmare = Nightmare()
+        .on('did-fail-load', function () {
+          fired = true;
+        });
+      yield nightmare
+        .goto('https://alskdjfasdfuuu.com');
       fired.should.be.true;
     });
   });
