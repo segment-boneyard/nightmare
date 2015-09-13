@@ -121,25 +121,7 @@ Returns whether the selector exists or not on the page.
 Returns whether the selector is visible or not
 
 #### .on(event, callback)
-Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are:
-* `initialized` - callback()
-* `loadStarted` - callback()
-* `loadFinished` - callback(status)
-* `urlChanged` - callback(targetUrl)
-* `navigationRequested` - callback(url, type, willNavigate, main)
-* `resourceRequestStarted` - callback(requestData, networkRequest), inside phantomjs context, useful for aborting `networkRequest.abort()` or changing requests `networkRequest.changeUrl(url)`, `networkRequest.setHeader(key, value)`
-* `resourceRequested` - callback(requestData), outside phantomjs context, useful for listening for resourceRequests
-* `resourceReceived` - callback(response)
-* `resourceError` - callback(resourceError)
-* `consoleMessage` - callback(msg, lineNumber, sourceId)
-* `alert` - callback(msg)
-* `confirm` - callback(msg)
-* `prompt` - callback(msg, defaultValue)
-* `error` - callback(msg, trace)
-* `timeout` - callback(msg) fired when a .wait() times out before condition becomes true
-* `exit` - callback(code, signal) fired when the underlying phantom process dies unexpectedly (if not handled, this will become an uncaught exception)
-
-For a more in-depth description, see [the full callbacks list for phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list).
+Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#events).
 
 #### .screenshot(path)
 Saves a screenshot of the current page to the specified `path`. Useful for debugging. The output is always a `png`.
