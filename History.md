@@ -1,3 +1,9 @@
+2.0.1 / 2015-09-13
+==================
+
+* updated package.json
+* credits to @matthewmueller!
+
 
 2.0.0 / 2015-06-01
 ==================
