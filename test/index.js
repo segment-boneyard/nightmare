@@ -344,18 +344,15 @@ describe('Nightmare', function () {
   });
 
   describe('events', function () {
-    it('should fire an event on page load complete', function (done) {
+    it('should fire an event on page load complete', function*() {
       var fired = false;
-      yield Nightmare()
-        .on('initialized', function () {
+      var nightmare = Nightmare()
+        .on('did-finish-load', function () {
           fired = true;
-        })
-        .goto(fixture('events'))
-        .wait(1000)
-        .run(function () {
-          fired.should.be.true;
-          done();
         });
+      yield nightmare
+        .goto(fixture('events'));
+      fired.should.be.true;
     });
   });
 
