@@ -10,7 +10,7 @@ Under the covers it uses [Electron](http://electron.atom.io/), which is similar 
 
 [Daydream](https://github.com/segmentio/daydream) is a complementary chrome extension built by [@stevenmiller888](https://github.com/stevenmiller888) that generates Nightmare scripts for you while you browse.
 
-Many thanks to @matthewmueller for his help on Nightmare.
+Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help on Nightmare.
 
 * [Examples](#examples)
 * [API](#api)
