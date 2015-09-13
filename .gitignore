@@ -1,6 +1,0 @@
-node_modules
-test/*.png
-test/*.pdf
-
-.DS_Store
-/.idea
