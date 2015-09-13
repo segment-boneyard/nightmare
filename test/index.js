@@ -327,9 +327,35 @@ describe('Nightmare', function () {
     it('should take a screenshot', function*() {
       yield mkdirp('/tmp/nightmare');
       yield Nightmare()
-        .goto('http://walmart.com/')
+        .goto('http://google.com/')
         .screenshot('/tmp/nightmare/test.png');
       var stats = fs.statSync('/tmp/nightmare/test.png');
+      stats.size.should.be.at.least(1000);
+    });
+
+    it('should take a clipped screenshot', function*() {
+      yield mkdirp('/tmp/nightmare');
+      yield Nightmare()
+        .goto('http://google.com/')
+        .screenshot('/tmp/nightmare/test-clipped.png', {
+          x: 200,
+          y: 100,
+          width: 100,
+          height: 100
+        });
+      var stats = fs.statSync('/tmp/nightmare/test.png');
+      var statsClipped = fs.statSync('/tmp/nightmare/test-clipped.png');
+      statsClipped.size.should.be.at.least(500);
+      stats.size.should.be.at.least(10*statsClipped.size);
+    });
+
+    it('should render fonts correctly', function*() {
+      yield mkdirp('/tmp/nightmare');
+      yield Nightmare()
+        .goto(fixture('rendering'))
+        .wait(2000)
+        .screenshot('/tmp/nightmare/font-rendering.png');
+      var stats = fs.statSync('/tmp/nightmare/font-rendering.png');
       stats.size.should.be.at.least(1000);
     });
 

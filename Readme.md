@@ -125,8 +125,8 @@ Returns whether the selector is visible or not
 #### .on(event, callback)
 Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#events).
 
-#### .screenshot(path)
-Saves a screenshot of the current page to the specified `path`. Useful for debugging. The output is always a `png`.
+#### .screenshot(path[, clip])
+Saves a screenshot of the current page to the specified `path`. Useful for debugging. The output is always a `png`. You can optionally provide a clip rect as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback).
 
 #### .pdf(path, options)
 Saves a PDF with A4 size pages of the current page to the specified `path`. Options are [here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#webcontents-printtopdf-options-callback).

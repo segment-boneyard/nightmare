@@ -1,3 +1,9 @@
+2.0.2 / 2015-09-13
+==================
+
+* improving tests for rendering
+* adding support for screenshot clip rect #107
+
 2.0.1 / 2015-09-13
 ==================
 
