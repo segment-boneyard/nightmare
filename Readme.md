@@ -59,21 +59,7 @@ You can see examples of every function [in the tests here](https://github.com/se
 #### Nightmare(options)
 Create a new instance that can navigate around the web.
 
-The available options are:
-* `timeout`: how long to wait for page loads, default `5000ms`.
-* `interval`: how frequently to poll for page load state, default `50ms`.
-* `port`: port to mount the phantomjs instance to, default `12301`.
-* `weak`: set dnode weak option to `false` to fix cpp compilation for windows users, default `true`.
-* `loadImages`: load all inlined images, default `true`.
-* `ignoreSslErrors`: ignores SSL errors like expired or self-signed certificates, default `true`.
-* `sslProtocol`: set the protocol for secure connections `[sslv3|sslv2|tlsv1|any]`, default `any`.
-* `webSecurity`: enables web security and forbids cross-domain XHR, default `true`.
-* `proxy`: specify the proxy server to use `address:port`, default not set.
-* `proxyType`: specify the proxy server type `[http|socks5|none]`, default not set.
-* `proxyAuth`: specify the auth information for the proxy `user:pass`, default not set.
-* `cookiesFile`: specify the file to store the persistent cookies, default not set.
-* `phantomPath`: specify a different custom path to PhantomJS, default not set.
-
+The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions).
 
 ### Interact with the Page
 
