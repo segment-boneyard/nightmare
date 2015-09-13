@@ -142,7 +142,7 @@ Capture page events with the callback. You have to call `.on()` before calling `
 For a more in-depth description, see [the full callbacks list for phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#callbacks-list).
 
 #### .screenshot(path)
-Saves a screenshot of the current page to the specified `path`. Useful for debugging. Note the path must include the file extension. Supported formats include .png, .gif and .jpeg.
+Saves a screenshot of the current page to the specified `path`. Useful for debugging. The output is always a `png`.
 
 #### .pdf(path, options)
 Saves a PDF with A4 size pages of the current page to the specified `path`. Options are [here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#webcontents-printtopdf-options-callback).

@@ -111,42 +111,6 @@ describe('Nightmare', function () {
           return (text === 'A');
         });
     });
-
-    /*it('should emit the timeout event if the check does not pass while waiting for selector', function (done) {
-      var timeoutMessageReceived = false;
-
-      new Nightmare({
-          timeout: 1000
-        })
-        .on('timeout', function (msg) {
-          timeoutMessageReceived = true;
-        })
-        .goto(fixture('navigation'))
-        .wait('bbb')
-        .run(function () {
-          timeoutMessageReceived.should.be.true;
-          done();
-        });
-    });
-
-    it('should emit the timeout event if the check does not pass while waiting for fn==val', function (done) {
-      var timeoutMessageReceived = false;
-
-      new Nightmare({
-          timeout: 1000
-        })
-        .on('timeout', function (message) {
-          timeoutMessageReceived = true;
-        })
-        .goto(fixture('navigation'))
-        .wait(function () {
-          return 'abc';
-        }, 1)
-        .run(function () {
-          timeoutMessageReceived.should.be.true;
-          done();
-        });
-    });*/
   });
 
   describe('evaluation', function () {
@@ -379,10 +343,10 @@ describe('Nightmare', function () {
     });
   });
 
-  /*describe('events', function () {
-    it.skip('should fire an event on initialized', function (done) {
+  describe('events', function () {
+    it('should fire an event on page load complete', function (done) {
       var fired = false;
-      new Nightmare()
+      yield Nightmare()
         .on('initialized', function () {
           fired = true;
         })
@@ -393,191 +357,7 @@ describe('Nightmare', function () {
           done();
         });
     });
-
-    it('should fire an event on load started', function (done) {
-      var fired = false;
-      new Nightmare()
-        .on('loadStarted', function () {
-          fired = true;
-        })
-        .goto(fixture('events'))
-        .run(function () {
-          fired.should.be.true;
-          done();
-        });
-    });
-
-    it('should fire an event on load finished', function (done) {
-      var fired = false;
-      new Nightmare()
-        .on('loadFinished', function (status) {
-          fired = (status === 'success');
-        })
-        .goto(fixture('events'))
-        .run(function () {
-          fired.should.be.true;
-          done();
-        });
-    });
-
-    it('should fire an event when a resource is requested', function (done) {
-      var fired = false;
-      new Nightmare()
-        .on('resourceRequested', function () {
-          fired = true;
-        })
-        .goto(fixture('events'))
-        .run(function () {
-          fired.should.be.true;
-          done();
-        });
-    });
-
-    it('should fire an event when a resource is received', function (done) {
-      var fired = false;
-      new Nightmare()
-        .on('resourceReceived', function () {
-          fired = true;
-        })
-        .goto(fixture('events'))
-        .run(function () {
-          fired.should.be.true;
-          done();
-        });
-    });
-
-    it('should fire an event when navigation requested', function (done) {
-      var fired = false;
-      new Nightmare()
-        .on('navigationRequested', function (url) {
-          fired = true;
-        })
-        .goto(fixture('events'))
-        .run(function () {
-          fired.should.be.true;
-          done();
-        });
-    });
-
-    it('should fire an event when the url changes', function (done) {
-      var fired = false;
-      new Nightmare()
-        .on('urlChanged', function (url) {
-          url.should.startWith(fixture('events'));
-          fired = true;
-        })
-        .goto(fixture('events'))
-        .run(function () {
-          fired.should.be.true;
-          done();
-        });
-    });
-
-    it.skip('should fire an event when a console message is seen', function (done) {
-      var fired = false;
-      new Nightmare()
-        .on('consoleMessage', function () {
-          fired = true;
-        })
-        .goto(fixture('events'))
-        .evaluate(function () {
-          console.log('message');
-        })
-        .run(function () {
-          fired.should.be.true;
-          done();
-        });
-    });
-
-    it.skip('should fire an event when an alert is seen', function (done) {
-      var fired = false;
-      new Nightmare()
-        .on('alert', function () {
-          fired = true;
-        })
-        .goto(fixture('events'))
-        .evaluate( function () {
-          alert('ohno');
-        })
-        .run(function () {
-          fired.should.be.true;
-          done();
-        });
-    });
-
-    it('should fire an event when a prompt is seen', function (done) {
-      var fired = false;
-      new Nightmare()
-        .on('prompt', function () {
-          fired = true;
-        })
-        .goto(fixture('events'))
-        .evaluate(function () {
-          prompt('whowhatwherehow???');
-        })
-        .run(function () {
-          fired.should.be.true;
-          done();
-        });
-    });
-
-    it('should fire an event when an error occurs', function (done) {
-      var fired = false;
-      new Nightmare()
-        .on('error', function () {
-          fired = true;
-        })
-        .goto(fixture('events'))
-        .evaluate(function () {
-          return aaa;
-        })
-        .run(function () {
-          fired.should.be.true;
-          done();
-        });
-    });
-
-    it('should fire the exit handler once the process exits', function (done) {
-      new Nightmare()
-        .on('exit', function (code, signal) {
-          done();
-        })
-        .goto('http://example.com')
-        .run(function (err, nightmare) {
-          if (err) return done(err);
-          nightmare.phantomJS.process.kill(); // force the handler above to fire
-        });
-    });
-
-    it('should throw when an exit handler is not defined', function (done) {
-      // we need to override mocha's listener, but not remove them forever (just for this test)
-      var listeners = process.listeners('uncaughtException');
-      process.removeAllListeners('uncaughtException');
-      // now, we can add our own listener (as a one-time so it will be removed automatically)
-      process.once('uncaughtException', function (err) {
-        // re-attach the listeners we saved earlier
-        listeners.forEach(function (fn) {
-          process.on('uncaughtException', fn);
-        });
-
-        // now run our assertions
-        checkError(err);
-      });
-
-      new Nightmare()
-        .goto('http://example.com')
-        .run(function (err, nightmare) {
-          if (err) return done(err);
-          nightmare.phantomJS.process.kill(); // force the uncaught exception
-        });
-
-      function checkError(err) {
-        err.message.should.equal('the phantomjs process ended unexpectedly');
-        done();
-      }
-    });
-
-  });*/
+  });
 
   describe('options', function () {
 
