@@ -1,8 +1,17 @@
 {
   "name": "nightmare",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "lib/nightmare.js",
-  "repository": "https://github.com/segmentio/nightmare",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/segmentio/nightmare.git"
+  },
+  "author": "Segment",
+  "keywords": [
+    "nightmare",
+    "phantomjs"
+  ],
+  "description": "A high level wrapper for Phantomjs",
   "dependencies": {
     "debug": "^2.2.0",
     "defaults": "^1.0.2",
