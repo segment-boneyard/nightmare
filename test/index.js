@@ -10,6 +10,8 @@ var url = require('url');
 var server = require('./server');
 var fs = require('fs');
 var util = require('util');
+var thunkify = require('thunkify');
+var mkdirp = thunkify(require('mkdirp'));
 
 /**
  * Get rid of a warning.
@@ -34,7 +36,7 @@ describe('Nightmare', function () {
     yield nightmare.end();
   });
 
-  describe('navigation', function () {
+  /*describe('navigation', function () {
     var nightmare;
 
     beforeEach(function() {
@@ -145,9 +147,9 @@ describe('Nightmare', function () {
           done();
         });
     });*/
-  });
+  /*});
 
-  /*describe('evaluation', function () {
+  describe('evaluation', function () {
     var nightmare;
 
     beforeEach(function() {
@@ -347,7 +349,7 @@ describe('Nightmare', function () {
   });*/
 
 
-  /*describe('rendering', function () {
+  describe('rendering', function () {
     var nightmare;
 
     beforeEach(function() {
@@ -358,24 +360,26 @@ describe('Nightmare', function () {
       yield nightmare.end();
     });
 
-    it('should take a screenshot', function*() {
+    /*it('should take a screenshot', function*() {
+      yield mkdirp('/tmp/nightmare');
       yield nightmare
-        .goto(fixture('manipulation'))
+        .goto('http://google.com/')
         .screenshot('/tmp/nightmare/test.png');
-      var stats = util.inspect(fs.statSync('/tmp/nightmare/test.png'));
-      stats.size.should.not.be(0);
-    });
+      var stats = fs.statSync('/tmp/nightmare/test.png');
+      stats.size.should.be.at.least(1000);
+    });*/
 
     it('should render a PDF', function*() {
+      yield mkdirp('/tmp/nightmare');
       yield nightmare
         .goto(fixture('manipulation'))
         .pdf('/tmp/nightmare/test.pdf');
-      var stats = util.inspect(fs.statSync('/tmp/nightmare/test.pdf'));
-      stats.size.should.not.be(0);
+      var stats = fs.statSync('/tmp/nightmare/test.pdf');
+      stats.size.should.be.at.least(1000);
     });
   });
 
-  describe('events', function () {
+  /*describe('events', function () {
     it.skip('should fire an event on initialized', function (done) {
       var fired = false;
       new Nightmare()
