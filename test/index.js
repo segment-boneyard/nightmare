@@ -103,7 +103,7 @@ describe('Nightmare', function () {
         .wait('#escaping\\:test');
     });
 
-    it('should wait until evaluate returns the right value', function*() {
+    it('should wait until the evaluate fn returns true', function*() {
       yield nightmare
         .goto(fixture('navigation'))
         .wait(function () {
