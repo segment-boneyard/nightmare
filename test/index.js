@@ -36,7 +36,7 @@ describe('Nightmare', function () {
     yield nightmare.end();
   });
 
-  /*describe('navigation', function () {
+  describe('navigation', function () {
     var nightmare;
 
     beforeEach(function() {
@@ -147,7 +147,7 @@ describe('Nightmare', function () {
           done();
         });
     });*/
-  /*});
+  });
 
   describe('evaluation', function () {
     var nightmare;
@@ -346,7 +346,7 @@ describe('Nightmare', function () {
         });
       color.should.equal('rgb(102, 255, 102)');
     });
-  });*/
+  });
 
 
   describe('rendering', function () {
@@ -577,75 +577,53 @@ describe('Nightmare', function () {
       }
     });
 
-  });
+  });*/
 
   describe('options', function () {
-    it('should set agent', function (done) {
-      new Nightmare()
-        .useragent('firefox')
-        .goto(fixture('options'))
-        .evaluate(function () {
-          return window.navigator.userAgent;
-        }, function (res) {
-          res.should.eql('firefox');
-        })
-        .run(done);
-    });
 
-    it('should set authentication', function (done) {
-      new Nightmare()
+    /*
+    PENDING FIX UPSTREAM
+    https://github.com/atom/electron/issues/1362
+
+    it('should set authentication', function*() {
+      var data = yield Nightmare()
         .authentication('my', 'auth')
         .goto(fixture('auth'))
         .evaluate(function () {
           return JSON.parse(document.querySelector('pre').innerHTML);
-        }, function (data) {
-          data.should.eql({ name: 'my', pass: 'auth' });
-        })
-        .run(done);
+        });
+      data.should.eql({ name: 'my', pass: 'auth' });
     });
+    */
 
-    it('should set viewport', function (done) {
-      var size = { width: 400, height: 1000 };
-      new Nightmare()
-        .viewport(size.width, size.height)
+    it('should set viewport', function*() {
+      var size = { width: 400, height: 1000, 'use-content-size': true };
+      var result = yield Nightmare(size)
         .goto(fixture('options'))
         .evaluate(function () {
           return {
             width: window.innerWidth,
             height: window.innerHeight
           };
-        }, function (res) {
-          res.should.eql(size);
-        })
-        .run(done);
+        });
+      result.width.should.eql(size.width);
+      result.height.should.eql(size.height);
     });
 
-    it('should scale the window contents', function(done) {
-      new Nightmare()
-        .viewport(1600, 900)
-        .goto(fixture('options'))
-        .wait()
-        .screenshot('/tmp/nightmare/testScaleDefault.png')
-        .viewport(3200, 1800)
-        .zoom(2)
-        .goto(fixture('options'))
-        .wait()
-        .screenshot('/tmp/nightmare/testScaleIs2.png')
-        .run(done);
-    });
+    /*
+    NOT AVAILABLE UPSTREAM in electron
 
-    it('should set headers', function (done) {
-      new Nightmare()
+    it('should set headers', function*() {
+      var headers = yield Nightmare()
         .headers({ 'X-Nightmare-Header': 'hello world' })
         .goto(fixture('headers'))
         .evaluate(function () {
           return JSON.parse(document.querySelector('pre').innerHTML);
-        }, function (headers) {
-          headers['x-nightmare-header'].should.equal('hello world');
-        })
-        .run(done);
+        });
+      headers['x-nightmare-header'].should.equal('hello world');
     });
-  });*/
+    */
+  });
 });
 
 /**
