@@ -345,7 +345,7 @@ describe('Nightmare', function () {
         });
       var stats = fs.statSync('/tmp/nightmare/test.png');
       var statsClipped = fs.statSync('/tmp/nightmare/test-clipped.png');
-      statsClipped.size.should.be.at.least(500);
+      statsClipped.size.should.be.at.least(300);
       stats.size.should.be.at.least(10*statsClipped.size);
     });
 
