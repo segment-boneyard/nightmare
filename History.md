@@ -1,3 +1,9 @@
+2.0.3 / 2015-09-19
+==================
+
+* improving test cleanup, thanks @fritx!
+* bumping electron from 0.32.2 to 0.33.0
+
 2.0.2 / 2015-09-13
 ==================
 

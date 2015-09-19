@@ -1,6 +1,6 @@
 {
   "name": "nightmare",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "main": "lib/nightmare.js",
   "repository": {
     "type": "git",
