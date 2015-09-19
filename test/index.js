@@ -326,7 +326,7 @@ describe('Nightmare', function () {
 
     it('should take a screenshot', function*() {
       yield mkdirp('/tmp/nightmare');
-      yield Nightmare()
+      yield nightmare
         .goto('http://google.com/')
         .screenshot('/tmp/nightmare/test.png');
       var stats = fs.statSync('/tmp/nightmare/test.png');
@@ -335,7 +335,7 @@ describe('Nightmare', function () {
 
     it('should take a clipped screenshot', function*() {
       yield mkdirp('/tmp/nightmare');
-      yield Nightmare()
+      yield nightmare
         .goto('http://google.com/')
         .screenshot('/tmp/nightmare/test-clipped.png', {
           x: 200,
@@ -351,7 +351,7 @@ describe('Nightmare', function () {
 
     it('should render fonts correctly', function*() {
       yield mkdirp('/tmp/nightmare');
-      yield Nightmare()
+      yield nightmare
         .goto(fixture('rendering'))
         .wait(2000)
         .screenshot('/tmp/nightmare/font-rendering.png');
@@ -370,10 +370,19 @@ describe('Nightmare', function () {
   });
 
   describe('events', function () {
+    var nightmare;
+
+    beforeEach(function() {
+      nightmare = Nightmare();
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
 
     it('should fire an event on page load complete', function*() {
       var fired = false;
-      var nightmare = Nightmare()
+      nightmare
         .on('did-finish-load', function () {
           fired = true;
         });
@@ -384,7 +393,7 @@ describe('Nightmare', function () {
 
     it('should fire an event on page load failure', function*() {
       var fired = false;
-      var nightmare = Nightmare()
+      nightmare
         .on('did-fail-load', function () {
           fired = true;
         });
@@ -395,13 +404,18 @@ describe('Nightmare', function () {
   });
 
   describe('options', function () {
+    var nightmare;
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
 
     /*
     PENDING FIX UPSTREAM
     https://github.com/atom/electron/issues/1362
 
     it('should set authentication', function*() {
-      var data = yield Nightmare()
+      var data = yield nightmare
         .authentication('my', 'auth')
         .goto(fixture('auth'))
         .evaluate(function () {
@@ -413,7 +427,8 @@ describe('Nightmare', function () {
 
     it('should set viewport', function*() {
       var size = { width: 400, height: 1000, 'use-content-size': true };
-      var result = yield Nightmare(size)
+      nightmare = Nightmare(size);
+      var result = yield nightmare
         .goto(fixture('options'))
         .evaluate(function () {
           return {
