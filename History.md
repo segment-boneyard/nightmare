@@ -1,4 +1,9 @@
-2.0.4 / 2015-09-19
+2.0.5 / 2015-09-20
+==================
+
+* adding .useragent() support back, thanks @jefeweisen!
+
+2.0.4 / 2015-09-20
 ==================
 
 * improving logging for screenshot, events and goto
