@@ -1,3 +1,8 @@
+2.0.4 / 2015-09-19
+==================
+
+* improving logging for screenshot, events and goto
+
 2.0.3 / 2015-09-19
 ==================
 
