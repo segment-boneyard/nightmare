@@ -177,7 +177,7 @@ node --harmony cnn.js
 ```
 
 #### Debug
-To run the same file with debugging output, run it like this `DEBUG=nightmare node --harmony cnn.js`.
+To run the same file with debugging output, run it like this `DEBUG=nightmare node --harmony cnn.js` (on Widnows use `set DEBUG=nightmare & node cnn.js`).
 
 This will print out some additional information about what's going on:
 
