@@ -60,6 +60,9 @@ You can see examples of every function [in the tests here](https://github.com/se
 #### Nightmare(options)
 Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions).
 
+#### .useragent(useragent)
+Set the `useragent` used by electron.
+
 ### Interact with the Page
 
 #### .goto(url)
@@ -136,21 +139,6 @@ Returns the title of the current page.
 
 #### .url()
 Returns the url of the current page.
-
-### Settings
-These functions must be called _before_ `.goto(url)`.
-
-#### .useragent(useragent)
-Set the `useragent` used by PhantomJS. You have to set the useragent before calling `.goto()`.
-
-```js
-new Nightmare()
-  .useragent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.36')
-  .goto('https://sitewithnoapi.net/login')
-  .run(function( err, nightmare){
-    console.log("login page loaded");
-  });
-```
 
 ## Usage
 #### Installation

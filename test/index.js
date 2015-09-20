@@ -410,6 +410,17 @@ describe('Nightmare', function () {
       yield nightmare.end();
     });
 
+    it('should set useragent', function* () {
+      nightmare = new Nightmare();
+      var useragent = yield nightmare
+        .useragent('firefox')
+        .goto(fixture('options'))
+        .evaluate(function () {
+          return window.navigator.userAgent;
+        });
+      useragent.should.eql('firefox');
+    });
+
     /*
     PENDING FIX UPSTREAM
     https://github.com/atom/electron/issues/1362
