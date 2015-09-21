@@ -5,11 +5,9 @@
 
 var Nightmare = require('..');
 var should = require('chai').should();
-var after = require('after');
 var url = require('url');
 var server = require('./server');
 var fs = require('fs');
-var util = require('util');
 var thunkify = require('thunkify');
 var mkdirp = thunkify(require('mkdirp'));
 

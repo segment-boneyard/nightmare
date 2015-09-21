@@ -26,7 +26,6 @@
     "thunkify": "^2.1.2"
   },
   "devDependencies": {
-    "after": "~0.8.1",
     "basic-auth": "^1.0.3",
     "basic-auth-connect": "^1.0.0",
     "chai": "^2.2.0",
