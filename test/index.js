@@ -449,6 +449,20 @@ describe('Nightmare', function () {
       result.height.should.eql(size.height);
     });
 
+    it('should set proxy', function*() {
+      var ip = "127.0.0.1";
+      var port = 9050;
+      var type = "socks5";
+      var proxy = type + "://" + ip + ":" + port;
+      nightmare = Nightmare({proxy: proxy});
+      var result = yield nightmare
+        .goto("https://httpbin.org/ip")
+        .evaluate(function () {
+          return JSON.parse(document.body.innerText);
+        });
+      result.origin.should.be.ok;
+    });
+
     /*
     NOT AVAILABLE UPSTREAM in electron
 
