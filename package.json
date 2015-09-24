@@ -16,8 +16,6 @@
     "debug": "^2.2.0",
     "defaults": "^1.0.2",
     "electron-prebuilt": "^0.33.0",
-    "enqueue": "^1.0.2",
-    "function-source": "^0.1.0",
     "jsesc": "^0.5.0",
     "minstache": "^1.2.0",
     "mkdirp": "^0.5.1",
