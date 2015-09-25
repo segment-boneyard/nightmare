@@ -419,6 +419,17 @@ describe('Nightmare', function () {
       fired.should.be.true;
     });
 
+    it('should fire an event on javascript error', function*() {
+      var fired = false;
+      nightmare
+        .on('error', function (errorMessage) {
+          fired = true;
+        });
+      yield nightmare
+        .goto(fixture('events'));
+      fired.should.be.true;
+    });
+
     it('should fire an event on page load failure', function*() {
       var fired = false;
       nightmare
