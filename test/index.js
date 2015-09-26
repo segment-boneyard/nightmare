@@ -325,7 +325,7 @@ describe('Nightmare', function () {
     it('should take a screenshot', function*() {
       yield mkdirp('/tmp/nightmare');
       yield nightmare
-        .goto('http://google.com/')
+        .goto('https://github.com/')
         .screenshot('/tmp/nightmare/test.png');
       var stats = fs.statSync('/tmp/nightmare/test.png');
       stats.size.should.be.at.least(1000);
@@ -334,7 +334,7 @@ describe('Nightmare', function () {
     it('should take a clipped screenshot', function*() {
       yield mkdirp('/tmp/nightmare');
       yield nightmare
-        .goto('http://google.com/')
+        .goto('https://github.com/')
         .screenshot('/tmp/nightmare/test-clipped.png', {
           x: 200,
           y: 100,
