@@ -347,6 +347,17 @@ describe('Nightmare', function () {
       stats.size.should.be.at.least(10*statsClipped.size);
     });
 
+    it('should load jquery correctly', function*() {
+      yield mkdirp('/tmp/nightmare');
+      var loaded = yield nightmare
+        .goto(fixture('rendering'))
+        .wait(2000)
+        .evaluate(function() {
+          return !!window.jQuery;
+        });
+      loaded.should.be.at.least(true);
+    });
+
     it('should render fonts correctly', function*() {
       yield mkdirp('/tmp/nightmare');
       yield nightmare
