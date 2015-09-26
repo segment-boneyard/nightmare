@@ -1,3 +1,12 @@
+
+2.0.6 / 2015-09-25
+==================
+
+  * changing the tests to point to github to avoid the great firewall fix #249
+  * Use node-integration for electron, fix scripts loading fix #242 #247
+  * Remove after and util in test/index.js
+  * adding windows debug hint
+
 2.0.5 / 2015-09-20
 ==================
 
@@ -176,7 +185,7 @@
 
  * changing run structure to auto-terminate phantomjs instances
  * naming goBack to back
-  
+
 1.0.5 / 2014-09-30
 ==================
 
@@ -199,7 +208,7 @@
  * cleaning up naming, whitespace, structure.. thanks @ianstormtaylor!
  * fixing readme and history
 
-1.0.1 / 2014-05-10 
+1.0.1 / 2014-05-10
 ==================
 
   * fixing queueing and .use() call order
@@ -208,7 +217,7 @@
   * fixing history
   * queue .use(). Closes #10
 
-1.0.0 / 2014-05-10 
+1.0.0 / 2014-05-10
 ==================
 
   * renaming methods, fixes #18 and #19
@@ -217,38 +226,38 @@
   * update phantomjs-node for 0.11.x support
   * add instance option for phantomjs port
 
-0.1.7 / 2014-04-14 
+0.1.7 / 2014-04-14
 ==================
 
   * Merge pull request #14 from queckezz/update/allow-no-args
   * allow no args and fix debug for .evaluate()
   * fixing history
 
-0.1.6 / 2014-04-13 
+0.1.6 / 2014-04-13
 ==================
 
   * adding .url(), more debug()s and a test for .url()
   * fxiing histoyr
 
-0.1.5 / 2014-04-12 
+0.1.5 / 2014-04-12
 ==================
 
   * fixing impatient to only apply to upload since it breaks wait
   * fixing history
 
-0.1.4 / 2014-04-12 
+0.1.4 / 2014-04-12
 ==================
 
   * making callbacks impatient based on timeouts
   * fixing history
 
-0.1.3 / 2014-04-12 
+0.1.3 / 2014-04-12
 ==================
 
   * fixing upload not having a callback
   * fixing history
 
-0.1.2 / 2014-04-11 
+0.1.2 / 2014-04-11
 ==================
 
   * clarifying readme
@@ -257,14 +266,14 @@
   * refactoring tests into sections
   * fixing history
 
-0.1.1 / 2014-04-08 
+0.1.1 / 2014-04-08
 ==================
 
   * adding test to duplicate queue ordering issue, fixing issue, fixes #9
   * adding nightmare-swiftly plugin mention with docs
   * fixing history
 
-0.1.0 / 2014-04-07 
+0.1.0 / 2014-04-07
 ==================
 
   * adding .use() to docs
@@ -273,7 +282,7 @@
   * changes .run() to .evaluate(), removes .error() and cleans up internal wrapping
   * fixing history
 
-0.0.13 / 2014-04-07 
+0.0.13 / 2014-04-07
 ==================
 
   * Merge pull request #6 from segmentio/phantomjs-node
@@ -283,12 +292,12 @@
   * Merge branch 'master' of https://github.com/segmentio/nightmare
   * Update Readme.md
 
-0.0.12 / 2014-04-06 
+0.0.12 / 2014-04-06
 ==================
 
   * adding .viewport() and .agent(), fixes #2
 
-0.0.11 / 2014-04-06 
+0.0.11 / 2014-04-06
 ==================
 
   * making debug output consistent
@@ -296,63 +305,63 @@
   * fixing .wait() readme docs
   * fixing history
 
-0.0.10 / 2014-04-06 
+0.0.10 / 2014-04-06
 ==================
 
   * adding .run() method with docs and test. fixes #1
   * Update Readme.md
   * fixing history
 
-0.0.9 / 2014-04-05 
+0.0.9 / 2014-04-05
 ==================
 
   * adding more debug statements
   * fixing history
 
-0.0.8 / 2014-04-05 
+0.0.8 / 2014-04-05
 ==================
 
   * updating readme for screen and options
   * fixing timeout and adding debug for .screen() method
   * fixing history
 
-0.0.7 / 2014-04-05 
+0.0.7 / 2014-04-05
 ==================
 
   * setting viewport
   * fixing history
 
-0.0.6 / 2014-04-05 
+0.0.6 / 2014-04-05
 ==================
 
   * adding better debug logs for page load detection
   * fixing history
 
-0.0.5 / 2014-04-05 
+0.0.5 / 2014-04-05
 ==================
 
   * fixing history
 
-0.0.4 / 2014-04-05 
+0.0.4 / 2014-04-05
 ==================
 
   * fixing main for require to work
   * fixing history
 
-0.0.3 / 2014-04-05 
+0.0.3 / 2014-04-05
 ==================
 
   * fixing tests and getting screen working
   * fixing history again
 
-0.0.2 / 2014-04-05 
+0.0.2 / 2014-04-05
 ==================
 
   * pkilling phantomjs more aggressively
   * fixing phantom singletons
   * fixing history.md
-  
-0.0.1 / 2014-04-05 
+
+0.0.1 / 2014-04-05
 ==================
 
   * updating readme
