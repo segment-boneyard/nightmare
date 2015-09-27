@@ -64,6 +64,9 @@ Create a new instance that can navigate around the web. The available options ar
 #### .useragent(useragent)
 Set the `useragent` used by electron.
 
+#### .end()
+Complete any queue operations, disconnect and close the electron process.
+
 ### Interact with the Page
 
 #### .goto(url)
@@ -181,7 +184,7 @@ node --harmony cnn.js
 There are three good ways to get more information about what's happening inside the headless browser:
 
 1. Use the `DEBUG=*` flag described below.
-2. Pass `{ show: true }`` to the [nightmare constructor](#nightmareoptions) to have it create a visible, rendered window that you can watch what's happening.
+2. Pass `{ show: true }` to the [nightmare constructor](#nightmareoptions) to have it create a visible, rendered window that you can watch what's happening.
 3. Listen for [specific events](#onevent-callback).
 
 To run the same file with debugging output, run it like this `DEBUG=nightmare node --harmony cnn.js` (on Windows use `set DEBUG=nightmare & node cnn.js`).
