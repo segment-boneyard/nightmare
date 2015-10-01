@@ -1,11 +1,17 @@
+2.0.7 / 2015-10-01
+==================
+
+* updated and clarified docs
+* fixed package.json description, thanks @tscanlin
+* better error handling for ipc, thanks @davidnaas
 
 2.0.6 / 2015-09-25
 ==================
 
-  * changing the tests to point to github to avoid the great firewall fix #249
-  * Use node-integration for electron, fix scripts loading fix #242 #247
-  * Remove after and util in test/index.js
-  * adding windows debug hint
+* changing the tests to point to github to avoid the great firewall fix #249
+* Use node-integration for electron, fix scripts loading fix #242 #247
+* Remove after and util in test/index.js
+* adding windows debug hint
 
 2.0.5 / 2015-09-20
 ==================
