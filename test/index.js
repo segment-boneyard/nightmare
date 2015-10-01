@@ -376,6 +376,15 @@ describe('Nightmare', function () {
       var stats = fs.statSync('/tmp/nightmare/test.pdf');
       stats.size.should.be.at.least(1000);
     });
+
+    it('should accept options to render a PDF', function*() {
+      yield mkdirp('/tmp/nightmare');
+      yield nightmare
+        .goto(fixture('manipulation'))
+        .pdf('/tmp/nightmare/test2.pdf', {printBackground: false});
+      var stats = fs.statSync('/tmp/nightmare/test2.pdf');
+      stats.size.should.be.at.least(1000);
+    });
   });
 
   describe('events', function () {
