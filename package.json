@@ -30,6 +30,7 @@
     "basic-auth-connect": "^1.0.0",
     "chai": "^2.2.0",
     "co-mocha": "^1.0.1",
+    "cookie-parser": "^1.4.0",
     "express": "^4.13.3",
     "mocha": "^2.3.0",
     "multer": "0.1.8",

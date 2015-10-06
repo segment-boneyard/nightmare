@@ -310,6 +310,65 @@ describe('Nightmare', function () {
     });
   });
 
+  describe('cookies', function() {
+    var nightmare;
+
+    beforeEach(function() {
+      nightmare = Nightmare();
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
+    it('should get cookies', function*() {
+      var name = 'test';
+      var cookies = yield nightmare
+        .goto(fixture('cookie'))
+        .getCookie({});
+      cookies.length.should.eql(1);
+      cookies[0].name.should.eql(name);
+    });
+
+    it('should set cookies', function*() {
+      var name = 'test';
+      var value = '123';
+      var cookies = yield nightmare
+        .setCookie({
+          url: base,
+          name: name,
+          value: value
+        })
+        .goto(fixture('cookies'))
+        .evaluate(function() {
+          return JSON.parse(document.body.innerText);
+        });
+      cookies.should.be.ok;
+      cookies[name].should.eql(value);
+    });
+
+    it('should remove cookies', function*() {
+      var name = 'test';
+      var cookies = yield nightmare
+        .goto(fixture('cookie'))
+        .removeCookie({
+          url: base,
+          name: name
+        })
+        .getCookie({});
+      cookies.length.should.eql(0);
+    });
+
+    it('should clear cookies storage data', function*() {
+      var cookies = yield nightmare
+        .goto(fixture('cookie'))
+        .clearStorageData({
+          storages: ['cookies']
+        })
+        .getCookie({});
+      cookies.length.should.eql(0);
+    });
+  });
 
   describe('rendering', function () {
     var nightmare;
@@ -467,6 +526,20 @@ describe('Nightmare', function () {
         });
       result.width.should.eql(size.width);
       result.height.should.eql(size.height);
+    });
+
+    it('should set proxy', function*() {
+      var ip = "127.0.0.1";
+      var port = 9050;
+      var type = "socks5";
+      var proxy = type + "://" + ip + ":" + port;
+      nightmare = Nightmare({proxy: proxy});
+      var result = yield nightmare
+        .goto("https://httpbin.org/ip")
+        .evaluate(function () {
+          return JSON.parse(document.body.innerText);
+        });
+      result.origin.should.be.ok;
     });
 
     /*
