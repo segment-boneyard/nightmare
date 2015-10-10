@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -482,6 +481,17 @@ describe('Nightmare', function () {
       headers['x-nightmare-header'].should.equal('hello world');
     });
     */
+
+    it('should allow web-preferece settings', function*() {
+      nightmare = Nightmare({'web-preferences': {'web-security': false}});
+      var result = yield nightmare
+        .goto(fixture('options'))
+        .evaluate(function () {
+          return document.getElementById('example-iframe').contentDocument;
+        });
+
+      result.should.be.ok;
+    });
   });
 });
 
