@@ -21,6 +21,7 @@
     "jsesc": "^0.5.0",
     "minstache": "^1.2.0",
     "mkdirp": "^0.5.1",
+    "mocha-generators": "^1.1.1",
     "once": "^1.3.2",
     "sliced": "0.0.5",
     "thunkify": "^2.1.2"
@@ -29,7 +30,6 @@
     "basic-auth": "^1.0.3",
     "basic-auth-connect": "^1.0.0",
     "chai": "^2.2.0",
-    "co-mocha": "^1.0.1",
     "express": "^4.13.3",
     "mocha": "^2.3.0",
     "multer": "0.1.8",
