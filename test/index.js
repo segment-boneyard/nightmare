@@ -226,6 +226,17 @@ describe('Nightmare', function () {
       color.should.not.equal('rgb(255, 0, 0)');
     });
 
+    it('should type', function*() {
+      var value = yield nightmare
+        .goto(fixture('manipulation'))
+        .type('input[type=search]', 'nightmare')
+        .evaluate(function() {
+          return document.querySelector('input[type=search]').value;
+        });
+
+      value.should.equal('nightmare');
+    });
+
     it('should type and click', function*() {
       var title = yield nightmare
         .goto(fixture('manipulation'))
