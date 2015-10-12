@@ -56,7 +56,7 @@ describe('test yahoo search results', function() {
 
 You can see examples of every function [in the tests here](https://github.com/segmentio/nightmare/blob/master/test/index.js).
 
-Please note that the examples are using the [co-mocha](https://www.npmjs.com/package/co-mocha)
+Please note that the examples are using the [mocha-generators](https://www.npmjs.com/package/mocha-generators)
 package for Mocha, which enables the support for generators.
 
 ## API
