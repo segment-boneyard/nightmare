@@ -133,7 +133,7 @@ Returns whether the selector exists or not on the page.
 Returns whether the selector is visible or not
 
 #### .on(event, callback)
-Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#events).
+Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#events) and `'js-error'`.
 
 #### .screenshot(path[, clip])
 Saves a screenshot of the current page to the specified `path`. Useful for debugging. The output is always a `png`. You can optionally provide a clip rect as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback).
