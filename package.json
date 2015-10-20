@@ -3,6 +3,9 @@
   "version": "2.0.7",
   "license": "MIT",
   "main": "lib/nightmare.js",
+  "scripts": {
+    "test": "make test"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/segmentio/nightmare.git"
