@@ -430,7 +430,7 @@ describe('Nightmare', function () {
       fired.should.be.true;
     });
 
-    it('should fire an event on javascript console.log', function*(done) {
+    it('should fire an event on javascript console.log', function*() {
       var log = '';
       nightmare
         .on('js-log', function (logs) {
