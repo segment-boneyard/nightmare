@@ -422,12 +422,23 @@ describe('Nightmare', function () {
     it('should fire an event on javascript error', function*() {
       var fired = false;
       nightmare
-        .on('js-error', function (a, b) {
+        .on('js-error', function (errorMessage, errorStack) {
           fired = true;
         });
       yield nightmare
         .goto(fixture('events'));
       fired.should.be.true;
+    });
+
+    it('should fire an event on javascript console.log', function*(done) {
+      var log = '';
+      nightmare
+        .on('js-log', function (logs) {
+          log = logs[0];
+        });
+      yield nightmare
+        .goto(fixture('events'))
+      log.should.equal('my log');
     });
 
     it('should fire an event on page load failure', function*() {
