@@ -422,7 +422,7 @@ describe('Nightmare', function () {
     it('should fire an event on javascript error', function*() {
       var fired = false;
       nightmare
-        .on('js-error', function (errorMessage, errorStack) {
+        .on('page-error', function (errorMessage, errorStack) {
           fired = true;
         });
       yield nightmare
@@ -433,7 +433,7 @@ describe('Nightmare', function () {
     it('should fire an event on javascript console.log', function*() {
       var log = '';
       nightmare
-        .on('js-log', function (logs) {
+        .on('page-log', function (logs) {
           log = logs[0];
         });
       yield nightmare
