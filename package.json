@@ -1,6 +1,7 @@
 {
   "name": "nightmare",
   "version": "2.0.7",
+  "license": "MIT",
   "main": "lib/nightmare.js",
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
     "mkdirp": "^0.5.1",
     "mocha-generators": "^1.1.1",
     "once": "^1.3.2",
+    "rimraf": "^2.4.3",
     "sliced": "0.0.5",
     "thunkify": "^2.1.2"
   },
@@ -34,5 +36,8 @@
     "mocha": "^2.3.0",
     "multer": "0.1.8",
     "serve-static": "^1.10.0"
+  },
+  "scripts": {
+    "test": "mocha --harmony test"
   }
 }

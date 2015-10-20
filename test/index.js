@@ -4,11 +4,17 @@
 
 var Nightmare = require('..');
 var should = require('chai').should();
+require('mocha-generators').install();
 var url = require('url');
 var server = require('./server');
 var fs = require('fs');
 var thunkify = require('thunkify');
 var mkdirp = thunkify(require('mkdirp'));
+var path = require("path");
+var rimraf = require("rimraf");
+
+var tmp_dir = path.join(__dirname, 'tmp_test_folder')
+rimraf.sync(tmp_dir);
 
 /**
  * Get rid of a warning.
@@ -333,32 +339,32 @@ describe('Nightmare', function () {
     });
 
     it('should take a screenshot', function*() {
-      yield mkdirp('/tmp/nightmare');
+      yield mkdirp(tmp_dir);
       yield nightmare
         .goto('https://github.com/')
-        .screenshot('/tmp/nightmare/test.png');
-      var stats = fs.statSync('/tmp/nightmare/test.png');
+        .screenshot(tmp_dir+'/test.png');
+      var stats = fs.statSync(tmp_dir+'/test.png');
       stats.size.should.be.at.least(1000);
     });
 
     it('should take a clipped screenshot', function*() {
-      yield mkdirp('/tmp/nightmare');
+      yield mkdirp(tmp_dir);
       yield nightmare
         .goto('https://github.com/')
-        .screenshot('/tmp/nightmare/test-clipped.png', {
+        .screenshot(tmp_dir+'/test-clipped.png', {
           x: 200,
           y: 100,
           width: 100,
           height: 100
         });
-      var stats = fs.statSync('/tmp/nightmare/test.png');
-      var statsClipped = fs.statSync('/tmp/nightmare/test-clipped.png');
+      var stats = fs.statSync(tmp_dir+'/test.png');
+      var statsClipped = fs.statSync(tmp_dir+'/test-clipped.png');
       statsClipped.size.should.be.at.least(300);
       stats.size.should.be.at.least(10*statsClipped.size);
     });
 
     it('should load jquery correctly', function*() {
-      yield mkdirp('/tmp/nightmare');
+      yield mkdirp(tmp_dir);
       var loaded = yield nightmare
         .goto(fixture('rendering'))
         .wait(2000)
@@ -369,30 +375,30 @@ describe('Nightmare', function () {
     });
 
     it('should render fonts correctly', function*() {
-      yield mkdirp('/tmp/nightmare');
+      yield mkdirp(tmp_dir);
       yield nightmare
         .goto(fixture('rendering'))
         .wait(2000)
-        .screenshot('/tmp/nightmare/font-rendering.png');
-      var stats = fs.statSync('/tmp/nightmare/font-rendering.png');
+        .screenshot(tmp_dir+'/font-rendering.png');
+      var stats = fs.statSync(tmp_dir+'/font-rendering.png');
       stats.size.should.be.at.least(1000);
     });
 
     it('should render a PDF', function*() {
-      yield mkdirp('/tmp/nightmare');
+      yield mkdirp(tmp_dir);
       yield nightmare
         .goto(fixture('manipulation'))
-        .pdf('/tmp/nightmare/test.pdf');
-      var stats = fs.statSync('/tmp/nightmare/test.pdf');
+        .pdf(tmp_dir+'/test.pdf');
+      var stats = fs.statSync(tmp_dir+'/test.pdf');
       stats.size.should.be.at.least(1000);
     });
 
     it('should accept options to render a PDF', function*() {
-      yield mkdirp('/tmp/nightmare');
+      yield mkdirp(tmp_dir);
       yield nightmare
         .goto(fixture('manipulation'))
-        .pdf('/tmp/nightmare/test2.pdf', {printBackground: false});
-      var stats = fs.statSync('/tmp/nightmare/test2.pdf');
+        .pdf(tmp_dir+'/test2.pdf', {printBackground: false});
+      var stats = fs.statSync(tmp_dir+'/test2.pdf');
       stats.size.should.be.at.least(1000);
     });
   });
