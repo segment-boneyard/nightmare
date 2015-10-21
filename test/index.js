@@ -108,6 +108,15 @@ describe('Nightmare', function () {
           return (text === 'A');
         });
     });
+
+    it('should wait until the evaluate fn returns true with arguments', function*() {
+      yield nightmare
+        .goto(fixture('navigation'))
+        .wait(function (arg) {
+          var text = document.querySelector('a').textContent;
+          return (text === arg);
+        }, 'A');
+    });
   });
 
   describe('evaluation', function () {

@@ -120,7 +120,7 @@ Wait for `ms` milliseconds e.g. `.wait(5000)`
 #### .wait(selector)
 Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 
-#### .wait(fn)
+#### .wait(fn, arg1, arg2,...)
 Wait until the `fn` evaluated on the page returns `true`.
 
 
