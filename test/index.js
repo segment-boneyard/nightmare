@@ -94,6 +94,19 @@ describe('Nightmare', function () {
         .wait('a');
     });
 
+    it('should wait fail timeout', function*() {
+      var didFail = false;
+      try {
+        nightmare = Nightmare({waitTimeout: 254});
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait('foobar');
+      } catch (e) {
+        didFail = true;
+      }
+      didFail.should.be.true;
+    });
+
     it('should escape the css selector correctly when waiting for an element', function*() {
       yield nightmare
         .goto(fixture('navigation'))

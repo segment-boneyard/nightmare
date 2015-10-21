@@ -62,7 +62,8 @@ package for Mocha, which enables the support for generators.
 ## API
 
 #### Nightmare(options)
-Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions).
+Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions). Additional to the electron-options we provide nightmare-options:
+- `waitTimeout: 1000 //(ms)` This will throw an exception if the `.wait()` didn't return `true` within the set timeframe.
 
 #### .useragent(useragent)
 Set the `useragent` used by electron.
