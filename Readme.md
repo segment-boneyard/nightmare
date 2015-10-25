@@ -26,10 +26,31 @@ Let's search on Yahoo:
 
 ```js
 var Nightmare = require('nightmare');
-yield Nightmare()
-  .goto('http://yahoo.com')
-  .type('input[title="Search"]', 'github nightmare')
-  .click('.searchsubmit');
+var vo = require('vo');
+
+vo(function* () {
+  var nightmare = Nightmare({ show: true });
+  var link = yield nightmare
+    .goto('http://yahoo.com')
+    .type('input[title="Search"]', 'github nightmare')
+    .click('.searchsubmit')
+    .wait(200)
+    .evaluate(function () {
+      return document.getElementsByClassName('ac-21th')[0].href;
+    });
+  yield nightmare.end();
+  return link;
+})(function (err, result) {
+  if (err) return console.log(err);
+  console.log(result);
+});
+```
+
+You can run this with:
+
+```shell
+npm install nightmare vo
+node --harmony yahoo.js
 ```
 
 Or, let's run some mocha tests:
