@@ -34,7 +34,7 @@ vo(function* () {
     .goto('http://yahoo.com')
     .type('input[title="Search"]', 'github nightmare')
     .click('.searchsubmit')
-    .wait(200)
+    .wait('.ac-21th')
     .evaluate(function () {
       return document.getElementsByClassName('ac-21th')[0].href;
     });
@@ -62,15 +62,15 @@ var expect = require('chai').expect; // jshint ignore:line
 describe('test yahoo search results', function() {
   it('should find the nightmare github link first', function*() {
     var nightmare = Nightmare()
-    var breadcrumb = yield nightmare
+    var link = yield nightmare
       .goto('http://yahoo.com')
       .type('input[title="Search"]', 'github nightmare')
       .click('.searchsubmit')
-      .wait('.url.breadcrumb')
+      .wait('.ac-21th')
       .evaluate(function () {
-        return document.querySelector('.url.breadcrumb').innerText;
+        return document.getElementsByClassName('ac-21th')[0].href;
       });
-    expect(breadcrumb).to.equal('github.com');
+    expect(link).to.equal('https://github.com/segmentio/nightmare');
   });
 });
 ```
