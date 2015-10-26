@@ -14,7 +14,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help
 
 * [Examples](#examples)
 * [API](#api)
-  - [Set up an instance](#new-nightmareoptions)
+  - [Set up an instance](#nightmareoptions)
   - [Interact with the page](#interact-with-the-page)
   - [Extract from the page](#extract-from-the-page)
 * [Usage](#usage)
