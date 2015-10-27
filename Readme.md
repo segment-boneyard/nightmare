@@ -80,6 +80,14 @@ You can see examples of every function [in the tests here](https://github.com/se
 Please note that the examples are using the [mocha-generators](https://www.npmjs.com/package/mocha-generators)
 package for Mocha, which enables the support for generators.
 
+### To install dependencies
+
+    npm install
+
+### To run the mocha tests
+
+    npm test
+
 ## API
 
 #### Nightmare(options)
