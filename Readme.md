@@ -83,7 +83,17 @@ package for Mocha, which enables the support for generators.
 ## API
 
 #### Nightmare(options)
-Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions).
+Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions), along with additional nightmare-specific options:
+
+##### paths
+Object (name -> path) of [Electron app paths](https://github.com/atom/electron/blob/master/docs/api/app.md#appsetpathname-path) to override.
+
+E.g.
+```
+{
+  userData: 'foo/bar'
+}
+```
 
 #### .useragent(useragent)
 Set the `useragent` used by electron.
