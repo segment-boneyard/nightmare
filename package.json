@@ -18,7 +18,7 @@
   "description": "A high-level browser automation library.",
   "dependencies": {
     "debug": "^2.2.0",
-    "defaults": "^1.0.2",
+    "defaults-deep": "^0.2.3",
     "electron-prebuilt": "^0.33.0",
     "enqueue": "^1.0.2",
     "function-source": "^0.1.0",
