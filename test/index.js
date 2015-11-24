@@ -341,6 +341,14 @@ describe('Nightmare', function () {
       stats.size.should.be.at.least(1000);
     });
 
+    it('should buffer a screenshot', function*() {
+      var image = yield nightmare
+        .goto('https://github.com')
+        .screenshot();
+      Buffer.isBuffer(image).should.be.true;
+      image.length.should.be.at.least(1000);
+    });
+
     it('should take a clipped screenshot', function*() {
       yield mkdirp('/tmp/nightmare');
       yield nightmare
@@ -355,6 +363,19 @@ describe('Nightmare', function () {
       var statsClipped = fs.statSync('/tmp/nightmare/test-clipped.png');
       statsClipped.size.should.be.at.least(300);
       stats.size.should.be.at.least(10*statsClipped.size);
+    });
+
+    it.only('should buffer a clipped screenshot', function*() {
+      var image = yield nightmare
+        .goto('https://github.com')
+        .screenshot({
+          x: 200,
+          y: 100,
+          width: 100,
+          height: 100
+        });
+      Buffer.isBuffer(image).should.be.true;
+      image.length.should.be.at.least(300);
     });
 
     it('should load jquery correctly', function*() {
