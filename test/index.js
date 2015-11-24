@@ -365,7 +365,7 @@ describe('Nightmare', function () {
       stats.size.should.be.at.least(10*statsClipped.size);
     });
 
-    it.only('should buffer a clipped screenshot', function*() {
+    it('should buffer a clipped screenshot', function*() {
       var image = yield nightmare
         .goto('https://github.com')
         .screenshot({
