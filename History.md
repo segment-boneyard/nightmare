@@ -1,3 +1,21 @@
+
+2.0.8 / 2015-11-24
+==================
+
+  * pointing to versioned Electron documentation
+  * Use "did-stop-loading" event in "continue"
+  * Fix menu sub-section URL in documentation
+  * updating yahoo mocha example so it works with yahoo's changes, fixes #275
+  * adding a more complete example, fixes #295
+  * updating atom events links, fixes #312 and #258
+  * set make test as the npm test target
+  * log and error event clean up
+  * Added license to package.json
+  * replace co-mocha w/ mocha-generators
+  * Allow for user-specified web-preferences options.
+  * Add test case for 'type' The test case of 'type and click' doesn't ensure 'type' works
+  * Remove old evaluate method, fix #257
+
 2.0.7 / 2015-10-01
 ==================
 

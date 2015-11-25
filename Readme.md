@@ -14,7 +14,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help
 
 * [Examples](#examples)
 * [API](#api)
-  - [Set up an instance](#new-nightmareoptions)
+  - [Set up an instance](#nightmareoptions)
   - [Interact with the page](#interact-with-the-page)
   - [Extract from the page](#extract-from-the-page)
 * [Usage](#usage)
@@ -26,10 +26,31 @@ Let's search on Yahoo:
 
 ```js
 var Nightmare = require('nightmare');
-yield Nightmare()
-  .goto('http://yahoo.com')
-  .type('input[title="Search"]', 'github nightmare')
-  .click('.searchsubmit');
+var vo = require('vo');
+
+vo(function* () {
+  var nightmare = Nightmare({ show: true });
+  var link = yield nightmare
+    .goto('http://yahoo.com')
+    .type('input[title="Search"]', 'github nightmare')
+    .click('.searchsubmit')
+    .wait('.ac-21th')
+    .evaluate(function () {
+      return document.getElementsByClassName('ac-21th')[0].href;
+    });
+  yield nightmare.end();
+  return link;
+})(function (err, result) {
+  if (err) return console.log(err);
+  console.log(result);
+});
+```
+
+You can run this with:
+
+```shell
+npm install nightmare vo
+node --harmony yahoo.js
 ```
 
 Or, let's run some mocha tests:
@@ -41,15 +62,15 @@ var expect = require('chai').expect; // jshint ignore:line
 describe('test yahoo search results', function() {
   it('should find the nightmare github link first', function*() {
     var nightmare = Nightmare()
-    var breadcrumb = yield nightmare
+    var link = yield nightmare
       .goto('http://yahoo.com')
       .type('input[title="Search"]', 'github nightmare')
       .click('.searchsubmit')
-      .wait('.url.breadcrumb')
+      .wait('.ac-21th')
       .evaluate(function () {
-        return document.querySelector('.url.breadcrumb').innerText;
+        return document.getElementsByClassName('ac-21th')[0].href;
       });
-    expect(breadcrumb).to.equal('github.com');
+    expect(link).to.equal('https://github.com/segmentio/nightmare');
   });
 });
 ```
@@ -62,7 +83,7 @@ package for Mocha, which enables the support for generators.
 ## API
 
 #### Nightmare(options)
-Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions).
+Create a new instance that can navigate around the web. The available options are [documented here](http://electron.atom.io/docs/v0.34.0/api/browser-window).
 
 #### .useragent(useragent)
 Set the `useragent` used by electron.
@@ -133,7 +154,7 @@ Returns whether the selector exists or not on the page.
 Returns whether the selector is visible or not
 
 #### .on(event, callback)
-Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#events). Additional to the electron-events we provide nightmare-events `'page-error'` and `'page-log'`.
+Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents). Additional to the electron-events we provide nightmare-events `'page-error'` and `'page-log'`.
 
 ##### .on('page-error', errorMessage, errorStack)
 This event is triggered if any javscript exception is thrown on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is throwing an exception.
