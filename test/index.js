@@ -421,6 +421,28 @@ describe('Nightmare', function () {
       fired.should.be.true;
     });
 
+    it('should fire an event on javascript error', function*() {
+      var fired = false;
+      nightmare
+        .on('page-error', function (errorMessage, errorStack) {
+          fired = true;
+        });
+      yield nightmare
+        .goto(fixture('events'));
+      fired.should.be.true;
+    });
+
+    it('should fire an event on javascript console.log', function*() {
+      var log = '';
+      nightmare
+        .on('page-log', function (logs) {
+          log = logs[0];
+        });
+      yield nightmare
+        .goto(fixture('events'))
+      log.should.equal('my log');
+    });
+
     it('should fire an event on page load failure', function*() {
       var fired = false;
       nightmare
