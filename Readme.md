@@ -147,7 +147,7 @@ Scrolls the page to desired position. `top` and `left` are always relative to th
 #### .inject(type, file)
 Inject a local `file` onto the current page. The file `type` must be either `js` or `css`.
 
-#### .evaluate(fn, arg1, arg2,...)
+#### .evaluate(fn[, arg1, arg2,...])
 Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On completion it returns the return value of `fn`. Useful for extracting information from the page. Here's an example:
 
 ```js
@@ -165,8 +165,8 @@ Wait for `ms` milliseconds e.g. `.wait(5000)`
 #### .wait(selector)
 Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 
-#### .wait(fn)
-Wait until the `fn` evaluated on the page returns `true`.
+#### .wait(fn[, arg1, arg2,...])
+Wait until the `fn` evaluated on the page with `arg1, arg2,...` returns `true`. All the `args` are optional. See `.evaluate()` for usage.
 
 
 ### Extract from the Page
