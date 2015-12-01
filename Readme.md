@@ -174,6 +174,58 @@ Returns the title of the current page.
 #### .url()
 Returns the url of the current page.
 
+### Cookies
+
+#### .cookies.get(name)
+
+Get a cookie by it's `name`. The url will be the current url.
+
+#### .cookies.get(query)
+
+Query multiple cookies with the `query` object. If a `query.name` is set, it will return the first cookie it finds with that name, otherwise it will query for an array of cookies. If no `query.url` is set, it will use the current url. Here's an example:
+
+```js
+// get all google cookies that are secure
+// and have the path `/query`
+var cookies = yield nightmare
+  .goto('http://google.com')
+  .cookies.get({
+    path: '/query',
+    secure: true
+  })
+```
+
+Available properties are documented here: https://github.com/atom/electron/blob/master/docs/api/session.md#sescookiesgetdetails-callback
+
+#### .cookies.get()
+
+Get all the cookies for the current url. If you'd like get all cookies for all urls, use: `.get({ url: null })`.
+
+#### .cookies.set(name, value)
+
+Set a cookie's `name` and `value`. Most basic form, the url will be the current url.
+
+#### .cookies.set(cookie)
+
+Set a `cookie`. If `cookie.url` is not set, it will set the cookie on the current url. Here's an example:
+
+```js
+yield nightmare
+  .goto('http://google.com')
+  .cookies.set({
+    name: 'token',
+    value: 'some token',
+    path: '/query',
+    secure: true
+  })
+```
+
+Available properties are documented here:  https://github.com/atom/electron/blob/master/docs/api/session.md#sescookiessetdetails-callback
+
+#### .cookies.set(cookies)
+
+Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a look at the `.cookies.set(cookie)` documentation above for a better idea of what `cookie` should look like.
+
 ## Usage
 #### Installation
 Nightmare is a Node.js module, so you'll need to [have Node.js installed](http://nodejs.org/). Then you just need to `npm install` the module:
