@@ -2,6 +2,8 @@
  * Module dependencies.
  */
 
+require('mocha-generators').install();
+
 var Nightmare = require('..');
 var should = require('chai').should();
 var url = require('url');
