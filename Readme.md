@@ -97,7 +97,9 @@ Create a new instance that can navigate around the web. The available options ar
 This will throw an exception if the `.wait()` didn't return `true` within the set timeframe.
 
 ```js
+var nightmare = Nightmare({
   waitTimeout: 1000 //(ms)
+});
 ```
 
 ##### paths
@@ -110,7 +112,7 @@ var nightmare = Nightmare({
   paths: {
     userData: '/user/data'
   }
-})
+});
 ```
 >>>>>>> 2bb327b110a354933aa3f1da8cd1aab5cca00a06
 
