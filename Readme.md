@@ -114,7 +114,6 @@ var nightmare = Nightmare({
   }
 });
 ```
->>>>>>> 2bb327b110a354933aa3f1da8cd1aab5cca00a06
 
 #### .useragent(useragent)
 Set the `useragent` used by electron.
