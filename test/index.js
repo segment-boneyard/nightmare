@@ -308,6 +308,35 @@ describe('Nightmare', function () {
       // coordinates.left.should.equal(50);
     });
 
+    it('should scroll to specified selector', function*() {
+      var selector = 'input[type=search]';
+      // Get actual element coordinates
+      var elemCoordinates = yield nightmare
+        .viewport(320, 320)
+        .goto(fixture('manipulation'))
+        .evaluate(function () {
+          var element = document.querySelector(selector);
+          return {
+            top: element.top,
+            left: element.left
+          };
+        });
+      elemCoordinates.top.should.exist.and.not.be.equal(0);
+      elemCoordinates.left.should.exist.and.not.be.equal(0);
+
+      // Scroll to the element
+      coordinates = yield nightmare
+        .scrollToSelector(selector)
+        .evaluate(function () {
+          return {
+            top: document.body.scrollTop,
+            left: document.body.scrollLeft
+          };
+        });
+      coordinates.top.should.equal(elemCoordinates.top);
+      coordinates.left.should.equal(elemCoordinates.left);
+    });
+
     it('should hover over an element', function*() {
       var color = yield nightmare
         .goto(fixture('manipulation'))

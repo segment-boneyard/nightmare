@@ -120,6 +120,9 @@ Changes the `selector` dropdown element to the option with attribute [value=`opt
 #### .scrollTo(top, left)
 Scrolls the page to desired position. `top` and `left` are always relative to the top left corner of the document.
 
+#### .scrollToSelector(selector)
+Scrolls the page to specified element by `selector`.
+
 #### .inject(type, file)
 Inject a local `file` onto the current page. The file `type` must be either `js` or `css`.
 
