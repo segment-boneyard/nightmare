@@ -80,10 +80,31 @@ You can see examples of every function [in the tests here](https://github.com/se
 Please note that the examples are using the [mocha-generators](https://www.npmjs.com/package/mocha-generators)
 package for Mocha, which enables the support for generators.
 
+### To install dependencies
+
+    npm install
+
+### To run the mocha tests
+
+    npm test
+
 ## API
 
 #### Nightmare(options)
-Create a new instance that can navigate around the web. The available options are [documented here](http://electron.atom.io/docs/v0.34.0/api/browser-window).
+Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions), along with the following nightmare-specific options.
+
+##### paths
+The default system paths that Electron knows about. Here's a list of available paths: https://github.com/atom/electron/blob/master/docs/api/app.md#appgetpathname
+
+You can overwrite them in Nightmare by doing the following:
+
+```js
+var nightmare = Nightmare({
+  paths: {
+    userData: '/user/data'
+  }
+})
+```
 
 #### .useragent(useragent)
 Set the `useragent` used by electron.
@@ -108,6 +129,9 @@ Refresh the current page.
 #### .click(selector)
 Clicks the `selector` element once.
 
+#### .mousedown(selector)
+Mousedown the `selector` element once.
+
 #### .type(selector, text)
 Enters the `text` provided into the `selector` element.
 
@@ -123,7 +147,7 @@ Scrolls the page to desired position. `top` and `left` are always relative to th
 #### .inject(type, file)
 Inject a local `file` onto the current page. The file `type` must be either `js` or `css`.
 
-#### .evaluate(fn, arg1, arg2,...)
+#### .evaluate(fn[, arg1, arg2,...])
 Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On completion it returns the return value of `fn`. Useful for extracting information from the page. Here's an example:
 
 ```js
@@ -141,8 +165,8 @@ Wait for `ms` milliseconds e.g. `.wait(5000)`
 #### .wait(selector)
 Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 
-#### .wait(fn)
-Wait until the `fn` evaluated on the page returns `true`.
+#### .wait(fn[, arg1, arg2,...])
+Wait until the `fn` evaluated on the page with `arg1, arg2,...` returns `true`. All the `args` are optional. See `.evaluate()` for usage.
 
 
 ### Extract from the Page
@@ -162,8 +186,8 @@ This event is triggered if any javscript exception is thrown on the page. But th
 ##### .on('page-log', errorMessage, errorStack)
 This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
 
-#### .screenshot(path[, clip])
-Saves a screenshot of the current page to the specified `path`. Useful for debugging. The output is always a `png`. You can optionally provide a clip rect as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback).
+#### .screenshot([path][, clip])
+Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
 
 #### .pdf(path, options)
 Saves a PDF with A4 size pages of the current page to the specified `path`. Options are [here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#webcontents-printtopdf-options-callback).

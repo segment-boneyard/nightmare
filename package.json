@@ -4,7 +4,7 @@
   "license": "MIT",
   "main": "lib/nightmare.js",
   "scripts": {
-    "test": "make test"
+    "test": "mocha --harmony test"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
     "mkdirp": "^0.5.1",
     "once": "^1.3.3",
     "sliced": "1.0.1",
-    "thunkify": "^2.1.2"
+    "rimraf": "^2.4.3"
   },
   "devDependencies": {
     "basic-auth": "^1.0.3",
