@@ -186,8 +186,8 @@ This event is triggered if any javscript exception is thrown on the page. But th
 ##### .on('page-log', errorMessage, errorStack)
 This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
 
-#### .screenshot(path[, clip])
-Saves a screenshot of the current page to the specified `path`. Useful for debugging. The output is always a `png`. You can optionally provide a clip rect as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback).
+#### .screenshot([path][, clip])
+Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
 
 #### .pdf(path, options)
 Saves a PDF with A4 size pages of the current page to the specified `path`. Options are [here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#webcontents-printtopdf-options-callback).
