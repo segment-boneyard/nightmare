@@ -117,6 +117,16 @@ describe('Nightmare', function () {
           return (text === 'A');
         });
     });
+
+    it('should wait until the evaluate fn with arguments returns true', function*() {
+      yield nightmare
+        .goto(fixture('navigation'))
+        .wait(function (expectedA, expectedB) {
+          var textA = document.querySelector('a.a').textContent;
+          var textB = document.querySelector('a.b').textContent;
+          return (expectedA === textA && expectedB === textB);
+        }, 'A', 'B');
+    });
   });
 
   describe('evaluation', function () {
