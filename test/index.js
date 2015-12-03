@@ -325,7 +325,7 @@ describe('Nightmare', function () {
       elemCoordinates.left.should.exist.and.not.be.equal(0);
 
       // Scroll to the element
-      coordinates = yield nightmare
+      var coordinates = yield nightmare
         .scrollToSelector(selector)
         .evaluate(function () {
           return {
