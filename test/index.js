@@ -524,6 +524,19 @@ describe('Nightmare', function () {
       useragent.should.eql('firefox');
     });
 
+    it('should wait and fail with waitTimeout', function*() {
+      var didFail = false;
+      try {
+        nightmare = Nightmare({waitTimeout: 254});
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait('foobar');
+      } catch (e) {
+        didFail = true;
+      }
+      didFail.should.be.true;
+    });
+
     /*
     PENDING FIX UPSTREAM
     https://github.com/atom/electron/issues/1362
