@@ -1,5 +1,3 @@
-require('mocha-generators').install();
-
 /**
  * Module dependencies.
  */
