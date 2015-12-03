@@ -121,6 +121,9 @@ Refresh the current page.
 #### .click(selector)
 Clicks the `selector` element once.
 
+#### .mousedown(selector)
+Mousedown the `selector` element once.
+
 #### .type(selector, text)
 Enters the `text` provided into the `selector` element.
 

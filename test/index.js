@@ -320,6 +320,17 @@ describe('Nightmare', function () {
         });
       color.should.equal('rgb(102, 255, 102)');
     });
+
+    it('should mousedown on an element', function*() {
+      var color = yield nightmare
+        .goto(fixture('manipulation'))
+        .mousedown('h1')
+        .evaluate(function () {
+          var element = document.querySelector('h1');
+          return element.style.background;
+        });
+      color.should.equal('rgb(255, 0, 0)');
+    });
   });
 
 
