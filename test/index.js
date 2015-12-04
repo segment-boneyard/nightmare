@@ -511,7 +511,7 @@ describe('Nightmare', function () {
         alert = message;
       });
       yield nightmare
-        .goto(fixture('navigation'))
+        .goto(fixture('events'))
         .evaluate(function(){
           alert('my alert');
         });
