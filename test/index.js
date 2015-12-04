@@ -504,6 +504,20 @@ describe('Nightmare', function () {
         .goto('https://alskdjfasdfuuu.com');
       fired.should.be.true;
     });
+
+    it('should fire an event on javascript window.alert', function*(){
+      var alert = '';
+      nightmare.on('page-alert', function(message){
+        alert = message;
+      });
+      yield nightmare
+        .goto(fixture('navigation'))
+        .evaluate(function(){
+          alert('my alert');
+        });
+      alert.should.equal('my alert');
+    });
+
   });
 
   describe('options', function () {
