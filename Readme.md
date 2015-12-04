@@ -93,6 +93,15 @@ package for Mocha, which enables the support for generators.
 #### Nightmare(options)
 Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions), along with the following nightmare-specific options.
 
+##### waitTimeout
+This will throw an exception if the `.wait()` didn't return `true` within the set timeframe.
+
+```js
+var nightmare = Nightmare({
+  waitTimeout: 1000 //(ms)
+});
+```
+
 ##### paths
 The default system paths that Electron knows about. Here's a list of available paths: https://github.com/atom/electron/blob/master/docs/api/app.md#appgetpathname
 
@@ -103,7 +112,7 @@ var nightmare = Nightmare({
   paths: {
     userData: '/user/data'
   }
-})
+});
 ```
 
 #### .useragent(useragent)
@@ -178,13 +187,16 @@ Returns whether the selector exists or not on the page.
 Returns whether the selector is visible or not
 
 #### .on(event, callback)
-Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents). Additional to the electron-events we provide nightmare-events `'page-error'` and `'page-log'`.  Custom events can be added with `.customevent()`.
+Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents). Additional to the electron-events we provide nightmare-events `'page-error'`, `'page-alert'`, and `'page-log'`.  Custom events can be added with `'.customevent()`.
 
 ##### .on('page-error', errorMessage, errorStack)
 This event is triggered if any javscript exception is thrown on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is throwing an exception.
 
 ##### .on('page-log', errorMessage, errorStack)
 This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
+
+##### .on('page-alert', message)
+This event is triggered if `alert` is used on the page.
 
 ##### .customevent(name)
 Adds an event that can be captured with `.on()` triggerable in `.evaluate()` or `.inject()` with `ipc.send([name], ...)`.

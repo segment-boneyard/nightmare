@@ -521,6 +521,19 @@ describe('Nightmare', function () {
       eventResults[1].should.equal(3);
       eventResults[2].sample.should.equal('sample');
     });
+    
+    it('should fire an event on javascript window.alert', function*(){
+      var alert = '';
+      nightmare.on('page-alert', function(message){
+        alert = message;
+      });
+      yield nightmare
+        .goto(fixture('events'))
+        .evaluate(function(){
+          alert('my alert');
+        });
+      alert.should.equal('my alert');
+    });
   });
 
   describe('options', function () {
@@ -539,6 +552,19 @@ describe('Nightmare', function () {
           return window.navigator.userAgent;
         });
       useragent.should.eql('firefox');
+    });
+
+    it('should wait and fail with waitTimeout', function*() {
+      var didFail = false;
+      try {
+        nightmare = Nightmare({waitTimeout: 254});
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait('foobar');
+      } catch (e) {
+        didFail = true;
+      }
+      didFail.should.be.true;
     });
 
     /*
