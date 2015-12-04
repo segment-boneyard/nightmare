@@ -504,6 +504,23 @@ describe('Nightmare', function () {
         .goto('https://alskdjfasdfuuu.com');
       fired.should.be.true;
     });
+
+    it('should be able to have a custom event', function*() {
+      var eventResults;
+      yield nightmare
+        .goto(fixture('events'))
+        .on('sample-event', function(){
+          eventResults = arguments;
+        })
+        .customevent('sample-event')
+        .evaluate(function(){
+          ipc.send('sample-event', 'sample', 3, {sample: 'sample'});
+        });
+      eventResults.length.should.equal(3);
+      eventResults[0].should.equal('sample');
+      eventResults[1].should.equal(3);
+      eventResults[2].sample.should.equal('sample');
+    });
   });
 
   describe('options', function () {
