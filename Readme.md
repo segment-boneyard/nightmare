@@ -178,13 +178,16 @@ Returns whether the selector exists or not on the page.
 Returns whether the selector is visible or not
 
 #### .on(event, callback)
-Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents). Additional to the electron-events we provide nightmare-events `'page-error'` and `'page-log'`.
+Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents). Additional to the electron-events we provide nightmare-events `'page-error'` and `'page-log'`.  Custom events can be added with `.customevent()`.
 
 ##### .on('page-error', errorMessage, errorStack)
 This event is triggered if any javscript exception is thrown on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is throwing an exception.
 
 ##### .on('page-log', errorMessage, errorStack)
 This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
+
+##### .customevent(name)
+Adds an event that can be captured with `.on()` triggerable in `.evaluate()` or `.inject()` with `ipc.send([name], ...)`.
 
 #### .screenshot([path][, clip])
 Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
