@@ -401,15 +401,6 @@ describe('Nightmare', function () {
       stats.size.should.be.at.least(10*statsClipped.size);
     });
 
-    it('should take a screenshot by selector', function*() {
-      yield mkdirp('/tmp/nightmare');
-      yield nightmare
-        .goto('https://github.com/')
-        .screenshot('/tmp/nightmare/test-clipped.png', 'body');
-      var stats = fs.statSync('/tmp/nightmare/test-clipped.png');
-      stats.size.should.be.at.least(300);
-    });
-
     it('should buffer a clipped screenshot', function*() {
       var image = yield nightmare
         .goto('https://github.com')
@@ -421,6 +412,14 @@ describe('Nightmare', function () {
         });
       Buffer.isBuffer(image).should.be.true;
       image.length.should.be.at.least(300);
+    });
+
+    it('should take a screenshot by selector', function*() {
+      yield nightmare
+        .goto('https://github.com/')
+        .screenshotSelector(tmp_dir+'/test-clipped.png', 'body');
+      var stats = fs.statSync(tmp_dir+'/test-clipped.png');
+      stats.size.should.be.at.least(300);
     });
 
     it('should load jquery correctly', function*() {
