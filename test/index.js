@@ -2,13 +2,22 @@
  * Module dependencies.
  */
 
+require('mocha-generators').install();
+
 var Nightmare = require('..');
 var should = require('chai').should();
 var url = require('url');
 var server = require('./server');
 var fs = require('fs');
-var thunkify = require('thunkify');
-var mkdirp = thunkify(require('mkdirp'));
+var mkdirp = require('mkdirp');
+var path = require('path');
+var rimraf = require('rimraf');
+
+/**
+ * Temporary directory
+ */
+
+var tmp_dir = path.join(__dirname, 'tmp')
 
 /**
  * Get rid of a warning.
@@ -107,6 +116,16 @@ describe('Nightmare', function () {
           var text = document.querySelector('a').textContent;
           return (text === 'A');
         });
+    });
+
+    it('should wait until the evaluate fn with arguments returns true', function*() {
+      yield nightmare
+        .goto(fixture('navigation'))
+        .wait(function (expectedA, expectedB) {
+          var textA = document.querySelector('a.a').textContent;
+          var textB = document.querySelector('a.b').textContent;
+          return (expectedA === textA && expectedB === textB);
+        }, 'A', 'B');
     });
   });
 
@@ -318,11 +337,30 @@ describe('Nightmare', function () {
         });
       color.should.equal('rgb(102, 255, 102)');
     });
+
+    it('should mousedown on an element', function*() {
+      var color = yield nightmare
+        .goto(fixture('manipulation'))
+        .mousedown('h1')
+        .evaluate(function () {
+          var element = document.querySelector('h1');
+          return element.style.background;
+        });
+      color.should.equal('rgb(255, 0, 0)');
+    });
   });
 
 
   describe('rendering', function () {
     var nightmare;
+
+    before(function(done) {
+      mkdirp(tmp_dir, done)
+    })
+
+    after(function(done) {
+      rimraf(tmp_dir, done)
+    })
 
     beforeEach(function() {
       nightmare = Nightmare();
@@ -333,26 +371,32 @@ describe('Nightmare', function () {
     });
 
     it('should take a screenshot', function*() {
-      yield mkdirp('/tmp/nightmare');
       yield nightmare
         .goto('https://github.com/')
-        .screenshot('/tmp/nightmare/test.png');
-      var stats = fs.statSync('/tmp/nightmare/test.png');
+        .screenshot(tmp_dir+'/test.png');
+      var stats = fs.statSync(tmp_dir+'/test.png');
       stats.size.should.be.at.least(1000);
     });
 
+    it('should buffer a screenshot', function*() {
+      var image = yield nightmare
+        .goto('https://github.com')
+        .screenshot();
+      Buffer.isBuffer(image).should.be.true;
+      image.length.should.be.at.least(1000);
+    });
+
     it('should take a clipped screenshot', function*() {
-      yield mkdirp('/tmp/nightmare');
       yield nightmare
         .goto('https://github.com/')
-        .screenshot('/tmp/nightmare/test-clipped.png', {
+        .screenshot(tmp_dir+'/test-clipped.png', {
           x: 200,
           y: 100,
           width: 100,
           height: 100
         });
-      var stats = fs.statSync('/tmp/nightmare/test.png');
-      var statsClipped = fs.statSync('/tmp/nightmare/test-clipped.png');
+      var stats = fs.statSync(tmp_dir+'/test.png');
+      var statsClipped = fs.statSync(tmp_dir+'/test-clipped.png');
       statsClipped.size.should.be.at.least(300);
       stats.size.should.be.at.least(10*statsClipped.size);
     });
@@ -366,8 +410,20 @@ describe('Nightmare', function () {
       stats.size.should.be.at.least(300);
     });
 
+    it('should buffer a clipped screenshot', function*() {
+      var image = yield nightmare
+        .goto('https://github.com')
+        .screenshot({
+          x: 200,
+          y: 100,
+          width: 100,
+          height: 100
+        });
+      Buffer.isBuffer(image).should.be.true;
+      image.length.should.be.at.least(300);
+    });
+
     it('should load jquery correctly', function*() {
-      yield mkdirp('/tmp/nightmare');
       var loaded = yield nightmare
         .goto(fixture('rendering'))
         .wait(2000)
@@ -378,30 +434,27 @@ describe('Nightmare', function () {
     });
 
     it('should render fonts correctly', function*() {
-      yield mkdirp('/tmp/nightmare');
       yield nightmare
         .goto(fixture('rendering'))
         .wait(2000)
-        .screenshot('/tmp/nightmare/font-rendering.png');
-      var stats = fs.statSync('/tmp/nightmare/font-rendering.png');
+        .screenshot(tmp_dir+'/font-rendering.png');
+      var stats = fs.statSync(tmp_dir+'/font-rendering.png');
       stats.size.should.be.at.least(1000);
     });
 
     it('should render a PDF', function*() {
-      yield mkdirp('/tmp/nightmare');
       yield nightmare
         .goto(fixture('manipulation'))
-        .pdf('/tmp/nightmare/test.pdf');
-      var stats = fs.statSync('/tmp/nightmare/test.pdf');
+        .pdf(tmp_dir+'/test.pdf');
+      var stats = fs.statSync(tmp_dir+'/test.pdf');
       stats.size.should.be.at.least(1000);
     });
 
     it('should accept options to render a PDF', function*() {
-      yield mkdirp('/tmp/nightmare');
       yield nightmare
         .goto(fixture('manipulation'))
-        .pdf('/tmp/nightmare/test2.pdf', {printBackground: false});
-      var stats = fs.statSync('/tmp/nightmare/test2.pdf');
+        .pdf(tmp_dir+'/test2.pdf', {printBackground: false});
+      var stats = fs.statSync(tmp_dir+'/test2.pdf');
       stats.size.should.be.at.least(1000);
     });
   });
@@ -460,6 +513,20 @@ describe('Nightmare', function () {
         .goto('https://alskdjfasdfuuu.com');
       fired.should.be.true;
     });
+
+    it('should fire an event on javascript window.alert', function*(){
+      var alert = '';
+      nightmare.on('page-alert', function(message){
+        alert = message;
+      });
+      yield nightmare
+        .goto(fixture('events'))
+        .evaluate(function(){
+          alert('my alert');
+        });
+      alert.should.equal('my alert');
+    });
+
   });
 
   describe('options', function () {
@@ -478,6 +545,19 @@ describe('Nightmare', function () {
           return window.navigator.userAgent;
         });
       useragent.should.eql('firefox');
+    });
+
+    it('should wait and fail with waitTimeout', function*() {
+      var didFail = false;
+      try {
+        nightmare = Nightmare({waitTimeout: 254});
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait('foobar');
+      } catch (e) {
+        didFail = true;
+      }
+      didFail.should.be.true;
     });
 
     /*
