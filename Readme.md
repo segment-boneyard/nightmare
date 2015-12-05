@@ -201,8 +201,8 @@ This event is triggered if `alert` is used on the page.
 #### .screenshot([path][, clip])
 Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
 
-#### .screenshotSelector(path, selector)
-Saves a screenshot of the element by the selector to the specified `path`. The output is always a `png`.
+#### .screenshotSelector([path,] selector)
+Takes a screenshot of the element by the selector. The output is always a `png`. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data.
 
 #### .pdf(path, options)
 Saves a PDF with A4 size pages of the current page to the specified `path`. Options are [here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#webcontents-printtopdf-options-callback).
