@@ -323,8 +323,7 @@ describe('Nightmare', function () {
           };
         });
       coordinates.top.should.equal(100);
-      // TODO: fix this in the fixture
-      // coordinates.left.should.equal(50);
+      coordinates.left.should.equal(50);
     });
 
     it('should hover over an element', function*() {
