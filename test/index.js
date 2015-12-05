@@ -567,7 +567,7 @@ describe('Nightmare', function () {
     */
 
     it('should set viewport', function*() {
-      var size = { width: 400, height: 1000, 'use-content-size': true };
+      var size = { width: 400, height: 300, 'use-content-size': true };
       nightmare = Nightmare(size);
       var result = yield nightmare
         .goto(fixture('options'))
