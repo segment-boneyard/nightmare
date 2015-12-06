@@ -20,7 +20,7 @@ var app = module.exports = express();
  * Accept file uploads.
  */
 
-app.use(multer({ inMemory: true }));
+app.use(multer({ inMemory: true }).single('upload'));
 
 /**
  * Echo uploaded files for testing assertions.
