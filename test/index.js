@@ -452,15 +452,12 @@ describe('Nightmare', function () {
   describe('events', function () {
     var nightmare;
 
-    beforeEach(function() {
-      nightmare = Nightmare();
-    });
-
     afterEach(function*() {
       yield nightmare.end();
     });
 
     it('should fire an event on page load complete', function*() {
+      nightmare = Nightmare();
       var fired = false;
       nightmare
         .on('did-finish-load', function () {
@@ -472,6 +469,7 @@ describe('Nightmare', function () {
     });
 
     it('should fire an event on javascript error', function*() {
+      nightmare = Nightmare();
       var fired = false;
       nightmare
         .on('page-error', function (errorMessage, errorStack) {
@@ -483,6 +481,7 @@ describe('Nightmare', function () {
     });
 
     it('should fire an event on javascript console.log', function*() {
+      nightmare = Nightmare();
       var log = '';
       nightmare
         .on('page-log', function (logs) {
@@ -494,6 +493,7 @@ describe('Nightmare', function () {
     });
 
     it('should fire an event on page load failure', function*() {
+      nightmare = Nightmare();
       var fired = false;
       nightmare
         .on('did-fail-load', function () {
@@ -505,6 +505,7 @@ describe('Nightmare', function () {
     });
 
     it('should fire an event on javascript window.alert', function*() {
+      nightmare = Nightmare();
       var alert = '';
       nightmare.on('page-alert', function(message){
         alert = message;
@@ -518,6 +519,7 @@ describe('Nightmare', function () {
     });
 
     it('should fire an event and except on javascript window.prompt', function*() {
+      nightmare = Nightmare();
       var prompt = '', defaultResponse = '', didFail = false;
       nightmare.on('page-prompt', function(msg, dr){
         prompt = msg;
@@ -539,6 +541,7 @@ describe('Nightmare', function () {
     });
 
     it('should fire an event and except on javascript window.confirm', function*() {
+      nightmare = Nightmare();
       var confirm = '', didFail = false;
       nightmare.on('page-confirm', function(msg){
         confirm = msg;
@@ -559,7 +562,7 @@ describe('Nightmare', function () {
 
     it('should run preloaded logic on javascript window.prompt', function*() {
       var prompt = '', response = '', didFail = false;
-      var nightmare = Nightmare({
+      nightmare = Nightmare({
         'web-preferences':{
           preload: 'test/files/preload.js'
         }
@@ -575,8 +578,7 @@ describe('Nightmare', function () {
           .goto(fixture('options'))
           .evaluate(function(){
             prompt('foo', 'baz');
-          })
-          .wait(250);
+          });
       } catch(e) {
         didFail=true;
       }
@@ -584,12 +586,11 @@ describe('Nightmare', function () {
       didFail.should.be.false;
       prompt.should.equal('foo');
       response.should.equal('bar');
-      yield nightmare.end();
     });
 
     it('should run preloaded logic javascript window.confirm', function*() {
       var confirm = '', response = false, didFail = false;
-      var nightmare = Nightmare({
+      nightmare = Nightmare({
         'web-preferences':{
           preload: 'test/files/preload.js'
         }
@@ -603,8 +604,7 @@ describe('Nightmare', function () {
           .goto(fixture('options'))
           .evaluate(function(){
             confirm('foo');
-          })
-          .wait(250);
+          });
       } catch(e) {
         console.dir(e);
         didFail=true;
@@ -613,7 +613,6 @@ describe('Nightmare', function () {
       didFail.should.be.false;
       confirm.should.equal('foo');
       response.should.be.true;
-      yield nightmare.end();
     });
   });
 
