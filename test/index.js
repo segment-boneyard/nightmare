@@ -504,7 +504,7 @@ describe('Nightmare', function () {
       fired.should.be.true;
     });
 
-    it('should fire an event on javascript window.alert', function*(){
+    it('should fire an event on javascript window.alert', function*() {
       var alert = '';
       nightmare.on('page-alert', function(message){
         alert = message;
@@ -517,6 +517,104 @@ describe('Nightmare', function () {
       alert.should.equal('my alert');
     });
 
+    it('should fire an event and except on javascript window.prompt', function*() {
+      var prompt = '', defaultResponse = '', didFail = false;
+      nightmare.on('page-prompt', function(msg, dr){
+        prompt = msg;
+        defaultResponse = dr;
+      });
+      try {
+        yield nightmare
+          .goto(fixture('events'))
+          .evaluate(function(){
+            prompt('my prompt', 'default value');
+          });
+      } catch(e) {
+        didFail=true;
+      }
+
+      didFail.should.be.true;
+      prompt.should.equal('my prompt');
+      defaultResponse.should.equal('default value');
+    });
+
+    it('should fire an event and except on javascript window.confirm', function*() {
+      var confirm = '', didFail = false;
+      nightmare.on('page-confirm', function(msg){
+        confirm = msg;
+      });
+      try {
+        yield nightmare
+          .goto(fixture('events'))
+          .evaluate(function(){
+            confirm('my confirm');
+          });
+      } catch(e) {
+        didFail=true;
+      }
+
+      didFail.should.be.true;
+      confirm.should.equal('my confirm');
+    });
+
+    it('should run preloaded logic on javascript window.prompt', function*() {
+      var prompt = '', response = '', didFail = false;
+      var nightmare = Nightmare({
+        'web-preferences':{
+          preload: 'test/files/preload.js'
+        }
+      });
+
+      nightmare.on('page-prompt', function(msg, r){
+        prompt = msg;
+        response = r;
+      });
+
+      try {
+        yield nightmare
+          .goto(fixture('options'))
+          .evaluate(function(){
+            prompt('foo', 'baz');
+          })
+          .wait(250);
+      } catch(e) {
+        didFail=true;
+      }
+
+      didFail.should.be.false;
+      prompt.should.equal('foo');
+      response.should.equal('bar');
+      yield nightmare.end();
+    });
+
+    it('should run preloaded logic javascript window.confirm', function*() {
+      var confirm = '', response = false, didFail = false;
+      var nightmare = Nightmare({
+        'web-preferences':{
+          preload: 'test/files/preload.js'
+        }
+      });
+      nightmare.on('page-confirm', function(msg, r){
+        confirm = msg;
+        response = r;
+      });
+      try {
+        yield nightmare
+          .goto(fixture('options'))
+          .evaluate(function(){
+            confirm('foo');
+          })
+          .wait(250);
+      } catch(e) {
+        console.dir(e);
+        didFail=true;
+      }
+
+      didFail.should.be.false;
+      confirm.should.equal('foo');
+      response.should.be.true;
+      yield nightmare.end();
+    });
   });
 
   describe('options', function () {
@@ -603,6 +701,22 @@ describe('Nightmare', function () {
         });
 
       result.should.be.ok;
+    });
+
+    it('should allow for additions to preload', function*() {
+      nightmare = Nightmare({
+        'web-preferences': {
+          preload: 'test/files/preload.js'
+        }
+      });
+
+      var preloadNumber = yield nightmare
+        .goto(fixture('options'))
+        .evaluate(function(){
+          return window.preloadNumber;
+        });
+
+      preloadNumber.should.equal(7);
     });
   });
 });
