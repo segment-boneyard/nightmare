@@ -580,19 +580,38 @@ describe('Nightmare', function () {
       result.height.should.eql(size.height);
     });
 
-    /*
-    NOT AVAILABLE UPSTREAM in electron
-
-    it('should set headers', function*() {
-      var headers = yield Nightmare()
-        .headers({ 'X-Nightmare-Header': 'hello world' })
+    it('should set a single header', function*() {
+      nightmare = Nightmare();
+      var headers = yield nightmare
+        .header('X-Nightmare-Header', 'hello world')
         .goto(fixture('headers'))
         .evaluate(function () {
           return JSON.parse(document.querySelector('pre').innerHTML);
         });
       headers['x-nightmare-header'].should.equal('hello world');
     });
-    */
+
+    it('should set all headers', function*() {
+      nightmare = Nightmare();
+      var headers = yield nightmare
+        .header({ 'X-Foo': 'foo', 'X-Bar': 'bar'})
+        .goto(fixture('headers'))
+        .evaluate(function () {
+          return JSON.parse(document.querySelector('pre').innerHTML);
+        });
+      headers['x-foo'].should.equal('foo');
+      headers['x-bar'].should.equal('bar');
+    });
+
+    it('should set headers for that request', function*() {
+      nightmare = Nightmare();
+      var headers = yield nightmare
+        .goto(fixture('headers'), { 'X-Nightmare-Header': 'hello world' })
+        .evaluate(function () {
+          return JSON.parse(document.querySelector('pre').innerHTML);
+        });
+      headers['x-nightmare-header'].should.equal('hello world');
+    });
 
     it('should allow web-preferece settings', function*() {
       nightmare = Nightmare({'web-preferences': {'web-security': false}});
