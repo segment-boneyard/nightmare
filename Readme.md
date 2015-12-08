@@ -202,10 +202,10 @@ This event is triggered if `console.log` is used on the page. But this event is 
 This event is triggered if `alert` is used on the page.
 
 ##### .on('page-prompt', message [, response])
-This event is triggered if `prompt` is used on the page.  Note that unless the `preload` script is overridden, the prompt will cause an exception to be thrown.
+This event is triggered if `prompt` is used on the page.  Note that unless `prompt` is overridden in a `preload` script, the prompt will cause an exception to be thrown.
 
 ##### .on('page-confirm', message [, response])
-This event is triggered if `confirm` is used on the page.  Note that unless the `preload` script is overridden, the confirm will cause an exception to be thrown.
+This event is triggered if `confirm` is used on the page.  Note that unless `confirm` is overridden in a `preload` script, the confirm will cause an exception to be thrown.
 
 #### .screenshot([path][, clip])
 Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
