@@ -726,6 +726,70 @@ describe('Nightmare', function () {
       result.should.be.ok;
     });
   });
+
+  describe('Nightmare.action(name, fn)', function() {
+    it('should support custom actions', function*() {
+      Nightmare.action('size', function (done) {
+        this.evaluate_now(function() {
+          var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+          var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+          return {
+            height: h,
+            width: w
+          }
+        }, done)
+      })
+
+      var size = yield Nightmare()
+        .goto(fixture('simple'))
+        .size()
+
+      size.height.should.be.a('number')
+      size.width.should.be.a('number')
+    })
+
+    it('should support custom namespaces', function*() {
+      Nightmare.action('style', {
+        background: function (done) {
+          this.evaluate_now(function () {
+            return window.getComputedStyle(document.body, null).backgroundColor
+          }, done)
+        },
+        color: function (done) {
+          this.evaluate_now(function () {
+            return window.getComputedStyle(document.body, null).color
+          }, done)
+        }
+      })
+
+      var nightmare = Nightmare()
+      yield nightmare.goto(fixture('simple'))
+      var background = yield nightmare.style.background()
+      var color = yield nightmare.style.color()
+
+      background.should.equal('rgba(0, 0, 0, 0)')
+      color.should.equal('rgb(0, 0, 0)')
+    })
+  })
+
+  describe('Nightmare.use', function() {
+    it('should support extending nightmare', function*() {
+      var nightmare = Nightmare()
+      var tagName = yield Nightmare()
+        .goto(fixture('simple'))
+        .use(select('h1'))
+
+      tagName.should.equal('H1')
+
+      function select (tagname) {
+        return function (nightmare) {
+          nightmare.evaluate(function (tagname) {
+            return document.querySelector(tagname).tagName
+          }, tagname)
+        }
+      }
+    })
+  })
 });
 
 /**
