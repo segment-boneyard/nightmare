@@ -326,6 +326,39 @@ describe('Nightmare', function () {
       coordinates.left.should.equal(50);
     });
 
+    it('should scroll to specified selector', function*() {
+      var selector = 'input';
+      // Get actual element coordinates
+      var elemCoordinates = yield nightmare
+        .viewport(320, 320)
+        .goto(fixture('manipulation'))
+        .evaluate(function (selector) {
+          var element = document.querySelector(selector);
+          var rect = element.getBoundingClientRect();
+          return {
+            top: Math.round(rect.top),
+            left: Math.round(rect.left)
+          };
+        }, selector);
+      elemCoordinates.should.have.property('top');
+      elemCoordinates.top.should.not.be.equal(0);
+      elemCoordinates.should.have.property('left');
+      elemCoordinates.left.should.not.be.equal(0);
+
+      // Scroll to the element
+      var coordinates = yield nightmare
+        .scrollTo(selector)
+        .evaluate(function () {
+          return {
+            top: document.body.scrollTop,
+            left: document.body.scrollLeft
+          };
+        });
+      coordinates.top.should.equal(elemCoordinates.top);
+      // TODO: fix this in the fixture
+      // coordinates.left.should.equal(elemCoordinates.left);
+    });
+
     it('should hover over an element', function*() {
       var color = yield nightmare
         .goto(fixture('manipulation'))
