@@ -27,20 +27,18 @@
     "mkdirp": "^0.5.1",
     "mocha-generators": "^1.1.1",
     "object-assign": "^4.0.1",
-    "once": "^1.3.2",
+    "once": "^1.3.3",
     "rimraf": "^2.4.3",
-    "sliced": "0.0.5"
+    "sliced": "1.0.1"
   },
   "devDependencies": {
     "basic-auth": "^1.0.3",
     "basic-auth-connect": "^1.0.0",
-    "chai": "^2.2.0",
+    "chai": "^3.4.1",
     "express": "^4.13.3",
+    "mocha-generators": "^1.2.0",
     "mocha": "^2.3.0",
-    "multer": "0.1.8",
+    "multer": "1.1.0",
     "serve-static": "^1.10.0"
-  },
-  "scripts": {
-    "test": "mocha --harmony test"
   }
 }
