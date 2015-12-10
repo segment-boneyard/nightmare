@@ -17,6 +17,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help
   - [Set up an instance](#nightmareoptions)
   - [Interact with the page](#interact-with-the-page)
   - [Extract from the page](#extract-from-the-page)
+  - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
 
@@ -218,6 +219,107 @@ Returns the title of the current page.
 
 #### .url()
 Returns the url of the current page.
+
+### Cookies
+
+#### .cookies.get(name)
+
+Get a cookie by it's `name`. The url will be the current url.
+
+#### .cookies.get(query)
+
+Query multiple cookies with the `query` object. If a `query.name` is set, it will return the first cookie it finds with that name, otherwise it will query for an array of cookies. If no `query.url` is set, it will use the current url. Here's an example:
+
+```js
+// get all google cookies that are secure
+// and have the path `/query`
+var cookies = yield nightmare
+  .goto('http://google.com')
+  .cookies.get({
+    path: '/query',
+    secure: true
+  })
+```
+
+Available properties are documented here: https://github.com/atom/electron/blob/master/docs/api/session.md#sescookiesgetdetails-callback
+
+#### .cookies.get()
+
+Get all the cookies for the current url. If you'd like get all cookies for all urls, use: `.get({ url: null })`.
+
+#### .cookies.set(name, value)
+
+Set a cookie's `name` and `value`. Most basic form, the url will be the current url.
+
+#### .cookies.set(cookie)
+
+Set a `cookie`. If `cookie.url` is not set, it will set the cookie on the current url. Here's an example:
+
+```js
+yield nightmare
+  .goto('http://google.com')
+  .cookies.set({
+    name: 'token',
+    value: 'some token',
+    path: '/query',
+    secure: true
+  })
+```
+
+Available properties are documented here:  https://github.com/atom/electron/blob/master/docs/api/session.md#sescookiessetdetails-callback
+
+#### .cookies.set(cookies)
+
+Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a look at the `.cookies.set(cookie)` documentation above for a better idea of what `cookie` should look like.
+
+### Extending Nightmare
+
+#### Nightmare.action(name, action|namespace)
+
+You can add your own custom actions to the Nightmare prototype. Here's an example:
+
+```js
+Nightmare.action('size', function (done) {
+  this.evaluate_now(function() {
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    return {
+      height: h,
+      width: w
+    }
+  }, done)
+})
+
+var size = yield Nightmare()
+  .goto('http://cnn.com')
+  .size()
+```
+
+> Remember, this is attached to the static class `Nightmare`, not the instance.
+
+You'll notice we used an internal function `evaluate_now`. This function is different than `nightmare.evaluate` because it runs it immediately, whereas `nightmare.evaluate` is queued.
+
+An easy way to remember: when in doubt, use `evaluate`. If you're creating custom actions, use `evaluate_now`. The technical reason is that since our action has already been queued and we're running it now, we shouldn't re-queue the evaluate function.
+
+We can also create custom namespaces. We do this internally for `nightmare.cookies.get` and `nightmare.cookies.set`. These are useful if you have a bundle of actions you want to expose, but it will clutter up the main nightmare object. Here's an example of that:
+
+```js
+Nightmare.action('style', {
+  background: function (done) {
+    this.evaluate_now(function () {
+      return window.getComputedStyle(document.body, null).backgroundColor
+    }, done)
+  }
+})
+
+var background = yield Nightmare()
+  .goto('http://google.com')
+  .style.background()
+```
+
+#### .use(plugin)
+
+`nightmare.use` is useful for reusing a set of tasks on an instance. Check out [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly) for some examples.
 
 ## Usage
 #### Installation

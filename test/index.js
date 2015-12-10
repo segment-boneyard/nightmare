@@ -349,6 +349,108 @@ describe('Nightmare', function () {
     });
   });
 
+  describe('cookies', function() {
+    var nightmare;
+
+    beforeEach(function() {
+      nightmare = Nightmare().goto(fixture('cookie'));
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
+    it('.set(name, value) & .get(name)', function*() {
+      var cookies = nightmare.cookies
+
+      yield cookies.set('hi', 'hello')
+      var cookie = yield cookies.get('hi')
+
+      cookie.name.should.equal('hi')
+      cookie.value.should.equal('hello')
+      cookie.path.should.equal('/')
+      cookie.secure.should.equal(false)
+    })
+
+    it('.set(obj) & .get(name)', function*() {
+      var cookies = nightmare.cookies
+
+      yield cookies.set({
+        name: 'nightmare',
+        value: 'rocks',
+        path: '/cookie'
+      })
+      var cookie = yield cookies.get('nightmare')
+
+      cookie.name.should.equal('nightmare')
+      cookie.value.should.equal('rocks')
+      cookie.path.should.equal('/cookie')
+      cookie.secure.should.equal(false)
+    })
+
+    it('.set([cookie1, cookie2]) & .get()', function*() {
+      var cookies = nightmare.cookies
+
+      yield cookies.set([
+        {
+          name: 'hi',
+          value: 'hello',
+          path: '/'
+        },
+        {
+          name: 'nightmare',
+          value: 'rocks',
+          path: '/cookie'
+        }
+      ])
+
+      var cookies = yield cookies.get()
+      cookies.length.should.equal(2)
+
+      // sort in case they come in a different order
+      cookies = cookies.sort(function (a, b) {
+        if (a.name > b.name) return 1
+        if (a.name < b.name) return -1
+        return 0
+      })
+
+      cookies[0].name.should.equal('hi')
+      cookies[0].value.should.equal('hello')
+      cookies[0].path.should.equal('/')
+      cookies[0].secure.should.equal(false)
+
+      cookies[1].name.should.equal('nightmare')
+      cookies[1].value.should.equal('rocks')
+      cookies[1].path.should.equal('/cookie')
+      cookies[1].secure.should.equal(false)
+    })
+
+    it('.set([cookie1, cookie2]) & .get(query)', function*() {
+      var cookies = nightmare.cookies
+
+      yield cookies.set([
+        {
+          name: 'hi',
+          value: 'hello',
+          path: '/'
+        },
+        {
+          name: 'nightmare',
+          value: 'rocks',
+          path: '/cookie'
+        }
+      ])
+
+      var cookies = yield cookies.get({ path: '/cookie'})
+      cookies.length.should.equal(1)
+
+      cookies[0].name.should.equal('nightmare')
+      cookies[0].value.should.equal('rocks')
+      cookies[0].path.should.equal('/cookie')
+      cookies[0].secure.should.equal(false)
+    })
+  })
+
 
   describe('rendering', function () {
     var nightmare;
@@ -693,19 +795,38 @@ describe('Nightmare', function () {
       result.height.should.eql(size.height);
     });
 
-    /*
-    NOT AVAILABLE UPSTREAM in electron
-
-    it('should set headers', function*() {
-      var headers = yield Nightmare()
-        .headers({ 'X-Nightmare-Header': 'hello world' })
+    it('should set a single header', function*() {
+      nightmare = Nightmare();
+      var headers = yield nightmare
+        .header('X-Nightmare-Header', 'hello world')
         .goto(fixture('headers'))
         .evaluate(function () {
           return JSON.parse(document.querySelector('pre').innerHTML);
         });
       headers['x-nightmare-header'].should.equal('hello world');
     });
-    */
+
+    it('should set all headers', function*() {
+      nightmare = Nightmare();
+      var headers = yield nightmare
+        .header({ 'X-Foo': 'foo', 'X-Bar': 'bar'})
+        .goto(fixture('headers'))
+        .evaluate(function () {
+          return JSON.parse(document.querySelector('pre').innerHTML);
+        });
+      headers['x-foo'].should.equal('foo');
+      headers['x-bar'].should.equal('bar');
+    });
+
+    it('should set headers for that request', function*() {
+      nightmare = Nightmare();
+      var headers = yield nightmare
+        .goto(fixture('headers'), { 'X-Nightmare-Header': 'hello world' })
+        .evaluate(function () {
+          return JSON.parse(document.querySelector('pre').innerHTML);
+        });
+      headers['x-nightmare-header'].should.equal('hello world');
+    });
 
     it('should allow web-preferece settings', function*() {
       nightmare = Nightmare({'web-preferences': {'web-security': false}});
@@ -734,6 +855,70 @@ describe('Nightmare', function () {
       preloadNumber.should.equal(7);
     });
   });
+
+  describe('Nightmare.action(name, fn)', function() {
+    it('should support custom actions', function*() {
+      Nightmare.action('size', function (done) {
+        this.evaluate_now(function() {
+          var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+          var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+          return {
+            height: h,
+            width: w
+          }
+        }, done)
+      })
+
+      var size = yield Nightmare()
+        .goto(fixture('simple'))
+        .size()
+
+      size.height.should.be.a('number')
+      size.width.should.be.a('number')
+    })
+
+    it('should support custom namespaces', function*() {
+      Nightmare.action('style', {
+        background: function (done) {
+          this.evaluate_now(function () {
+            return window.getComputedStyle(document.body, null).backgroundColor
+          }, done)
+        },
+        color: function (done) {
+          this.evaluate_now(function () {
+            return window.getComputedStyle(document.body, null).color
+          }, done)
+        }
+      })
+
+      var nightmare = Nightmare()
+      yield nightmare.goto(fixture('simple'))
+      var background = yield nightmare.style.background()
+      var color = yield nightmare.style.color()
+
+      background.should.equal('rgba(0, 0, 0, 0)')
+      color.should.equal('rgb(0, 0, 0)')
+    })
+  })
+
+  describe('Nightmare.use', function() {
+    it('should support extending nightmare', function*() {
+      var nightmare = Nightmare()
+      var tagName = yield Nightmare()
+        .goto(fixture('simple'))
+        .use(select('h1'))
+
+      tagName.should.equal('H1')
+
+      function select (tagname) {
+        return function (nightmare) {
+          nightmare.evaluate(function (tagname) {
+            return document.querySelector(tagname).tagName
+          }, tagname)
+        }
+      }
+    })
+  })
 });
 
 /**
