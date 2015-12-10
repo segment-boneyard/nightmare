@@ -725,6 +725,11 @@ describe('Nightmare', function () {
 
       result.should.be.ok;
     });
+
+    it('should be constructable with paths', function*() {
+      nightmare = Nightmare({ paths:{} });
+      nightmare.should.be.ok;
+    });
   });
 
   describe('Nightmare.action(name, fn)', function() {
