@@ -20,7 +20,7 @@ var app = module.exports = express();
  * Accept file uploads.
  */
 
-app.use(multer({ inMemory: true }));
+app.use(multer({ inMemory: true }).single('upload'));
 
 /**
  * Echo uploaded files for testing assertions.
@@ -43,6 +43,9 @@ app.get('/auth', basicAuth('my', 'auth'), function (req, res) {
  */
 
 app.get('/headers', function (req, res) {
+  res.header('Cache-Control', 'no-cache');
+  res.header('Expires', '-1');
+  res.header('Pragma', 'no-cache');
   res.send(req.headers);
 });
 

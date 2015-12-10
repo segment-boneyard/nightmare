@@ -1,4 +1,23 @@
 
+2.0.9 / 2015-12-09
+==================
+
+  * add Nightmare.action(name, action|namespace) and nightmare.use(plugin)
+  * bump dependencies
+  * Add header() method, and optional headers param to goto()
+  * "manipulation" fixture fixed to correctly test horizontal scrolling
+  * Viewport size changed in the 'should set viewport' test (for test passing on small screen resolution).
+  * prevent alerts from blocking
+  * Add support to wait(fn) for passing arguments from node context to browser context, just like evaluate()
+  * better cross-platform tests
+  * add mousedown event
+  * add nightmare.cookies.get(...) and nightmare.cookies.set(...) support
+  * improve screenshot documentation
+  * remove `.only` from buffered image test case
+  * return a buffered image if no path is provided
+  * Allow overriding Electron app paths
+  * Update mocha-generators so tests run
+
 2.0.8 / 2015-11-24
 ==================
 
