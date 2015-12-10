@@ -505,14 +505,14 @@ describe('Nightmare', function () {
       fired.should.be.true;
     });
 
-    it('should be able to have a custom event', function*() {
+    it('should be able to bind to a custom event', function*() {
       var eventResults;
       yield nightmare
         .goto(fixture('events'))
         .on('sample-event', function(){
           eventResults = arguments;
         })
-        .customevent('sample-event')
+        .bind('sample-event')
         .evaluate(function(){
           ipc.send('sample-event', 'sample', 3, {sample: 'sample'});
         });
@@ -520,6 +520,21 @@ describe('Nightmare', function () {
       eventResults[0].should.equal('sample');
       eventResults[1].should.equal(3);
       eventResults[2].sample.should.equal('sample');
+    });
+
+    it('should be able to unbind a custom event', function*() {
+      var eventResults;
+      yield nightmare
+        .goto(fixture('events'))
+        .on('sample-event', function(){
+          eventResults = arguments;
+        })
+        .bind('sample-event')
+        .unbind('sample-event')
+        .evaluate(function(){
+          ipc.send('sample-event', 'sample', 3, {sample: 'sample'});
+        });
+      should.not.exist(eventResults);
     });
     
     it('should fire an event on javascript window.alert', function*(){
