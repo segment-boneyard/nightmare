@@ -17,6 +17,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help
   - [Set up an instance](#nightmareoptions)
   - [Interact with the page](#interact-with-the-page)
   - [Extract from the page](#extract-from-the-page)
+  - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
 
@@ -261,6 +262,55 @@ Available properties are documented here:  https://github.com/atom/electron/blob
 #### .cookies.set(cookies)
 
 Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a look at the `.cookies.set(cookie)` documentation above for a better idea of what `cookie` should look like.
+
+### Extending Nightmare
+
+#### Nightmare.action(name, action|namespace)
+
+You can add your own custom actions to the Nightmare prototype. Here's an example:
+
+```js
+Nightmare.action('size', function (done) {
+  this.evaluate_now(function() {
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    return {
+      height: h,
+      width: w
+    }
+  }, done)
+})
+
+var size = yield Nightmare()
+  .goto('http://cnn.com')
+  .size()
+```
+
+> Remember, this is attached to the static class `Nightmare`, not the instance.
+
+You'll notice we used an internal function `evaluate_now`. This function is different than `nightmare.evaluate` because it runs it immediately, whereas `nightmare.evaluate` is queued.
+
+An easy way to remember: when in doubt, use `evaluate`. If you're creating custom actions, use `evaluate_now`. The technical reason is that since our action has already been queued and we're running it now, we shouldn't re-queue the evaluate function.
+
+We can also create custom namespaces. We do this internally for `nightmare.cookies.get` and `nightmare.cookies.set`. These are useful if you have a bundle of actions you want to expose, but it will clutter up the main nightmare object. Here's an example of that:
+
+```js
+Nightmare.action('style', {
+  background: function (done) {
+    this.evaluate_now(function () {
+      return window.getComputedStyle(document.body, null).backgroundColor
+    }, done)
+  }
+})
+
+var background = yield Nightmare()
+  .goto('http://google.com')
+  .style.background()
+```
+
+#### .use(plugin)
+
+`nightmare.use` is useful for reusing a set of tasks on an instance. Check out [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly) for some examples.
 
 ## Usage
 #### Installation
