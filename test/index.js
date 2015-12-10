@@ -472,8 +472,10 @@ describe('Nightmare', function () {
       nightmare = Nightmare();
       var fired = false;
       nightmare
-        .on('page-error', function (errorMessage, errorStack) {
-          fired = true;
+        .on('page', function (eventType, errorMessage, errorStack) {
+          if(eventType == 'error'){
+           fired = true;
+          }
         });
       yield nightmare
         .goto(fixture('events'));
@@ -484,8 +486,10 @@ describe('Nightmare', function () {
       nightmare = Nightmare();
       var log = '';
       nightmare
-        .on('page-log', function (logs) {
-          log = logs[0];
+        .on('page', function (eventType, logs) {
+          if(eventType == 'log'){
+            log = logs[0];
+          }
         });
       yield nightmare
         .goto(fixture('events'))
@@ -506,8 +510,9 @@ describe('Nightmare', function () {
 
     it('should fire an event on javascript window.alert', function*() {
       nightmare = Nightmare();
-      var alert = '';
-      nightmare.on('page-alert', function(message){
+      var alert = '', type = '';
+      nightmare.on('page', function(eventType, message){
+        type = eventType;
         alert = message;
       });
       yield nightmare
@@ -515,13 +520,15 @@ describe('Nightmare', function () {
         .evaluate(function(){
           alert('my alert');
         });
+      type.should.equal('alert');
       alert.should.equal('my alert');
     });
 
     it('should fire an event and except on javascript window.prompt', function*() {
       nightmare = Nightmare();
-      var prompt = '', defaultResponse = '', didFail = false;
-      nightmare.on('page-prompt', function(msg, dr){
+      var prompt = '', defaultResponse = '', type='', didFail = false;
+      nightmare.on('page', function(eventType, msg, dr){
+        type = eventType;
         prompt = msg;
         defaultResponse = dr;
       });
@@ -535,6 +542,7 @@ describe('Nightmare', function () {
         didFail=true;
       }
 
+      type.should.equal('prompt');
       didFail.should.be.true;
       prompt.should.equal('my prompt');
       defaultResponse.should.equal('default value');
@@ -542,9 +550,12 @@ describe('Nightmare', function () {
 
     it('should fire an event and except on javascript window.confirm', function*() {
       nightmare = Nightmare();
-      var confirm = '', didFail = false;
-      nightmare.on('page-confirm', function(msg){
-        confirm = msg;
+      var confirm = '', didFail = false, type = '';
+      nightmare.on('page', function(eventType, msg){
+        if(eventType != 'log' && eventType != 'error'){
+          type = eventType;
+          confirm = msg;
+        }
       });
       try {
         yield nightmare
@@ -556,19 +567,21 @@ describe('Nightmare', function () {
         didFail=true;
       }
 
+      type.should.equal('confirm');
       didFail.should.be.true;
       confirm.should.equal('my confirm');
     });
 
     it('should run preloaded logic on javascript window.prompt', function*() {
-      var prompt = '', response = '', didFail = false;
+      var prompt = '', response = '', didFail = false, type = '';
       nightmare = Nightmare({
         'web-preferences':{
           preload: 'test/files/preload.js'
         }
       });
 
-      nightmare.on('page-prompt', function(msg, r){
+      nightmare.on('page', function(eventType, msg, r){
+        type = eventType;
         prompt = msg;
         response = r;
       });
@@ -583,19 +596,21 @@ describe('Nightmare', function () {
         didFail=true;
       }
 
+      type.should.equal('prompt');
       didFail.should.be.false;
       prompt.should.equal('foo');
       response.should.equal('bar');
     });
 
     it('should run preloaded logic javascript window.confirm', function*() {
-      var confirm = '', response = false, didFail = false;
+      var confirm = '', response = false, didFail = false, type = '';
       nightmare = Nightmare({
         'web-preferences':{
           preload: 'test/files/preload.js'
         }
       });
-      nightmare.on('page-confirm', function(msg, r){
+      nightmare.on('page', function(eventType, msg, r){
+        type = eventType;
         confirm = msg;
         response = r;
       });
@@ -610,6 +625,7 @@ describe('Nightmare', function () {
         didFail=true;
       }
 
+      type.should.equal('confirm');
       didFail.should.be.false;
       confirm.should.equal('foo');
       response.should.be.true;

@@ -6,7 +6,7 @@
         if(message == 'foo'){
             response =  'bar';
         }
-        __nightmare.ipc.send('page-prompt', message, response);
+        __nightmare.ipc.send('page', 'prompt', message, response);
         return response;
     };
 
@@ -15,7 +15,7 @@
         if(message == 'foo'){
             response = true;
         }
-        __nightmare.ipc.send('page-confirm', message, response);
+        __nightmare.ipc.send('page', 'confirm', message, response);
         return response;
     };
 })();
