@@ -117,7 +117,7 @@ var nightmare = Nightmare({
 ```
 
 ##### ['web-preferences'].preloadPath
-Specifies a file to add to Nightmare's preload.  (The generated preload file is written to Electron's `userData` path.)
+Specifies an absolute file path to add to Nightmare's preload.  (The generated preload file is written to Electron's `userData` path.)
 
 #### .useragent(useragent)
 Set the `useragent` used by electron.
