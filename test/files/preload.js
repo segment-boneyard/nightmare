@@ -1,4 +1,4 @@
-(function() {
+module.exports = exports = function() {
     window.preloadNumber = 7; 
 
     window.prompt = function(message, defaultResponse) {
@@ -18,4 +18,4 @@
         __nightmare.ipc.send('page', 'confirm', message, response);
         return response;
     };
-})();
+};
