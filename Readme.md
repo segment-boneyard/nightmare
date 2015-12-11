@@ -116,6 +116,12 @@ var nightmare = Nightmare({
 });
 ```
 
+##### ignoreDownloads
+Defines whether or not downloads should be ignored.
+
+##### downloadTimeout
+This will throw an eception if the `.wait('downloads-complete')` didn't return `true` within the set timeframe.
+
 #### .useragent(useragent)
 Set the `useragent` used by electron.
 
@@ -178,6 +184,11 @@ Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 #### .wait(fn[, arg1, arg2,...])
 Wait until the `fn` evaluated on the page with `arg1, arg2,...` returns `true`. All the `args` are optional. See `.evaluate()` for usage.
 
+#### .wait('downloads-complete')
+Wait until all downloads are in a state of `'completed'`, `'interrupted'`, or `'cancelled'`
+
+#### .emit(eventType[, arg1, arg2,...])
+Sends an event of `eventType` to the Electron process.
 
 ### Extract from the Page
 
@@ -198,6 +209,30 @@ This event is triggered if `console.log` is used on the page. But this event is 
 
 ##### .on('page-alert', message)
 This event is triggered if `alert` is used on the page.
+
+##### .on('download', event, downloadItem)
+This event is triggered when Electron emits `'will-download'`.  This event is also emitted after downloads are started when [`DownloadItem`](https://github.com/atom/electron/blob/master/docs/api/download-item.md) emits `'updated'` or `'done'`.   The possible values for `event` are `'started'`, `'cancelled'`, `'interrupted'`, or `'completed'`.  Note that by listening to `'download'`, Nightmare expects the default download behavior to be overridden. 
+
+Downloads should be completed using `Nightmare.emit('download', action, downloadItem)`.  The possible values for `action` are `'cancel'`, `'continue'` for default behavior, or a file path (file name and extension inclusive) to save the download to an alternative location. The `downloadItem` parameter should use the item passed by `'download'`.
+
+For example:
+
+```javascript
+var nightmare = Nightmare();
+nightmare.on('download', function(event, downloadItem){
+  if(state == 'start'){
+    nightmare.emit('download', '/some/path/file.zip', downloadItem);
+  }
+});
+
+yield nightmare
+  .goto('https://github.com/segmentio/nightmare')
+  .click('a[href="/segmentio/nightmare/archive/master.zip"]')
+  .wait('downloads-complete');
+```
+
+By default, downloads are saved to the path defined in `paths.downloads`.  Also by default, downloads are automatically accepted (`nightmare.emit('download', 'continue', downloadItem)` is performed automatically internally in Nightmare) unless `ignoreDownloads` is specified.
+
 
 #### .screenshot([path][, clip])
 Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
