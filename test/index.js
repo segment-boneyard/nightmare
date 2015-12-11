@@ -794,7 +794,140 @@ describe('Nightmare', function () {
         }
       }
     })
-  })
+  });
+
+  describe('downloads', function () {
+    var nightmare;
+
+    before(function(done) {
+      mkdirp(path.join(tmp_dir, 'subdir'), done);
+    })
+
+    after(function(done) {
+      rimraf(tmp_dir, done)
+    })
+
+    beforeEach(function() {
+      nightmare = Nightmare({
+        paths:{
+          'downloads': tmp_dir
+        }
+      });
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
+    it('should download a file', function*(){
+      var downloadItem, statFail = false;
+
+      yield nightmare
+        .goto('https://github.com/segmentio/nightmare')
+        .click('a[href="/segmentio/nightmare/archive/master.zip"]')
+        .wait('downloads-complete');
+
+      downloadItem = nightmare._downloads['nightmare-master.zip'];
+      try {
+        fs.statSync(path.join(tmp_dir, 'nightmare-master.zip'))
+      } catch(e) {
+        statFail = true;
+      }
+
+      downloadItem.should.be.ok;
+      downloadItem.filename.should.equal('nightmare-master.zip');
+      downloadItem.state.should.equal('completed');
+      statFail.should.be.false;
+    });
+
+    it('should error when download time exceeds timeout', function*(){
+      var didFail = false;
+
+      nightmare = Nightmare({
+        paths:{
+          'downloads': tmp_dir
+        },
+        downloadTimeout: 1
+      });
+      try {
+        yield nightmare
+          .goto('https://github.com/segmentio/nightmare')
+          .click('a[href="/segmentio/nightmare/archive/master.zip"]')
+          .wait('downloads-complete');
+      } catch(e) {
+        didFail = true;
+      }
+
+      didFail.should.be.true;
+    });
+    
+    it('should set a path for a specific download', function*(){
+      var downloadItem, statFail = false, finalState;
+
+      nightmare.on('download', function(state, download){
+        if(state == 'started'){
+          nightmare.emit('download', path.join(tmp_dir, 'subdir', 'nightmare-master.zip'), download);
+        }
+        else if(state == 'completed' || state == 'cancelled' || state == 'interrupted') {
+          finalState = state;
+          downloadItem = download;
+        }
+      });
+
+      yield nightmare
+        .goto('https://github.com/segmentio/nightmare')
+        .click('a[href="/segmentio/nightmare/archive/master.zip"]')
+        .wait('downloads-complete');
+
+      try {
+        fs.statSync(path.join(tmp_dir, 'subdir', 'nightmare-master.zip'));
+      } catch(e) {
+        statFail = true;
+      }
+
+      downloadItem.should.be.ok;
+      finalState.should.equal('completed');
+      statFail.should.be.false;
+    });
+
+    it('should cancel a specific download', function*(){
+      var downloadItem, finalState;
+
+      nightmare.on('download', function(state, download){
+        if(state == 'started'){
+          nightmare.emit('download', 'cancel', download);
+        }
+        else if(state == 'completed' || state == 'cancelled' || state == 'interrupted') {
+          finalState = state;
+          downloadItem = download;
+        }
+      });
+
+      yield nightmare
+        .goto('https://github.com/segmentio/nightmare')
+        .click('a[href="/segmentio/nightmare/archive/master.zip"]')
+        .wait('downloads-complete');
+
+      downloadItem.should.be.ok;
+      finalState.should.equal('cancelled');
+    });
+
+    it('should ignore all downloads', function*(){
+      nightmare = Nightmare({
+        paths:{
+          'downloads': tmp_dir
+        },
+        ignoreDownloads:true
+      });
+
+      yield nightmare
+        .goto('https://github.com/segmentio/nightmare')
+        .click('a[href="/segmentio/nightmare/archive/master.zip"]')
+        .wait('downloads-complete');
+
+      Object.keys(nightmare._downloads).length.should.equal(0);
+    });
+  });
 });
 
 /**
