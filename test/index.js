@@ -839,6 +839,11 @@ describe('Nightmare', function () {
       result.should.be.ok;
     });
 
+    it('should be constructable with paths', function*() {
+      nightmare = Nightmare({ paths:{} });
+      nightmare.should.be.ok;
+    });
+
     it('should allow for additions to preload', function*() {
       nightmare = Nightmare({
         'web-preferences': {
