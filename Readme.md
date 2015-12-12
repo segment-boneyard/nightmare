@@ -199,11 +199,11 @@ This event is triggered if `console.log` is used on the page. But this event is 
 ##### .on('page-alert', message)
 This event is triggered if `alert` is used on the page.
 
-##### .bind(name)
-Adds a custom event that can be captured with `.on()` triggerable in `.evaluate()` or `.inject()` with `ipc.send([name], ...)`.
+##### .bind(name [, handler])
+Adds a custom event that can be captured with `.on()` triggerable in `.evaluate()` or `.inject()` with `ipc.send([name], ...)`.  The optional `handler` will consume the named event.
 
-##### .unbind(name)
-Removes a custom event added with `.bind()`.
+##### .unbind(name [, handler])
+Removes a custom event added with `.bind()`.  If handler is specified, the handler is removed.  If no handler is specified or the handler was the last handler for the emitter, the custom event is removed and will no longer be emittable until it is bound again.
 
 #### .screenshot([path][, clip])
 Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
