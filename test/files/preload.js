@@ -1,4 +1,4 @@
-module.exports = exports = function() {
+module.exports = exports = function(ipc) {
     window.preloadNumber = 7; 
 
     window.prompt = function(message, defaultResponse) {
@@ -6,7 +6,7 @@ module.exports = exports = function() {
         if(message == 'foo'){
             response =  'bar';
         }
-        __nightmare.ipc.send('page', 'prompt', message, response);
+        ipc.send('page', 'prompt', message, response);
         return response;
     };
 
@@ -15,7 +15,7 @@ module.exports = exports = function() {
         if(message == 'foo'){
             response = true;
         }
-        __nightmare.ipc.send('page', 'confirm', message, response);
+        ipc.send('page', 'confirm', message, response);
         return response;
     };
 };
