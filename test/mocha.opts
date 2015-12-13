@@ -1,3 +1,2 @@
 --slow 3s
 --timeout 10s
---require mocha-generators
