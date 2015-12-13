@@ -116,6 +116,15 @@ var nightmare = Nightmare({
 });
 ```
 
+#### electronPath
+The path to prebuilt Electron binary.  This is useful for testing on different version Electron.  Note that Nightmare only supports the version this package depending on.  Please use this option at your own risk.
+
+```js
+var nightmare = Nightmare({
+  electronPath: require('electron-prebuilt')
+});
+```
+
 #### .useragent(useragent)
 Set the `useragent` used by electron.
 
