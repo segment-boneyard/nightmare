@@ -120,7 +120,7 @@ var nightmare = Nightmare({
 Defines whether or not downloads should be ignored.
 
 ##### downloadTimeout
-This will throw an eception if the `.wait('downloads-complete')` didn't return `true` within the set timeframe.
+This will throw an exception if the `.wait('downloads-complete')` didn't return `true` within the set timeframe.
 
 #### .useragent(useragent)
 Set the `useragent` used by electron.
@@ -219,8 +219,8 @@ For example:
 
 ```javascript
 var nightmare = Nightmare();
-nightmare.on('download', function(event, downloadItem){
-  if(state == 'start'){
+nightmare.on('download', function(state, downloadItem){
+  if(state == 'started'){
     nightmare.emit('download', '/some/path/file.zip', downloadItem);
   }
 });
