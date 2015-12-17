@@ -774,6 +774,11 @@ describe('Nightmare', function () {
       nightmare = Nightmare({ paths:{} });
       nightmare.should.be.ok;
     });
+
+    it('should allow to use external Electron', function*() {
+      nightmare = Nightmare({ electronPath: require('electron-prebuilt') });
+      nightmare.should.be.ok;
+    })
   });
 
   describe('Nightmare.action(name, fn)', function() {
