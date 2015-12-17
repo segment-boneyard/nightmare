@@ -576,8 +576,10 @@ describe('Nightmare', function () {
     it('should fire an event on javascript error', function*() {
       var fired = false;
       nightmare
-        .on('page-error', function (errorMessage, errorStack) {
-          fired = true;
+        .on('page', function (type, errorMessage, errorStack) {
+          if (type === 'error') {
+            fired = true;
+          }
         });
       yield nightmare
         .goto(fixture('events'));
@@ -587,8 +589,10 @@ describe('Nightmare', function () {
     it('should fire an event on javascript console.log', function*() {
       var log = '';
       nightmare
-        .on('page-log', function (logs) {
-          log = logs[0];
+        .on('console', function (type, logs) {
+          if (type === 'log') {
+            log = logs[0];
+          }
         });
       yield nightmare
         .goto(fixture('events'))
@@ -608,9 +612,12 @@ describe('Nightmare', function () {
 
     it('should fire an event on javascript window.alert', function*(){
       var alert = '';
-      nightmare.on('page-alert', function(message){
-        alert = message;
+      nightmare.on('page', function(type, message){
+        if (type === 'alert') {
+          alert = message;
+        }
       });
+
       yield nightmare
         .goto(fixture('events'))
         .evaluate(function(){
@@ -619,6 +626,43 @@ describe('Nightmare', function () {
       alert.should.equal('my alert');
     });
 
+    it('should fire an event on javascript window.prompt', function*(){
+      var prompt = '';
+      var response = ''
+      nightmare.on('page', function(type, message, res){
+        if (type === 'prompt') {
+          prompt = message;
+          response = res
+        }
+      });
+
+      yield nightmare
+        .goto(fixture('events'))
+        .evaluate(function(){
+          prompt('my prompt', 'hello!');
+        });
+      prompt.should.equal('my prompt');
+      response.should.equal('hello!');
+    });
+
+    it('should fire an event on javascript window.confirm', function*(){
+      var confirm = '';
+      var response = ''
+      nightmare.on('page', function(type, message, res){
+        if (type === 'confirm') {
+          confirm = message;
+          response = res
+        }
+      });
+
+      yield nightmare
+        .goto(fixture('events'))
+        .evaluate(function(){
+          confirm('my confirm', 'hello!');
+        });
+      confirm.should.equal('my confirm');
+      response.should.equal('hello!');
+    });
   });
 
   describe('options', function () {
@@ -715,8 +759,8 @@ describe('Nightmare', function () {
       headers['x-nightmare-header'].should.equal('hello world');
     });
 
-    it('should allow web-preferece settings', function*() {
-      nightmare = Nightmare({'web-preferences': {'web-security': false}});
+    it('should allow webPrefereces settings', function*() {
+      nightmare = Nightmare({webPreferences: {webSecurity: false}});
       var result = yield nightmare
         .goto(fixture('options'))
         .evaluate(function () {
@@ -730,6 +774,11 @@ describe('Nightmare', function () {
       nightmare = Nightmare({ paths:{} });
       nightmare.should.be.ok;
     });
+
+    it('should allow to use external Electron', function*() {
+      nightmare = Nightmare({ electronPath: require('electron-prebuilt') });
+      nightmare.should.be.ok;
+    })
   });
 
   describe('Nightmare.action(name, fn)', function() {
@@ -795,6 +844,24 @@ describe('Nightmare', function () {
       }
     })
   });
+
+  describe('custom preload script', function() {
+    it('should support passing your own preload script in', function*() {
+      var nightmare = Nightmare({
+        webPreferences: {
+          preload: path.join(__dirname, 'fixtures', 'preload', 'index.js')
+        }
+      })
+
+      var value = yield nightmare
+        .goto(fixture('preload'))
+        .evaluate(function() {
+          return window.preload
+        })
+
+      value.should.equal('custom')
+    })
+  })
 
   describe('downloads', function () {
     var nightmare;
