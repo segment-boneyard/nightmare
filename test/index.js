@@ -839,6 +839,24 @@ describe('Nightmare', function () {
       }
     })
   })
+
+  describe('custom preload script', function() {
+    it('should support passing your own preload script in', function*() {
+      var nightmare = Nightmare({
+        webPreferences: {
+          preload: path.join(__dirname, 'fixtures', 'preload', 'index.js')
+        }
+      })
+
+      var value = yield nightmare
+        .goto(fixture('preload'))
+        .evaluate(function() {
+          return window.preload
+        })
+
+      value.should.equal('custom')
+    })
+  })
 });
 
 /**

@@ -345,6 +345,26 @@ var background = yield Nightmare()
 
 `nightmare.use` is useful for reusing a set of tasks on an instance. Check out [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly) for some examples.
 
+#### Custom preload script
+
+If you need to do something custom when you first load the window environment, you
+can specify a custom preload script. Here's how you do that:
+
+```js
+var nightmare = Nightmare({
+  webPreferences: {
+    preload: custom-script.js
+  }
+})
+```
+
+The only requirement for that script is that you'll need the following prelude:
+
+```js
+window.__nightmare = {};
+__nightmare.ipc = require('ipc');
+```
+
 ## Usage
 #### Installation
 Nightmare is a Node.js module, so you'll need to [have Node.js installed](http://nodejs.org/). Then you just need to `npm install` the module:
