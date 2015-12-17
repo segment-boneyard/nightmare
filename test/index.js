@@ -554,15 +554,12 @@ describe('Nightmare', function () {
   describe('events', function () {
     var nightmare;
 
-    beforeEach(function() {
-      nightmare = Nightmare();
-    });
-
     afterEach(function*() {
       yield nightmare.end();
     });
 
     it('should fire an event on page load complete', function*() {
+      nightmare = Nightmare();
       var fired = false;
       nightmare
         .on('did-finish-load', function () {
@@ -574,10 +571,13 @@ describe('Nightmare', function () {
     });
 
     it('should fire an event on javascript error', function*() {
+      nightmare = Nightmare();
       var fired = false;
       nightmare
-        .on('page-error', function (errorMessage, errorStack) {
-          fired = true;
+        .on('page', function (eventType, errorMessage, errorStack) {
+          if(eventType == 'error'){
+           fired = true;
+          }
         });
       yield nightmare
         .goto(fixture('events'));
@@ -585,10 +585,13 @@ describe('Nightmare', function () {
     });
 
     it('should fire an event on javascript console.log', function*() {
+      nightmare = Nightmare();
       var log = '';
       nightmare
-        .on('page-log', function (logs) {
-          log = logs[0];
+        .on('page', function (eventType, logs) {
+          if(eventType == 'log'){
+            log = logs[0];
+          }
         });
       yield nightmare
         .goto(fixture('events'))
@@ -596,6 +599,7 @@ describe('Nightmare', function () {
     });
 
     it('should fire an event on page load failure', function*() {
+      nightmare = Nightmare();
       var fired = false;
       nightmare
         .on('did-fail-load', function () {
@@ -606,9 +610,11 @@ describe('Nightmare', function () {
       fired.should.be.true;
     });
 
-    it('should fire an event on javascript window.alert', function*(){
-      var alert = '';
-      nightmare.on('page-alert', function(message){
+    it('should fire an event on javascript window.alert', function*() {
+      nightmare = Nightmare();
+      var alert = '', type = '';
+      nightmare.on('page', function(eventType, message){
+        type = eventType;
         alert = message;
       });
       yield nightmare
@@ -616,9 +622,116 @@ describe('Nightmare', function () {
         .evaluate(function(){
           alert('my alert');
         });
+      type.should.equal('alert');
       alert.should.equal('my alert');
     });
 
+    it('should fire an event and except on javascript window.prompt', function*() {
+      nightmare = Nightmare();
+      var prompt = '', defaultResponse = '', type='', didFail = false;
+      nightmare.on('page', function(eventType, msg, dr){
+        type = eventType;
+        prompt = msg;
+        defaultResponse = dr;
+      });
+      try {
+        yield nightmare
+          .goto(fixture('events'))
+          .evaluate(function(){
+            prompt('my prompt', 'default value');
+          });
+      } catch(e) {
+        didFail=true;
+      }
+
+      type.should.equal('prompt');
+      didFail.should.be.true;
+      prompt.should.equal('my prompt');
+      defaultResponse.should.equal('default value');
+    });
+
+    it('should fire an event and except on javascript window.confirm', function*() {
+      nightmare = Nightmare();
+      var confirm = '', didFail = false, type = '';
+      nightmare.on('page', function(eventType, msg){
+        if(eventType != 'log' && eventType != 'error'){
+          type = eventType;
+          confirm = msg;
+        }
+      });
+      try {
+        yield nightmare
+          .goto(fixture('events'))
+          .evaluate(function(){
+            confirm('my confirm');
+          });
+      } catch(e) {
+        didFail=true;
+      }
+
+      type.should.equal('confirm');
+      didFail.should.be.true;
+      confirm.should.equal('my confirm');
+    });
+
+    it('should run preloaded logic on javascript window.prompt', function*() {
+      var prompt = '', response = '', didFail = false, type = '';
+      nightmare = Nightmare({
+        'webPreferences':{
+          preloadPath: path.resolve('test/files/preload.js')
+        }
+      });
+
+      nightmare.on('page', function(eventType, msg, r){
+        type = eventType;
+        prompt = msg;
+        response = r;
+      });
+
+      try {
+        yield nightmare
+          .goto(fixture('options'))
+          .evaluate(function(){
+            prompt('foo', 'baz');
+          });
+      } catch(e) {
+        didFail=true;
+      }
+
+      type.should.equal('prompt');
+      didFail.should.be.false;
+      prompt.should.equal('foo');
+      response.should.equal('bar');
+    });
+
+    it('should run preloaded logic javascript window.confirm', function*() {
+      var confirm = '', response = false, didFail = false, type = '';
+      nightmare = Nightmare({
+        'webPreferences':{
+          preloadPath: path.resolve('test/files/preload.js')
+        }
+      });
+      nightmare.on('page', function(eventType, msg, r){
+        type = eventType;
+        confirm = msg;
+        response = r;
+      });
+      try {
+        yield nightmare
+          .goto(fixture('options'))
+          .evaluate(function(){
+            confirm('foo');
+          });
+      } catch(e) {
+        console.dir(e);
+        didFail=true;
+      }
+
+      type.should.equal('confirm');
+      didFail.should.be.false;
+      confirm.should.equal('foo');
+      response.should.be.true;
+    });
   });
 
   describe('options', function () {
@@ -729,6 +842,22 @@ describe('Nightmare', function () {
     it('should be constructable with paths', function*() {
       nightmare = Nightmare({ paths:{} });
       nightmare.should.be.ok;
+    });
+
+    it('should allow for additions to preload', function*() {
+      nightmare = Nightmare({
+        'webPreferences': {
+          preloadPath: path.resolve('test/files/preload.js')
+        }
+      });
+
+      var preloadNumber = yield nightmare
+        .goto(fixture('options'))
+        .evaluate(function(){
+          return window.preloadNumber;
+        });
+
+      preloadNumber.should.equal(7);
     });
   });
 

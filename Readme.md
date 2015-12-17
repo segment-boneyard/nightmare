@@ -116,6 +116,9 @@ var nightmare = Nightmare({
 });
 ```
 
+##### ['web-preferences'].preloadPath
+Specifies an absolute file path to add to Nightmare's preload.  (The generated preload file is written to Electron's `userData` path.)
+
 #### .useragent(useragent)
 Set the `useragent` used by electron.
 
@@ -188,16 +191,22 @@ Returns whether the selector exists or not on the page.
 Returns whether the selector is visible or not
 
 #### .on(event, callback)
-Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents). Additional to the electron-events we provide nightmare-events `'page-error'`, `'page-alert'`, and `'page-log'`.
+Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents). Additional to the electron-events we provide a nightmare-event `'page'`.
 
-##### .on('page-error', errorMessage, errorStack)
+##### .on('page', type='error', errorMessage, errorStack)
 This event is triggered if any javscript exception is thrown on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is throwing an exception.
 
-##### .on('page-log', errorMessage, errorStack)
+##### .on('page', type='log', errorMessage, errorStack)
 This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
 
-##### .on('page-alert', message)
+##### .on('page', type='alert', message)
 This event is triggered if `alert` is used on the page.
+
+##### .on('page', type='prompt', message [, response])
+This event is triggered if `prompt` is used on the page.  Note that unless `prompt` is overridden in a `preload` script, the prompt will cause an exception to be thrown.
+
+##### .on('page', type='confirm', message [, response])
+This event is triggered if `confirm` is used on the page.  Note that unless `confirm` is overridden in a `preload` script, the confirm will cause an exception to be thrown.
 
 #### .screenshot([path][, clip])
 Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
