@@ -99,7 +99,7 @@ This will throw an exception if the `.wait()` didn't return `true` within the se
 
 ```js
 var nightmare = Nightmare({
-  waitTimeout: 1000 //(ms)
+  waitTimeout: 1000 // in ms
 });
 ```
 
@@ -113,6 +113,15 @@ var nightmare = Nightmare({
   paths: {
     userData: '/user/data'
   }
+});
+```
+
+##### electronPath
+The path to prebuilt Electron binary.  This is useful for testing on different version Electron.  Note that Nightmare only supports the version this package depending on.  Please use this option at your own risk.
+
+```js
+var nightmare = Nightmare({
+  electronPath: require('electron-prebuilt')
 });
 ```
 
@@ -188,16 +197,47 @@ Returns whether the selector exists or not on the page.
 Returns whether the selector is visible or not
 
 #### .on(event, callback)
-Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents). Additional to the electron-events we provide nightmare-events `'page-error'`, `'page-alert'`, and `'page-log'`.  Custom events can be added with `'.bind()`.
+Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents).  Custom events can be added with `.bind()`.
 
-##### .on('page-error', errorMessage, errorStack)
+##### Additional "page" events
+
+###### .on('page', function(type="error", message, stack))
 This event is triggered if any javscript exception is thrown on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is throwing an exception.
 
-##### .on('page-log', errorMessage, errorStack)
-This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
+##### "page" events
 
-##### .on('page-alert', message)
-This event is triggered if `alert` is used on the page.
+Listen for `window.addEventListener('error')`, `alert(...)`, `prompt(...)` & `confirm(...)`.
+
+###### .on('page', function(type="error", message, stack))
+
+Listen for top-level page errors. This will get triggered when an error is thrown on the page.
+
+###### .on('page', function(type="alert", message))
+
+Nightmare disables `window.alert` from popping up by default, but you can still listen for the contents of the alert dialog.
+
+###### .on('page', function(type="prompt", message, response))
+
+Nightmare disables `window.prompt` from popping up by default, but you can still listen for the message to come up. If you need to handle the confirmation differently, you'll need to use your own preload script.
+
+###### .on('page', function(type="confirm", message, response))
+
+Nightmare disables `window.confirm` from popping up by default, but you can still listen for the message to come up. If you need to handle the confirmation differently, you'll need to use your own preload script.
+
+###### .on('console', function(type [, arguments, ...]))
+
+`type` will be either `log`, `warn` or `error` and `arguments` are what gets passed from the console.
+
+##### Additional "console" events
+
+Listen for `console.log(...)`, `console.warn(...)`, and `console.error(...)`.
+
+###### .on('console', function(type [, arguments, ...]))
+
+`type` will be either `log`, `warn` or `error` and `arguments` are what gets passed from the console.
+
+##### .on('console', function(type, errorMessage, errorStack))
+This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
 
 ##### .bind(name [, handler])
 Adds a custom event that can be captured with `.on()` triggerable in `.evaluate()` or `.inject()` with `ipc.send([name], ...)`.  The optional `handler` will consume the named event.
@@ -209,7 +249,7 @@ Removes a custom event added with `.bind()`.  If handler is specified, the handl
 Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
 
 #### .pdf(path, options)
-Saves a PDF with A4 size pages of the current page to the specified `path`. Options are [here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#webcontents-printtopdf-options-callback).
+Saves a PDF to the specified `path`. Options are [here](https://github.com/atom/electron/blob/v0.35.2/docs/api/web-contents.md#webcontentsprinttopdfoptions-callback).
 
 #### .title()
 Returns the title of the current page.
@@ -317,6 +357,26 @@ var background = yield Nightmare()
 #### .use(plugin)
 
 `nightmare.use` is useful for reusing a set of tasks on an instance. Check out [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly) for some examples.
+
+#### Custom preload script
+
+If you need to do something custom when you first load the window environment, you
+can specify a custom preload script. Here's how you do that:
+
+```js
+var nightmare = Nightmare({
+  webPreferences: {
+    preload: custom-script.js
+  }
+})
+```
+
+The only requirement for that script is that you'll need the following prelude:
+
+```js
+window.__nightmare = {};
+__nightmare.ipc = require('ipc');
+```
 
 ## Usage
 #### Installation
