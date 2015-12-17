@@ -677,7 +677,7 @@ describe('Nightmare', function () {
     it('should run preloaded logic on javascript window.prompt', function*() {
       var prompt = '', response = '', didFail = false, type = '';
       nightmare = Nightmare({
-        'web-preferences':{
+        'webPreferences':{
           preloadPath: path.resolve('test/files/preload.js')
         }
       });
@@ -707,7 +707,7 @@ describe('Nightmare', function () {
     it('should run preloaded logic javascript window.confirm', function*() {
       var confirm = '', response = false, didFail = false, type = '';
       nightmare = Nightmare({
-        'web-preferences':{
+        'webPreferences':{
           preloadPath: path.resolve('test/files/preload.js')
         }
       });
@@ -846,7 +846,7 @@ describe('Nightmare', function () {
 
     it('should allow for additions to preload', function*() {
       nightmare = Nightmare({
-        'web-preferences': {
+        'webPreferences': {
           preloadPath: path.resolve('test/files/preload.js')
         }
       });
