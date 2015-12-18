@@ -246,14 +246,21 @@ describe('Nightmare', function () {
     });
 
     it('should type', function*() {
+      var input = 'nightmare'
+      var events = input.length * 3
+
       var value = yield nightmare
+        .on('console', function (type, input, message) {
+          if (type === 'log') events--;
+        })
         .goto(fixture('manipulation'))
-        .type('input[type=search]', 'nightmare')
+        .type('input[type=search]', input)
         .evaluate(function() {
           return document.querySelector('input[type=search]').value;
         });
 
       value.should.equal('nightmare');
+      events.should.equal(0);
     });
 
     it('should type and click', function*() {

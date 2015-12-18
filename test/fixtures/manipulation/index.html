@@ -79,12 +79,26 @@
   </body>
   <script>
   var h1 = document.getElementsByTagName("h1");
+  var search = document.querySelector('input[type=search]')
+
   h1[0].addEventListener("mouseover", function(){
     this.style.background = "#66ff66";
   });
 
   h1[0].addEventListener("mousedown", function(){
     this.style.background = "#ff0000";
+  })
+
+  search.addEventListener("keyup", function(e) {
+    console.log('keyup', e.which)
+  })
+
+  search.addEventListener("keydown", function(e) {
+    console.log('keydown', e.which)
+  })
+
+  search.addEventListener('input', function(e) {
+    console.log('input', e.which)
   })
   </script>
 </html>
