@@ -765,7 +765,7 @@ describe('Nightmare', function () {
       headers['x-nightmare-header'].should.equal('hello world');
     });
 
-    it('should allow webPrefereces settings', function*() {
+    it('should allow webPreferences settings', function*() {
       nightmare = Nightmare({webPreferences: {webSecurity: false}});
       var result = yield nightmare
         .goto(fixture('options'))
