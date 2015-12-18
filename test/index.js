@@ -588,14 +588,13 @@ describe('Nightmare', function () {
 
     it('should fire an event on javascript console.log', function*() {
       var log = '';
-      nightmare
-        .on('console', function (type, logs) {
-          if (type === 'log') {
-            log = logs[0];
-          }
-        });
-      yield nightmare
-        .goto(fixture('events'))
+
+      nightmare.on('console', function (type, str) {
+        if (type === 'log') log = str
+      });
+
+      yield nightmare.goto(fixture('events'))
+
       log.should.equal('my log');
     });
 
@@ -782,6 +781,14 @@ describe('Nightmare', function () {
   });
 
   describe('Nightmare.action(name, fn)', function() {
+    beforeEach(function() {
+      nightmare = Nightmare();
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
     it('should support custom actions', function*() {
       Nightmare.action('size', function (done) {
         this.evaluate_now(function() {
@@ -827,6 +834,14 @@ describe('Nightmare', function () {
   })
 
   describe('Nightmare.use', function() {
+    beforeEach(function() {
+      nightmare = Nightmare();
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
     it('should support extending nightmare', function*() {
       var nightmare = Nightmare()
       var tagName = yield Nightmare()
@@ -846,6 +861,14 @@ describe('Nightmare', function () {
   })
 
   describe('custom preload script', function() {
+    beforeEach(function() {
+      nightmare = Nightmare();
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
     it('should support passing your own preload script in', function*() {
       var nightmare = Nightmare({
         webPreferences: {
