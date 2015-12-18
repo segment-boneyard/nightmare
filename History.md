@@ -1,4 +1,21 @@
 
+2.1.0 / 2015-12-17
+==================
+
+  * **BREAKING**: changed `page-error`, `page-alert`, and `page-log` to `console` with types `error`, `alert`, `log`
+  * **BREAKING**: fixed signature on nightmare.on('console', ...), to act more like console.log(...)
+
+  * use native electron sendInputEvent for nightmare.type(...)
+  * properly shutdown nightmare after certain tests and update formatting on the readme
+  * add events for prompt, alert, confirm, and the other console events
+  * update docs for preload script
+  * support passing in a custom preload script
+  * Update PDF Options
+  * follow new BrowserWindow option naming
+  * remove useless mocha opt
+  * implement `electronPath` option
+  * Fixed 'args is not defined' error for paths option
+
 2.0.9 / 2015-12-09
 ==================
 
