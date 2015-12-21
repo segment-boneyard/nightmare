@@ -151,8 +151,8 @@ Clicks the `selector` element once.
 #### .mousedown(selector)
 Mousedown the `selector` element once.
 
-#### .type(selector, text)
-Enters the `text` provided into the `selector` element.
+#### .type(selector[, text])
+Enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
 
 #### .check(selector)
 Toggles the `selector` checkbox element.
