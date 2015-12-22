@@ -282,6 +282,17 @@ describe('Nightmare', function () {
       events.should.equal(0);
     });
 
+    it('should blur the active element when something is clicked', function*() {
+      var isBody = yield nightmare
+        .goto(fixture('manipulation'))
+        .type('input[type=search]', 'test')
+        .click('p')
+        .evaluate(function() {
+          return document.activeElement === document.body;
+        });
+      isBody.should.be.true;
+    });
+
     it('should type and click', function*() {
       var title = yield nightmare
         .goto(fixture('manipulation'))
