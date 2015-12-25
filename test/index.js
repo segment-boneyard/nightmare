@@ -263,6 +263,45 @@ describe('Nightmare', function () {
       events.should.equal(0);
     });
 
+    it('should type integer', function* () {
+        var input = 10;
+        var events = input.toString().length * 3;
+
+        var value = yield nightmare
+          .on('console', function (type, input, message) {
+            if (type === 'log') events--;
+          })
+          .goto(fixture('manipulation'))
+          .type('input[type=search]', input)
+          .evaluate(function() {
+            return document.querySelector('input[type=search]').value;
+          });
+
+        value.should.equal('10');
+        events.should.equal(0);
+    });
+
+
+    it('should type object', function* () {
+        var input = {
+          foo: 'bar'
+        };
+        var events = input.toString().length * 3;
+
+        var value = yield nightmare
+          .on('console', function (type, input, message) {
+            if (type === 'log') events--;
+          })
+          .goto(fixture('manipulation'))
+          .type('input[type=search]', input)
+          .evaluate(function() {
+            return document.querySelector('input[type=search]').value;
+          });
+
+        value.should.equal('[object Object]');
+        events.should.equal(0);
+    });
+
     it('should clear inputs', function*() {
       var input = 'nightmare'
       var events = input.length * 3
