@@ -811,6 +811,11 @@ describe('Nightmare', function () {
       nightmare.should.be.ok;
     });
 
+    it('should be constructable with switches', function*() {
+      nightmare = Nightmare({ switches:{} });
+      nightmare.should.be.ok;
+    });
+
     it('should allow to use external Electron', function*() {
       nightmare = Nightmare({ electronPath: require('electron-prebuilt') });
       nightmare.should.be.ok;
