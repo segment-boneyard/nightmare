@@ -1,4 +1,12 @@
 
+2.1.2 / 2015-12-25
+==================
+
+  * Support typing in non-strings
+  * Support Chrome command line switches.
+  * fix eventemitter leak message
+  * Blur focussed on click.  Fixes #400
+
 2.1.1 / 2015-12-21
 ==================
 
