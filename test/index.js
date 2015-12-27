@@ -846,7 +846,7 @@ describe('Nightmare', function () {
     });
 
     it('should be constructable with paths', function*() {
-      nightmare = Nightmare({ paths:{} });
+      nightmare = Nightmare({ paths:{ userData : __dirname } });
       nightmare.should.be.ok;
     });
 
