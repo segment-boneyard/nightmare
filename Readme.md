@@ -249,7 +249,7 @@ Listen for `console.log(...)`, `console.warn(...)`, and `console.error(...)`.
 
 `type` will be either `log`, `warn` or `error` and `arguments` are what gets passed from the console.
 
-##### .on('console', function(type, errorMessage, errorStack))
+###### .on('console', function(type, errorMessage, errorStack))
 This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
 
 #### .screenshot([path][, clip])
