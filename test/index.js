@@ -685,6 +685,110 @@ describe('Nightmare', function () {
       fired.should.be.true;
     });
 
+    it('should be able to bind to a custom event', function*() {
+      var eventResults;
+      yield nightmare
+        .goto(fixture('events'))
+        .on('sample-event', function(){
+          eventResults = arguments;
+        })
+        .bind('sample-event')
+        .evaluate(function(){
+          ipc.send('sample-event', 'sample', 3, {sample: 'sample'});
+        });
+      eventResults.length.should.equal(3);
+      eventResults[0].should.equal('sample');
+      eventResults[1].should.equal(3);
+      eventResults[2].sample.should.equal('sample');
+    });
+
+    it('should be able to unbind a custom event', function*() {
+      var eventResults;
+      yield nightmare
+        .goto(fixture('events'))
+        .on('sample-event', function(){
+          eventResults = arguments;
+        })
+        .bind('sample-event')
+        .unbind('sample-event')
+        .evaluate(function(){
+          ipc.send('sample-event', 'sample', 3, {sample: 'sample'});
+        });
+      should.not.exist(eventResults);
+    });
+
+    it('should be able to bind to a custom event with a handler', function*() {
+      var eventResults;
+      yield nightmare
+        .goto(fixture('events'))
+        .bind('sample-event', function(){
+             eventResults = arguments;
+        })
+        .evaluate(function(){
+          ipc.send('sample-event', 'sample', 3, {sample: 'sample'});
+        });
+      eventResults.should.be.ok;
+    });
+
+    it('should be able to unbind a custom event handler', function*() {
+      var eventResults, onResults;
+
+      var handler = function(){
+        eventResults = arguments;
+      }
+
+      yield nightmare
+        .goto(fixture('events'))
+        .bind('sample-event', handler)
+        .on('sample-event', function(){
+          onResults = arguments;
+        })
+        .unbind('sample-event', handler)
+        .evaluate(function(){
+          ipc.send('sample-event', 'sample', 3, {sample: 'sample'});
+        });
+      should.not.exist(eventResults);
+      onResults.should.be.ok;
+    });
+
+    it('should be able to unbind all custom event handlers', function*() {
+      var eventResults, onResults;
+
+      var handler = function(){
+        eventResults = arguments;
+      }
+
+      yield nightmare
+        .goto(fixture('events'))
+        .bind('sample-event', handler)
+        .on('sample-event', function(){
+          onResults = arguments;
+        })
+        .unbind('sample-event')
+        .evaluate(function(){
+          ipc.send('sample-event', 'sample', 3, {sample: 'sample'});
+        });
+      should.not.exist(eventResults);
+      should.not.exist(onResults);
+    });
+
+    it('should not emit multiple events for events bound more than once', function*() {
+      var count = 0;
+
+      yield nightmare
+        .goto(fixture('events'))
+        .bind('sample-event')
+        .bind('sample-event')
+        .on('sample-event', function(){
+          count++
+        })
+        .evaluate(function(){
+          ipc.send('sample-event', 'sample', 3, {sample: 'sample'});
+        });
+
+        count.should.equal(1);
+    });
+    
     it('should fire an event on javascript window.alert', function*(){
       var alert = '';
       nightmare.on('page', function(type, message){
