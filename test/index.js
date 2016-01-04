@@ -950,7 +950,7 @@ describe('Nightmare', function () {
             this.child.emit('bind', name);
             return this;
           },
-          electronAction: function(ns, parent, win){
+          electronAction: function(ns, parent, win, renderer, done){
             var sliced = require('sliced');
             parent.on('bind', function(name){
               if(renderer.listeners(name).length == 0) {
@@ -960,10 +960,12 @@ describe('Nightmare', function () {
               }
               parent.emit('bind');
             });
+            done();
           }
       });
 
-      var eventResults = yield nightmare
+      var eventResults;
+      yield nightmare
         .goto(fixture('events'))
         .on('sample-event', function(){
           eventResults = arguments;
