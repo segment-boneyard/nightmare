@@ -922,6 +922,62 @@ describe('Nightmare', function () {
       value.should.equal('custom')
     })
   })
+
+  describe('custom plugins', function(){
+    beforeEach(function(){
+      nightmare = Nightmare();
+    });
+
+    afterEach(function*(){
+      yield nightmare.end();
+    });
+
+    it('should allow to add plugins to both electron and nightmare', function*() {
+      nightmare.plugin('bind',
+        {
+          nightmareAction: function(){
+           var name = arguments[0], handler, done;
+            if(arguments.length == 2) {
+              done = arguments[1];
+            } else if(arguments.length == 3) {
+              handler = arguments[1];
+              done = arguments[2];
+            }                    
+            if(handler){
+              this.child.on(name, handler);
+            }
+            this.child.once('bind', done);
+            this.child.emit('bind', name);
+            return this;
+          },
+          electronAction: function(ns, parent, win){
+            var sliced = require('sliced');
+            parent.on('bind', function(name){
+              if(renderer.listeners(name).length == 0) {
+                renderer.on(name, function(){
+                  parent.emit.apply(parent, [name].concat(sliced(arguments,1)))
+                });
+              }
+              parent.emit('bind');
+            });
+          }
+      });
+
+      var eventResults = yield nightmare
+        .goto(fixture('events'))
+        .on('sample-event', function(){
+          eventResults = arguments;
+        })
+        .bind('sample-event')
+        .evaluate(function(){
+          ipc.send('sample-event', 'sample', 3, {sample: 'sample'});
+        });
+      eventResults.length.should.equal(3);
+      eventResults[0].should.equal('sample');
+      eventResults[1].should.equal(3);
+      eventResults[2].sample.should.equal('sample');
+    });
+  });
 });
 
 /**
