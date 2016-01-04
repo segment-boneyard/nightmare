@@ -352,6 +352,32 @@ var background = yield Nightmare()
 
 `nightmare.use` is useful for reusing a set of tasks on an instance. Check out [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly) for some examples.
 
+#### .plugin(name, actions)
+Extends the Nightmare instance, Electron instance or both.  The Nightmare action has `this` bound to the Nightmare instance and takes variable arguments ending with `done`.  The Electron action takes `name` (akin to `action`, but for that instance only), `parent`, `win`, `renderer`, and `done`.
+
+For example:
+
+```javascript
+yield nightmare
+  .plugin('echo', {
+    nightmareAction: function(message, done) {
+      this.child.emit('echo', message);
+      done();
+      return this;
+    }, 
+    electronAction: function(name, parent, win, renderer, done) {
+      parent.on('echo', function(message){
+        parent.emit('log', 'echo: ' + message);
+      });
+      done();
+    }
+  })
+  .goto('http://example.org')
+  .echo('hello there!');
+```
+
+...would have a `nightmare:log` showing "hello there!" when run with `DEBUG=nightmare*`.
+
 #### Custom preload script
 
 If you need to do something custom when you first load the window environment, you
