@@ -116,6 +116,19 @@ var nightmare = Nightmare({
 });
 ```
 
+##### switches
+The command line switches used by the Chrome browser that are also supported by Electron. Here's a list of supported Chrome command line switches:
+https://github.com/atom/electron/blob/master/docs/api/chrome-command-line-switches.md
+
+```js
+var nightmare = Nightmare({
+  switches: {
+    'proxy-server': '1.2.3.4:5678',
+    'ignore-certificate-errors': true
+  }
+});
+```
+
 ##### electronPath
 The path to prebuilt Electron binary.  This is useful for testing on different version Electron.  Note that Nightmare only supports the version this package depending on.  Please use this option at your own risk.
 
@@ -236,7 +249,7 @@ Listen for `console.log(...)`, `console.warn(...)`, and `console.error(...)`.
 
 `type` will be either `log`, `warn` or `error` and `arguments` are what gets passed from the console.
 
-##### .on('console', function(type, errorMessage, errorStack))
+###### .on('console', function(type, errorMessage, errorStack))
 This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
 
 #### .screenshot([path][, clip])
