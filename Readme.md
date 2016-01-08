@@ -318,7 +318,7 @@ Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a 
 
 ### Extending Nightmare
 
-#### Nightmare.action(name, action|namespace)
+#### Nightmare.action(name, [electronAction|electronNamespace], action|namespace)
 
 You can add your own custom actions to the Nightmare prototype. Here's an example:
 
@@ -361,35 +361,32 @@ var background = yield Nightmare()
   .style.background()
 ```
 
-#### .use(plugin)
-
-`nightmare.use` is useful for reusing a set of tasks on an instance. Check out [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly) for some examples.
-
-#### .plugin(name, actions)
-Extends the Nightmare instance, Electron instance or both.  The Nightmare action has `this` bound to the Nightmare instance and takes variable arguments ending with `done`.  The Electron action takes `name` (akin to `action`, but for that instance only), `parent`, `win`, `renderer`, and `done`.
-
-For example:
+You can also add custom Electron actions.  The additional Electron action or namespace actions take `name`, `parent`, `win`, `renderer`, and `done`.  Note the Electron action comes first, mirroring how `.evaluate()` works.  For example:
 
 ```javascript
-yield nightmare
-  .plugin('echo', {
-    nightmareAction: function(message, done) {
-      this.child.emit('echo', message);
-      done();
-      return this;
-    }, 
-    electronAction: function(name, parent, win, renderer, done) {
-      parent.on('echo', function(message){
-        parent.emit('log', 'echo: ' + message);
-      });
-      done();
-    }
-  })
+Nightmare.action('echo',
+  function(name, parent, win, renderer, done) {
+    parent.on('echo', function(message) {
+      parent.emit('log', 'echo: ' + message);
+    });
+    done();
+  },
+  function(message, done) {
+    this.child.emit('echo', message);
+    done();
+    return this;
+  });
+
+yield Nightmare()
   .goto('http://example.org')
   .echo('hello there!');
 ```
 
 ...would have a `nightmare:log` showing "hello there!" when run with `DEBUG=nightmare*`.
+
+#### .use(plugin)
+
+`nightmare.use` is useful for reusing a set of tasks on an instance. Check out [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly) for some examples.
 
 #### Custom preload script
 
