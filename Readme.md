@@ -320,6 +320,16 @@ Available properties are documented here:  https://github.com/atom/electron/blob
 
 Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a look at the `.cookies.set(cookie)` documentation above for a better idea of what `cookie` should look like.
 
+#### .cookies.clear(name)
+
+Clear a cookie for the current domain.
+
+```js
+yield nightmare
+  .goto('http://google.com')
+  .cookies.clear('SomeCookieName');
+```
+
 ### Extending Nightmare
 
 #### Nightmare.action(name, action|namespace)
