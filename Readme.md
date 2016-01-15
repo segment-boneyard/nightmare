@@ -176,6 +176,10 @@ Changes the `selector` dropdown element to the option with attribute [value=`opt
 #### .scrollTo(top, left)
 Scrolls the page to desired position. `top` and `left` are always relative to the top left corner of the document.
 
+#### .viewport(width, height)
+
+Set the viewport size.
+
 #### .inject(type, file)
 Inject a local `file` onto the current page. The file `type` must be either `js` or `css`.
 
@@ -315,6 +319,16 @@ Available properties are documented here:  https://github.com/atom/electron/blob
 #### .cookies.set(cookies)
 
 Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a look at the `.cookies.set(cookie)` documentation above for a better idea of what `cookie` should look like.
+
+#### .cookies.clear(name)
+
+Clear a cookie for the current domain.
+
+```js
+yield nightmare
+  .goto('http://google.com')
+  .cookies.clear('SomeCookieName');
+```
 
 ### Extending Nightmare
 

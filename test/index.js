@@ -525,6 +525,29 @@ describe('Nightmare', function () {
       cookies[0].path.should.equal('/cookie')
       cookies[0].secure.should.equal(false)
     })
+
+    it('.set([cookie]) & .clear(name) & .get(query)', function*() {
+      var cookies = nightmare.cookies
+
+      yield cookies.set([
+        {
+          name: 'hi',
+          value: 'hello',
+          path: '/'
+        },
+        {
+          name: 'nightmare',
+          value: 'rocks',
+          path: '/cookie'
+        }
+      ])
+
+      yield cookies.clear('nightmare');
+
+      var cookies = yield cookies.get({ path: '/cookie' });
+
+      cookies.length.should.equal(0);
+    })
   })
 
 
