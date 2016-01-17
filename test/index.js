@@ -654,7 +654,7 @@ describe('Nightmare', function () {
         .goto(fixture('manipulation'))
         .pdf({printBackground: false});
 
-      var isBuffer = buf instanceof Buffer;
+      var isBuffer = Buffer.isBuffer(buf);
 
       buf.length.should.be.at.least(1000);
       isBuffer.should.be.true;
