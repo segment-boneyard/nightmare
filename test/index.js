@@ -659,6 +659,17 @@ describe('Nightmare', function () {
       var stats = fs.statSync(tmp_dir+'/test2.pdf');
       stats.size.should.be.at.least(1000);
     });
+
+    it('should return a buffer from a PDF with no path', function*() {
+      var buf = yield nightmare
+        .goto(fixture('manipulation'))
+        .pdf({printBackground: false});
+
+      var isBuffer = Buffer.isBuffer(buf);
+
+      buf.length.should.be.at.least(1000);
+      isBuffer.should.be.true;
+    });
   });
 
   describe('events', function () {
