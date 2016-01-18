@@ -365,6 +365,17 @@ describe('Nightmare', function () {
       checkbox.should.be.true;
     });
 
+    it('should uncheck', function*() {
+      var checkbox = yield nightmare
+        .goto(fixture('manipulation'))
+        .check('input[type=checkbox]')
+        .uncheck('input[type=checkbox]')
+        .evaluate(function () {
+          return document.querySelector('input[type=checkbox]').checked;
+        });
+      checkbox.should.be.false;
+    });
+
     it('should select', function*() {
       var select = yield nightmare
         .goto(fixture('manipulation'))
