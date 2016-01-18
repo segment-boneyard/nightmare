@@ -1,4 +1,15 @@
 
+2.1.3 / 2016-01-18
+==================
+
+  * added ability to uncheck
+  * now properly fails with integer wait time
+  * Added ability to return buffer from pdf
+  * add ability to clear cookies
+  * Added a documentation for .viewport(width, height)
+  * Uncomment OS X dock hide
+  * fix setting electron paths
+
 2.1.2 / 2015-12-25
 ==================
 

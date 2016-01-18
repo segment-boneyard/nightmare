@@ -168,7 +168,10 @@ Mousedown the `selector` element once.
 Enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
 
 #### .check(selector)
-Toggles the `selector` checkbox element.
+checks the `selector` checkbox element.
+
+#### .uncheck(selector)
+unchecks the `selector` checkbox element.
 
 #### .select(selector, option)
 Changes the `selector` dropdown element to the option with attribute [value=`option`]

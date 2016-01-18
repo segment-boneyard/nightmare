@@ -365,6 +365,17 @@ describe('Nightmare', function () {
       checkbox.should.be.true;
     });
 
+    it('should uncheck', function*() {
+      var checkbox = yield nightmare
+        .goto(fixture('manipulation'))
+        .check('input[type=checkbox]')
+        .uncheck('input[type=checkbox]')
+        .evaluate(function () {
+          return document.querySelector('input[type=checkbox]').checked;
+        });
+      checkbox.should.be.false;
+    });
+
     it('should select', function*() {
       var select = yield nightmare
         .goto(fixture('manipulation'))
@@ -648,6 +659,17 @@ describe('Nightmare', function () {
       var stats = fs.statSync(tmp_dir+'/test2.pdf');
       stats.size.should.be.at.least(1000);
     });
+
+    it('should return a buffer from a PDF with no path', function*() {
+      var buf = yield nightmare
+        .goto(fixture('manipulation'))
+        .pdf({printBackground: false});
+
+      var isBuffer = Buffer.isBuffer(buf);
+
+      buf.length.should.be.at.least(1000);
+      isBuffer.should.be.true;
+    });
   });
 
   describe('events', function () {
@@ -788,6 +810,19 @@ describe('Nightmare', function () {
         yield nightmare
           .goto(fixture('navigation'))
           .wait('foobar');
+      } catch (e) {
+        didFail = true;
+      }
+      didFail.should.be.true;
+    });
+
+    it('should wait and fail with waitTimeout and a ms wait time', function*() {
+      var didFail = false;
+      try {
+        nightmare = Nightmare({waitTimeout: 254});
+       yield nightmare
+          .goto(fixture('navigation'))
+          .wait(1000);
       } catch (e) {
         didFail = true;
       }
