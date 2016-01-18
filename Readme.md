@@ -138,6 +138,15 @@ var nightmare = Nightmare({
 });
 ```
 
+##### dock (OS X)
+A boolean to optionally show the Electron icon in the dock (defaults to `false`).  This is useful for testing purposes.
+
+```js
+var nightmare = Nightmare({
+  dock: true
+});
+```
+
 #### .useragent(useragent)
 Set the `useragent` used by electron.
 
