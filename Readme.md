@@ -455,6 +455,20 @@ This will print out some additional information about what's going on:
   Breaking News, U.S., World, Weather, Entertainment & Video News - CNN.com
 ```
 
+##### Debug Flags
+
+All nightmare messages
+
+`DEBUG=nightmare*`
+
+Only actions
+
+`DEBUG=nightmare:actions*`
+
+Only logs
+
+`DEBUG=nightmare:log*`
+
 #### Tests
 Automated tests for nightmare itself are run using [Mocha](http://mochajs.org/) and Chai, both of which will be installed via `npm install`. To run nightmare's tests, just run `make test`.
 
