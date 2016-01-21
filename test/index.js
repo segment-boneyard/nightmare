@@ -971,7 +971,7 @@ describe('Nightmare', function () {
 
     it('should support extending Electron', function*(){
       Nightmare.action('bind',
-        function(ns, parent, win, renderer, done) {
+        function(ns, options, parent, win, renderer, done) {
           var sliced = require('sliced');
           parent.on('bind', function(name) {
             if (renderer.listeners(name)
