@@ -378,11 +378,11 @@ var background = yield Nightmare()
   .style.background()
 ```
 
-You can also add custom Electron actions.  The additional Electron action or namespace actions take `name`, `parent`, `win`, `renderer`, and `done`.  Note the Electron action comes first, mirroring how `.evaluate()` works.  For example:
+You can also add custom Electron actions.  The additional Electron action or namespace actions take `name`, `options`, `parent`, `win`, `renderer`, and `done`.  Note the Electron action comes first, mirroring how `.evaluate()` works.  For example:
 
 ```javascript
 Nightmare.action('echo',
-  function(name, parent, win, renderer, done) {
+  function(name, options, parent, win, renderer, done) {
     parent.on('echo', function(message) {
       parent.emit('log', 'echo: ' + message);
     });
