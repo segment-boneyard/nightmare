@@ -355,6 +355,29 @@ describe('Nightmare', function () {
       title.should.equal('Manipulation - Result - Nightmare');
     });
 
+    it('should populate', function*() {
+      var string = 'github nightmare';
+      var value = yield nightmare
+        .goto(fixture('manipulation'))
+        .populate('input[type=search]', string)
+        .evaluate(function () {
+          return document.querySelector('input[type=search]').value;
+        });
+      value.should.equal(string);
+    });
+
+    it('should populate a long text', function*() {
+      var string = "";
+      for(var i=0; i<100; i++) string += "github nightmare";
+      var value = yield nightmare
+        .goto(fixture('manipulation'))
+        .populate('input[type=search]', string)
+        .evaluate(function () {
+          return document.querySelector('input[type=search]').value;
+        });
+        value.should.equal(string);
+    });
+
     it('should checkbox', function*() {
       var checkbox = yield nightmare
         .goto(fixture('manipulation'))
