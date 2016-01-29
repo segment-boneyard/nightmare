@@ -1,4 +1,13 @@
 
+2.1.4 / 2016-01-28
+==================
+
+  * added debugging flags to README
+  * Update use of electron APIs to kill deprecation warnings for 1.0
+  * Implement dock option
+  * added default waitTimout
+  * page event listener fix
+
 2.1.3 / 2016-01-18
 ==================
 

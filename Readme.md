@@ -94,8 +94,8 @@ package for Mocha, which enables the support for generators.
 #### Nightmare(options)
 Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions), along with the following nightmare-specific options.
 
-##### waitTimeout
-This will throw an exception if the `.wait()` didn't return `true` within the set timeframe.
+##### waitTimeout (default: 30s)
+This will throw an exception if the `.wait()` didn't return `true` within the set timeframe. 
 
 ```js
 var nightmare = Nightmare({
@@ -135,6 +135,15 @@ The path to prebuilt Electron binary.  This is useful for testing on different v
 ```js
 var nightmare = Nightmare({
   electronPath: require('electron-prebuilt')
+});
+```
+
+##### dock (OS X)
+A boolean to optionally show the Electron icon in the dock (defaults to `false`).  This is useful for testing purposes.
+
+```js
+var nightmare = Nightmare({
+  dock: true
 });
 ```
 
@@ -477,6 +486,20 @@ This will print out some additional information about what's going on:
   nightmare queueing action "evaluate" +4ms
   Breaking News, U.S., World, Weather, Entertainment & Video News - CNN.com
 ```
+
+##### Debug Flags
+
+All nightmare messages
+
+`DEBUG=nightmare*`
+
+Only actions
+
+`DEBUG=nightmare:actions*`
+
+Only logs
+
+`DEBUG=nightmare:log*`
 
 #### Tests
 Automated tests for nightmare itself are run using [Mocha](http://mochajs.org/) and Chai, both of which will be installed via `npm install`. To run nightmare's tests, just run `make test`.
