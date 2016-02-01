@@ -1,4 +1,11 @@
 
+2.1.5 / 2016-02-01
+==================
+
+  * add .insert(selector[, text]).
+  * improve .type(selector[, text]) robustness.
+  * bump electron and fix API updates.
+
 2.1.4 / 2016-01-28
 ==================
 
