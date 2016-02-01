@@ -1,4 +1,10 @@
 
+2.1.6 / 2016-02-01
+==================
+
+  * Fix failed wait with queued up functions
+  * fix fullscreen switching (#434)
+
 2.1.5 / 2016-02-01
 ==================
 
