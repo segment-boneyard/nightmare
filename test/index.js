@@ -321,6 +321,31 @@ describe('Nightmare', function () {
       events.should.equal(0);
     });
 
+    it('should support inserting text', function*() {
+      var input = 'nightmare insert typing'
+
+      var value = yield nightmare
+        .goto(fixture('manipulation'))
+        .insert('input[type=search]', input)
+        .evaluate(function() {
+          return document.querySelector('input[type=search]').value;
+        });
+
+      value.should.equal('nightmare insert typing');
+    })
+
+    it('should support clearing inserted text', function*() {
+
+      var value = yield nightmare
+        .goto(fixture('manipulation'))
+        .insert('input[type=search]')
+        .evaluate(function() {
+          return document.querySelector('input[type=search]').value;
+        });
+
+      value.should.equal('');
+    })
+
     it('should blur the active element when something is clicked', function*() {
       var isBody = yield nightmare
         .goto(fixture('manipulation'))

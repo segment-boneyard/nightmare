@@ -95,7 +95,7 @@ package for Mocha, which enables the support for generators.
 Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions), along with the following nightmare-specific options.
 
 ##### waitTimeout (default: 30s)
-This will throw an exception if the `.wait()` didn't return `true` within the set timeframe. 
+This will throw an exception if the `.wait()` didn't return `true` within the set timeframe.
 
 ```js
 var nightmare = Nightmare({
@@ -175,6 +175,15 @@ Mousedown the `selector` element once.
 
 #### .type(selector[, text])
 Enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
+
+`.type()` mimics a user typing in a textbox and will emit the proper keyboard events
+
+> If you don't need the keyboard events, consider using `.insert()` instead as it will be faster and more robust.
+
+#### .insert(selector[, text])
+Similar to `.type()`. `.insert()` enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
+
+`.insert()` is faster than `.type()` but does not trigger the keyboard events.
 
 #### .check(selector)
 checks the `selector` checkbox element.
