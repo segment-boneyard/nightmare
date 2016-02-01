@@ -854,6 +854,20 @@ describe('Nightmare', function () {
       didFail.should.be.true;
     });
 
+    it('should wait and fail with waitTimeout with queued functions', function*() {
+      var didFail = false;
+      try {
+        nightmare = Nightmare({waitTimeout: 254});
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait('foobar')
+          .exists('baz');
+      } catch (e) {
+        didFail = true;
+      }
+      didFail.should.be.true;
+    });
+
     /*
     PENDING FIX UPSTREAM
     https://github.com/atom/electron/issues/1362
