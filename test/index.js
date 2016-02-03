@@ -321,6 +321,31 @@ describe('Nightmare', function () {
       events.should.equal(0);
     });
 
+    it('should support inserting text', function*() {
+      var input = 'nightmare insert typing'
+
+      var value = yield nightmare
+        .goto(fixture('manipulation'))
+        .insert('input[type=search]', input)
+        .evaluate(function() {
+          return document.querySelector('input[type=search]').value;
+        });
+
+      value.should.equal('nightmare insert typing');
+    })
+
+    it('should support clearing inserted text', function*() {
+
+      var value = yield nightmare
+        .goto(fixture('manipulation'))
+        .insert('input[type=search]')
+        .evaluate(function() {
+          return document.querySelector('input[type=search]').value;
+        });
+
+      value.should.equal('');
+    })
+
     it('should blur the active element when something is clicked', function*() {
       var isBody = yield nightmare
         .goto(fixture('manipulation'))
@@ -823,6 +848,20 @@ describe('Nightmare', function () {
        yield nightmare
           .goto(fixture('navigation'))
           .wait(1000);
+      } catch (e) {
+        didFail = true;
+      }
+      didFail.should.be.true;
+    });
+
+    it('should wait and fail with waitTimeout with queued functions', function*() {
+      var didFail = false;
+      try {
+        nightmare = Nightmare({waitTimeout: 254});
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait('foobar')
+          .exists('baz');
       } catch (e) {
         didFail = true;
       }
