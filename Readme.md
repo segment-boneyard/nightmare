@@ -34,7 +34,7 @@ vo(function* () {
   var link = yield nightmare
     .goto('http://yahoo.com')
     .type('input[title="Search"]', 'github nightmare')
-    .click('.searchsubmit')
+    .click('#uh-search-button')
     .wait('.ac-21th')
     .evaluate(function () {
       return document.getElementsByClassName('ac-21th')[0].href;
@@ -66,7 +66,7 @@ describe('test yahoo search results', function() {
     var link = yield nightmare
       .goto('http://yahoo.com')
       .type('input[title="Search"]', 'github nightmare')
-      .click('.searchsubmit')
+      .click('#uh-search-button')
       .wait('.ac-21th')
       .evaluate(function () {
         return document.getElementsByClassName('ac-21th')[0].href;
