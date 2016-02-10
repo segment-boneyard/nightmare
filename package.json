@@ -13,7 +13,7 @@
   "author": "Segment",
   "keywords": [
     "nightmare",
-    "phantomjs"
+    "electron"
   ],
   "description": "A high-level browser automation library.",
   "dependencies": {
