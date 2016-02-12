@@ -150,6 +150,9 @@ var nightmare = Nightmare({
 #### .useragent(useragent)
 Set the `useragent` used by electron.
 
+#### .authentication(user, password)
+Set the `user` and `password` for accessing a web page using basic authentication. Be sure to set it before calling `.goto(url)`.
+
 #### .end()
 Complete any queue operations, disconnect and close the electron process.
 

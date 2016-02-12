@@ -868,11 +868,8 @@ describe('Nightmare', function () {
       didFail.should.be.true;
     });
 
-    /*
-    PENDING FIX UPSTREAM
-    https://github.com/atom/electron/issues/1362
-
     it('should set authentication', function*() {
+      nightmare = Nightmare();
       var data = yield nightmare
         .authentication('my', 'auth')
         .goto(fixture('auth'))
@@ -881,7 +878,6 @@ describe('Nightmare', function () {
         });
       data.should.eql({ name: 'my', pass: 'auth' });
     });
-    */
 
     it('should set viewport', function*() {
       var size = { width: 400, height: 300, 'use-content-size': true };
