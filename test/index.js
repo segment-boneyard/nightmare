@@ -12,6 +12,7 @@ var fs = require('fs');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var rimraf = require('rimraf');
+var PNG = require('pngjs').PNG;
 
 /**
  * Temporary directory
@@ -649,6 +650,25 @@ describe('Nightmare', function () {
       Buffer.isBuffer(image).should.be.true;
       image.length.should.be.at.least(300);
     });
+
+    // repeat this test 3 times, since the concern here is non-determinism in
+    // the timing accuracy of screenshots -- it might pass once, but likely not
+    // several times in a row.
+    for (var i = 0; i < 3; i++) {
+      it('should screenshot an up-to-date image of the page (' + i + ')', function *() {
+        var image = yield nightmare
+          .goto('about:blank')
+          .viewport(100, 100)
+          .evaluate(function() { document.body.style.background = '#900';  })
+          .evaluate(function() { document.body.style.background = '#090';  })
+          .screenshot();
+
+        var png = new PNG();
+        var imageData = yield png.parse.bind(png, image);
+        var firstPixel = Array.from(imageData.data.slice(0, 3));
+        firstPixel.should.deep.equal([0, 153, 0]);
+      });
+    }
 
     it('should load jquery correctly', function*() {
       var loaded = yield nightmare
