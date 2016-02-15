@@ -655,7 +655,7 @@ describe('Nightmare', function () {
     // the timing accuracy of screenshots -- it might pass once, but likely not
     // several times in a row.
     for (var i = 0; i < 3; i++) {
-      it('should screenshot an up-to-date image of the page (' + i + ')', function *() {
+      it('should screenshot an up-to-date image of the page (' + i + ')', function*() {
         var image = yield nightmare
           .goto('about:blank')
           .viewport(100, 100)
@@ -669,6 +669,21 @@ describe('Nightmare', function () {
         firstPixel.should.deep.equal([0, 153, 0]);
       });
     }
+
+    it('should screenshot an an idle page', function*() {
+      var image = yield nightmare
+        .goto('about:blank')
+        .viewport(100, 100)
+        .evaluate(function() { document.body.style.background = '#900';  })
+        .evaluate(function() { document.body.style.background = '#090';  })
+        .wait(1000)
+        .screenshot();
+
+      var png = new PNG();
+      var imageData = yield png.parse.bind(png, image);
+      var firstPixel = Array.from(imageData.data.slice(0, 3));
+      firstPixel.should.deep.equal([0, 153, 0]);
+    });
 
     it('should load jquery correctly', function*() {
       var loaded = yield nightmare
