@@ -29,7 +29,7 @@ Let's search on Yahoo:
 var Nightmare = require('nightmare');
 var vo = require('vo');
 
-vo(function* () {
+vo.pipeline(function* () {
   var nightmare = Nightmare({ show: true });
   var link = yield nightmare
     .goto('http://yahoo.com')
@@ -431,11 +431,12 @@ $ npm install --save nightmare
 #### Execution
 Nightmare is a node module that can be used in a Node.js script or module. Here's a simple script to open a web page:
 ```js
-var Nightmare = require('../nightmare');
+var Nightmare = require('nightmare');
 var vo = require('vo');
 
-vo(run)(function(err, result) {
-  if (err) throw err;
+vo(run)(function(err) {
+  if (err) console.log(err);
+  process.exit();
 });
 
 function *run() {
