@@ -659,8 +659,8 @@ describe('Nightmare', function () {
         var image = yield nightmare
           .goto('about:blank')
           .viewport(100, 100)
-          .evaluate(function() { document.body.style.background = '#900';  })
-          .evaluate(function() { document.body.style.background = '#090';  })
+          .evaluate(function() { document.body.style.background = '#900'; })
+          .evaluate(function() { document.body.style.background = '#090'; })
           .screenshot();
 
         var png = new PNG();
@@ -674,8 +674,8 @@ describe('Nightmare', function () {
       var image = yield nightmare
         .goto('about:blank')
         .viewport(100, 100)
-        .evaluate(function() { document.body.style.background = '#900';  })
-        .evaluate(function() { document.body.style.background = '#090';  })
+        .evaluate(function() { document.body.style.background = '#900'; })
+        .evaluate(function() { document.body.style.background = '#090'; })
         .wait(1000)
         .screenshot();
 
