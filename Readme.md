@@ -51,8 +51,10 @@ You can run this with:
 
 ```shell
 npm install nightmare vo
-node --harmony yahoo.js
+node yahoo.js
 ```
+
+If you are using Node.js v0.12 or below, you need to add `--harmony` option.
 
 Or, let's run some mocha tests:
 
