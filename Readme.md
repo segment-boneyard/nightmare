@@ -63,11 +63,11 @@ describe('test yahoo search results', function() {
     var link = yield nightmare
       .goto('http://yahoo.com')
       .type('input[title="Search"]', 'github nightmare')
-      .click('#uh-search-button')
-      .wait('.ac-21th')
+      .click('#UHSearchWeb')
+      .wait('#main')
       .evaluate(function () {
-        return document.getElementsByClassName('ac-21th')[0].href;
-      });
+        return document.querySelector('#main .searchCenterMiddle li a').href
+      })
     expect(link).to.equal('https://github.com/segmentio/nightmare');
   });
 });
