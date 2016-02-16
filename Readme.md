@@ -26,32 +26,29 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help
 Let's search on Yahoo:
 
 ```js
-var Nightmare = require('nightmare');
-var vo = require('vo');
+var Nightmare = require('./');
+var nightmare = Nightmare({ show: true })
 
-vo(function* () {
-  var nightmare = Nightmare({ show: true });
-  var link = yield nightmare
-    .goto('http://yahoo.com')
-    .type('input[title="Search"]', 'github nightmare')
-    .click('#uh-search-button')
-    .wait('.ac-21th')
-    .evaluate(function () {
-      return document.getElementsByClassName('ac-21th')[0].href;
-    });
-  yield nightmare.end();
-  return link;
-})(function (err, result) {
-  if (err) return console.log(err);
-  console.log(result);
-});
+nightmare
+  .goto('http://yahoo.com')
+  .type('input[title="Search"]', 'github nightmare')
+  .click('#UHSearchWeb')
+  .wait('#main')
+  .evaluate(function () {
+    return document.querySelector('#main .searchCenterMiddle li a').href
+  })
+  .then(function (result) {
+    console.log(result)
+  })
+
+nightmare.end()
 ```
 
 You can run this with:
 
 ```shell
-npm install nightmare vo
-node --harmony yahoo.js
+npm install nightmare
+node yahoo.js
 ```
 
 Or, let's run some mocha tests:
