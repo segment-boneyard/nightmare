@@ -5,13 +5,15 @@
 require('mocha-generators').install();
 
 var Nightmare = require('..');
-var should = require('chai').should();
+var chai = require('chai');
 var url = require('url');
 var server = require('./server');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var rimraf = require('rimraf');
+var child_process = require('child_process');
+var should = chai.should();
 
 /**
  * Temporary directory
@@ -40,6 +42,26 @@ describe('Nightmare', function () {
     var nightmare = Nightmare();
     nightmare.should.be.ok;
     yield nightmare.end();
+  });
+
+  it('should kill its electron process when it is killed', function(done) {
+    var child = child_process.fork(
+      path.join(__dirname, 'files', 'nightmare-unended.js'));
+
+    child.once('message', function(electronPid) {
+      child.once('exit', function() {
+        try {
+          electronPid.should.not.be.a.process;
+        }
+        catch(error) {
+          // if the test failed, clean up the still-running process
+          process.kill(electronPid, 'SIGINT');
+          throw error;
+        }
+        done();
+      });
+      child.kill();
+    });
   });
 
   describe('navigation', function () {
@@ -1075,3 +1097,15 @@ describe('Nightmare', function () {
 function fixture(path) {
   return url.resolve(base, path);
 }
+
+/**
+ * Simple assertion for running processes
+ */
+chai.Assertion.addProperty('process', function() {
+  var running = true;
+  try { process.kill(this._obj, 0); } catch(e) { running = false; }
+  this.assert(
+    running,
+    'expected process ##{this} to be running',
+    'expected process ##{this} not to be running');
+});
