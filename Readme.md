@@ -26,7 +26,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help
 Let's search on Yahoo:
 
 ```js
-var Nightmare = require('./');
+var Nightmare = require('nightmare');
 var nightmare = Nightmare({ show: true })
 
 nightmare
@@ -428,28 +428,22 @@ $ npm install --save nightmare
 #### Execution
 Nightmare is a node module that can be used in a Node.js script or module. Here's a simple script to open a web page:
 ```js
-var Nightmare = require('../nightmare');
-var vo = require('vo');
+var Nightmare = require('nightmare'),
+  nightmare = Nightmare();
 
-vo(run)(function(err, result) {
-  if (err) throw err;
-});
-
-function *run() {
-  var nightmare = Nightmare();
-  var title = yield nightmare
-    .goto('http://cnn.com')
-    .evaluate(function() {
-      return document.title;
-    });
-  console.log(title);
-  yield nightmare.end();
-}
+nightmare.goto('http://cnn.com')
+  .evaluate(function(){
+    return document.title;
+  })
+  .end()
+  .then(function(title){
+    console.log(title);
+  })
 ```
 If you save this as `cnn.js`, you can run it on the command line like this:
 
 ```bash
-npm install vo nightmare
+npm install nightmare
 node --harmony cnn.js
 ```
 
