@@ -12,6 +12,7 @@ var fs = require('fs');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var rimraf = require('rimraf');
+var qs = require('querystring');
 
 /**
  * Temporary directory
@@ -586,6 +587,503 @@ describe('Nightmare', function () {
     })
   })
 
+  describe('webRequest', function(){
+    var nightmare;
+
+    beforeEach(function() {
+      nightmare = Nightmare();
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
+    describe('webRequest.onBeforeRequest', function(){
+      var nightmare;
+
+      beforeEach(function() {
+        nightmare = Nightmare();
+      });
+
+      afterEach(function*() {
+        nightmare.webRequest.onBeforeRequest(null);
+
+        yield nightmare.end();
+      });
+
+      it('can cancel the request', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onBeforeRequest(function(details, callback) {
+          callback({cancel : true});
+        });
+
+        nightmare.on('webRequest.onBeforeRequest', function (details) {
+          if ( details ) {
+            result = details;
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('webrequest'));
+
+        result.method.should.equal('GET');
+      });
+
+      it('can filter URLs', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        var filter = {
+          urls: [base + "filter/*"]
+        };
+
+        webRequest.onBeforeRequest(filter, function(details, callback) {
+          callback({});
+        });
+
+        nightmare.on('webRequest.onBeforeRequest', function (details) {
+          if ( details ) {
+            result = details;
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('webrequest'))
+            .evaluate(function(){
+              $.ajax({
+                url: 'http://localhost:7500/filter/test',
+                type: 'POST',
+                data: {
+                  name: 'post test',
+                  type: 'string'
+                }
+              });
+            });
+
+        result.url.should.equal(base + "filter/test");
+        result.method.should.equal(result.method, 'GET');
+        result.resourceType.should.equal(result.resourceType, 'xhr');
+      });
+
+      it('receives details object', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onBeforeRequest(function(details, callback) {
+          callback({cancel:true});
+        });
+
+        nightmare.on('webRequest.onBeforeRequest', function (details) {
+          if ( details ) {
+            result = details;
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('webrequest'));
+
+        (typeof result.id).should.equal('number');
+        (typeof result.timestamp).should.equal('number');
+        result.url.should.equal(result.url, 'http://localhost:7500/webrequest');
+        result.method.should.equal(result.method, 'GET');
+        result.resourceType.should.equal(result.resourceType, 'xhr');
+        (!result.uploadData).should.be.true;
+      });
+
+      it('receives post data in details object', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onBeforeRequest(function(details, callback) {
+          callback({cancel:false});
+        });
+
+        nightmare.on('webRequest.onBeforeRequest', function (details) {
+          if ( details ) {
+            result = details;
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('webrequest'))
+            .evaluate(function(){
+              $.ajax({
+                url: 'http://localhost:7500/',
+                type: 'POST',
+                data: {
+                  name: 'post test',
+                  type: 'string'
+                }
+              });
+            });
+
+        result.url.should.equal(result.url, 'http://localhost:7500/');
+        result.method.should.equal(result.method, 'POST');
+        result.resourceType.should.equal(result.resourceType, 'xhr');
+        qs.parse(new Buffer(result.uploadData[0].bytes.data).toString()).should.deep.equals({
+          name: 'post test',
+          type: 'string'
+        });
+      });
+
+      it('can redirect the request', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onBeforeRequest(function(details, callback) {
+          var defaultURL = 'http://localhost:7500/';
+          if (details.url === defaultURL) {
+            callback({
+              redirectURL: defaultURL + "redirect"
+            });
+          } else {
+            callback({});
+          }
+        });
+
+        nightmare.on('webRequest.onBeforeRequest', function (details) {
+          if ( details ) {
+            result = details;
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('webrequest'))
+            .evaluate(function(){
+              $.ajax({
+                url: 'http://localhost:7500/'
+              });
+            });
+
+        console.log(JSON.stringify(result));
+        result.url.should.equal(result.url, 'http://localhost:7500/redirect');
+        result.resourceType.should.equal(result.resourceType, 'xhr');
+      });
+    });
+
+    describe('webRequest.onBeforeSendHeaders', function(){
+      var nightmare;
+
+      beforeEach(function() {
+        nightmare = Nightmare();
+      });
+
+      afterEach(function*() {
+        yield nightmare.end();
+      });
+
+      it('receives details object', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onBeforeSendHeaders(function(details, callback){
+          callback({cancel:true});
+        });
+
+        nightmare.on('webRequest.onBeforeSendHeaders', function (details) {
+          if ( details ) {
+            result = details
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('webrequest'));
+
+
+        (typeof result.requestHeaders).should.equal('object');
+      });
+
+      it('can change the request headers', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onBeforeSendHeaders(function(details, callback) {
+          callback({cancel : false, requestHeaders : {Accept :'*/*;test/header'} });
+        });
+
+        webRequest.onSendHeaders({urls: ["http://*/*", "https://*/*"]});
+
+        nightmare.on('webRequest.onSendHeaders', function (details) {
+          if ( details ) {
+            result = details
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('webrequest'));
+
+        (typeof result.requestHeaders).should.equal('object');
+        (JSON.stringify(result.requestHeaders)).should.equal(JSON.stringify({"Accept":"*/*;test/header"}));
+      });
+
+      it('resets the whole headers', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onBeforeSendHeaders(function(details, callback) {
+          var requestHeaders = {
+            Test: 'header'
+          };
+
+          callback({cancel : false, requestHeaders : requestHeaders})
+        });
+
+        webRequest.onSendHeaders({});
+
+        nightmare.on('webRequest.onSendHeaders', function (details) {
+          if ( details ) {
+            result = details
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('webrequest'));
+
+        (typeof result.requestHeaders).should.equal('object');
+        (JSON.stringify(result.requestHeaders)).should.equal(JSON.stringify({Test: 'header'}));
+      });
+    });
+
+    describe('webRequest.onSendHeaders', function(){
+      var nightmare;
+
+      beforeEach(function() {
+        nightmare = Nightmare();
+      });
+
+      afterEach(function*() {
+        yield nightmare.end();
+      });
+
+      it('receives details object', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onSendHeaders({urls: ["http://*/*", "https://*/*"]});
+
+        nightmare.on('webRequest.onSendHeaders', function (details) {
+          if ( details && !result ) {
+            result = details
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('webrequest'));
+
+        (typeof result.requestHeaders).should.equal('object');
+      });
+    });
+
+    describe('webRequest.onHeadersReceived', function(){
+      var nightmare;
+
+      beforeEach(function() {
+        nightmare = Nightmare();
+      });
+
+      afterEach(function*() {
+        yield nightmare.end();
+      });
+
+      it('receives details object', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onHeadersReceived(function(details, callback) {
+          callback({});
+        });
+
+        nightmare.on('did-get-response-details', function( event,
+                                                           status,
+                                                           newURL,
+                                                           originalURL,
+                                                           httpResponseCode,
+                                                           requestMethod,
+                                                           referrer,
+                                                           headers) {
+            if ( headers && !result ) {
+                result = headers
+            }
+        });
+
+        yield nightmare
+            .goto(fixture('headers'));
+        result['x-powered-by'][0].should.equal('Express');
+      });
+
+      it('can change the response header', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onHeadersReceived(function(details, callback) {
+          callback({responseHeaders: { 'X-Powered-By' : ['TEST'] } });
+        });
+
+        nightmare.on('did-get-response-details', function( event,
+                                                           status,
+                                                           newURL,
+                                                           originalURL,
+                                                           httpResponseCode,
+                                                           requestMethod,
+                                                           referrer,
+                                                           headers) {
+            if ( headers && !result ) {
+                result = headers
+            }
+        });
+
+        yield nightmare
+            .goto(fixture('headers'));
+        //result.statusLine.should.equal('HTTP/1.1 200 OK');
+        //result.statusCode.should.equal(200);
+        result['x-powered-by'][0].should.equal('TEST');
+      });
+    });
+
+    describe('webRequest.onResponseStarted', function(){
+      var nightmare;
+
+      beforeEach(function() {
+        nightmare = Nightmare();
+      });
+
+      afterEach(function*() {
+        yield nightmare.end();
+      });
+
+      it('receives details object', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onBeforeRequest(function(details, callback){
+          callback({cancel: false});
+        });
+
+        webRequest.onResponseStarted({urls: ["http://*/*", "https://*/*"]});
+
+        nightmare.on('webRequest.onResponseStarted', function (details) {
+          if ( details && !result ) {
+            result = details
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('headers'));
+
+        (typeof result.fromCache).should.equal('boolean');
+        result.statusLine.should.equal('HTTP/1.1 200 OK');
+        result.statusCode.should.equal(200);
+        result.responseHeaders['Cache-Control'][0].should.equal('no-cache');
+        result.responseHeaders['Expires'][0].should.equal('-1');
+        result.responseHeaders['Pragma'][0].should.equal('no-cache');
+      });
+    });
+
+    describe('webRequest.onBeforeRedirect', function(){
+      var nightmare;
+
+      beforeEach(function() {
+        nightmare = Nightmare();
+      });
+
+      afterEach(function*() {
+        yield nightmare.end();
+      });
+
+      it('receives details object', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onBeforeRequest(function(details, callback) {
+          callback({cancel: false, redirectURL: 'http://localhost:7500/redirect'});
+        });
+
+        webRequest.onBeforeRedirect({urls: ["http://*/*", "https://*/*"]});
+
+        nightmare.on('webRequest.onBeforeRedirect', function (details) {
+          if ( details && !result ) {
+            result = details
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('webrequest'));
+
+        (typeof result.fromCache).should.equal('boolean');
+        result.statusLine.should.equal('HTTP/1.1 307 Internal Redirect');
+        result.statusCode.should.equal(307);
+      });
+    });
+
+    describe('webRequest.onCompleted', function(){
+      var nightmare;
+
+      beforeEach(function() {
+        nightmare = Nightmare();
+      });
+
+      afterEach(function*() {
+        yield nightmare.end();
+      });
+
+      it('receives details object', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+        webRequest.onCompleted({urls: ["http://*/*", "https://*/*"]});
+
+        nightmare.on('webRequest.onCompleted', function (details) {
+          if ( details && !result ) {
+            result = details;
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('webrequest'));
+
+        (typeof result.fromCache).should.equal('boolean');
+        result.statusLine.should.equal('HTTP/1.1 200 OK');
+        result.statusCode.should.equal(200);
+      });
+    });
+
+    describe('webRequest.onErrorOccurred', function(){
+      var nightmare;
+
+      beforeEach(function() {
+        nightmare = Nightmare();
+      });
+
+      afterEach(function*() {
+        yield nightmare.end();
+      });
+
+      it('receives details object', function*() {
+        var webRequest = nightmare.webRequest;
+        var result;
+
+        webRequest.onBeforeRequest(function(detail, callback) {
+          callback({
+            cancel: true
+          });
+        });
+
+        webRequest.onErrorOccurred({urls: ["http://*/*", "https://*/*"]});
+
+        nightmare.on('webRequest.onErrorOccurred', function (details) {
+          if ( details ) {
+            result = details;
+          }
+        });
+
+        yield nightmare
+            .goto(fixture('webrequest'));
+
+        result.error.should.equal('net::ERR_BLOCKED_BY_CLIENT');
+      });
+    });
+  })
 
   describe('rendering', function () {
     var nightmare;
