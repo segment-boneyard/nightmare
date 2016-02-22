@@ -29,6 +29,7 @@
     "object-assign": "^4.0.1",
     "once": "^1.3.3",
     "rimraf": "^2.4.3",
+    "semver": "^5.1.0",
     "sliced": "1.0.1"
   },
   "devDependencies": {
