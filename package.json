@@ -1,6 +1,6 @@
 {
   "name": "nightmare",
-  "version": "2.1.6",
+  "version": "2.2.0",
   "license": "MIT",
   "main": "lib/nightmare.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "author": "Segment",
   "keywords": [
     "nightmare",
-    "phantomjs"
+    "electron"
   ],
   "description": "A high-level browser automation library.",
   "dependencies": {

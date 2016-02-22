@@ -27,31 +27,28 @@ Let's search on Yahoo:
 
 ```js
 var Nightmare = require('nightmare');
-var vo = require('vo');
+var nightmare = Nightmare({ show: true })
 
-vo(function* () {
-  var nightmare = Nightmare({ show: true });
-  var link = yield nightmare
-    .goto('http://yahoo.com')
-    .type('input[title="Search"]', 'github nightmare')
-    .click('#uh-search-button')
-    .wait('.ac-21th')
-    .evaluate(function () {
-      return document.getElementsByClassName('ac-21th')[0].href;
-    });
-  yield nightmare.end();
-  return link;
-})(function (err, result) {
-  if (err) return console.log(err);
-  console.log(result);
-});
+nightmare
+  .goto('http://yahoo.com')
+  .type('input[title="Search"]', 'github nightmare')
+  .click('#uh-search-button')
+  .wait('#main')
+  .evaluate(function () {
+    return document.querySelector('#main .searchCenterMiddle li a').href
+  })
+  .end()
+  .then(function (result) {
+    console.log(result)
+  })
+
 ```
 
 You can run this with:
 
 ```shell
-npm install nightmare vo
-node --harmony yahoo.js
+npm install nightmare
+node yahoo.js
 ```
 
 Or, let's run some mocha tests:
@@ -66,11 +63,11 @@ describe('test yahoo search results', function() {
     var link = yield nightmare
       .goto('http://yahoo.com')
       .type('input[title="Search"]', 'github nightmare')
-      .click('#uh-search-button')
-      .wait('.ac-21th')
+      .click('#UHSearchWeb')
+      .wait('#main')
       .evaluate(function () {
-        return document.getElementsByClassName('ac-21th')[0].href;
-      });
+        return document.querySelector('#main .searchCenterMiddle li a').href
+      })
     expect(link).to.equal('https://github.com/segmentio/nightmare');
   });
 });
@@ -431,28 +428,22 @@ $ npm install --save nightmare
 #### Execution
 Nightmare is a node module that can be used in a Node.js script or module. Here's a simple script to open a web page:
 ```js
-var Nightmare = require('../nightmare');
-var vo = require('vo');
+var Nightmare = require('nightmare'),
+  nightmare = Nightmare();
 
-vo(run)(function(err, result) {
-  if (err) throw err;
-});
-
-function *run() {
-  var nightmare = Nightmare();
-  var title = yield nightmare
-    .goto('http://cnn.com')
-    .evaluate(function() {
-      return document.title;
-    });
-  console.log(title);
-  yield nightmare.end();
-}
+nightmare.goto('http://cnn.com')
+  .evaluate(function(){
+    return document.title;
+  })
+  .end()
+  .then(function(title){
+    console.log(title);
+  })
 ```
 If you save this as `cnn.js`, you can run it on the command line like this:
 
 ```bash
-npm install vo nightmare
+npm install nightmare
 node --harmony cnn.js
 ```
 
