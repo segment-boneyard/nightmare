@@ -164,6 +164,26 @@ Go forward to the next page.
 #### .refresh()
 Refresh the current page.
 
+#### .enterIframe(selector)
+Enter in the `selector` iframe element and use its `document` as the `document` for subsequent actions.
+
+Any action called after this will act as if it was called from inside the iframe element.
+
+It can be called again from inside an iframe, so you can traverse a series of embedded iframes.
+
+To go back to the root `document`, call `.exitIframe()`.
+
+If the iframe you are entering comes from another domain, you may want to create your first `Nightmare` instance with `{'web-preferences': {'web-security': false}}` as in:
+
+```
+var nightmare = Nightmare({show: true, 'web-preferences': {'web-security': false}});
+```
+
+#### .exitIframe()
+Exit from all iframe elements entered with `.enterIframe(selector)` and return to the root document.
+
+Any action called after this will act as normal.
+
 #### .click(selector)
 Clicks the `selector` element once.
 
