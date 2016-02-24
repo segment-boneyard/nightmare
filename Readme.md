@@ -173,11 +173,12 @@ It can be called again from inside an iframe, so you can traverse a series of em
 
 To go back to the root `document`, call `.exitIframe()`.
 
-If the iframe you are entering comes from another domain, you may want to create your first `Nightmare` instance with `{'web-preferences': {'web-security': false}}` as in:
+If the iframe you are entering comes from another domain, you may want to create your first `Nightmare` instance with `{'webPreferences': {'webSecurity': false}}` as in:
 
 ```
-var nightmare = Nightmare({show: true, 'web-preferences': {'web-security': false}});
+var nightmare = Nightmare({show: true, 'webPreferences': {'webSecurity': false}});
 ```
+You may want to check those and other possible configurations in the [Electron BrowserWindow options](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions) (the same documentation listed above in [Nightmare(options)](#nightmareoptions)).
 
 #### .exitIframe()
 Exit from all iframe elements entered with `.enterIframe(selector)` and return to the root document.
