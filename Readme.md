@@ -144,6 +144,16 @@ var nightmare = Nightmare({
 });
 ```
 
+##### openDevTools
+A boolean to optionally show the DevTools in the Electron window.  This is also useful for testing purposes.  Note that this option is honored only if `show` is set to `true`.
+
+```js
+var nightmare = Nightmare({
+  openDevTools: true,
+  show: true
+});
+```
+
 #### .useragent(useragent)
 Set the `useragent` used by electron.
 
