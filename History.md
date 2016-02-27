@@ -1,4 +1,9 @@
 
+2.2.0 / 2016-02-16
+==================
+
+  * .then() now returns a full promise instead of nightmare. update yahoo example.
+
 2.1.6 / 2016-02-01
 ==================
 
