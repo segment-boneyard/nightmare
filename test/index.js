@@ -839,6 +839,14 @@ describe('Nightmare', function () {
       yield nightmare.end();
     });
 
+	it('should set audio muted state', function* () {
+      nightmare = new Nightmare();
+      var audioMuted = yield nightmare
+        .setAudioMuted(false);
+        
+      audioMuted.should.eql(false);
+    });
+	
     it('should set useragent', function* () {
       nightmare = new Nightmare();
       var useragent = yield nightmare

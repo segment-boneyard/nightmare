@@ -144,6 +144,9 @@ var nightmare = Nightmare({
 });
 ```
 
+#### .setAudioMuted(audioMuted)
+Set if audio is muted on the electron process.
+
 #### .useragent(useragent)
 Set the `useragent` used by electron.
 
