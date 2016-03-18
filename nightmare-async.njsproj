@@ -30,7 +30,6 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="lib\actions.js" />
     <Compile Include="lib\ipc.js" />
     <Compile Include="lib\javascript.js" />
     <Compile Include="lib\nightmare.js" />

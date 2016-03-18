@@ -87,7 +87,7 @@ describe('Nightmare', function () {
 
             title = yield nightmare.chain()
                 .click('a')
-                .waitUntilStopLoading()
+                .waitUntilFinishLoad()
                 .title();
 
             title.should.equal('A')
@@ -103,7 +103,7 @@ describe('Nightmare', function () {
             var title = yield Promise.all([
                 yield nightmare.goto(fixture('navigation')),
                 yield nightmare.click('a'),
-                yield nightmare.waitUntilStopLoading(),
+                yield nightmare.waitUntilFinishLoad(),
                 yield nightmare.title()
             ]);
 
@@ -123,7 +123,7 @@ describe('Nightmare', function () {
             title.should.equal('Navigation')
 
             yield nightmare.click('a');
-            yield nightmare.waitUntilStopLoading();
+            yield nightmare.waitUntilFinishLoad();
 
             yield nightmare.back();
             yield nightmare.forward();
@@ -795,12 +795,9 @@ describe('Nightmare', function () {
                     fired = true;
                 });
 
-            //Don't yield the goto...
+            //If this is changed to a web resource, it fails with a timeout.
             yield nightmare
-                .goto('https://alskdjfasdfuuu.com')
-
-            //yield nightmare.wait(1000);
-            //yield nightmare.stop();
+                .goto('file://the/moose/is/loose/run.txt');
 
             fired.should.be.true;
         });
@@ -873,7 +870,7 @@ describe('Nightmare', function () {
 
             var audioMuted = yield nightmare
                 .setAudioMuted(false);
-            console.log(audioMuted);
+            
             audioMuted.should.eql(false);
         });
 
@@ -1106,7 +1103,7 @@ describe('Nightmare', function () {
         });
 
         it('should support extending nightmare', function* () {
-            var tagName = yield nightmare().chain()
+            var tagName = yield nightmare.chain()
                 .goto(fixture('simple'))
                 .use(select('h1'));
 
@@ -1135,9 +1132,8 @@ describe('Nightmare', function () {
                     .init()
                     .goto(fixture('preload'))
                     .evaluate(function () {
-                        return window.preload
-                    })
-
+                        return window.preload;
+                    });
                 value.should.equal('custom');
             } finally {
                 nightmare.end();
