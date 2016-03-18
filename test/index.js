@@ -795,7 +795,9 @@ describe('Nightmare', function () {
                     fired = true;
                 });
 
-            //If this is changed to a web resource, it fails with a timeout.
+            //This seems to intermittently fail -- the did-fail-load event doesn't get raised always.
+            //Seems to not get raised on first resource request, but then raised subsequently.
+            //If this is changed to a web resource (https:...), it always fails with a timeout.
             yield nightmare
                 .goto('file://the/moose/is/loose/run.txt');
 
@@ -1110,8 +1112,8 @@ describe('Nightmare', function () {
             tagName.should.equal('H1');
 
             function select(tagname) {
-                return function (nightmare) {
-                    nightmare.evaluate(function (tagname) {
+                return function* (nightmare) {
+                    return yield this.evaluate(function (tagname) {
                         return document.querySelector(tagname).tagName
                     }, tagname)
                 }
