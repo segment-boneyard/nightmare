@@ -86,8 +86,7 @@ describe('Nightmare', function () {
             title.should.equal('Navigation');
 
             title = yield nightmare.chain()
-                .click('a')
-                .waitUntilFinishLoad()
+                .clickAndWaitForFinishLoad('a')
                 .title();
 
             title.should.equal('A')
@@ -102,12 +101,11 @@ describe('Nightmare', function () {
         it('should work for links that dont go anywhere', function* () {
             var title = yield Promise.all([
                 yield nightmare.goto(fixture('navigation')),
-                yield nightmare.click('a'),
-                yield nightmare.waitUntilFinishLoad(),
+                yield nightmare.clickAndWaitForFinishLoad('a'),
                 yield nightmare.title()
             ]);
 
-            title[3].should.equal('A');
+            title[2].should.equal('A');
 
             var title = yield Promise.all([
                 yield nightmare.click('.d'),
@@ -122,8 +120,7 @@ describe('Nightmare', function () {
             var title = yield nightmare.title();
             title.should.equal('Navigation')
 
-            yield nightmare.click('a');
-            yield nightmare.waitUntilFinishLoad();
+            yield nightmare.clickAndWaitForFinishLoad('a');
 
             yield nightmare.back();
             yield nightmare.forward();
@@ -405,8 +402,7 @@ describe('Nightmare', function () {
             var title = yield nightmare.chain()
                 .goto(fixture('manipulation'))
                 .type('input[type=search]', 'nightmare')
-                .click('button[type=submit]')
-                .wait(500)
+                .clickAndWaitForFinishLoad('button[type=submit]')
                 .title();
 
             title.should.equal('Manipulation - Results');
@@ -416,9 +412,19 @@ describe('Nightmare', function () {
             var title = yield nightmare.chain()
                 .goto(fixture('manipulation'))
                 .type('input[type=search]', 'github nightmare')
-                .click('button[type=submit]')
+                .clickAndWaitForFinishLoad('button[type=submit]')
+                .clickAndWaitForFinishLoad('a')
+                .title();
+            title.should.equal('Manipulation - Result - Nightmare');
+        });
+
+        it('should type and emulate a click several times', function* () {
+            var title = yield nightmare.chain()
+                .goto(fixture('manipulation'))
+                .type('input[type=search]', 'github nightmare')
+                .emulateClick('button[type=submit]')
                 .wait(500)
-                .click('a')
+                .emulateClick('a')
                 .wait(500)
                 .title();
             title.should.equal('Manipulation - Result - Nightmare');
@@ -795,11 +801,14 @@ describe('Nightmare', function () {
                     fired = true;
                 });
 
-            //This seems to intermittently fail -- the did-fail-load event doesn't get raised always.
-            //Seems to not get raised on first resource request, but then raised subsequently.
-            //If this is changed to a web resource (https:...), it always fails with a timeout.
-            yield nightmare
-                .goto('file://the/moose/is/loose/run.txt');
+            try {
+                yield nightmare
+                    .goto('http://example:port');
+
+            }
+            catch (ex) {
+                //Do Nothing.
+            }
 
             fired.should.be.true;
         });
