@@ -144,6 +144,15 @@ var nightmare = Nightmare({
 });
 ```
 
+##### defaultAuth
+A username and password pair for HTTP basic auth on all requests
+
+```js
+var nightmare = Nightmare({
+  defaultAuth: 'username:password'
+});
+```
+
 #### .useragent(useragent)
 Set the `useragent` used by electron.
 
