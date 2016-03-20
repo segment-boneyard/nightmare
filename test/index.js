@@ -119,14 +119,13 @@ describe('Nightmare', function () {
             yield nightmare.goto(fixture('navigation'));
             var title = yield nightmare.title();
             title.should.equal('Navigation')
-
             yield nightmare.clickAndWaitUntilFinishLoad('a');
 
             yield nightmare.back();
             yield nightmare.forward();
 
             var title = yield nightmare.title();
-            title.should.equal('A')
+            title.should.equal('A');
         });
 
         it('should refresh the page', function* () {
