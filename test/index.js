@@ -84,21 +84,18 @@ describe('Nightmare', function () {
                 .title();
 
             title.should.equal('Navigation');
-            console.log("done 1");
 
             title = yield nightmare.chain()
                 .clickAndWaitUntilFinishLoad('a')
                 .title();
 
             title.should.equal('A')
-            console.log("done 2");
 
             var title = yield nightmare.chain()
                 .back()
                 .title();
 
             title.should.equal('Navigation');
-            console.log("done 3");
         });
 
         it('should work for links that dont go anywhere', function* () {
