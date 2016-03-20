@@ -107,7 +107,7 @@ describe('Nightmare', function () {
 
             title[2].should.equal('A');
 
-            var title = yield Promise.all([
+            title = yield Promise.all([
                 yield nightmare.click('.d'),
                 yield nightmare.title()
             ]);
