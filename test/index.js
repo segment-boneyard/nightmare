@@ -84,24 +84,27 @@ describe('Nightmare', function () {
                 .title();
 
             title.should.equal('Navigation');
+            console.log("done 1");
 
             title = yield nightmare.chain()
-                .clickAndWaitForFinishLoad('a')
+                .clickAndWaitUntilFinishLoad('a')
                 .title();
 
             title.should.equal('A')
+            console.log("done 2");
 
             var title = yield nightmare.chain()
                 .back()
                 .title();
 
             title.should.equal('Navigation');
+            console.log("done 3");
         });
 
         it('should work for links that dont go anywhere', function* () {
             var title = yield Promise.all([
                 yield nightmare.goto(fixture('navigation')),
-                yield nightmare.clickAndWaitForFinishLoad('a'),
+                yield nightmare.clickAndWaitUntilFinishLoad('a'),
                 yield nightmare.title()
             ]);
 
@@ -120,7 +123,7 @@ describe('Nightmare', function () {
             var title = yield nightmare.title();
             title.should.equal('Navigation')
 
-            yield nightmare.clickAndWaitForFinishLoad('a');
+            yield nightmare.clickAndWaitUntilFinishLoad('a');
 
             yield nightmare.back();
             yield nightmare.forward();
@@ -402,7 +405,7 @@ describe('Nightmare', function () {
             var title = yield nightmare.chain()
                 .goto(fixture('manipulation'))
                 .type('input[type=search]', 'nightmare')
-                .clickAndWaitForFinishLoad('button[type=submit]')
+                .clickAndWaitUntilFinishLoad('button[type=submit]')
                 .title();
 
             title.should.equal('Manipulation - Results');
@@ -412,8 +415,8 @@ describe('Nightmare', function () {
             var title = yield nightmare.chain()
                 .goto(fixture('manipulation'))
                 .type('input[type=search]', 'github nightmare')
-                .clickAndWaitForFinishLoad('button[type=submit]')
-                .clickAndWaitForFinishLoad('a')
+                .clickAndWaitUntilFinishLoad('button[type=submit]')
+                .clickAndWaitUntilFinishLoad('a')
                 .title();
             title.should.equal('Manipulation - Result - Nightmare');
         });
@@ -1052,7 +1055,6 @@ describe('Nightmare', function () {
 
         beforeEach(function* () {
             nightmare = new Nightmare();
-            yield nightmare.init();
         });
 
         afterEach(function* () {
@@ -1071,6 +1073,8 @@ describe('Nightmare', function () {
                 })
             });
 
+            yield nightmare.init();
+
             var size = yield nightmare.chain()
                 .goto(fixture('simple'))
                 .size();
@@ -1083,21 +1087,23 @@ describe('Nightmare', function () {
            Nightmare.action("style", {
                 background: function* () {
                     return yield this.evaluate_now(function () {
-                        return window.getComputedStyle(document.body, null).backgroundColor
+                        return window.getComputedStyle(document.body, null).backgroundColor;
                     })
                 },
                 color: function* () {
                     return yield this.evaluate_now(function () {
-                        return window.getComputedStyle(document.body, null).color
+                        return window.getComputedStyle(document.body, null).color;
                     })
                 }
             });
 
+            yield nightmare.init();
+
             yield nightmare.goto(fixture('simple'));
             var background = yield nightmare.style.background();
-            var color = yield nightmare.style.color;
+            var color = yield nightmare.style.color();
 
-            background.should.equal('rgba(0, 0, 0, 0)');
+            background.should.equal('rgb(0, 0, 0)');
             color.should.equal('rgb(0, 0, 0)');
         })
     })
