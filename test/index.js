@@ -487,6 +487,39 @@ describe('Nightmare', function () {
             coordinates.left.should.equal(50);
         });
 
+        it('should scroll to specified selector', function* () {
+            var selector = 'input';
+            // Get actual element coordinates
+            var elemCoordinates = yield nightmare.chain()
+                .viewport(320, 320)
+                .goto(fixture('manipulation'))
+                .evaluate(function (selector) {
+                    var element = document.querySelector(selector);
+                    var rect = element.getBoundingClientRect();
+                    return {
+                        top: Math.round(rect.top),
+                        left: Math.round(rect.left)
+                    };
+                }, selector);
+            elemCoordinates.should.have.property('top');
+            elemCoordinates.top.should.not.be.equal(0);
+            elemCoordinates.should.have.property('left');
+            elemCoordinates.left.should.not.be.equal(0);
+
+            // Scroll to the element
+            var coordinates = yield nightmare.chain()
+                .scrollTo(selector)
+                .evaluate(function () {
+                    return {
+                        top: document.body.scrollTop,
+                        left: document.body.scrollLeft
+                    };
+                });
+            coordinates.top.should.equal(elemCoordinates.top);
+            // TODO: fix this in the fixture
+            // coordinates.left.should.equal(elemCoordinates.left);
+        });
+
         it('should hover over an element', function* () {
             var color = yield nightmare.chain()
                 .goto(fixture('manipulation'))
@@ -514,7 +547,10 @@ describe('Nightmare', function () {
         var nightmare;
 
         beforeEach(function* () {
-            nightmare = new Nightmare()
+            nightmare = new Nightmare({
+                webPreferences: { partition: 'test-partition' }
+            });
+
             yield nightmare.chain().init().goto(fixture('cookie'));
         });
 
@@ -943,20 +979,18 @@ describe('Nightmare', function () {
             didFail.should.be.true;
         });
 
-        /*
-        PENDING FIX UPSTREAM
-        https://github.com/atom/electron/issues/1362
-    
-        it('should set authentication', function*() {
-          var data = yield nightmare
-            .authentication('my', 'auth')
-            .goto(fixture('auth'))
-            .evaluate(function () {
-              return JSON.parse(document.querySelector('pre').innerHTML);
-            });
+        it('should set authentication', function* () {
+            nightmare = new Nightmare();
+            yield nightmare.init();
+
+            var data = yield nightmare.chain()
+                .setAuthenticationCredentials('my', 'auth')
+                .goto(fixture('auth'))
+                .evaluate(function () {
+                    return JSON.parse(document.querySelector('pre').innerHTML);
+                });
           data.should.eql({ name: 'my', pass: 'auth' });
         });
-        */
 
         it('should set viewport', function* () {
             var size = { width: 400, height: 300, 'use-content-size': true };
