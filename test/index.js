@@ -672,6 +672,22 @@ describe('Nightmare', function () {
       image.length.should.be.at.least(300);
     });
 
+    it('should take a screenshot by selector', function*() {
+      yield nightmare
+        .goto('https://github.com/')
+        .screenshotSelector(tmp_dir+'/test-clipped.png', 'body');
+      var stats = fs.statSync(tmp_dir+'/test-clipped.png');
+      stats.size.should.be.at.least(300);
+    });
+
+    it('should buffer a screenshot by selector', function*() {
+      var image = yield nightmare
+        .goto('https://github.com/')
+        .screenshotSelector('body');
+      Buffer.isBuffer(image).should.be.true;
+      image.length.should.be.at.least(300);
+    });
+
     it('should load jquery correctly', function*() {
       var loaded = yield nightmare
         .goto(fixture('rendering'))

@@ -277,6 +277,9 @@ This event is triggered if `console.log` is used on the page. But this event is 
 #### .screenshot([path][, clip])
 Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
 
+#### .screenshotSelector([path,] selector)
+Takes a screenshot of the element by the selector. The output is always a `png`. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data.
+
 #### .pdf(path, options)
 Saves a PDF to the specified `path`. Options are [here](https://github.com/atom/electron/blob/v0.35.2/docs/api/web-contents.md#webcontentsprinttopdfoptions-callback).
 
