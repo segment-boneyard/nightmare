@@ -240,7 +240,7 @@ Capture page events with the callback. You have to call `.on()` before calling `
 ##### Additional "page" events
 
 ###### .on('page', function(type="error", message, stack))
-This event is triggered if any javscript exception is thrown on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is throwing an exception.
+This event is triggered if any javascript exception is thrown on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is throwing an exception.
 
 ##### "page" events
 
