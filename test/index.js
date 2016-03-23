@@ -42,7 +42,7 @@ describe('Nightmare', function () {
     it('should be constructable', function* () {
         var nightmare = new Nightmare();
         nightmare.should.be.ok;
-        yield nightmare.end();
+        nightmare.end();
     });
 
     it('should kill its electron process when it is killed', function (done) {
@@ -74,7 +74,7 @@ describe('Nightmare', function () {
         });
 
         afterEach(function* () {
-            yield nightmare.end();
+            nightmare.end();
         });
 
         it('should click on a link and then go back', function* () {
@@ -175,7 +175,7 @@ describe('Nightmare', function () {
         });
 
         afterEach(function* () {
-            yield nightmare.end();
+            nightmare.end();
         });
 
         it('should get the title', function* () {
@@ -242,7 +242,7 @@ describe('Nightmare', function () {
         });
 
         afterEach(function* () {
-            yield nightmare.end();
+            nightmare.end();
         });
 
         it('should inject javascript onto the page', function* () {
@@ -573,7 +573,7 @@ describe('Nightmare', function () {
         });
 
         afterEach(function* () {
-            yield nightmare.end();
+            nightmare.end();
         });
 
         it('.set(name, value) & .get(name)', function* () {
@@ -707,7 +707,7 @@ describe('Nightmare', function () {
         });
 
         afterEach(function* () {
-            yield nightmare.end();
+            nightmare.end();
         });
 
         it('should take a screenshot', function* () {
@@ -808,7 +808,7 @@ describe('Nightmare', function () {
         });
 
         afterEach(function* () {
-            yield nightmare.end();
+            nightmare.end();
         });
 
         it('should fire an event on page load complete', function* () {
@@ -925,7 +925,7 @@ describe('Nightmare', function () {
         var nightmare;
 
         afterEach(function* () {
-            yield nightmare.end();
+            nightmare.end();
         });
 
         it('should set audio muted state', function* () {
@@ -1119,7 +1119,7 @@ describe('Nightmare', function () {
         });
 
         afterEach(function* () {
-            yield nightmare.end();
+            nightmare.end();
         });
 
         it('should support custom actions', function* () {
@@ -1177,7 +1177,7 @@ describe('Nightmare', function () {
         });
 
         afterEach(function* () {
-            yield nightmare.end();
+            nightmare.end();
         });
 
         it('should support extending nightmare', function* () {
