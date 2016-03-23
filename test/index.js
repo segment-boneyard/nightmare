@@ -951,6 +951,19 @@ describe('Nightmare', function () {
             useragent.should.eql('firefox');
         });
 
+        it('should complete setting useragent', function* () {
+            nightmare = new Nightmare();
+            yield nightmare.init();
+
+            yield nightmare.useragent("firefox");
+            yield nightmare.goto(fixture('options'));
+            var useragent = yield nightmare.evaluate(function () {
+                    return window.navigator.userAgent;
+            });
+            
+            useragent.should.eql('firefox');
+        });
+
         it('should wait and fail with waitTimeout', function* () {
             var didFail = false;
             try {
