@@ -303,6 +303,24 @@ describe('Nightmare', function () {
             events.should.equal(0);
         });
 
+        it('should emulate keystrokes', function* () {
+            var input = 'nightmare';
+            var events = input.length * 3;
+
+            var value = yield nightmare.chain()
+                .on('console', function (type, input, message) {
+                    if (type === 'log') events--;
+                })
+                .goto(fixture('manipulation'))
+                .emulateKeystrokes('input[type=search]', input)
+                .evaluate(function () {
+                    return document.querySelector('input[type=search]').value;
+                });
+
+            value.should.equal('nightmare');
+            events.should.equal(0);
+        });
+
         it('should type integer', function* () {
             var input = 10;
             var events = input.toString().length * 3;
@@ -422,9 +440,9 @@ describe('Nightmare', function () {
                 .goto(fixture('manipulation'))
                 .type('input[type=search]', 'github nightmare')
                 .emulateClick('button[type=submit]')
-                .wait(500)
+                .waitUntilFinishLoad()
                 .emulateClick('a')
-                .wait(500)
+                .waitUntilFinishLoad()
                 .title();
             title.should.equal('Manipulation - Result - Nightmare');
         });
