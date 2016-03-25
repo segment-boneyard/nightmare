@@ -232,7 +232,7 @@ describe('Nightmare', function () {
             title.should.equal('Evaluation -- testparameter');
         });
 
-        it('should evaluate javascript waiting for promises', function* () {
+        it('should evaluate async javascript by waiting for promises', function* () {
             var timeStart = new Date();
 
             var title = yield nightmare.chain()
@@ -247,6 +247,30 @@ describe('Nightmare', function () {
                 }, 'testparameter');
             
             title.should.equal('Evaluation -- testparameter');
+            var diff = new Date() - timeStart;
+            diff.should.be.at.least(2000);
+        });
+
+        it('should evaluate async javascript promise rejections', function* () {
+            var timeStart = new Date();
+
+            var failed = "";
+            try {
+                var title = yield nightmare.chain()
+                    .goto(fixture('evaluation'))
+                    .evaluateAsync(function (parameter) {
+                        var p = new Promise(function (resolve, reject) {
+                            setTimeout(function () {
+                                reject("Catastrophic Error");
+                            }, 2000);
+                        });
+                        return p;
+                    }, 'testparameter');
+            } catch (ex) {
+                failed = ex;
+            }
+
+            failed.should.equal('Catastrophic Error');
             var diff = new Date() - timeStart;
             diff.should.be.at.least(2000);
         });
