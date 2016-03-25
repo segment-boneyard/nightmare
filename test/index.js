@@ -231,6 +231,25 @@ describe('Nightmare', function () {
                 }, 'testparameter');
             title.should.equal('Evaluation -- testparameter');
         });
+
+        it('should evaluate javascript waiting for promises', function* () {
+            var timeStart = new Date();
+
+            var title = yield nightmare.chain()
+                .goto(fixture('evaluation'))
+                .evaluateAsync(function (parameter) {
+                    var p = new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve(document.title + ' -- ' + parameter);
+                        }, 2000);
+                    });
+                    return p;
+                }, 'testparameter');
+            
+            title.should.equal('Evaluation -- testparameter');
+            var diff = new Date() - timeStart;
+            diff.should.be.at.least(2000);
+        });
     });
 
     describe('manipulation', function () {
