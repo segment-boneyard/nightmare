@@ -318,14 +318,20 @@ describe('Nightmare', function () {
         });
 
         it('should not inject unsupported types onto the page', function* () {
-            var color = yield nightmare.chain()
-                .goto(fixture('manipulation'))
-                .inject('js', 'test/files/jquery-2.1.1.min.js')
-                .inject('pdf', 'test/files/test.css')
-                .evaluate(function () {
-                    return $('body').css('background-color');
-                });
-            color.should.not.equal('rgb(255, 0, 0)');
+            try {
+                var color = yield nightmare.chain()
+                    .goto(fixture('manipulation'))
+                    .inject('js', 'test/files/jquery-2.1.1.min.js')
+                    .inject('pdf', 'test/files/test.css')
+                    .evaluate(function () {
+                        return $('body').css('background-color');
+                    });
+
+                color.should.not.equal('rgb(255, 0, 0)');
+            }
+            catch (ex) {
+                //naught.
+            }
         });
 
         it('should type', function* () {
