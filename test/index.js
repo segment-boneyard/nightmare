@@ -128,6 +128,31 @@ describe('Nightmare', function () {
             title.should.equal('A');
         });
 
+        it('should perform an action that expects navigation', function* () {
+            yield nightmare.goto(fixture('navigation'));
+            var title = yield nightmare.title();
+            title.should.equal('Navigation');
+            yield nightmare.expectNavigation(function() { return this.click('a') }, 2000);
+
+            var title = yield nightmare.title();
+            title.should.equal('A');
+        });
+
+        it('should fail when an action that expects navigation exceeds the timeout', function* () {
+            var didFail = false;
+            try {
+                yield nightmare.goto(fixture('navigation'));
+                var title = yield nightmare.title();
+                title.should.equal('Navigation');
+                yield nightmare.expectNavigation(function () { return; }, 1000);
+            }
+            catch (ex) {
+                didFail = true;
+            }
+
+            didFail.should.be.true;
+        });
+
         it('should refresh the page', function* () {
             yield nightmare.chain()
                 .goto(fixture('navigation'))
