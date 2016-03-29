@@ -1171,7 +1171,7 @@ describe('Nightmare', function () {
             nightmare.end();
         });
 
-        it('should support custom actions', function* () {
+        it('should support custom actions that are generators', function* () {
             Nightmare.action("size", function* () {
                 return yield this.evaluate_now(function () {
                     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
@@ -1191,7 +1191,29 @@ describe('Nightmare', function () {
 
             size.height.should.be.a('number')
             size.width.should.be.a('number')
-        })
+        });
+
+        it('should support custom actions that are promises', function* () {
+            Nightmare.action("size", function () {
+                return this.evaluate_now(function () {
+                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+                    return {
+                        height: h,
+                        width: w
+                    }
+                })
+            });
+
+            yield nightmare.init();
+
+            var size = yield nightmare.chain()
+                .goto(fixture('simple'))
+                .size();
+
+            size.height.should.be.a('number')
+            size.width.should.be.a('number')
+        });
 
         it('should support custom namespaces', function* () {
            Nightmare.action("style", {
