@@ -1241,7 +1241,7 @@ describe('Nightmare', function () {
         });
 
         it('should support custom namespaces', function* () {
-           Nightmare.action("style", {
+            Nightmare.action("style", {
                 background: function* () {
                     return yield this.evaluate_now(function () {
                         return window.getComputedStyle(document.body, null).backgroundColor;
@@ -1262,7 +1262,31 @@ describe('Nightmare', function () {
 
             background.should.equal('rgb(0, 0, 0)');
             color.should.equal('rgb(0, 0, 0)');
-        })
+        });
+
+        it('should support chaining methods defined on custom namespaces', function* () {
+            Nightmare.action("style", {
+                background: function* () {
+                    return yield this.evaluate_now(function () {
+                        return window.getComputedStyle(document.body, null).backgroundColor;
+                    })
+                },
+                color: function* () {
+                    return yield this.evaluate_now(function () {
+                        return window.getComputedStyle(document.body, null).color;
+                    })
+                }
+            });
+
+            yield nightmare.init();
+
+            var color = yield nightmare.chain()
+                .goto(fixture('simple'))
+                .style.background()
+                .style.color();
+
+            color.should.equal('rgb(0, 0, 0)');
+        });
     })
 
     describe('Nightmare.use', function () {
