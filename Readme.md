@@ -418,6 +418,7 @@ Nightmare.action('style', {
 })
 
 var background = yield new Nightmare()
+  .chain()
   .init()
   .goto('http://google.com')
   .style.background()
