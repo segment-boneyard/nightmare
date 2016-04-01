@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "nightmare-async", "nightmare-async.njsproj", "{F0197AEE-CA58-491B-A8E5-B0321FD9672F}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "nightmare-promise", "nightmare-promise.njsproj", "{F0197AEE-CA58-491B-A8E5-B0321FD9672F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
