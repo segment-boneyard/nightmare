@@ -4,7 +4,30 @@ Nightmare
 
 Nightmare is a high-level browser automation library.
 
-The goal is to expose just a few simple methods, and have an API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
+####Nightmare v3
+
+This version of Nightmare relies on promises. The primary API change is that all functions now return promises instead of the this object. However, Nightmare is still chainable through the .chain() function. This simplifies the programming and extension model as all custom functions and namespaces added through .action() are inheritly chainable.
+
+```
+  var Nightmare = require("nightmare");
+  var title = new Nightmare().chain()
+    .init()
+    .goto("http://foo.com")
+    .title();
+```
+
+Since all methods return promises, it's easy to synchronize between other Promise based apis.
+
+```
+  Promise.race([nightmare.goto('http://foo.com'), timeout(500)])
+    .then(function() {
+      console.log("success!");
+    }, function() {
+      console.log("timed out.");
+    });
+```
+
+This allows nightmare to work better in conjunction with other libraries, but still retain the original goal of having a simple, non-pyramid-of-doom API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
 
 Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but faster and more modern.
 
@@ -27,9 +50,10 @@ Let's search on Yahoo:
 
 ```js
 var Nightmare = require('nightmare');
-var nightmare = Nightmare({ show: true })
+var nightmare = new Nightmare({ show: true })
 
-nightmare
+nightmare.chain()
+  .init()
   .goto('http://yahoo.com')
   .type('input[title="Search"]', 'github nightmare')
   .click('#uh-search-button')
@@ -59,8 +83,9 @@ var expect = require('chai').expect; // jshint ignore:line
 
 describe('test yahoo search results', function() {
   it('should find the nightmare github link first', function*() {
-    var nightmare = Nightmare()
-    var link = yield nightmare
+    var nightmare = new Nightmare()
+    var link = yield nightmare.chain()
+      .init()
       .goto('http://yahoo.com')
       .type('input[title="Search"]', 'github nightmare')
       .click('#UHSearchWeb')
@@ -139,7 +164,7 @@ var nightmare = Nightmare({
 A boolean to optionally show the Electron icon in the dock (defaults to `false`).  This is useful for testing purposes.
 
 ```js
-var nightmare = Nightmare({
+var nightmare = new Nightmare({
   dock: true
 });
 ```
@@ -152,6 +177,16 @@ Set the `useragent` used by electron.
 
 #### .end()
 Complete any queue operations, disconnect and close the electron process.
+
+### Initialization
+
+With nightmare v3, the instance must first be initialized with the .init() method prior to calling any page interaction, however the init() method provides the ability to associate with an existing electron instance if needed.
+
+```
+   var nightmare = new Nightmare();
+   yield nightmare.init(myElectron);
+   yield nightmare.goto("http://foo.com");
+```
 
 ### Interact with the Page
 
@@ -302,7 +337,7 @@ Query multiple cookies with the `query` object. If a `query.name` is set, it wil
 ```js
 // get all google cookies that are secure
 // and have the path `/query`
-var cookies = yield nightmare
+var cookies = yield nightmare.chain()
   .goto('http://google.com')
   .cookies.get({
     path: '/query',
@@ -325,7 +360,7 @@ Set a cookie's `name` and `value`. Most basic form, the url will be the current 
 Set a `cookie`. If `cookie.url` is not set, it will set the cookie on the current url. Here's an example:
 
 ```js
-yield nightmare
+yield nightmare.chain()
   .goto('http://google.com')
   .cookies.set({
     name: 'token',
@@ -346,7 +381,7 @@ Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a 
 Clear a cookie for the current domain.
 
 ```js
-yield nightmare
+yield nightmare.chain()
   .goto('http://google.com')
   .cookies.clear('SomeCookieName');
 ```
@@ -355,7 +390,9 @@ yield nightmare
 
 #### Nightmare.action(name, action|namespace)
 
-You can add your own custom actions to the Nightmare prototype. Here's an example:
+With nightmare v3 it's easy to extend the Nightmare psudo-class to provide custom behavior, either by extending the class or by adding functions to the nightmare prototype.
+
+However, the .action method is still retained for backward compatability. Here's an example:
 
 ```js
 Nightmare.action('size', function (done) {
@@ -369,7 +406,8 @@ Nightmare.action('size', function (done) {
   }, done)
 })
 
-var size = yield Nightmare()
+var size = yield new Nightmare().chain()
+  .init()
   .goto('http://cnn.com')
   .size()
 ```
@@ -391,7 +429,9 @@ Nightmare.action('style', {
   }
 })
 
-var background = yield Nightmare()
+var background = yield new Nightmare()
+  .chain()
+  .init()
   .goto('http://google.com')
   .style.background()
 ```
@@ -406,7 +446,7 @@ If you need to do something custom when you first load the window environment, y
 can specify a custom preload script. Here's how you do that:
 
 ```js
-var nightmare = Nightmare({
+var nightmare = new Nightmare({
   webPreferences: {
     preload: custom-script.js
   }
@@ -432,9 +472,11 @@ $ npm install --save nightmare
 Nightmare is a node module that can be used in a Node.js script or module. Here's a simple script to open a web page:
 ```js
 var Nightmare = require('nightmare'),
-  nightmare = Nightmare();
+  nightmare = new Nightmare();
 
-nightmare.goto('http://cnn.com')
+nightmare.chain()
+  .init()
+  .goto('http://cnn.com')
   .evaluate(function(){
     return document.title;
   })
