@@ -4,7 +4,7 @@ Nightmare
 
 Nightmare is a high-level browser automation library.
 
-Nightmare v3
+####Nightmare v3
 
 This fork of Nightmare relies on promises. The primary API change is that all functions now return promises instead of the this object. However, Nightmare is still chainable through the .chain() function. This simplifies the programming and extension model as all custom functions and namespaces added through .action() are inheritly chainable.
 
