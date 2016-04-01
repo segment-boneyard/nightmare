@@ -1,3 +1,22 @@
+3.0.0 / 2016-03-16
+==================
+
+  * use and return native promises from api functions
+  * add chain() function to allow waterfall processing without deep nesting
+  * add init() function to allow 'lazy' initialization of nightmare.
+  * incorporate number of community of pull requests in parent branch (thanks!)
+  * add clickAndWaitUntilFinishLoad()
+  * add emulateClick()
+  * add emulateKeystrokes()
+  * add expectNavigation()
+  * add evaluateAsync() (Thanks to nightmare-evaluate-async)
+  * add getClientRects()
+  * add setAudioMuted()
+  * add setAuthenticationCredentials()
+  * major under-the-scenes refactoring to make things more reliable
+  * minimize dependencies when possible and for the remaining use highly visible dependencies.
+  * update to latest electron
+  * code coverage
 
 2.2.0 / 2016-02-16
 ==================
