@@ -178,6 +178,16 @@ Set the `useragent` used by electron.
 #### .end()
 Complete any queue operations, disconnect and close the electron process.
 
+### Initialization
+
+With nightmare v3, the instance must first be initialized with the .init() method prior to calling any page interaction, however the init() method provides the ability to associate with an existing electron instance if needed.
+
+```
+   var nightmare = new Nightmare();
+   yield nightmare.init(myElectron);
+   yield nightmare.goto("http://foo.com");
+```
+
 ### Interact with the Page
 
 #### .goto(url)
@@ -380,7 +390,9 @@ yield nightmare.chain()
 
 #### Nightmare.action(name, action|namespace)
 
-You can add your own custom actions to the Nightmare prototype. Here's an example:
+With nightmare v3 it's easy to extend the Nightmare psudo-class to provide custom behavior, either by extending the class or by adding functions to the nightmare prototype.
+
+However, the .action method is still retained for backward compatability. Here's an example:
 
 ```js
 Nightmare.action('size', function (done) {
