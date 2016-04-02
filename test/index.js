@@ -710,6 +710,14 @@ describe('Nightmare', function () {
       stats.size.should.be.at.least(1000);
     });
 
+    it('should save as html', function*() {
+      yield nightmare
+        .goto(fixture('manipulation'))
+        .html(tmp_dir+'/test.html');
+      var stats = fs.statSync(tmp_dir+'/test.html');
+      stats.should.be.ok;
+    });
+
     it('should render a PDF', function*() {
       yield nightmare
         .goto(fixture('manipulation'))
