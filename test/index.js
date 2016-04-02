@@ -487,7 +487,8 @@ describe('Nightmare', function () {
     var nightmare;
 
     beforeEach(function() {
-      nightmare = Nightmare().goto(fixture('cookie'));
+      nightmare = Nightmare({webPreferences: {partition: 'test-partition'}})
+        .goto(fixture('cookie'));
     });
 
     afterEach(function*() {
@@ -761,9 +762,12 @@ describe('Nightmare', function () {
         if (type === 'log') log = str
       });
 
-      yield nightmare.goto(fixture('events'))
-
+      yield nightmare.goto(fixture('events'));
       log.should.equal('my log');
+
+      yield nightmare.click('button')
+      log.should.equal('clicked');
+
     });
 
     it('should fire an event on page load failure', function*() {
