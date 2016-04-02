@@ -245,6 +245,24 @@ describe('Nightmare', function () {
       numAnchors.should.equal(1);
     });
 
+    it('should inject javascript onto the page ending with a comment', function*() {
+      var globalNumber = yield nightmare
+        .goto(fixture('manipulation'))
+        .inject('js', 'test/files/globals.js')
+        .evaluate(function () {
+          return globalNumber;
+        });
+      globalNumber.should.equal(7);
+
+      var numAnchors = yield nightmare
+        .goto(fixture('manipulation'))
+        .inject('js', 'test/files/jquery-1.9.0.min.js')
+        .evaluate(function () {
+          return $('h1').length;
+        });
+      numAnchors.should.equal(1);
+    });
+
     it('should inject css onto the page', function*() {
       var color = yield nightmare
         .goto(fixture('manipulation'))
