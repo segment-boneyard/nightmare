@@ -487,7 +487,8 @@ describe('Nightmare', function () {
     var nightmare;
 
     beforeEach(function() {
-      nightmare = Nightmare().goto(fixture('cookie'));
+      nightmare = Nightmare({webPreferences: {partition: 'test-partition'}})
+        .goto(fixture('cookie'));
     });
 
     afterEach(function*() {
