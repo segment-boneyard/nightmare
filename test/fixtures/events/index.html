@@ -5,9 +5,13 @@
   </head>
   <body>
     <h1>Hello World!</h1>
+    <button>click</button>
   </body>
   <script>
     console.log('my log');
+    document.querySelector('button').addEventListener('click', function() {
+      console.log('clicked');
+    });
     thisIsAnError(foobar);
   </script>
 </html>

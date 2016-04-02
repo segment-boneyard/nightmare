@@ -144,8 +144,21 @@ var nightmare = Nightmare({
 });
 ```
 
+##### openDevTools
+Optionally show the DevTools in the Electron window using `true`, or use an object hash containing `detatch` to show in a separate window. The hash gets passed to [`webContents.openDevTools()`](https://github.com/atom/electron/blob/master/docs/api/web-contents.md#webcontentsopendevtoolsoptions) to be handled.  This is also useful for testing purposes.  Note that this option is honored only if `show` is set to `true`.
+
+```js
+var nightmare = Nightmare({
+  openDevTools: true,
+  show: true
+});
+```
+
 #### .useragent(useragent)
 Set the `useragent` used by electron.
+
+#### .authentication(user, password)
+Set the `user` and `password` for accessing a web page using basic authentication. Be sure to set it before calling `.goto(url)`.
 
 #### .end()
 Complete any queue operations, disconnect and close the electron process.
@@ -237,7 +250,7 @@ Capture page events with the callback. You have to call `.on()` before calling `
 ##### Additional "page" events
 
 ###### .on('page', function(type="error", message, stack))
-This event is triggered if any javscript exception is thrown on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is throwing an exception.
+This event is triggered if any javascript exception is thrown on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is throwing an exception.
 
 ##### "page" events
 
@@ -276,6 +289,9 @@ This event is triggered if `console.log` is used on the page. But this event is 
 
 #### .screenshot([path][, clip])
 Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
+
+#### .html(path, saveType)
+Save the current page as html as files to disk at the given path. Save type options are [here](https://github.com/atom/electron/blob/master/docs/api/web-contents.md#webcontentssavepagefullpath-savetype-callback).
 
 #### .pdf(path, options)
 Saves a PDF to the specified `path`. Options are [here](https://github.com/atom/electron/blob/v0.35.2/docs/api/web-contents.md#webcontentsprinttopdfoptions-callback).

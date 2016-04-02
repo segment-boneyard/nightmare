@@ -13,6 +13,7 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var rimraf = require('rimraf');
 var child_process = require('child_process');
+var PNG = require('pngjs').PNG;
 var should = chai.should();
 
 /**
@@ -239,6 +240,24 @@ describe('Nightmare', function () {
       var numAnchors = yield nightmare
         .goto(fixture('manipulation'))
         .inject('js', 'test/files/jquery-2.1.1.min.js')
+        .evaluate(function () {
+          return $('h1').length;
+        });
+      numAnchors.should.equal(1);
+    });
+
+    it('should inject javascript onto the page ending with a comment', function*() {
+      var globalNumber = yield nightmare
+        .goto(fixture('manipulation'))
+        .inject('js', 'test/files/globals.js')
+        .evaluate(function () {
+          return globalNumber;
+        });
+      globalNumber.should.equal(7);
+
+      var numAnchors = yield nightmare
+        .goto(fixture('manipulation'))
+        .inject('js', 'test/files/jquery-1.9.0.min.js')
         .evaluate(function () {
           return $('h1').length;
         });
@@ -487,7 +506,8 @@ describe('Nightmare', function () {
     var nightmare;
 
     beforeEach(function() {
-      nightmare = Nightmare().goto(fixture('cookie'));
+      nightmare = Nightmare({webPreferences: {partition: 'test-partition'}})
+        .goto(fixture('cookie'));
     });
 
     afterEach(function*() {
@@ -672,6 +692,40 @@ describe('Nightmare', function () {
       image.length.should.be.at.least(300);
     });
 
+    // repeat this test 3 times, since the concern here is non-determinism in
+    // the timing accuracy of screenshots -- it might pass once, but likely not
+    // several times in a row.
+    for (var i = 0; i < 3; i++) {
+      it('should screenshot an up-to-date image of the page (' + i + ')', function*() {
+        var image = yield nightmare
+          .goto('about:blank')
+          .viewport(100, 100)
+          .evaluate(function() { document.body.style.background = '#900'; })
+          .evaluate(function() { document.body.style.background = '#090'; })
+          .screenshot();
+
+        var png = new PNG();
+        var imageData = yield png.parse.bind(png, image);
+        var firstPixel = Array.from(imageData.data.slice(0, 3));
+        firstPixel.should.deep.equal([0, 153, 0]);
+      });
+    }
+
+    it('should screenshot an an idle page', function*() {
+      var image = yield nightmare
+        .goto('about:blank')
+        .viewport(100, 100)
+        .evaluate(function() { document.body.style.background = '#900'; })
+        .evaluate(function() { document.body.style.background = '#090'; })
+        .wait(1000)
+        .screenshot();
+
+      var png = new PNG();
+      var imageData = yield png.parse.bind(png, image);
+      var firstPixel = Array.from(imageData.data.slice(0, 3));
+      firstPixel.should.deep.equal([0, 153, 0]);
+    });
+
     it('should load jquery correctly', function*() {
       var loaded = yield nightmare
         .goto(fixture('rendering'))
@@ -689,6 +743,14 @@ describe('Nightmare', function () {
         .screenshot(tmp_dir+'/font-rendering.png');
       var stats = fs.statSync(tmp_dir+'/font-rendering.png');
       stats.size.should.be.at.least(1000);
+    });
+
+    it('should save as html', function*() {
+      yield nightmare
+        .goto(fixture('manipulation'))
+        .html(tmp_dir+'/test.html');
+      var stats = fs.statSync(tmp_dir+'/test.html');
+      stats.should.be.ok;
     });
 
     it('should render a PDF', function*() {
@@ -761,9 +823,12 @@ describe('Nightmare', function () {
         if (type === 'log') log = str
       });
 
-      yield nightmare.goto(fixture('events'))
-
+      yield nightmare.goto(fixture('events'));
       log.should.equal('my log');
+
+      yield nightmare.click('button')
+      log.should.equal('clicked');
+
     });
 
     it('should fire an event on page load failure', function*() {
@@ -890,11 +955,8 @@ describe('Nightmare', function () {
       didFail.should.be.true;
     });
 
-    /*
-    PENDING FIX UPSTREAM
-    https://github.com/atom/electron/issues/1362
-
     it('should set authentication', function*() {
+      nightmare = Nightmare();
       var data = yield nightmare
         .authentication('my', 'auth')
         .goto(fixture('auth'))
@@ -903,7 +965,6 @@ describe('Nightmare', function () {
         });
       data.should.eql({ name: 'my', pass: 'auth' });
     });
-    */
 
     it('should set viewport', function*() {
       var size = { width: 400, height: 300, 'use-content-size': true };
