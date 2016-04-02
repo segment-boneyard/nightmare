@@ -20,7 +20,7 @@
     "debug": "^2.2.0",
     "deep-defaults": "^1.0.3",
     "defaults": "^1.0.2",
-    "electron-prebuilt": "^0.36.7",
+    "electron-prebuilt": "^0.36.8",
     "enqueue": "^1.0.2",
     "function-source": "^0.1.0",
     "jsesc": "^0.5.0",
@@ -36,9 +36,10 @@
     "basic-auth-connect": "^1.0.0",
     "chai": "^3.4.1",
     "express": "^4.13.3",
-    "mocha-generators": "^1.2.0",
     "mocha": "^2.3.0",
+    "mocha-generators": "^1.2.0",
     "multer": "1.1.0",
+    "pngjs": "^2.2.0",
     "serve-static": "^1.10.0"
   }
 }
