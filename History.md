@@ -1,3 +1,16 @@
+2.3.0 / 2016-04-02
+==================
+
+  * extends `.action()` to include adding actions on the Electron process
+  * adds a debugging message to inspect how Electron exited
+  * ensures multiple instances of Nightmare do not use the same `waitTimeout` value
+  * ensures cookies are not shared across tests
+  * adds basic HTTP authentication
+  * fixes `console.log` with injected/evaluated script
+  * ensures screenshots match the currently rendered frame
+  * adds ability to open and detach dev tools
+  * removes the double-injection from `.inject()`
+  * adds ability to save entire page as HTML
 
 2.2.0 / 2016-02-16
 ==================
