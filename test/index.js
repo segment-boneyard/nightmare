@@ -1042,10 +1042,6 @@ describe('Nightmare', function () {
   });
 
   describe('Nightmare.action(name, fn)', function() {
-    beforeEach(function() {
-      nightmare = Nightmare();
-    });
-
     afterEach(function*() {
       yield nightmare.end();
     });
@@ -1062,7 +1058,9 @@ describe('Nightmare', function () {
         }, done)
       })
 
-      var size = yield Nightmare()
+      nightmare = new Nightmare();
+
+      var size = yield nightmare
         .goto(fixture('simple'))
         .size()
 
@@ -1084,7 +1082,7 @@ describe('Nightmare', function () {
         }
       })
 
-      var nightmare = Nightmare()
+      nightmare = Nightmare()
       yield nightmare.goto(fixture('simple'))
       var background = yield nightmare.style.background()
       var color = yield nightmare.style.color()
@@ -1092,6 +1090,57 @@ describe('Nightmare', function () {
       background.should.equal('rgba(0, 0, 0, 0)')
       color.should.equal('rgb(0, 0, 0)')
     })
+
+    it('should support extending Electron', function*(){
+      Nightmare.action('bind',
+        function(ns, options, parent, win, renderer, done) {
+          var sliced = require('sliced');
+          parent.on('bind', function(name) {
+            if (renderer.listeners(name)
+              .length == 0) {
+              renderer.on(name, function() {
+                parent.emit.apply(parent, [name].concat(sliced(arguments, 1)))
+              });
+            }
+            parent.emit('bind');
+          });
+          done();
+        },
+        function() {
+          var name = arguments[0],
+            handler, done;
+          if (arguments.length == 2) {
+            done = arguments[1];
+          } else if (arguments.length == 3) {
+            handler = arguments[1];
+            done = arguments[2];
+          }
+          if (handler) {
+            this.child.on(name, handler);
+          }
+          this.child.once('bind', done);
+          this.child.emit('bind', name);
+        });
+
+      var eventResults;
+      nightmare = new Nightmare();
+      yield nightmare
+        .goto('http://example.com')
+        .on('sample-event', function() {
+          eventResults = arguments;
+        })
+        .bind('sample-event')
+        .evaluate(function() {
+          ipc.send('sample-event', 'sample', 3, {
+            sample: 'sample'
+          });
+        });
+
+      eventResults.length.should.equal(3);
+      eventResults[0].should.equal('sample');
+      eventResults[1].should.equal(3);
+      eventResults[2].sample.should.equal('sample');
+    });
   })
 
   describe('Nightmare.use', function() {

@@ -366,7 +366,7 @@ yield nightmare
 
 ### Extending Nightmare
 
-#### Nightmare.action(name, action|namespace)
+#### Nightmare.action(name, [electronAction|electronNamespace], action|namespace)
 
 You can add your own custom actions to the Nightmare prototype. Here's an example:
 
@@ -408,6 +408,29 @@ var background = yield Nightmare()
   .goto('http://google.com')
   .style.background()
 ```
+
+You can also add custom Electron actions.  The additional Electron action or namespace actions take `name`, `options`, `parent`, `win`, `renderer`, and `done`.  Note the Electron action comes first, mirroring how `.evaluate()` works.  For example:
+
+```javascript
+Nightmare.action('echo',
+  function(name, options, parent, win, renderer, done) {
+    parent.on('echo', function(message) {
+      parent.emit('log', 'echo: ' + message);
+    });
+    done();
+  },
+  function(message, done) {
+    this.child.emit('echo', message);
+    done();
+    return this;
+  });
+
+yield Nightmare()
+  .goto('http://example.org')
+  .echo('hello there!');
+```
+
+...would have a `nightmare:log` showing "hello there!" when run with `DEBUG=nightmare*`.
 
 #### .use(plugin)
 
