@@ -1260,18 +1260,24 @@ describe('Nightmare', function () {
             var background = yield nightmare.style.background();
             var color = yield nightmare.style.color();
 
-            background.should.equal('rgb(0, 0, 0)');
+            background.should.equal('rgba(0, 0, 0, 0)');
             color.should.equal('rgb(0, 0, 0)');
         });
 
-        it('should support chaining methods defined on custom namespaces', function* () {
+        it('should support chaining on custom namespaces', function* () {
+
+            var backgroundCount = 0;
+            var colorCount = 0;
+
             Nightmare.action("style", {
                 background: function* () {
+                    backgroundCount++;
                     return yield this.evaluate_now(function () {
                         return window.getComputedStyle(document.body, null).backgroundColor;
                     })
                 },
                 color: function* () {
+                    colorCount++;
                     return yield this.evaluate_now(function () {
                         return window.getComputedStyle(document.body, null).color;
                     })
@@ -1286,6 +1292,8 @@ describe('Nightmare', function () {
                 .style.color();
 
             color.should.equal('rgb(0, 0, 0)');
+            colorCount.should.equal(1);
+            backgroundCount.should.equal(1);
         });
     })
 
