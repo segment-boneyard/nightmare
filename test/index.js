@@ -15,6 +15,7 @@ var path = require('path');
 var rimraf = require('rimraf');
 var child_process = require('child_process');
 var should = chai.should();
+var expect = chai.expect;
 
 /**
  * Temporary directory
@@ -255,6 +256,15 @@ describe('Nightmare', function () {
                     return document.title + ' -- ' + parameter;
                 }, 'testparameter');
             title.should.equal('Evaluation -- testparameter');
+        });
+
+        it('should evaluate javascript and return undefined', function* () {
+            var result = yield nightmare.chain()
+                .goto(fixture('evaluation'))
+                .evaluate(function () {
+                    return undefined;
+                });
+            expect(result).to.be.undefined;
         });
 
         it('should evaluate async javascript by waiting for promises', function* () {
