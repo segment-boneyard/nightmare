@@ -22,7 +22,7 @@
     "co": "^4.6.0",
     "debug": "^2.2.0",
     "delay": "^1.3.1",
-    "electron-prebuilt": "^0.37.2",
+    "electron-prebuilt": "^0.37.4",
     "lodash": "^4.6.1"
   },
   "devDependencies": {
@@ -35,7 +35,7 @@
     "mocha": "^2.3.0",
     "mocha-generators": "^1.2.0",
     "multer": "1.1.0",
-    "rimraf": "^2.4.3",
+    "rimraf": "^2.5.2",
     "serve-static": "^1.10.0"
   },
   "engines": {
