@@ -267,6 +267,19 @@ describe('Nightmare', function () {
             expect(result).to.be.undefined;
         });
 
+        it('should evaluate javascript and reject the promise on errors', function* () {
+            try {
+                var result = yield nightmare.chain()
+                    .goto(fixture('evaluation'))
+                    .evaluate(function () {
+                        throw new Error("Catastrophic Error!");
+                    });
+            }
+            catch (ex) {
+                expect(ex).to.equal("Catastrophic Error!");
+            }
+        });
+
         it('should evaluate async javascript by waiting for promises', function* () {
             var timeStart = new Date();
 
