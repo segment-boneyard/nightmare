@@ -150,6 +150,40 @@ describe('Nightmare', function () {
           return (expectedA === textA && expectedB === textB);
         }, 'A', 'B');
     });
+
+    it('should fail if navigation target is invalid', function(done) {
+      nightmare.goto('http://this-is-not-a-real-domain.com')
+        .then(function() {
+          done(new Error('Navigation to an invalid domain succeeded'));
+        })
+        .catch(function(error) {
+          done();
+        });
+    });
+
+    it('should not fail if the URL loads but a resource fails', function(done) {
+      nightmare.goto(fixture('navigation/invalid-image'))
+        .then(function() {
+          done();
+        })
+        .catch(done);
+    });
+
+    it('should not fail if a child frame fails', function(done) {
+      nightmare.goto(fixture('navigation/invalid-frame'))
+        .then(function() {
+          done();
+        })
+        .catch(done);
+    });
+
+    it('should not fail if the response was a valid error (e.g. 404)', function(done) {
+      nightmare.goto(fixture('navigation/not-a-real-page'))
+        .then(function() {
+          done();
+        })
+        .catch(done);
+    });
   });
 
   describe('evaluation', function () {
