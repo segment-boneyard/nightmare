@@ -1263,6 +1263,36 @@ describe('Nightmare', function () {
             size.width.should.be.a('number')
         });
 
+        it('should support custom actions with arguments', function* () {
+            Nightmare.action("size", function (scale) {
+                return this.evaluate_now(function (scale) {
+                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+                    return {
+                        height: h,
+                        width: w,
+                        scaledHeight: h * scale,
+                        scaledWidth: w * scale
+                    }
+                }, scale)
+            });
+
+            yield nightmare.init();
+
+            var scaleFactor = 2.0;
+
+            var size = yield nightmare.chain()
+                .goto(fixture('simple'))
+                .size(scaleFactor);
+
+            size.height.should.be.a('number');
+            size.width.should.be.a('number');
+            size.scaledHeight.should.be.a('number');
+            size.scaledWidth.should.be.a('number');
+            size.scaledHeight.should.be.equal(size.height * scaleFactor);
+            size.scaledWidth.should.be.equal(size.width * scaleFactor);
+        });
+
         it('should support custom namespaces', function* () {
             Nightmare.action("style", {
                 background: function* () {
@@ -1285,6 +1315,23 @@ describe('Nightmare', function () {
 
             background.should.equal('rgba(0, 0, 0, 0)');
             color.should.equal('rgb(0, 0, 0)');
+        });
+
+        it('should support custom namespaces with arguments', function* () {
+            Nightmare.action("math", {
+                multiply: function* (a, b) {
+                    return yield this.evaluate_now(function (a, b) {
+                        return a * b;
+                    }, a, b)
+                }
+            });
+
+            yield nightmare.init();
+
+            yield nightmare.goto(fixture('simple'));
+            var answerToLifeTheUniverseAndEverything = yield nightmare.math.multiply(6, 7);
+
+            answerToLifeTheUniverseAndEverything.should.equal(42);
         });
 
         it('should support chaining on custom namespaces', function* () {
