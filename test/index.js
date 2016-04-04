@@ -1265,32 +1265,33 @@ describe('Nightmare', function () {
 
         it('should support custom actions with arguments', function* () {
             Nightmare.action("size", function (scale) {
-                return this.evaluate_now(function (scale) {
+                return this.evaluate_now(function (scale, offset) {
                     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
                     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
                     return {
                         height: h,
                         width: w,
-                        scaledHeight: h * scale,
-                        scaledWidth: w * scale
-                    }
-                }, scale)
+                        scaledHeight: h * scale + offset,
+                        scaledWidth: w * scale + offset
+                    };
+                }, scale, offset)
             });
 
             yield nightmare.init();
 
             var scaleFactor = 2.0;
+            var offset = 1;
 
             var size = yield nightmare.chain()
                 .goto(fixture('simple'))
-                .size(scaleFactor);
+                .size(scaleFactor, offset);
 
             size.height.should.be.a('number');
             size.width.should.be.a('number');
             size.scaledHeight.should.be.a('number');
             size.scaledWidth.should.be.a('number');
-            size.scaledHeight.should.be.equal(size.height * scaleFactor);
-            size.scaledWidth.should.be.equal(size.width * scaleFactor);
+            size.scaledHeight.should.be.equal(size.height * scaleFactor + offset);
+            size.scaledWidth.should.be.equal(size.width * scaleFactor + offset);
         });
 
         it('should support custom namespaces', function* () {
