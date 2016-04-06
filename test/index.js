@@ -65,6 +65,16 @@ describe('Nightmare', function () {
     });
   });
 
+  it('should exit with a non-zero code on uncaughtExecption', function(done) {
+    var child = child_process.fork(
+      path.join(__dirname, 'files', 'nightmare-error.js'), [], {silent: true});
+
+      child.once('exit', function(code) {
+        code.should.not.equal(0);
+        done();
+      });
+  });
+
   describe('navigation', function () {
     var nightmare;
 
