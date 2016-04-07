@@ -72,6 +72,24 @@ app.use(serve(path.resolve(__dirname, 'fixtures')));
 app.use('/files', serve(path.resolve(__dirname, 'files')));
 
 /**
+ * Simulate Node v5's `listening` property
+ */
+
+var _listen = app.listen;
+app.listen = function() {
+  var instance = _listen.apply(app, arguments);
+  if (instance.listening == null) {
+    instance.on('listening', function() {
+      instance.listening = true;
+    });
+    instance.on('close', function() {
+      instance.listening = false;
+    });
+    return instance;
+  }
+};
+
+/**
  * Start if not required.
  */
 
