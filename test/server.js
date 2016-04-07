@@ -50,6 +50,16 @@ app.get('/headers', function (req, res) {
 });
 
 /**
+ * Redirect to the provided URL for testing redirects and headers
+ */
+
+app.get('/redirect', function (req, res) {
+  var code = Number(req.query.code) || 301;
+  var url = req.query.url || '/';
+  res.redirect(code, url);
+});
+
+/**
  * Serve the fixtures directory as static files.
  */
 
