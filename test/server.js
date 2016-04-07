@@ -60,6 +60,14 @@ app.get('/redirect', function (req, res) {
 });
 
 /**
+ * Simply hang up on the connection for testing interrupted page loads
+ */
+
+app.get('/do-not-respond', function(req, res) {
+  res.socket.end();
+});
+
+/**
  * Serve the fixtures directory as static files.
  */
 
@@ -70,24 +78,6 @@ app.use(serve(path.resolve(__dirname, 'fixtures')));
  */
 
 app.use('/files', serve(path.resolve(__dirname, 'files')));
-
-/**
- * Simulate Node v5's `listening` property
- */
-
-var _listen = app.listen;
-app.listen = function() {
-  var instance = _listen.apply(app, arguments);
-  if (instance.listening == null) {
-    instance.on('listening', function() {
-      instance.listening = true;
-    });
-    instance.on('close', function() {
-      instance.listening = false;
-    });
-    return instance;
-  }
-};
 
 /**
  * Start if not required.

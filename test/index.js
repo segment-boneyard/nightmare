@@ -35,16 +35,8 @@ process.setMaxListeners(0);
 var base = 'http://localhost:7500/';
 
 describe('Nightmare', function () {
-  var serverInstance;
   before(function (done) {
-    serverInstance = server.listen(7500, done);
-  });
-
-  beforeEach(function() {
-    // restart the server if it's been stopped by a test
-    if (!serverInstance.listening) {
-      serverInstance = server.listen(7500);
-    }
+    server.listen(7500, done);
   });
 
   it('should be constructable', function*() {
@@ -217,11 +209,7 @@ describe('Nightmare', function () {
     });
 
     it('should fail if the response dies in flight', function(done) {
-      nightmare.on('did-start-loading', function() {
-        serverInstance.close();
-      });
-
-      nightmare.goto(fixture('navigation'))
+      nightmare.goto(fixture('do-not-respond'))
         .then(function() {
           done(new Error('Navigation succeeded but server connection died'));
         })
