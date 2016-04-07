@@ -726,6 +726,19 @@ describe('Nightmare', function () {
       firstPixel.should.deep.equal([0, 153, 0]);
     });
 
+    it('should not subscribe to frames until necessary', function() {
+      var didSubscribe = false;
+      var FrameManager = require('../lib/frame-manager.js');
+      var manager = FrameManager({
+        webContents: {
+          beginFrameSubscription: function() { didSubscribe = true; },
+          endFrameSubscription: function() {},
+          executeJavaScript: function() {}
+        }
+      });
+      didSubscribe.should.be.false;
+    });
+
     it('should load jquery correctly', function*() {
       var loaded = yield nightmare
         .goto(fixture('rendering'))
