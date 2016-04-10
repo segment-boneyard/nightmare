@@ -810,7 +810,7 @@ describe('Nightmare', function () {
 
         it('should take a screenshot', function* () {
             yield nightmare.chain()
-                .goto('https://github.com/')
+                .goto(fixture('screenshot'))
                 .screenshot(tmp_dir + '/test.png');
             var stats = fs.statSync(tmp_dir + '/test.png');
             stats.size.should.be.at.least(1000);
@@ -818,7 +818,7 @@ describe('Nightmare', function () {
 
         it('should buffer a screenshot', function* () {
             var image = yield nightmare.chain()
-                .goto('https://github.com')
+                .goto(fixture('screenshot'))
                 .screenshot();
             Buffer.isBuffer(image).should.be.true;
             image.length.should.be.at.least(1000);
@@ -826,7 +826,7 @@ describe('Nightmare', function () {
 
         it('should take a clipped screenshot', function* () {
             yield nightmare.chain()
-                .goto('https://github.com/')
+                .goto(fixture('screenshot'))
                 .screenshot(tmp_dir + '/test-clipped.png', {
                     x: 200,
                     y: 100,
@@ -839,7 +839,7 @@ describe('Nightmare', function () {
 
         it('should buffer a clipped screenshot', function* () {
             var image = yield nightmare.chain()
-                .goto('https://github.com')
+                .goto(fixture('screenshot'))
                 .screenshot({
                     x: 200,
                     y: 100,
