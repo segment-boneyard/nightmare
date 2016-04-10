@@ -2,7 +2,6 @@ var Nightmare = require('./');
 var nightmare = Nightmare({ show: true })
 
 nightmare.chain()
-  .init()
   .goto('http://yahoo.com')
   .type('input[title="Search"]', 'github nightmare')
   .click('#UHSearchWeb')
