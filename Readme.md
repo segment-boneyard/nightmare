@@ -11,7 +11,6 @@ This version of Nightmare relies on promises. The primary API change is that all
 ```
   var Nightmare = require("nightmare");
   var title = new Nightmare().chain()
-    .init()
     .goto("http://foo.com")
     .title();
 ```
@@ -53,7 +52,6 @@ var Nightmare = require('nightmare');
 var nightmare = new Nightmare({ show: true })
 
 nightmare.chain()
-  .init()
   .goto('http://yahoo.com')
   .type('input[title="Search"]', 'github nightmare')
   .click('#uh-search-button')
@@ -85,7 +83,6 @@ describe('test yahoo search results', function() {
   it('should find the nightmare github link first', function*() {
     var nightmare = new Nightmare()
     var link = yield nightmare.chain()
-      .init()
       .goto('http://yahoo.com')
       .type('input[title="Search"]', 'github nightmare')
       .click('#UHSearchWeb')
@@ -410,7 +407,6 @@ Nightmare.action('size', function (done) {
 })
 
 var size = yield new Nightmare().chain()
-  .init()
   .goto('http://cnn.com')
   .size()
 ```
@@ -434,7 +430,6 @@ Nightmare.action('style', {
 
 var background = yield new Nightmare()
   .chain()
-  .init()
   .goto('http://google.com')
   .style.background()
 ```
@@ -478,7 +473,6 @@ var Nightmare = require('nightmare'),
   nightmare = new Nightmare();
 
 nightmare.chain()
-  .init()
   .goto('http://cnn.com')
   .evaluate(function(){
     return document.title;

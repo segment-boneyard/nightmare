@@ -667,7 +667,7 @@ describe('Nightmare', function () {
                 webPreferences: { partition: 'test-partition' }
             });
 
-            yield nightmare.chain().init().goto(fixture('cookie'));
+            yield nightmare.chain().goto(fixture('cookie'));
         });
 
         afterEach(function* () {
@@ -1398,9 +1398,7 @@ describe('Nightmare', function () {
                     })
                 }
             });
-
-            yield nightmare.init();
-
+            
             var color = yield nightmare.chain()
                 .goto(fixture('simple'))
                 .style.background()
@@ -1409,6 +1407,51 @@ describe('Nightmare', function () {
             color.should.equal('rgb(0, 0, 0)');
             colorCount.should.equal(1);
             backgroundCount.should.equal(1);
+        });
+
+        it('should support extending Electron', function* () {
+            Nightmare.action('bind',
+                function (ns, options, parent, win, renderer) {
+                    parent.on('bind', function (name) {
+                        "use strict";
+                        if (renderer.listeners(name).length === 0) {
+                            renderer.on(name, function () {
+                                parent.emit.apply(parent, [name].concat(Array.from(arguments).slice(1)))
+                            });
+                        }
+                        parent.emit('bind');
+                    });
+                },
+                function (name, handler) {
+                    var child = this.child;
+                    if (handler) {
+                        child.on(name, handler);
+                    }
+                    var p = new Promise(function (resolve, reject) {
+                        child.once('bind', resolve);
+                    });
+                    child.emit('bind', name);
+                    return p;
+                });
+
+            var eventResults;
+
+            yield nightmare.chain()
+                .on('sample-event', function () {
+                    eventResults = arguments;
+                })
+                .goto(fixture('simple'))
+                .bind('sample-event')
+                .evaluate(function () {
+                    this.ipc.send('sample-event', 'sample', 3, {
+                        sample: 'sample'
+                    });
+                });
+
+            eventResults.length.should.equal(3);
+            eventResults[0].should.equal('sample');
+            eventResults[1].should.equal(3);
+            eventResults[2].sample.should.equal('sample');
         });
     })
 
@@ -1450,7 +1493,6 @@ describe('Nightmare', function () {
 
             try {
                 var value = yield nightmare.chain()
-                    .init()
                     .goto(fixture('preload'))
                     .evaluate(function () {
                         return window.preload;
