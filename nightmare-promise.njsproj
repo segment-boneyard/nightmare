@@ -59,6 +59,8 @@
     <Content Include="test\fixtures\options\index.html" />
     <Content Include="test\fixtures\preload\index.html" />
     <Content Include="test\fixtures\rendering\index.html" />
+    <Content Include="test\fixtures\screenshot\business-561387_960_720.jpg" />
+    <Content Include="test\fixtures\screenshot\index.html" />
     <Content Include="test\fixtures\simple\index.html" />
     <Content Include="test\mocha.opts" />
   </ItemGroup>
@@ -72,6 +74,7 @@
     <Folder Include="test\fixtures\events\" />
     <Folder Include="test\fixtures\manipulation\" />
     <Folder Include="test\fixtures\navigation\" />
+    <Folder Include="test\fixtures\screenshot\" />
     <Folder Include="test\fixtures\options\" />
     <Folder Include="test\fixtures\preload\" />
     <Folder Include="test\fixtures\rendering\" />
