@@ -1,3 +1,10 @@
+2.3.1 / 2016-04-11
+==================
+
+  * fixes passing uncaught exceptions  back to the default handler after cleanup
+  * fixes overhead due to automatic subscription to frame data for screenshots
+  * Adds unicode documentation for `.type()`
+
 2.3.0 / 2016-04-02
 ==================
 
