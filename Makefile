@@ -17,7 +17,6 @@ ifeq ($(CIRCLE_PROJECT_REPONAME)$(HEADLESS)$(XVFB_RUNNING), 111)
 	@rm -rf /tmp/nightmare
 	@node_modules/.bin/mocha --harmony --grep "$(GREP)"
 else
-	echo 'running under xvfb wrapper'
 	@rm -rf /tmp/nightmare
 	@./test/bb-xvfb node_modules/.bin/mocha --harmony --grep "$(GREP)"
 endif
