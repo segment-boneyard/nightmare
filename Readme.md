@@ -530,6 +530,8 @@ make test
   18 passing (1m)
 ```
 
+Note that if you are using `xvfb`, `make test` will automatically run the tests under an `xvfb-run` wrapper.  If you are planning to run the tests headlessly without running `xvfb` first, set the `HEADLESS` environment variable to `0`.
+
 ## License (MIT)
 
 ```
