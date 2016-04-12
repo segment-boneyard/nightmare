@@ -10,7 +10,7 @@ Under the covers it uses [Electron](http://electron.atom.io/), which is similar 
 
 [Daydream](https://github.com/segmentio/daydream) is a complementary chrome extension built by [@stevenmiller888](https://github.com/stevenmiller888) that generates Nightmare scripts for you while you browse.
 
-Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help on Nightmare.
+Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshinkley](https://github.com/rosshinkley) for their help on Nightmare.
 
 * [Examples](#examples)
 * [API](#api)
@@ -187,6 +187,8 @@ Mousedown the `selector` element once.
 Enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
 
 `.type()` mimics a user typing in a textbox and will emit the proper keyboard events
+
+Key presses can also be fired using Unicode values with `.type()`. For example, if you wanted to fire an enter key press, you would  write `.type('document', '\u000d')`. 
 
 > If you don't need the keyboard events, consider using `.insert()` instead as it will be faster and more robust.
 

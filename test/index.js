@@ -65,6 +65,16 @@ describe('Nightmare', function () {
     });
   });
 
+  it('should exit with a non-zero code on uncaughtExecption', function(done) {
+    var child = child_process.fork(
+      path.join(__dirname, 'files', 'nightmare-error.js'), [], {silent: true});
+
+      child.once('exit', function(code) {
+        code.should.not.equal(0);
+        done();
+      });
+  });
+
   describe('navigation', function () {
     var nightmare;
 
@@ -724,6 +734,19 @@ describe('Nightmare', function () {
       var imageData = yield png.parse.bind(png, image);
       var firstPixel = Array.from(imageData.data.slice(0, 3));
       firstPixel.should.deep.equal([0, 153, 0]);
+    });
+
+    it('should not subscribe to frames until necessary', function() {
+      var didSubscribe = false;
+      var FrameManager = require('../lib/frame-manager.js');
+      var manager = FrameManager({
+        webContents: {
+          beginFrameSubscription: function() { didSubscribe = true; },
+          endFrameSubscription: function() {},
+          executeJavaScript: function() {}
+        }
+      });
+      didSubscribe.should.be.false;
     });
 
     it('should load jquery correctly', function*() {
