@@ -39,6 +39,6 @@ exec xvfb-run \
     --error-file="${ERRFILE}" \
     --auto-servernum \
     --server-args="-fbdir ${XVFBDIR} -screen 0 ${SCREEN_SIZE} -dpi 96 -ac" \
-    ${WAITFORX} ${RECORD} ${DBUS} "$@"
+    ${WAITFORX} ${DBUS} "$@"
 
 #eof
