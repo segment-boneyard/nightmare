@@ -1564,6 +1564,7 @@ describe('Nightmare', function () {
                 }
             };
 
+            Nightmare._namespaces.push("MyStyle");
 
             var color = yield nightmare.chain()
                 .goto(fixture('simple'))
