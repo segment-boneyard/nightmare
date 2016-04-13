@@ -1503,7 +1503,78 @@ describe('Nightmare', function () {
                 }
             }
         })
-    })
+    });
+
+    describe('Nightmare.prototype', function () {
+        var nightmare;
+        beforeEach(function* () {
+            nightmare = new Nightmare();
+        });
+
+        afterEach(function* () {
+            nightmare.end();
+        });
+
+        it('should support custom behavior by simply extending the prototype', function* () {
+            Nightmare.prototype.size = function (scale, offset) {
+                return this.evaluate_now(function (scale, offset) {
+                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+                    return {
+                        height: h,
+                        width: w,
+                        scaledHeight: h * scale + offset,
+                        scaledWidth: w * scale + offset
+                    };
+                }, scale, offset)
+            };
+
+            var scaleFactor = 2.0;
+            var offsetFactor = 1;
+
+            var size = yield nightmare.chain()
+                .goto(fixture('simple'))
+                .size(scaleFactor, offsetFactor)
+
+            size.height.should.be.a('number');
+            size.width.should.be.a('number');
+            size.scaledHeight.should.be.a('number');
+            size.scaledWidth.should.be.a('number');
+            size.scaledHeight.should.be.equal(size.height * scaleFactor + offsetFactor);
+            size.scaledWidth.should.be.equal(size.width * scaleFactor + offsetFactor);
+        });
+
+        it('should support custom namespaces by simply extending the prototype', function* () {
+
+            var backgroundCount = 0;
+            var colorCount = 0;
+
+            Nightmare.prototype.MyStyle = class {
+                *background() {
+                    backgroundCount++;
+                    return yield this.evaluate_now(function () {
+                        return window.getComputedStyle(document.body, null).backgroundColor;
+                    })
+                }
+                *color() {
+                    colorCount++;
+                    return yield this.evaluate_now(function () {
+                        return window.getComputedStyle(document.body, null).color;
+                    })
+                }
+            };
+
+
+            var color = yield nightmare.chain()
+                .goto(fixture('simple'))
+                .MyStyle.background()
+                .MyStyle.color();
+
+            color.should.equal('rgb(0, 0, 0)');
+            colorCount.should.equal(1);
+            backgroundCount.should.equal(1);
+        });
+    });
 
     describe('custom preload script', function () {
         it('should support passing your own preload script in', function* () {
