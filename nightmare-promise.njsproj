@@ -39,6 +39,7 @@
     <Compile Include="lib\runner.js" />
     <Compile Include="test\files\globals.js" />
     <Compile Include="test\files\jquery-2.1.1.min.js" />
+    <Compile Include="test\files\nightmare-error.js" />
     <Compile Include="test\files\nightmare-unended.js" />
     <Compile Include="test\fixtures\preload\index.js" />
     <Compile Include="test\index.js" />
