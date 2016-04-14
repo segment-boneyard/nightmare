@@ -333,6 +333,25 @@ describe('Nightmare', function () {
             var diff = new Date() - timeStart;
             diff.should.be.at.least(2000);
         });
+
+        it('should evaluate multiple async calls and return proper results', function* () {
+            var timeStart = new Date();
+
+            yield nightmare.chain()
+                .goto(fixture('evaluation'));
+
+            var queue = [];
+            for (let i = 0; i < 3; i++) {
+                var p = nightmare.evaluate(function (ix) {
+                    return ix;
+                }, i);
+                queue.push(p);
+            }
+
+            var result = yield Promise.all(queue);
+
+            result.should.deep.equal([0, 1, 2]);
+        });
     });
 
     describe('manipulation', function () {
