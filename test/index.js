@@ -1230,6 +1230,37 @@ describe('Nightmare', function () {
       value.should.equal('custom')
     })
   })
+
+  describe('devtools', function(){
+    beforeEach(function() {
+      Nightmare.action('checkDevTools',
+        function(ns, options, parent, win, renderer, done){
+          parent.on('checkDevTools', function(){
+            parent.emit('checkDevTools', null, win.webContents.isDevToolsOpened());
+          });
+          done();
+        },
+        function(done){
+          this.child.once('checkDevTools', done);
+          this.child.emit('checkDevTools');
+        });
+      nightmare = Nightmare({show:true, openDevTools:true});
+      
+    });
+
+    afterEach(function*(){
+      yield nightmare.end();
+    });
+
+    it('should open devtools', function*(){
+      var devToolsOpen = yield nightmare
+        .goto(fixture('simple'))
+        .wait(2000)
+        .checkDevTools();
+
+      devToolsOpen.should.be.true;
+    });
+  })
 });
 
 /**
