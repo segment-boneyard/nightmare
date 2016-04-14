@@ -269,6 +269,18 @@ describe('Nightmare', function () {
             title.should.equal('Evaluation -- testparameter');
         });
 
+        it('should capture invalid evaluate fn', function* () {
+            var didFail = false;
+            try {
+                yield nightmare.chain()
+                    .goto(fixture('evaluation'))
+                    .evaluate('not_a_function');
+            } catch (e) {
+                didFail = true;
+            }
+            didFail.should.be.true;
+        });
+
         it('should evaluate javascript and return undefined', function* () {
             var result = yield nightmare.chain()
                 .goto(fixture('evaluation'))
@@ -1615,6 +1627,38 @@ describe('Nightmare', function () {
                 nightmare.end();
             }
         })
+    });
+
+    describe('devtools', function () {
+        var nightmare;
+
+        beforeEach(function () {
+            Nightmare.action('checkDevTools',
+                function (ns, options, parent, win, renderer) {
+                    parent.on('checkDevTools', function () {
+                        parent.emit('checkDevTools', {
+                            result: win.webContents.isDevToolsOpened()
+                        });
+                    });
+                },
+                function () {
+                    return this._invokeRunnerOperation("checkDevTools");
+                });
+            nightmare = new Nightmare({ show: true, openDevTools: true });
+
+        });
+
+        afterEach(function* () {
+            nightmare.end();
+        });
+
+        it('should open devtools', function* () {
+            var devToolsOpen = yield nightmare.chain()
+                .goto(fixture('simple'))
+                .checkDevTools();
+
+            devToolsOpen.should.be.true;
+        });
     });
 });
 
