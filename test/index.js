@@ -225,6 +225,18 @@ describe('Nightmare', function () {
         }, 'testparameter');
       title.should.equal('Evaluation -- testparameter');
     });
+
+    it('should capture invalid evaluate fn', function*() {
+      var didFail = false;
+      try {
+        yield nightmare
+          .goto(fixture('evaluation'))
+          .evaluate('not_a_function');
+      } catch (e) {
+        didFail = true;
+      }
+      didFail.should.be.true;
+    });
   });
 
   describe('manipulation', function () {
