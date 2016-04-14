@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# bb-xvfb <command> <and> <its> <arguments...>
+#
+# Wrapper for XVFB.  Capture XVFB logs where we can see them.  Dump
+# XVFB framebuffer where can we can see it.  Use a standard display size
+# and dpi for all of our XVFB-wrapped tests.
+#
+# pulled from: https://gist.github.com/tullmann/2d8d38444c5e81a41b6d
+# original issue: https://github.com/angular/protractor/issues/2419#issuecomment-156527809
+
+# Note: "32" is not a valid depth for xvfb: https://bugs.freedesktop.org/show_bug.cgi?id=17453 (from 2008)
+SCREEN_SIZE="1280x1024x24+32"
+
+BINDIR="$(dirname $0)"
+TMPDIR=/tmp
+
+if [ ! -d "$TMPDIR" ]; then
+    echo "Invalid tmp directory: ${TMPDIR}"
+    exit 1
+fi
+
+# Avoid race conditions in google-chrome startup by making sure there is a
+# dbus message bus up and running.
+# See https://code.google.com/p/chromium/issues/detail?id=309093
+DBUS="dbus-launch --exit-with-session"
+
+WAITFORX="${BINDIR}/waitForX"
+
+XVFBDIR="${TMPDIR}/xvfb.$$"
+mkdir -p "${XVFBDIR}"
+
+ERRFILE="${XVFBDIR}/xvfb.log"
+
+# Pass the "-fbdir" to force xvfb to use a memory-mapped file.  This makes screenshots and debugging easier.
+# To display said framebuffer contents: xwud -in ${XVFBDIR}/Xvfb_screen0
+
+exec xvfb-run \
+    --error-file="${ERRFILE}" \
+    --auto-servernum \
+    --server-args="-fbdir ${XVFBDIR} -screen 0 ${SCREEN_SIZE} -dpi 96 -ac" \
+    ${WAITFORX} ${DBUS} "$@"
+
+#eof
