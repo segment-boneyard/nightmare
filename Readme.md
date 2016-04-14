@@ -2,6 +2,8 @@
 Nightmare
 =========
 
+[![Join the chat at https://gitter.im/rosshinkley/nightmare](https://badges.gitter.im/rosshinkley/nightmare.svg)](https://gitter.im/rosshinkley/nightmare?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Nightmare is a high-level browser automation library.
 
 The goal is to expose just a few simple methods, and have an API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
