@@ -1,3 +1,21 @@
+2.3.2 / 2016-04-14
+==================
+
+  * fixes the `.wait(selector)` comment
+  * adds documentation about headers
+  * adds an interim gitter badge
+  * adds a unit test for `openDevTools`
+  * bumps to electron 0.37.5
+  * adds a wrapper to run unit tests when on CircleCI, when Xvfb is running, or the `HEADLESS` environment variable is set.  Prevents Nightmare from hanging when running headlessly.
+  * `.evaluate()` errors if a function to evaluate is not supplied
+
+2.3.1 / 2016-04-11
+==================
+
+  * fixes passing uncaught exceptions  back to the default handler after cleanup
+  * fixes overhead due to automatic subscription to frame data for screenshots
+  * Adds unicode documentation for `.type()`
+
 2.3.0 / 2016-04-02
 ==================
 

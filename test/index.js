@@ -65,6 +65,16 @@ describe('Nightmare', function () {
     });
   });
 
+  it('should exit with a non-zero code on uncaughtExecption', function(done) {
+    var child = child_process.fork(
+      path.join(__dirname, 'files', 'nightmare-error.js'), [], {silent: true});
+
+      child.once('exit', function(code) {
+        code.should.not.equal(0);
+        done();
+      });
+  });
+
   describe('navigation', function () {
     var nightmare;
 
@@ -346,6 +356,18 @@ describe('Nightmare', function () {
           return document.title + ' -- ' + parameter;
         }, 'testparameter');
       title.should.equal('Evaluation -- testparameter');
+    });
+
+    it('should capture invalid evaluate fn', function*() {
+      var didFail = false;
+      try {
+        yield nightmare
+          .goto(fixture('evaluation'))
+          .evaluate('not_a_function');
+      } catch (e) {
+        didFail = true;
+      }
+      didFail.should.be.true;
     });
   });
 
@@ -858,6 +880,19 @@ describe('Nightmare', function () {
       firstPixel.should.deep.equal([0, 153, 0]);
     });
 
+    it('should not subscribe to frames until necessary', function() {
+      var didSubscribe = false;
+      var FrameManager = require('../lib/frame-manager.js');
+      var manager = FrameManager({
+        webContents: {
+          beginFrameSubscription: function() { didSubscribe = true; },
+          endFrameSubscription: function() {},
+          executeJavaScript: function() {}
+        }
+      });
+      didSubscribe.should.be.false;
+    });
+
     it('should load jquery correctly', function*() {
       var loaded = yield nightmare
         .goto(fixture('rendering'))
@@ -1329,6 +1364,37 @@ describe('Nightmare', function () {
 
       value.should.equal('custom')
     })
+  })
+
+  describe('devtools', function(){
+    beforeEach(function() {
+      Nightmare.action('checkDevTools',
+        function(ns, options, parent, win, renderer, done){
+          parent.on('checkDevTools', function(){
+            parent.emit('checkDevTools', null, win.webContents.isDevToolsOpened());
+          });
+          done();
+        },
+        function(done){
+          this.child.once('checkDevTools', done);
+          this.child.emit('checkDevTools');
+        });
+      nightmare = Nightmare({show:true, openDevTools:true});
+      
+    });
+
+    afterEach(function*(){
+      yield nightmare.end();
+    });
+
+    it('should open devtools', function*(){
+      var devToolsOpen = yield nightmare
+        .goto(fixture('simple'))
+        .wait(2000)
+        .checkDevTools();
+
+      devToolsOpen.should.be.true;
+    });
   })
 });
 
