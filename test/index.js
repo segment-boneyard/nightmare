@@ -237,6 +237,39 @@ describe('Nightmare', function () {
       }
       didFail.should.be.true;
     });
+
+    it('should resolve promise on the page, with parameters', function*() {
+      var title = yield nightmare
+        .goto(fixture('evaluation'))
+        .evaluate(function (parameter) {
+          return new Promise(function (resolve, reject) {
+            delayed = function () {
+              resolve(document.title + ' -- ' + parameter);
+            };
+            setTimeout(delayed, 500);
+          });
+        }, 'testparameter');
+      title.should.equal('Evaluation -- testparameter');
+    });
+
+    it('should capture a reason for rejected promises', function*() {
+      var didFail = false;
+      try {
+        yield nightmare
+        .goto(fixture('evaluation'))
+        .evaluate(function () {
+          return new Promise(function (resolve, reject) {
+            delayed = function () {
+              reject(Error("Terrible error!"));
+            };
+            setTimeout(delayed, 500);
+          });
+        });
+      } catch (e) {
+        didFail = e;
+      }
+      didFail.should.be.equal("Terrible error!");
+    });
   });
 
   describe('manipulation', function () {
@@ -1245,7 +1278,7 @@ describe('Nightmare', function () {
           this.child.emit('checkDevTools');
         });
       nightmare = Nightmare({show:true, openDevTools:true});
-      
+
     });
 
     afterEach(function*(){
