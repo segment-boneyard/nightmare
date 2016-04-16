@@ -12,105 +12,6 @@ const delay = require("delay");
  */
 
 /**
-  * Go back to previous url.
-  */
-Nightmare.action('back',
-    function (ns, options, parent, win, renderer) {
-        parent.on('goBack', function () {
-            if (!win.webContents.canGoBack()) {
-                parent.emit('goBack', {
-                    error: true
-                });
-            } else {
-                win.webContents.once('did-finish-load', function () {
-                    parent.emit('goBack', {
-                        result: win.webContents.getURL()
-                    });
-                });
-                win.webContents.goBack();
-            }
-        });
-    },
-    function () {
-        debug('.back()');
-        return this._invokeRunnerOperation("goBack");
-    });
-
-/**
-  * Check a checkbox, fire change event
-  *
-  * @param {String} selector
-  */
-Nightmare.action('check',
-    function (selector) {
-        debug('.check() ' + selector);
-        return this.evaluate_now(function (selector) {
-            var element = document.querySelector(selector);
-            var event = document.createEvent('HTMLEvents');
-            element.checked = true;
-            event.initEvent('change', true, true);
-            element.dispatchEvent(event);
-        }, selector);
-    });
-
-/**
-  * Click an element using a JavaScript based event.
-  *
-  * @param {String} selector
-  */
-Nightmare.action('click',
-    function (selector) {
-        debug('.click() on ' + selector);
-        return this.evaluate_now(function (selector) {
-            document.activeElement.blur();
-            var element = document.querySelector(selector);
-            var event = document.createEvent('MouseEvent');
-            event.initEvent('click', true, true);
-            element.dispatchEvent(event);
-        }, selector);
-    });
-
-/**
-  * Click an element and wait until the next load operation completes.
-  * Use this function when you expect a click to perform a navigation action, usually on anchor elements, but elsewhere too.
-  *
-  * @param {String} selector
-  */
-Nightmare.action('clickAndWaitUntilFinishLoad',
-    function (selector) {
-        debug('.clickAndWaitUntilFinishLoad() on ' + selector);
-
-        let child = this.child;
-        let waitUntilFinishLoadPromise = this._invokeRunnerOperation("waitUntilFinishLoad");
-
-        let clickPromise = this.evaluate_now(function (selector) {
-            document.activeElement.blur();
-            var element = document.querySelector(selector);
-            var event = document.createEvent('MouseEvent');
-            event.initEvent('click', true, true);
-            element.dispatchEvent(event);
-        }, selector);
-
-        return Promise.all([clickPromise, waitUntilFinishLoadPromise]);
-    });
-
-/**
- * Returns a promise which invokes the specified action which expects to perform a navigation action.
- */
-Nightmare.action('expectNavigation',
-    function (fn, timeout) {
-        if (!timeout)
-            timeout = this._options.waitTimeout;
-
-        let waitPromise = Promise.all([this.waitUntilFinishLoad(), fn.apply(this)]);
-
-        let timeoutPromise = new Promise(function (resolve, reject) {
-            setTimeout(reject, timeout, ".expectNavigation() timed out after " + timeout);
-        });
-        return Promise.race([waitPromise, timeoutPromise]);
-    });
-
-/**
   * Evaluate a function on the page.
   *
   * @param {Function} fn
@@ -152,81 +53,6 @@ Nightmare.action('exists',
         return this.evaluate_now(function (selector) {
             return (!!document.querySelector(selector));
         }, selector);
-    });
-
-/**
- * Go forward to previous url.
- */
-Nightmare.action('forward',
-    function (ns, options, parent, win, renderer) {
-        parent.on('goForward', function () {
-            if (!win.webContents.canGoForward()) {
-                parent.emit('goForward', true);
-            } else {
-                win.webContents.once('did-finish-load', function () {
-                    parent.emit('goForward', {
-                        result: win.webContents.getURL()
-                    });
-                });
-                win.webContents.goForward();
-            }
-        });
-    },
-    function () {
-        debug('.goForward()');
-
-        return this._invokeRunnerOperation("goForward");
-    });
-
-/**
- * Instructs the browser to go to a specific url and wait until loading completes.
- * If the browser is currently at the specified URL, no action is taken.
- */
- 
-Nightmare.action('goto',
-    function (ns, options, parent, win, renderer) {
-        parent.on('goto', function (url, headers) {
-            var extraHeaders = '';
-            for (var key in headers) {
-                extraHeaders += key + ': ' + headers[key] + '\n';
-            }
-
-            if (win.webContents.getURL() == url) {
-                parent.emit('goto', {
-                    result: url
-                });
-            } else {
-                var resolveGoto = function (message) {
-                    win.webContents.removeListener("did-fail-load", rejectGoto);
-                    parent.emit('goto', {
-                        result: win.webContents.getURL()
-                    });
-                };
-                var rejectGoto = function (message) {
-                    win.webContents.removeListener("did-finish-load", resolveGoto);
-                    parent.emit('goto', {
-                        error: message
-                    });
-                };
-
-                win.webContents.once('did-fail-load', rejectGoto);
-                win.webContents.once('did-finish-load', resolveGoto);
-
-                win.webContents.loadURL(url, {
-                    extraHeaders: extraHeaders
-                });
-            }
-        });
-    },
-    function (url, headers) {
-        debug('goto() starting navigation to %s', url);
-
-        headers = headers || {};
-        for (let key in this._headers) {
-            headers[key] = headers[key] || this._headers[key];
-        }
-
-        return this._invokeRunnerOperation("goto", url, headers);
     });
 
 /**
@@ -284,78 +110,6 @@ Nightmare.action('html',
     });
 
 /**
-  * Insert text
-  *
-  * @param {String} selector
-  * @param {String} text
-  */
-Nightmare.action('insert',
-    function (ns, options, parent, win, renderer) {
-        parent.on('insert', function (value) {
-            win.webContents.insertText(String(value))
-            parent.emit('insert')
-        })
-    },
-    function (selector, text) {
-        debug('.insert() %s into %s', text, selector);
-
-        let self = this;
-        return co(function* () {
-            if (!text) {
-                return self.evaluate_now(function (selector) {
-                    document.querySelector(selector).focus();
-                    document.querySelector(selector).value = '';
-                }, selector);
-            } else {
-                try {
-                    yield self.evaluate_now(function (selector) {
-                        document.querySelector(selector).focus();
-                    }, selector);
-                }
-                catch (ex) {
-                    throw ex;
-                }
-
-                return self._invokeRunnerOperation("insert", text);
-            }
-        });
-    });
-
-/**
-  * Mousedown on an element.
-  *
-  * @param {String} selector
-  */
-Nightmare.action('mousedown',
-    function (selector) {
-        debug('.mousedown() on ' + selector);
-        return this.evaluate_now(function (selector) {
-            var element = document.querySelector(selector);
-            var event = document.createEvent('MouseEvent');
-            event.initEvent('mousedown', true, true);
-            element.dispatchEvent(event);
-        }, selector);
-    });
-
-/**
- * Hover over an element.
- *
- * @param {String} selector
- * @param {Function} done
- */
-Nightmare.action('mouseover',
-    function (selector) {
-        debug('.mouseover() on ' + selector);
-        return this.evaluate_now(function (selector) {
-            var element = document.querySelector(selector);
-            var event = document.createEvent('MouseEvent');
-            event.initMouseEvent('mouseover', true, true);
-            element.dispatchEvent(event);
-        }, selector);
-    });
-
-
-/**
  * Take a pdf.
  *
  * @param {String} path
@@ -399,33 +153,6 @@ Nightmare.action('pdf',
             });
     });
 
-
-/**
- * Refresh the current page.
- */
-Nightmare.action('refresh',
-    function (ns, options, parent, win, renderer) {
-        debug('.refresh()');
-        return this.evaluate_now(function () {
-            window.location.reload();
-        });
-    });
-
-/**
-  * Instructs the browser to reload the page.
-  */
-Nightmare.action('reload',
-    function () {
-        parent.on('reload', function () {
-            win.webContents.reload();
-            parent.emit('reload');
-        });
-    },
-    function () {
-        debug('.reload()');
-        return this._invokeRunnerOperation("reload");
-    });
-
 /**
   * Take a screenshot.
   *
@@ -467,52 +194,6 @@ Nightmare.action('screenshot',
     });
 
 /**
-  * Set the scroll position.
-  *
-  * @param {Number} x
-  * @param {Number} y
-  */
-Nightmare.action('scrollTo',
-    function (y, x) {
-        debug('.scrollTo()');
-
-        if (!x && _.isString(y)) {
-            return this.evaluate_now(function (selector) {
-                var element = document.querySelector(selector);
-                if (element) {
-                    var rect = element.getBoundingClientRect();
-                    window.scrollTo(Math.round(rect.left), Math.round(rect.top));
-                }
-                else
-                    throw 'invalid selector "' + selector + '"';
-            }, y);
-        }
-        else if (_.isNumber(x) && _.isNumber(x)) {
-            return this.evaluate_now(function (y, x) {
-                window.scrollTo(x, y);
-            }, y, x);
-        }
-    });
-
-/**
-  * Choose an option from a select dropdown
-  *
-  * @param {String} selector
-  * @param {String} option value
-  */
-Nightmare.action('select',
-    function (selector, option) {
-        debug('.select() ' + selector);
-        return this.evaluate_now(function (selector, option) {
-            var element = document.querySelector(selector);
-            var event = document.createEvent('HTMLEvents');
-            element.value = option;
-            event.initEvent('change', true, true);
-            element.dispatchEvent(event);
-        }, selector, option);
-    });
-
-/**
   * Set the state of audio in the browser process.
   *
   * @param {bool} value that indicates if audio should be muted.
@@ -548,21 +229,6 @@ Nightmare.action('setAuthenticationCredentials',
 
         return this._invokeRunnerOperation("setAuthenticationCredentials", username, password);
     });
-/**
-  * instructs the browser to stop page loading.
-  */
-Nightmare.action('stop',
-    function (ns, options, parent, win, renderer) {
-        parent.on('stop', function () {
-            win.webContents.stop();
-            parent.emit('stop');
-        });
-    },
-    function () {
-        debug('.stop()');
-
-        return this._invokeRunnerOperation("stop");
-    });
 
 /**
   * Get the title of the page.
@@ -580,104 +246,6 @@ Nightmare.action('title',
 
         return this._invokeRunnerOperation("title");
     });
-
-/**
- * Type into an element.
- *
- * @param {String} selector
- * @param {String} text
- */
-Nightmare.action('type',
-    function (ns, options, parent, win, renderer) {
-        parent.on('type', function (value) {
-            var chars = String(value).split('')
-
-            function type() {
-                var ch = chars.shift()
-                if (ch === undefined) {
-                    parent.emit('type');
-                    return;
-                }
-
-                // keydown
-                win.webContents.sendInputEvent({
-                    type: 'keyDown',
-                    keyCode: ch
-                });
-
-                // keypress
-                win.webContents.sendInputEvent({
-                    type: 'char',
-                    keyCode: ch
-                });
-
-                // keyup
-                win.webContents.sendInputEvent({
-                    type: 'keyUp',
-                    keyCode: ch
-                });
-
-                // HACK to prevent async keyboard events from
-                // being played out of order. The timeout is
-                // somewhat arbitrary. I want to achieve a
-                // nice balance between speed and correctness
-                // if you find that this value it too low,
-                // please open an issue.
-                setTimeout(type, 100);
-            }
-
-            // start
-            type();
-        })
-    },
-    function () {
-        let selector = arguments[0], text;
-        if (arguments.length == 2) {
-            text = arguments[1];
-        }
-
-        debug('.type() %s into %s', text, selector);
-        let child = this.child;
-        let self = this;
-        return co(function* () {
-            if (!text) {
-                return self.evaluate_now(function (selector) {
-                    document.querySelector(selector).focus();
-                    document.querySelector(selector).value = '';
-                }, selector);
-            } else {
-                try {
-                    yield self.evaluate_now(function (selector) {
-                        document.querySelector(selector).focus();
-                    }, selector);
-                }
-                catch (ex) {
-                    throw ex;
-                }
-
-                return self._invokeRunnerOperation("type", text);
-            }
-        });
-    });
-
-
-/*
- * Uncheck a checkbox, fire change event
- *
- * @param {String} selector
- */
-Nightmare.action('uncheck',
-    function (selector) {
-        debug('.uncheck() ' + selector);
-        return this.evaluate_now(function (selector) {
-            var element = document.querySelector(selector);
-            var event = document.createEvent('HTMLEvents');
-            element.checked = null;
-            event.initEvent('change', true, true);
-            element.dispatchEvent(event);
-        }, selector);
-    });
-
 
 /**
  * Get the url of the page.

@@ -1,5 +1,6 @@
 ﻿var Nightmare = require("./lib/nightmare");
 require("./actions/core");
-require("./actions/emulateInput");
+require("./actions/navigation");
+require("./actions/input");
 require("./actions/cookies");
 module.exports = Nightmare;

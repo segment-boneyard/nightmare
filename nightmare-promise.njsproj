@@ -31,10 +31,11 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="actions\navigation.js" />
     <Compile Include="app.js" />
     <Compile Include="actions\cookies.js" />
     <Compile Include="actions\core.js" />
-    <Compile Include="actions\emulateInput.js" />
+    <Compile Include="actions\input.js" />
     <Compile Include="lib\frame-manager.js" />
     <Compile Include="lib\ipc.js" />
     <Compile Include="lib\javascript.js" />
