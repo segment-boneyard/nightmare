@@ -1595,7 +1595,7 @@ describe('Nightmare', function () {
                 }
             };
 
-            Nightmare._namespaces.push("MyStyle");
+            Nightmare.registerNamespace("MyStyle");
 
             var color = yield nightmare.chain()
                 .goto(fixture('simple'))
@@ -1666,7 +1666,7 @@ describe('Nightmare', function () {
                 }
             ];
 
-            Nightmare._namespaces.push("MyTitle");
+            Nightmare.registerNamespace("MyTitle");
 
             yield nightmare.init();
             yield nightmare.goto(fixture('simple'));
@@ -1690,7 +1690,7 @@ describe('Nightmare', function () {
                 }
             ];
 
-            Nightmare._namespaces.push("MyTitle");
+            Nightmare.registerNamespace("Mytitle");
             
             var title = yield nightmare.chain()
                 .goto(fixture('simple'))
