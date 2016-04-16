@@ -28,6 +28,27 @@ Since all methods return promises, it's easy to synchronize between other Promis
 
 This allows nightmare to work better in conjunction with other libraries, but still retain the original goal of having a simple, non-pyramid-of-doom API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
 
+######Modules
+
+Starting with Nightmare v3 one can choose the specific base functions that are defined on the Nightmare object.
+
+By default, all modules are associated with the nightmare instance. If you only want to use a portion of the functionality you can include
+just the modules you're interested in.
+
+```
+const Nightmare = require("./node_modules/nightmare/lib/nightmare"); //require the base nightmare class.
+require("./node_modules/nightmare/lib/actions/core"); //only pull in the 'core' set of actions.
+```
+
+The available modules are:
+
+	* Core - Contains the core functionality: evaluate, title, wait and so forth.
+	* Cookies - Contains the 'cookies' namespace used to get/set/clear cookies
+	* Input - Contains the functions associated with interacting with a page - typing, setting values, etc.
+	* Navigation - Contains the functions associated with navigating - goto, stop, reload and so forth.
+
+######About
+
 Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but faster and more modern.
 
 [Daydream](https://github.com/segmentio/daydream) is a complementary chrome extension built by [@stevenmiller888](https://github.com/stevenmiller888) that generates Nightmare scripts for you while you browse.
