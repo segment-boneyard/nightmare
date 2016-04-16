@@ -31,6 +31,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="lib\app.js" />
+    <Compile Include="lib\cookies.js" />
     <Compile Include="lib\frame-manager.js" />
     <Compile Include="lib\ipc.js" />
     <Compile Include="lib\javascript.js" />

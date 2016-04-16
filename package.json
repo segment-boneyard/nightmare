@@ -2,7 +2,7 @@
   "name": "nightmare",
   "version": "3.0.3",
   "license": "MIT",
-  "main": "lib/nightmare.js",
+  "main": "lib/app.js",
   "scripts": {
     "test": "make test",
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- "
