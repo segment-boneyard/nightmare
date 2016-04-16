@@ -120,10 +120,10 @@ Nightmare.prototype.emulateClick = [
     }];
 
 /**
-     * Click an element using electron's sendInputEvent command.
-     *
-     * @param {String} selector
-     */
+  * Click an element using electron's sendInputEvent command.
+  *
+  * @param {String} selector
+  */
 Nightmare.prototype.emulateKeystrokes = [
     function (ns, options, parent, win, renderer) {
         const _ = require("lodash");

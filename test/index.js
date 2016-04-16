@@ -1691,7 +1691,7 @@ describe('Nightmare', function () {
             ];
 
             Nightmare._namespaces.push("MyTitle");
-
+            
             var title = yield nightmare.chain()
                 .goto(fixture('simple'))
                 .MyTitle.getTitle();
