@@ -1,7 +1,6 @@
 ﻿"use strict";
 
 const debug = require("debug")("nightmare:core");
-const co = require("co");
 const Nightmare = require("../lib/nightmare");
 const _ = require("lodash");
 const fs = require("fs");

@@ -1,11 +1,7 @@
 ﻿"use strict";
 
 const debug = require("debug")("nightmare:navigation");
-const co = require("co");
 const Nightmare = require("../lib/nightmare");
-const _ = require("lodash");
-const fs = require("fs");
-const delay = require("delay");
 
 /**
   * Go back to previous url.

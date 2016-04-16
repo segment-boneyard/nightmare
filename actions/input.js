@@ -1,8 +1,8 @@
 ﻿"use strict";
 
 const debug = require("debug")("nightmare:input");
-const co = require("co");
 const Nightmare = require("../lib/nightmare");
+const co = require("co");
 const _ = require("lodash");
 const delay = require("delay");
 
@@ -69,6 +69,7 @@ Nightmare.prototype.check = function (selector) {
   */
 Nightmare.prototype.emulateClick = [
     function (ns, options, parent, win, renderer) {
+        const _ = require("lodash");
         //Retrieves the specified element from clickOpts.selector and clicks it using webContents.sendInputEvent.
         parent.on('emulateClick', function (clickOpts) {
             const _ = require("lodash");
