@@ -1606,6 +1606,49 @@ describe('Nightmare', function () {
             colorCount.should.equal(1);
             backgroundCount.should.equal(1);
         });
+
+        it('should support custom combinations of electron actions and nightmare actions by extending the prototype with arrays', function* () {
+
+            Nightmare.prototype.getTitle = [
+                function (ns, options, parent, win, renderer) {
+                    parent.on('getTitle', function () {
+                        parent.emit('getTitle', {
+                            result: win.webContents.getTitle()
+                        });
+                    });
+                },
+                function (path, saveType) {
+                    return this._invokeRunnerOperation("getTitle", path, saveType);
+                }
+            ];
+
+            yield nightmare.init();
+            yield nightmare.goto(fixture('simple'));
+            let title = yield nightmare.getTitle();
+            title.should.equal('Simple');
+        });
+
+        it('should support custom combinations of electron actions and nightmare actions by extending the prototype with arrays and be chainable', function* () {
+
+            Nightmare.prototype.getTitle = [
+                function (ns, options, parent, win, renderer) {
+                    parent.on('getTitle', function () {
+                        parent.emit('getTitle', {
+                            result: win.webContents.getTitle()
+                        });
+                    });
+                },
+                function (path, saveType) {
+                    return this._invokeRunnerOperation("getTitle", path, saveType);
+                }
+            ];
+
+            let title = yield nightmare.chain()
+                .goto(fixture('simple'))
+                .getTitle();
+
+            title.should.equal('Simple');
+        });
     });
 
     describe('custom preload script', function () {

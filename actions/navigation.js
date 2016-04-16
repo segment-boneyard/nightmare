@@ -33,7 +33,7 @@ Nightmare.action('back',
     });
 
 /**
- * Go forward to previous url.
+ * Go forward to next url.
  */
 Nightmare.action('forward',
     function (ns, options, parent, win, renderer) {
