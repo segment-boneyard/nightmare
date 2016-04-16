@@ -17,15 +17,14 @@ const delay = require("delay");
   * @param {Function} fn
   * @param {...} args
   */
-Nightmare.action('evaluate',
-    function (fn/**, arg1, arg2...**/) {
-        let args = Array.from(arguments);
-        if (!_.isFunction(fn)) {
-            return done(new Error('.evaluate() fn should be a function'));
-        }
-        debug('.evaluate() fn on the page');
-        return this.evaluate_now.apply(this, args);
-    });
+Nightmare.prototype.evaluate = function (fn/**, arg1, arg2...**/) {
+    let args = Array.from(arguments);
+    if (!_.isFunction(fn)) {
+        return done(new Error('.evaluate() fn should be a function'));
+    }
+    debug('.evaluate() fn on the page');
+    return this.evaluate_now.apply(this, args);
+};
 
 /**
   * Evaluates an asynchronous function on the page.
@@ -33,32 +32,31 @@ Nightmare.action('evaluate',
   * @param {Function} fn
   * @param {...} args
   */
-Nightmare.action('evaluateAsync',
-    function (fn/**, arg1, arg2...**/) {
-        let args = Array.from(arguments);
-        if (!_.isFunction(fn)) {
-            return done(new Error('.evaluateAsync() fn should be a function'));
-        }
-        debug('.evaluateAsync() fn on the page');
-        return this.evaluate_async.apply(this, args);
-    });
+Nightmare.prototype.evaluateAsync = function (fn/**, arg1, arg2...**/) {
+    let args = Array.from(arguments);
+    if (!_.isFunction(fn)) {
+        return done(new Error('.evaluateAsync() fn should be a function'));
+    }
+    debug('.evaluateAsync() fn on the page');
+    return this.evaluate_async.apply(this, args);
+};
+
 /**
  * Determine if a selector exists on a page.
  *
  * @param {String} selector
  */
-Nightmare.action('exists',
-    function (selector) {
-        debug('.exists() for ' + selector);
-        return this.evaluate_now(function (selector) {
-            return (!!document.querySelector(selector));
-        }, selector);
-    });
+Nightmare.prototype.exists = function (selector) {
+    debug('.exists() for ' + selector);
+    return this.evaluate_now(function (selector) {
+        return (!!document.querySelector(selector));
+    }, selector);
+};
 
 /**
   * Get the client rects of the specified selector
   */
-Nightmare.action('getClientRects', function (selector) {
+Nightmare.prototype.getClientRects = function (selector) {
 
     return this.evaluate_now(function (selector) {
         'use strict';
@@ -87,12 +85,12 @@ Nightmare.action('getClientRects', function (selector) {
 
         return result;
     }, selector);
-});
+};
 
 /*
  * Save the contents of the current page as html
  */
-Nightmare.action('html',
+Nightmare.prototype.html = [
     function (ns, options, parent, win, renderer) {
         parent.on('html', function (path, saveType) {
             // https://github.com/atom/electron/blob/master/docs/api/web-contents.md#webcontentssavepagefullpath-savetype-callback
@@ -107,7 +105,8 @@ Nightmare.action('html',
     function (path, saveType) {
         debug('.html() starting');
         return this._invokeRunnerOperation("html", path, saveType);
-    });
+    }
+];
 
 /**
  * Take a pdf.
@@ -115,7 +114,7 @@ Nightmare.action('html',
  * @param {String} path
  * @param {Object} options
  */
-Nightmare.action('pdf',
+Nightmare.prototype.pdf = [
     function (ns, options, parent, win, renderer) {
         const _ = require("lodash");
         parent.on('pdf', function (path, options) {
@@ -151,7 +150,7 @@ Nightmare.action('pdf',
 
                 return fs.writeFileSync(path, buf);
             });
-    });
+    }];
 
 /**
   * Take a screenshot.
@@ -159,7 +158,7 @@ Nightmare.action('pdf',
   * @param {String} path
   * @param {Object} clip
   */
-Nightmare.action('screenshot',
+Nightmare.prototype.screenshot = [
     function (ns, options, parent, win, renderer, frameManager) {
         parent.on('screenshot', function (clip) {
             // https://gist.github.com/twolfson/0d374d9d7f26eefe7d38
@@ -191,14 +190,14 @@ Nightmare.action('screenshot',
 
                 return fs.writeFileSync(path, buf);
             });
-    });
+    }];
 
 /**
   * Set the state of audio in the browser process.
   *
   * @param {bool} value that indicates if audio should be muted.
   */
-Nightmare.action('setAudioMuted',
+Nightmare.prototype.setAudioMuted = [
     function (ns, options, parent, win, renderer) {
         parent.on('audio', function (audio) {
             win.webContents.setAudioMuted(audio);
@@ -211,11 +210,11 @@ Nightmare.action('setAudioMuted',
         debug('.setAudioMuted() to ' + isMuted);
 
         return this._invokeRunnerOperation("audio", isMuted);
-    });
+    }];
 /**
   * If prompted for login, supplies the specified credentials.
   */
-Nightmare.action('setAuthenticationCredentials',
+Nightmare.prototype.setAuthenticationCredentials = [
     function (ns, options, parent, win, renderer) {
         parent.on('setAuthenticationCredentials', function (username, password) {
             win.webContents.on('login', function (webContents, request, authInfo, callback) {
@@ -228,12 +227,12 @@ Nightmare.action('setAuthenticationCredentials',
         debug(".authentication()");
 
         return this._invokeRunnerOperation("setAuthenticationCredentials", username, password);
-    });
+    }];
 
 /**
   * Get the title of the page.
   */
-Nightmare.action('title',
+Nightmare.prototype.title = [
     function (ns, options, parent, win, renderer) {
         parent.on('title', function () {
             parent.emit("title", {
@@ -245,12 +244,12 @@ Nightmare.action('title',
         debug('.title() getting it');
 
         return this._invokeRunnerOperation("title");
-    });
+    }];
 
 /**
  * Get the url of the page.
  */
-Nightmare.action('url',
+Nightmare.prototype.url = [
     function (ns, options, parent, win, renderer) {
         parent.on('url', function () {
             parent.emit("url", {
@@ -262,14 +261,14 @@ Nightmare.action('url',
         debug('.url() getting it');
 
         return this._invokeRunnerOperation("url");
-    });
+    }];
 
 /**
   * Set the useragent.
   *
   * @param {String} useragent
   */
-Nightmare.action('useragent',
+Nightmare.prototype.useragent = [
     function (ns, options, parent, win, renderer) {
         parent.on('useragent', function (useragent) {
             win.webContents.setUserAgent(useragent);
@@ -280,7 +279,7 @@ Nightmare.action('useragent',
         debug('.useragent() to ' + useragent);
 
         return this._invokeRunnerOperation("useragent", useragent);
-    });
+    }];
 
 /**
   * Set the viewport.
@@ -288,7 +287,7 @@ Nightmare.action('useragent',
   * @param {Number} width
   * @param {Number} height
   */
-Nightmare.action('viewport',
+Nightmare.prototype.viewport = [
     function (ns, options, parent, win, renderer) {
         parent.on('size', function (width, height) {
             win.setSize(width, height);
@@ -299,91 +298,89 @@ Nightmare.action('viewport',
         debug('.viewport()');
 
         return this._invokeRunnerOperation("size", width, height);
-    });
+    }];
 
 /**
   * Determine if a selector is visible on a page.
   *
   * @param {String} selector
   */
-Nightmare.action('visible',
-    function (selector) {
-        debug('.visible() for ' + selector);
-        return this.evaluate_now(function (selector) {
-            var elem = document.querySelector(selector);
-            if (elem)
-                return (elem.offsetWidth > 0 && elem.offsetHeight > 0);
-            else
-                return false;
-        }, selector);
-    });
+Nightmare.prototype.visible = function (selector) {
+    debug('.visible() for ' + selector);
+    return this.evaluate_now(function (selector) {
+        var elem = document.querySelector(selector);
+        if (elem)
+            return (elem.offsetWidth > 0 && elem.offsetHeight > 0);
+        else
+            return false;
+    }, selector);
+};
 
 /**
   * Wait
   */
-Nightmare.action('wait',
-    function () {
-        let args = Array.from(arguments);
-        if (args.length < 1) {
-            debug('Not enough arguments for .wait()');
-            return;
-        }
+Nightmare.prototype.wait = function () {
+    let args = Array.from(arguments);
+    if (args.length < 1) {
+        debug('Not enough arguments for .wait()');
+        return;
+    }
 
-        let self = this;
+    let self = this;
 
-        let timeout = new Promise(function (resolve, reject) {
-            setTimeout(reject, self._options.waitTimeout, ".wait() timed out after " + self._options.waitTimeout);
-        });
-
-        let arg = args[0];
-        if (_.isNumber(arg)) {
-            debug('.wait() for ' + arg + 'ms');
-            return Promise.race([delay(arg), timeout]);
-        }
-        else if (_.isString(arg)) {
-            debug('.wait() for ' + arg + ' element');
-            let fn = function (selector) {
-                var element = document.querySelector(selector);
-                return (element ? true : false);
-            }
-            return this.waitUntilTrue(fn, arg);
-        }
-        else if (_.isFunction(arg)) {
-            debug('.wait() for fn');
-            return this.waitUntilTrue.apply(args);
-        }
-
-        throw new Error("wait() Unsupported Arguments.");
+    let timeout = new Promise(function (resolve, reject) {
+        setTimeout(reject, self._options.waitTimeout, ".wait() timed out after " + self._options.waitTimeout);
     });
+
+    let arg = args[0];
+    if (_.isNumber(arg)) {
+        debug('.wait() for ' + arg + 'ms');
+        return Promise.race([delay(arg), timeout]);
+    }
+    else if (_.isString(arg)) {
+        debug('.wait() for ' + arg + ' element');
+        let fn = function (selector) {
+            var element = document.querySelector(selector);
+            return (element ? true : false);
+        }
+        return this.waitUntilTrue(fn, arg);
+    }
+    else if (_.isFunction(arg)) {
+        debug('.wait() for fn');
+        return this.waitUntilTrue.apply(args);
+    }
+
+    throw new Error("wait() Unsupported Arguments.");
+};
+
 /**
   * Wait until evaluated function returns true or timeout
   *
   * @param {Function} fn
   * @param {...} args
   */
-Nightmare.action('waitUntilTrue',
-    function (fn/**, arg1, arg2...**/) {
-        let args = Array.from(arguments);
-        let self = this;
+Nightmare.prototype.waitUntilTrue = function (fn/**, arg1, arg2...**/) {
+    let args = Array.from(arguments);
+    let self = this;
 
-        let timeout = new Promise(function (resolve, reject) {
-            setTimeout(reject, self._options.waitTimeout, task.name + " timed out after " + self._options.waitTimeout);
-        });
-
-        let check = function* () {
-            let testResult = false;
-            do {
-                testResult = yield self.evaluate_now.apply(self, args);
-            } while (!testResult)
-        };
-
-        return Promise.race([check, timeout]);
+    let timeout = new Promise(function (resolve, reject) {
+        setTimeout(reject, self._options.waitTimeout, task.name + " timed out after " + self._options.waitTimeout);
     });
+
+    let check = function* () {
+        let testResult = false;
+        do {
+            testResult = yield self.evaluate_now.apply(self, args);
+        } while (!testResult)
+    };
+
+    return Promise.race([check, timeout]);
+};
 
 /**
   * Waits until current web browser finishes loading all resources.
   */
-Nightmare.action('waitUntilFinishLoad',
+Nightmare.prototype.waitUntilFinishLoad = [
     function (ns, options, parent, win, renderer) {
         parent.on("waitUntilFinishLoad", function () {
 
@@ -436,4 +433,4 @@ Nightmare.action('waitUntilFinishLoad',
         debug('waitUntilFinishLoad() starting');
 
         return this._invokeRunnerOperation("waitUntilFinishLoad");
-    });
+    }];

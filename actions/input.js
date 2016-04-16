@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-const debug = require("debug")("nightmare:emulateInput");
+const debug = require("debug")("nightmare:input");
 const co = require("co");
 const Nightmare = require("../lib/nightmare");
 const _ = require("lodash");
@@ -11,17 +11,16 @@ const delay = require("delay");
   *
   * @param {String} selector
   */
-Nightmare.action('click',
-    function (selector) {
-        debug('.click() on ' + selector);
-        return this.evaluate_now(function (selector) {
-            document.activeElement.blur();
-            var element = document.querySelector(selector);
-            var event = document.createEvent('MouseEvent');
-            event.initEvent('click', true, true);
-            element.dispatchEvent(event);
-        }, selector);
-    });
+Nightmare.prototype.click = function (selector) {
+    debug('.click() on ' + selector);
+    return this.evaluate_now(function (selector) {
+        document.activeElement.blur();
+        var element = document.querySelector(selector);
+        var event = document.createEvent('MouseEvent');
+        event.initEvent('click', true, true);
+        element.dispatchEvent(event);
+    }, selector);
+};
 
 /**
   * Click an element and wait until the next load operation completes.
@@ -29,23 +28,22 @@ Nightmare.action('click',
   *
   * @param {String} selector
   */
-Nightmare.action('clickAndWaitUntilFinishLoad',
-    function (selector) {
-        debug('.clickAndWaitUntilFinishLoad() on ' + selector);
+Nightmare.prototype.clickAndWaitUntilFinishLoad = function (selector) {
+    debug('.clickAndWaitUntilFinishLoad() on ' + selector);
 
-        let child = this.child;
-        let waitUntilFinishLoadPromise = this._invokeRunnerOperation("waitUntilFinishLoad");
+    let child = this.child;
+    let waitUntilFinishLoadPromise = this._invokeRunnerOperation("waitUntilFinishLoad");
 
-        let clickPromise = this.evaluate_now(function (selector) {
-            document.activeElement.blur();
-            var element = document.querySelector(selector);
-            var event = document.createEvent('MouseEvent');
-            event.initEvent('click', true, true);
-            element.dispatchEvent(event);
-        }, selector);
+    let clickPromise = this.evaluate_now(function (selector) {
+        document.activeElement.blur();
+        var element = document.querySelector(selector);
+        var event = document.createEvent('MouseEvent');
+        event.initEvent('click', true, true);
+        element.dispatchEvent(event);
+    }, selector);
 
-        return Promise.all([clickPromise, waitUntilFinishLoadPromise]);
-    });
+    return Promise.all([clickPromise, waitUntilFinishLoadPromise]);
+};
 
 
 /**
@@ -53,24 +51,23 @@ Nightmare.action('clickAndWaitUntilFinishLoad',
   *
   * @param {String} selector
   */
-Nightmare.action('check',
-    function (selector) {
-        debug('.check() ' + selector);
-        return this.evaluate_now(function (selector) {
-            var element = document.querySelector(selector);
-            var event = document.createEvent('HTMLEvents');
-            element.checked = true;
-            event.initEvent('change', true, true);
-            element.dispatchEvent(event);
-        }, selector);
-    });
+Nightmare.prototype.check = function (selector) {
+    debug('.check() ' + selector);
+    return this.evaluate_now(function (selector) {
+        var element = document.querySelector(selector);
+        var event = document.createEvent('HTMLEvents');
+        element.checked = true;
+        event.initEvent('change', true, true);
+        element.dispatchEvent(event);
+    }, selector);
+};
 
 /**
   * Click an element using electron's sendInputEvent command.
   *
   * @param {String} selector
   */
-Nightmare.action("emulateClick",
+Nightmare.prototype.emulateClick = [
     function (ns, options, parent, win, renderer) {
         //Retrieves the specified element from clickOpts.selector and clicks it using webContents.sendInputEvent.
         parent.on('emulateClick', function (clickOpts) {
@@ -120,14 +117,14 @@ Nightmare.action("emulateClick",
         else {
             return this._invokeRunnerOperation("emulateClick", { x: x, y: y });
         }
-    });
+    }];
 
 /**
      * Click an element using electron's sendInputEvent command.
      *
      * @param {String} selector
      */
-Nightmare.action("emulateKeystrokes",
+Nightmare.prototype.emulateKeystrokes = [
     function (ns, options, parent, win, renderer) {
         const _ = require("lodash");
         const async = require("async");
@@ -218,23 +215,22 @@ Nightmare.action("emulateKeystrokes",
 
             return self._invokeRunnerOperation("emulateKeystrokes", { keyCodes: keyCodes, finalKeystrokeDelay: opts.finalKeystrokeDelay });
         });
-    });
+    }];
 
 /**
  * Returns a promise which invokes the specified action which expects to perform a navigation action.
  */
-Nightmare.action('expectNavigation',
-    function (fn, timeout) {
-        if (!timeout)
-            timeout = this._options.waitTimeout;
+Nightmare.prototype.expectNavigation = function (fn, timeout) {
+    if (!timeout)
+        timeout = this._options.waitTimeout;
 
-        let waitPromise = Promise.all([this.waitUntilFinishLoad(), fn.apply(this)]);
+    let waitPromise = Promise.all([this.waitUntilFinishLoad(), fn.apply(this)]);
 
-        let timeoutPromise = new Promise(function (resolve, reject) {
-            setTimeout(reject, timeout, ".expectNavigation() timed out after " + timeout);
-        });
-        return Promise.race([waitPromise, timeoutPromise]);
+    let timeoutPromise = new Promise(function (resolve, reject) {
+        setTimeout(reject, timeout, ".expectNavigation() timed out after " + timeout);
     });
+    return Promise.race([waitPromise, timeoutPromise]);
+};
 
 
 /**
@@ -243,7 +239,7 @@ Nightmare.action('expectNavigation',
   * @param {String} selector
   * @param {String} text
   */
-Nightmare.action('insert',
+Nightmare.prototype.insert = [
     function (ns, options, parent, win, renderer) {
         parent.on('insert', function (value) {
             win.webContents.insertText(String(value))
@@ -273,23 +269,22 @@ Nightmare.action('insert',
                 return self._invokeRunnerOperation("insert", text);
             }
         });
-    });
+    }];
 
 /**
   * Mousedown on an element.
   *
   * @param {String} selector
   */
-Nightmare.action('mousedown',
-    function (selector) {
-        debug('.mousedown() on ' + selector);
-        return this.evaluate_now(function (selector) {
-            var element = document.querySelector(selector);
-            var event = document.createEvent('MouseEvent');
-            event.initEvent('mousedown', true, true);
-            element.dispatchEvent(event);
-        }, selector);
-    });
+Nightmare.prototype.mousedown = function (selector) {
+    debug('.mousedown() on ' + selector);
+    return this.evaluate_now(function (selector) {
+        var element = document.querySelector(selector);
+        var event = document.createEvent('MouseEvent');
+        event.initEvent('mousedown', true, true);
+        element.dispatchEvent(event);
+    }, selector);
+};
 
 /**
  * Hover over an element.
@@ -297,16 +292,15 @@ Nightmare.action('mousedown',
  * @param {String} selector
  * @param {Function} done
  */
-Nightmare.action('mouseover',
-    function (selector) {
-        debug('.mouseover() on ' + selector);
-        return this.evaluate_now(function (selector) {
-            var element = document.querySelector(selector);
-            var event = document.createEvent('MouseEvent');
-            event.initMouseEvent('mouseover', true, true);
-            element.dispatchEvent(event);
-        }, selector);
-    });
+Nightmare.prototype.mouseover = function (selector) {
+    debug('.mouseover() on ' + selector);
+    return this.evaluate_now(function (selector) {
+        var element = document.querySelector(selector);
+        var event = document.createEvent('MouseEvent');
+        event.initMouseEvent('mouseover', true, true);
+        element.dispatchEvent(event);
+    }, selector);
+};
 
 
 /**
@@ -315,27 +309,26 @@ Nightmare.action('mouseover',
   * @param {Number} x
   * @param {Number} y
   */
-Nightmare.action('scrollTo',
-    function (y, x) {
-        debug('.scrollTo()');
+Nightmare.prototype.scrollTo = function (y, x) {
+    debug('.scrollTo()');
 
-        if (!x && _.isString(y)) {
-            return this.evaluate_now(function (selector) {
-                var element = document.querySelector(selector);
-                if (element) {
-                    var rect = element.getBoundingClientRect();
-                    window.scrollTo(Math.round(rect.left), Math.round(rect.top));
-                }
-                else
-                    throw 'invalid selector "' + selector + '"';
-            }, y);
-        }
-        else if (_.isNumber(x) && _.isNumber(x)) {
-            return this.evaluate_now(function (y, x) {
-                window.scrollTo(x, y);
-            }, y, x);
-        }
-    });
+    if (!x && _.isString(y)) {
+        return this.evaluate_now(function (selector) {
+            var element = document.querySelector(selector);
+            if (element) {
+                var rect = element.getBoundingClientRect();
+                window.scrollTo(Math.round(rect.left), Math.round(rect.top));
+            }
+            else
+                throw 'invalid selector "' + selector + '"';
+        }, y);
+    }
+    else if (_.isNumber(x) && _.isNumber(x)) {
+        return this.evaluate_now(function (y, x) {
+            window.scrollTo(x, y);
+        }, y, x);
+    }
+};
 
 /**
   * Choose an option from a select dropdown
@@ -343,17 +336,16 @@ Nightmare.action('scrollTo',
   * @param {String} selector
   * @param {String} option value
   */
-Nightmare.action('select',
-    function (selector, option) {
-        debug('.select() ' + selector);
-        return this.evaluate_now(function (selector, option) {
-            var element = document.querySelector(selector);
-            var event = document.createEvent('HTMLEvents');
-            element.value = option;
-            event.initEvent('change', true, true);
-            element.dispatchEvent(event);
-        }, selector, option);
-    });
+Nightmare.prototype.select = function (selector, option) {
+    debug('.select() ' + selector);
+    return this.evaluate_now(function (selector, option) {
+        var element = document.querySelector(selector);
+        var event = document.createEvent('HTMLEvents');
+        element.value = option;
+        event.initEvent('change', true, true);
+        element.dispatchEvent(event);
+    }, selector, option);
+};
 
 
 /**
@@ -362,7 +354,7 @@ Nightmare.action('select',
  * @param {String} selector
  * @param {String} text
  */
-Nightmare.action('type',
+Nightmare.prototype.type = [
     function (ns, options, parent, win, renderer) {
         parent.on('type', function (value) {
             var chars = String(value).split('')
@@ -433,7 +425,7 @@ Nightmare.action('type',
                 return self._invokeRunnerOperation("type", text);
             }
         });
-    });
+    }];
 
 
 /*
@@ -441,14 +433,13 @@ Nightmare.action('type',
  *
  * @param {String} selector
  */
-Nightmare.action('uncheck',
-    function (selector) {
-        debug('.uncheck() ' + selector);
-        return this.evaluate_now(function (selector) {
-            var element = document.querySelector(selector);
-            var event = document.createEvent('HTMLEvents');
-            element.checked = null;
-            event.initEvent('change', true, true);
-            element.dispatchEvent(event);
-        }, selector);
-    });
+Nightmare.prototype.uncheck = function (selector) {
+    debug('.uncheck() ' + selector);
+    return this.evaluate_now(function (selector) {
+        var element = document.querySelector(selector);
+        var event = document.createEvent('HTMLEvents');
+        element.checked = null;
+        event.initEvent('change', true, true);
+        element.dispatchEvent(event);
+    }, selector);
+};

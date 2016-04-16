@@ -1649,6 +1649,55 @@ describe('Nightmare', function () {
 
             title.should.equal('Simple');
         });
+
+        it('should support custom combinations of electron actions and nightmare actions within namespaces', function* () {
+
+            Nightmare.prototype.MyTitle = (function () { });
+            Nightmare.prototype.MyTitle.prototype.getTitle = [
+                function (ns, options, parent, win, renderer) {
+                    parent.on('getTitle', function () {
+                        parent.emit('getTitle', {
+                            result: win.webContents.getTitle()
+                        });
+                    });
+                },
+                function (path, saveType) {
+                    return this._invokeRunnerOperation("getTitle", path, saveType);
+                }
+            ];
+
+            Nightmare._namespaces.push("MyTitle");
+
+            yield nightmare.init();
+            yield nightmare.goto(fixture('simple'));
+            let title = yield nightmare.MyTitle.getTitle();
+            title.should.equal('Simple');
+        });
+
+        it('should support custom combinations of electron actions and nightmare actions within namespaces and be chainable', function* () {
+
+            Nightmare.prototype.MyTitle = (function () { });
+            Nightmare.prototype.MyTitle.prototype.getTitle = [
+                function (ns, options, parent, win, renderer) {
+                    parent.on('getTitle', function () {
+                        parent.emit('getTitle', {
+                            result: win.webContents.getTitle()
+                        });
+                    });
+                },
+                function (path, saveType) {
+                    return this._invokeRunnerOperation("getTitle", path, saveType);
+                }
+            ];
+
+            Nightmare._namespaces.push("MyTitle");
+
+            var title = yield nightmare.chain()
+                .goto(fixture('simple'))
+                .MyTitle.getTitle();
+
+            title.should.equal('Simple');
+        });
     });
 
     describe('custom preload script', function () {

@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-const debug = require("debug")("nightmare:core");
+const debug = require("debug")("nightmare:navigation");
 const co = require("co");
 const Nightmare = require("../lib/nightmare");
 const _ = require("lodash");
@@ -10,7 +10,7 @@ const delay = require("delay");
 /**
   * Go back to previous url.
   */
-Nightmare.action('back',
+Nightmare.prototype.back = [
     function (ns, options, parent, win, renderer) {
         parent.on('goBack', function () {
             if (!win.webContents.canGoBack()) {
@@ -30,12 +30,12 @@ Nightmare.action('back',
     function () {
         debug('.back()');
         return this._invokeRunnerOperation("goBack");
-    });
+    }];
 
 /**
  * Go forward to next url.
  */
-Nightmare.action('forward',
+Nightmare.prototype.forward = [
     function (ns, options, parent, win, renderer) {
         parent.on('goForward', function () {
             if (!win.webContents.canGoForward()) {
@@ -54,14 +54,14 @@ Nightmare.action('forward',
         debug('.goForward()');
 
         return this._invokeRunnerOperation("goForward");
-    });
+    }];
 
 
 /**
  * Instructs the browser to go to a specific url and wait until loading completes.
  * If the browser is currently at the specified URL, no action is taken.
  */
-Nightmare.action('goto',
+Nightmare.prototype.goto = [
     function (ns, options, parent, win, renderer) {
         parent.on('goto', function (url, headers) {
             var extraHeaders = '';
@@ -105,23 +105,22 @@ Nightmare.action('goto',
         }
 
         return this._invokeRunnerOperation("goto", url, headers);
-    });
+    }];
 
 /**
  * Refresh the current page.
  */
-Nightmare.action('refresh',
-    function (ns, options, parent, win, renderer) {
-        debug('.refresh()');
-        return this.evaluate_now(function () {
-            window.location.reload();
-        });
+Nightmare.prototype.refresh = function (ns, options, parent, win, renderer) {
+    debug('.refresh()');
+    return this.evaluate_now(function () {
+        window.location.reload();
     });
+};
 
 /**
   * Instructs the browser to reload the page.
   */
-Nightmare.action('reload',
+Nightmare.prototype.reload = [
     function () {
         parent.on('reload', function () {
             win.webContents.reload();
@@ -131,12 +130,12 @@ Nightmare.action('reload',
     function () {
         debug('.reload()');
         return this._invokeRunnerOperation("reload");
-    });
+    }];
 
 /**
   * instructs the browser to stop page loading.
   */
-Nightmare.action('stop',
+Nightmare.prototype.stop = [
     function (ns, options, parent, win, renderer) {
         parent.on('stop', function () {
             win.webContents.stop();
@@ -147,4 +146,4 @@ Nightmare.action('stop',
         debug('.stop()');
 
         return this._invokeRunnerOperation("stop");
-    });
+    }];
