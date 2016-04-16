@@ -2,7 +2,7 @@
 
 const debug = require("debug")("nightmare:cookies");
 const co = require("co");
-const Nightmare = require("./nightmare");
+const Nightmare = require("../lib/nightmare");
 const _ = require("lodash");
 
 /**

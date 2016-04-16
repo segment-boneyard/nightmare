@@ -31,8 +31,10 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="lib\app.js" />
-    <Compile Include="lib\cookies.js" />
+    <Compile Include="app.js" />
+    <Compile Include="actions\cookies.js" />
+    <Compile Include="actions\core.js" />
+    <Compile Include="actions\emulateInput.js" />
     <Compile Include="lib\frame-manager.js" />
     <Compile Include="lib\ipc.js" />
     <Compile Include="lib\javascript.js" />
@@ -69,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />
+    <Folder Include="actions\" />
     <Folder Include="test\" />
     <Folder Include="test\files\" />
     <Folder Include="test\fixtures\" />
