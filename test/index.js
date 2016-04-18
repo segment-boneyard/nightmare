@@ -15,6 +15,7 @@ var rimraf = require('rimraf');
 var child_process = require('child_process');
 var PNG = require('pngjs').PNG;
 var should = chai.should();
+var IPC = require('../lib/ipc');
 
 /**
  * Temporary directory
@@ -1245,7 +1246,7 @@ describe('Nightmare', function () {
           this.child.emit('checkDevTools');
         });
       nightmare = Nightmare({show:true, openDevTools:true});
-      
+
     });
 
     afterEach(function*(){
@@ -1260,7 +1261,82 @@ describe('Nightmare', function () {
 
       devToolsOpen.should.be.true;
     });
-  })
+  });
+
+  describe('ipc', function(){
+    beforeEach(function() {
+      Nightmare.action('test',
+        function(_, __, parent, ___, ____, done) {
+          parent.respondTo('test', function(arg1, done) {
+            done.progress('one');
+            done.progress('two');
+            if (arg1 === 'error') {
+              return done('Error!');
+            }
+            else {
+              done(null, `Got ${arg1}`);
+            }
+          });
+          done();
+        },
+        function(options, done) {
+          var channel = this.child.call('test', options.arg || options, done);
+          if (options.onData) { channel.on('data', options.onData); }
+          if (options.onEnd) { channel.on('end', options.onEnd); }
+        });
+      Nightmare.action('noImplementation',
+        function(done) {
+          this.child.call('noImplementation', done);
+        });
+      nightmare = Nightmare();
+    });
+
+    afterEach(function*(){
+      yield nightmare.end();
+    });
+
+    it('should only make one IPC instance per process', function() {
+      var processStub = {send: function() {}, on: function(){}};
+      var ipc1 = IPC(processStub);
+      var ipc2 = IPC(processStub);
+      ipc1.should.equal(ipc2);
+    });
+
+    it('should support basic call-response', function*() {
+      var result = yield nightmare.test('x');
+      result.should.equal('Got x');
+    });
+
+    it('should support errors across IPC', function(done) {
+      nightmare.test('error').then(
+        function() {
+          done(new Error('Action succeeded when it should have errored!'));
+        },
+        function() {
+          done();
+        });
+    });
+
+    it('should stream progress', function*() {
+      var progress = [];
+      yield nightmare.test({
+        arg: 'x',
+        onData: (data) => progress.push(data),
+        onEnd: (error, data) => progress.push([error, data])
+      });
+      progress.should.deep.equal(['one', 'two', [null, 'Got x']]);
+    });
+
+    it('should trigger error if no responder is registered', function(done) {
+      nightmare.noImplementation().then(
+        function() {
+          done(new Error('Action succeeded when it should have errored!'));
+        },
+        function() {
+          done();
+        });
+    })
+  });
 });
 
 /**
