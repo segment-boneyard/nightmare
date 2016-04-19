@@ -15,6 +15,7 @@ var rimraf = require('rimraf');
 var child_process = require('child_process');
 var PNG = require('pngjs').PNG;
 var should = chai.should();
+var split = require('split');
 
 /**
  * Temporary directory
@@ -37,6 +38,11 @@ var base = 'http://localhost:7500/';
 describe('Nightmare', function () {
   before(function (done) {
     server.listen(7500, done);
+    Nightmare = withDeprecationTracking(Nightmare);
+  });
+
+  after(function() {
+    Nightmare.assertNoDeprecations();
   });
 
   it('should be constructable', function*() {
@@ -1407,6 +1413,34 @@ describe('Nightmare', function () {
 
 function fixture(path) {
   return url.resolve(base, path);
+}
+
+/**
+ * Track deprecation warnings.
+ */
+
+function withDeprecationTracking(constructor) {
+  var newConstructor = function() {
+    var instance = constructor.apply(this, arguments);
+    instance.proc.stderr.pipe(split()).on('data', (line) => {
+      if (line.indexOf('deprecated') > -1) {
+        newConstructor.__deprecations.add(line);
+      }
+    });
+    return instance;
+  };
+  newConstructor.__deprecations = new Set();
+  newConstructor.assertNoDeprecations = function() {
+    var deprecations = Nightmare.__deprecations;
+    if (deprecations.size) {
+      var plural = deprecations.size === 1 ? '' : 's';
+      throw new Error(
+        `Used ${deprecations.size} deprecated Electron API${plural}:
+        ${Array.from(deprecations).join('\n        ')}`);
+    }
+  }
+  Object.setPrototypeOf(newConstructor, constructor);
+  return newConstructor;
 }
 
 /**
