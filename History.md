@@ -1,3 +1,10 @@
+2.3.3 / 2016-04-19
+==================
+
+  * fixes `.goto()` failing when the page does not load
+  * fixes deprecated Electron APIs
+  * adds testing for deprecated API usage in Electron
+
 2.3.2 / 2016-04-14
 ==================
 
