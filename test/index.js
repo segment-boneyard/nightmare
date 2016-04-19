@@ -1137,7 +1137,7 @@ describe('Nightmare', function () {
     });
 
     it('should set viewport', function*() {
-      var size = { width: 400, height: 300, 'use-content-size': true };
+      var size = { width: 400, height: 300, useContentSize: true };
       nightmare = Nightmare(size);
       var result = yield nightmare
         .goto(fixture('options'))
@@ -1380,7 +1380,7 @@ describe('Nightmare', function () {
           this.child.emit('checkDevTools');
         });
       nightmare = Nightmare({show:true, openDevTools:true});
-      
+
     });
 
     afterEach(function*(){
