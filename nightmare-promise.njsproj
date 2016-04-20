@@ -42,6 +42,7 @@
     <Compile Include="lib\nightmare.js" />
     <Compile Include="lib\preload.js" />
     <Compile Include="lib\runner.js" />
+    <Compile Include="test\bb-xvfb" />
     <Compile Include="test\files\globals.js" />
     <Compile Include="test\files\jquery-2.1.1.min.js" />
     <Compile Include="test\files\nightmare-error.js" />
@@ -49,6 +50,7 @@
     <Compile Include="test\fixtures\preload\index.js" />
     <Compile Include="test\index.js" />
     <Compile Include="test\server.js" />
+    <Compile Include="test\waitForX" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="test\files\test.css" />
@@ -62,6 +64,9 @@
     <Content Include="test\fixtures\navigation\b.html" />
     <Content Include="test\fixtures\navigation\c.html" />
     <Content Include="test\fixtures\navigation\index.html" />
+    <Content Include="test\fixtures\navigation\invalid-frame.html" />
+    <Content Include="test\fixtures\navigation\invalid-image.html" />
+    <Content Include="test\fixtures\navigation\valid-frame.html" />
     <Content Include="test\fixtures\options\index.html" />
     <Content Include="test\fixtures\preload\index.html" />
     <Content Include="test\fixtures\rendering\index.html" />

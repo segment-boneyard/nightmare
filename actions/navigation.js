@@ -59,6 +59,11 @@ Nightmare.prototype.forward = [
  */
 Nightmare.prototype.goto = [
     function (ns, options, parent, win, renderer) {
+        const electron = require('electron');
+        const urlFormat = require('url');
+
+        const KNOWN_PROTOCOLS = ['http', 'https', 'file', 'about'];
+
         parent.on('goto', function (url, headers) {
             var extraHeaders = '';
             for (var key in headers) {
@@ -70,24 +75,80 @@ Nightmare.prototype.goto = [
                     result: url
                 });
             } else {
-                var resolveGoto = function (message) {
-                    win.webContents.removeListener("did-fail-load", rejectGoto);
-                    parent.emit('goto', {
-                        result: win.webContents.getURL()
-                    });
-                };
-                var rejectGoto = function (message) {
-                    win.webContents.removeListener("did-finish-load", resolveGoto);
-                    parent.emit('goto', {
-                        error: message
+                var responseData = {};
+
+                let resolveGoto = function (message) {
+                    done({
+                        result: responseData
                     });
                 };
 
-                win.webContents.once('did-fail-load', rejectGoto);
-                win.webContents.once('did-finish-load', resolveGoto);
+                let rejectGoto = function (event, code, detail, failedUrl, isMainFrame) {
+                     if (!isMainFrame)
+                        return;
 
-                win.webContents.loadURL(url, {
-                    extraHeaders: extraHeaders
+                     done({
+                            err: {
+                            message: 'navigation error',
+                            code: code,
+                            details: detail,
+                            url: failedUrl || url
+                          }
+                     });
+                };
+
+                let getDetails = function(event, status, newUrl, oldUrl, statusCode, method, referrer, headers, resourceType) {
+
+                    if (resourceType != 'mainFrame')
+                        return;
+                    
+                    responseData = {
+                        url: newUrl,
+                        code: statusCode,
+                        method: method,
+                        referrer: referrer,
+                        headers: headers
+                    };
+                };
+
+                let done = function(data) {
+                    win.webContents.removeListener('did-fail-load', rejectGoto);
+                    win.webContents.removeListener('did-get-response-details', getDetails);
+                    win.webContents.removeListener('did-finish-load', resolveGoto);
+                    // wait a tick before notifying to resolve race conditions for events
+                    setImmediate(() => parent.emit('goto', data));
+                }
+
+                // In most environments, loadURL handles this logic for us, but in some
+                // it just hangs for unhandled protocols. Mitigate by checking ourselves.
+                let canLoadProtocol = function(url, callback) {
+                    let protocol = (urlFormat.parse(url).protocol || '').replace(/:$/, '');
+                    if (!protocol || KNOWN_PROTOCOLS.includes(protocol)) {
+                        callback(true);
+                        return;
+                    }
+                    electron.protocol.isProtocolHandled(protocol, callback);
+                }
+
+                canLoadProtocol(url, function(canLoadProtocol) {
+                    if (canLoadProtocol) {
+                        win.webContents.on('did-fail-load', rejectGoto);
+                        win.webContents.on('did-get-response-details', getDetails);
+                        win.webContents.on('did-finish-load', resolveGoto);
+
+                        win.webContents.loadURL(url, {
+                          extraHeaders: extraHeaders
+                        });
+                        return;
+                    }
+
+                    done({
+                      err:{
+                        message: 'navigation error',
+                        code: -300,
+                        details: 'ERR_INVALID_URL',
+                        url: url
+                    }});
                 });
             }
         });

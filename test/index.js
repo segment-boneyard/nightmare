@@ -81,12 +81,20 @@ describe('Nightmare', function () {
         var nightmare;
 
         beforeEach(function* () {
-            nightmare = new Nightmare();
+            nightmare = new Nightmare({
+                webPreferences: {partition: 'test-partition' + Math.random()}
+            });
             yield nightmare.init();
         });
 
         afterEach(function* () {
             nightmare.end();
+        });
+
+        it('should return data about the response', function* () {
+          let data = yield nightmare.goto(fixture('navigation'));
+
+          data.should.contain.keys('url', 'code', 'method', 'referrer', 'headers');
         });
 
         it('should click on a link and then go back', function* () {
@@ -108,6 +116,144 @@ describe('Nightmare', function () {
                 .title();
 
             title.should.equal('Navigation');
+        });
+
+        it('should fail if navigation target is invalid', function* () {
+            let error = {};
+
+            try {
+                yield nightmare.goto('http://this-is-not-a-real-domain.com');
+            }
+            catch(ex) {
+               error = ex; 
+            }
+
+            error.should.contain.keys('message', 'code', 'url');
+            error.code.should.be.a('number');
+        });
+
+        it('should fail if navigation target is a malformed URL', function* () {
+            let error = {};
+
+            try {
+                yield nightmare.goto('somewhere out there');
+            }
+            catch(ex) {
+                error = ex;
+            }
+            
+            error.details.should.equal('ERR_INVALID_URL');
+        });
+
+        it('should fail if navigating to an unknown protocol', function* () {
+          let error = {};
+
+          try {
+            yield nightmare.goto('fake-protocol://blahblahblah');
+          }
+          catch(ex) {
+            error = ex;
+          }
+          error.details.should.equal('ERR_INVALID_URL');
+        });
+
+        it('should not fail if the URL loads but a resource fails', function* () {
+            yield nightmare.goto(fixture('navigation/invalid-image'));
+        });
+
+        it('should not fail if a child frame fails', function* () {
+            yield nightmare.goto(fixture('navigation/invalid-frame'));
+        });
+
+        it('should return correct data when child frames are present', function* () {
+            let data = yield nightmare.goto(fixture('navigation/valid-frame'));
+
+            data.should.have.property('url');
+            data.url.should.equal(fixture('navigation/valid-frame'));
+        });
+
+        it('should not fail if response was a valid error (e.g. 404)', function* () {
+          yield nightmare.goto(fixture('navigation/not-a-real-page'));
+        });
+
+        it('should fail if the response dies in flight', function* () {
+          let error = {};
+
+          try {
+            yield nightmare.goto(fixture('do-not-respond'))
+          }
+          catch(ex) {
+            error = ex;
+          }
+
+          error.code.should.equal(-324);
+        });
+
+        it('should not fail for a redirect', function* () {
+            yield nightmare.goto(fixture('redirect?url=%2Fnavigation'));
+        });
+
+        it('should fail for a redirect to an invalid URL', function* () {
+          var error = {};
+
+          try {
+              yield nightmare.goto(
+                fixture('redirect?url=http%3A%2F%2Fthis-is-not-a-real-domain.com'));
+          }
+          catch(ex) {
+            error = ex;
+          }
+          
+          error.code.should.equal(-105);
+        });
+
+        it('should succeed properly if request handler is present', function* () {
+            Nightmare.action('monitorRequest',
+                function(name, options, parent, win, renderer) {
+                    win.webContents.session.webRequest.onBeforeRequest(['*://localhost:*'],
+                        function(details, callback) {
+                            callback({cancel: false});
+                        }
+                    );
+                },
+                function() {
+                }
+            );
+
+            let nm = new Nightmare({webPreferences: {partition: 'test-partition'}});
+            yield nm.chain()
+                .goto(fixture('navigation'))
+                .end();
+
+        });
+
+        it('should fail properly if request handler is present', function* () {
+            let error = {};
+            Nightmare.action('monitorRequest',
+                function(name, options, parent, win, renderer) {
+                    win.webContents.session.webRequest.onBeforeRequest(['*://localhost:*'],
+                    function(details, callback) {
+                        callback({cancel: false});
+                    }
+                    );
+                },
+                function() {
+                }
+            );
+
+            let nm = new Nightmare({webPreferences: {partition: 'test-partition'}});
+            yield nm.init();
+
+            try {
+                yield nm.chain()
+                        .goto('http://this-is-not-a-real-domain.com');
+
+            }
+            catch(ex) {
+                error = ex;
+            }
+
+            error.code.should.equal(-105);
         });
 
         it('should work for links that dont go anywhere', function* () {
