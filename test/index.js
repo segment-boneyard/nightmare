@@ -16,6 +16,9 @@ var child_process = require('child_process');
 var PNG = require('pngjs').PNG;
 var should = chai.should();
 var split = require('split');
+var asPromised = require('chai-as-promised');
+
+chai.use(asPromised);
 
 /**
  * Temporary directory
@@ -364,16 +367,11 @@ describe('Nightmare', function () {
       title.should.equal('Evaluation -- testparameter');
     });
 
-    it('should capture invalid evaluate fn', function*() {
-      var didFail = false;
-      try {
-        yield nightmare
-          .goto(fixture('evaluation'))
-          .evaluate('not_a_function');
-      } catch (e) {
-        didFail = true;
-      }
-      didFail.should.be.true;
+    it('should capture invalid evaluate fn', function() {
+      return nightmare
+        .goto(fixture('evaluation'))
+        .evaluate('not_a_function')
+        .should.be.rejected;
     });
   });
 
@@ -547,28 +545,18 @@ describe('Nightmare', function () {
       value.should.equal('');
     })
 
-    it('should not type in a nonexistent selector', function*(){
-      var failed = false;
-      try {
-        yield nightmare
-          .goto(fixture('manipulation'))
-          .type('does-not-exist', 'nightmare');
-      } catch(e){
-        failed = true;
-      }
-      failed.should.be.true;
+    it('should not type in a nonexistent selector', function(){
+      return nightmare
+        .goto(fixture('manipulation'))
+        .type('does-not-exist', 'nightmare')
+        .should.be.rejected;
     });
 
-    it('should not insert in a nonexistent selector', function*(){
-      var failed = false;
-      try {
-        yield nightmare
-          .goto(fixture('manipulation'))
-          .insert('does-not-exist', 'nightmare');
-      } catch(e){
-        failed = true;
-      }
-      failed.should.be.true;
+    it('should not insert in a nonexistent selector', function(){
+      return nightmare
+        .goto(fixture('manipulation'))
+        .insert('does-not-exist', 'nightmare')
+        .should.be.rejected;
     });
 
     it('should blur the active element when something is clicked', function*() {
@@ -1115,44 +1103,29 @@ describe('Nightmare', function () {
       useragent.should.eql('firefox');
     });
 
-    it('should wait and fail with waitTimeout', function*() {
-      var didFail = false;
-      try {
-        nightmare = Nightmare({waitTimeout: 254});
-        yield nightmare
-          .goto(fixture('navigation'))
-          .wait('foobar');
-      } catch (e) {
-        didFail = true;
-      }
-      didFail.should.be.true;
+    it('should wait and fail with waitTimeout', function() {
+      nightmare = Nightmare({waitTimeout: 254});
+      return nightmare
+        .goto(fixture('navigation'))
+        .wait('foobar')
+        .should.be.rejected;
     });
 
-    it('should wait and fail with waitTimeout and a ms wait time', function*() {
-      var didFail = false;
-      try {
-        nightmare = Nightmare({waitTimeout: 254});
-       yield nightmare
-          .goto(fixture('navigation'))
-          .wait(1000);
-      } catch (e) {
-        didFail = true;
-      }
-      didFail.should.be.true;
+    it('should wait and fail with waitTimeout and a ms wait time', function() {
+      nightmare = Nightmare({waitTimeout: 254});
+      return nightmare
+        .goto(fixture('navigation'))
+        .wait(1000)
+        .should.be.rejected;
     });
 
-    it('should wait and fail with waitTimeout with queued functions', function*() {
-      var didFail = false;
-      try {
-        nightmare = Nightmare({waitTimeout: 254});
-        yield nightmare
-          .goto(fixture('navigation'))
-          .wait('foobar')
-          .exists('baz');
-      } catch (e) {
-        didFail = true;
-      }
-      didFail.should.be.true;
+    it('should wait and fail with waitTimeout with queued functions', function() {
+      nightmare = Nightmare({waitTimeout: 254});
+      return nightmare
+        .goto(fixture('navigation'))
+        .wait('foobar')
+        .exists('baz')
+        .should.be.rejected;
     });
 
     it('should set authentication', function*() {
