@@ -14,7 +14,9 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var PNG = require('pngjs').PNG;
 var rimraf = require('rimraf');
+var split = require("split");
 var child_process = require('child_process');
+
 var should = chai.should();
 var expect = chai.expect;
 
@@ -38,7 +40,12 @@ var base = 'http://localhost:7500/';
 
 describe('Nightmare', function () {
     before(function (done) {
-        server.listen(7500, done);
+    server.listen(7500, done);
+    Nightmare = withDeprecationTracking(Nightmare);
+    });
+
+    after(function() {
+        Nightmare.assertNoDeprecations();
     });
 
     it('should be constructable', function* () {
@@ -1910,6 +1917,36 @@ describe('Nightmare', function () {
 function fixture(path) {
     return url.resolve(base, path);
 }
+
+/**
+ * Track deprecation warnings.
+ */
+
+function withDeprecationTracking(cls) {
+
+  Nightmare.__deprecations = [];
+
+  cls.prototype.childReady = function() {
+    var self = this;
+    self.proc.stderr.pipe(split()).on('data', function(line) {
+      if (line.indexOf('deprecated') > -1) {
+        Nightmare.__deprecations.unshift(line);
+      }
+    });
+  };
+  
+  cls.assertNoDeprecations = function() {
+    var deprecations = Nightmare.__deprecations;
+    if (deprecations.length) {
+      var plural = deprecations.length === 1 ? '' : 's';
+      throw new Error(
+        `Used ${deprecations.length} deprecated Electron API${plural}:
+        ${Array.from(deprecations).join('\n        ')}`);
+    }
+  }
+
+  return cls;
+};
 
 /**
  * Simple assertion for running processes
