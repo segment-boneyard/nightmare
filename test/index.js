@@ -547,6 +547,30 @@ describe('Nightmare', function () {
       value.should.equal('');
     })
 
+    it('should not type in a nonexistent selector', function*(){
+      var failed = false;
+      try {
+        yield nightmare
+          .goto(fixture('manipulation'))
+          .type('does-not-exist', 'nightmare');
+      } catch(e){
+        failed = true;
+      }
+      failed.should.be.true;
+    });
+
+    it('should not insert in a nonexistent selector', function*(){
+      var failed = false;
+      try {
+        yield nightmare
+          .goto(fixture('manipulation'))
+          .insert('does-not-exist', 'nightmare');
+      } catch(e){
+        failed = true;
+      }
+      failed.should.be.true;
+    });
+
     it('should blur the active element when something is clicked', function*() {
       var isBody = yield nightmare
         .goto(fixture('manipulation'))
