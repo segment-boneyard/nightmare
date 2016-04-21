@@ -73,7 +73,7 @@ var size = yield nightmare.chain()
 	.size(scaleFactor, offsetFactor)
 ```
 
-This simplifies creating extensions and lets IDEs with autocomplete pick up the API automatically. Arguments don't need to be specially handled to support done() -- simply return a promise. 
+This simplifies creating extensions and lets IDEs with autocomplete pick up the API automatically. Arguments don't need to be specially handled to support done() -- simply return a promise. The chain() method will pickup all functions associated with the prototype and make them chainable so you don't have to.
 
 Nightmare can be subclassed too!
 
