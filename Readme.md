@@ -47,6 +47,36 @@ The available modules are:
 	* Input - Contains the functions associated with interacting with a page - typing, setting values, etc.
 	* Navigation - Contains the functions associated with navigating - goto, stop, reload and so forth.
 
+######Simpler Extension
+
+Nightmare v3 can be extended by simply adding functions to Nightmare.prototype.
+
+```
+Nightmare.prototype.size = function (scale, offset) {
+        return this.evaluate_now(function (scale, offset) {
+            var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+            var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+            return {
+                height: h,
+                width: w,
+                scaledHeight: h * scale + offset,
+                scaledWidth: w * scale + offset
+            };
+        }, scale, offset)
+    };
+
+var scaleFactor = 2.0;
+var offsetFactor = 1;
+
+var size = yield nightmare.chain()
+	.goto(fixture('simple'))
+	.size(scaleFactor, offsetFactor)
+```
+
+This simplifies creating extensions and lets IDEs with autocomplete pick up the API automatically. Arguments don't need to be specially handled to support done() -- simply return a promise. 
+
+Nightmare can be subclassed too!
+
 ######About
 
 Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but faster and more modern.
