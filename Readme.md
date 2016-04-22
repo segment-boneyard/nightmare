@@ -4,7 +4,7 @@ Nightmare
 
 Nightmare is a high-level browser automation library.
 
-####Nightmare v3
+###Nightmare v3
 
 This version of Nightmare relies on promises. The primary API change is that all functions now return promises instead of the this object. However, Nightmare is still chainable through the .chain() function. This simplifies the programming and extension model as all custom functions and namespaces added through .action() are inheritly chainable.
 
@@ -28,7 +28,7 @@ Since all methods return promises, it's easy to synchronize between other Promis
 
 This allows nightmare to work better in conjunction with other libraries, but still retain the original goal of having a simple, non-pyramid-of-doom API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
 
-######Modules
+####Modules
 
 Starting with Nightmare v3 one can choose the specific base functions that are defined on the Nightmare object.
 
@@ -36,8 +36,8 @@ By default, all modules are associated with the nightmare instance. If you only 
 just the modules you're interested in.
 
 ```
-const Nightmare = require("./node_modules/nightmare/lib/nightmare"); //require the base nightmare class.
-require("./node_modules/nightmare/lib/actions/core"); //only pull in the 'core' set of actions.
+const Nightmare = require("nightmare/lib/nightmare"); //require the base nightmare class.
+require("nightmare/actions/core"); //only pull in the 'core' set of actions.
 ```
 
 The available modules are:
@@ -47,7 +47,7 @@ The available modules are:
 	* Input - Contains the functions associated with interacting with a page - typing, setting values, etc.
 	* Navigation - Contains the functions associated with navigating - goto, stop, reload and so forth.
 
-######Simpler Extension
+####Simpler Extension
 
 Nightmare v3 can be extended by simply adding functions to Nightmare.prototype.
 
@@ -77,7 +77,7 @@ This simplifies creating extensions and lets IDEs with autocomplete pick up the 
 
 Nightmare can be subclassed too!
 
-######About
+####About
 
 Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but faster and more modern.
 
