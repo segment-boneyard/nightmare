@@ -5,6 +5,7 @@
 require('mocha-generators').install();
 
 var Nightmare = require('..');
+var IPC = require('../lib/ipc');
 var chai = require('chai');
 var url = require('url');
 var server = require('./server');
@@ -15,7 +16,7 @@ var rimraf = require('rimraf');
 var child_process = require('child_process');
 var PNG = require('pngjs').PNG;
 var should = chai.should();
-var IPC = require('../lib/ipc');
+var split = require('split');
 
 /**
  * Temporary directory
@@ -38,6 +39,11 @@ var base = 'http://localhost:7500/';
 describe('Nightmare', function () {
   before(function (done) {
     server.listen(7500, done);
+    Nightmare = withDeprecationTracking(Nightmare);
+  });
+
+  after(function() {
+    Nightmare.assertNoDeprecations();
   });
 
   it('should be constructable', function*() {
@@ -80,11 +86,18 @@ describe('Nightmare', function () {
     var nightmare;
 
     beforeEach(function() {
-      nightmare = Nightmare();
+      nightmare = Nightmare({
+        webPreferences: {partition: 'test-partition' + Math.random()}
+      });
     });
 
     afterEach(function*() {
       yield nightmare.end();
+    });
+
+    it('should return data about the response', function*() {
+      var data = yield nightmare.goto(fixture('navigation'));
+      data.should.contain.keys('url', 'code', 'method', 'referrer', 'headers');
     });
 
     it('should click on a link and then go back', function*() {
@@ -160,6 +173,131 @@ describe('Nightmare', function () {
           var textB = document.querySelector('a.b').textContent;
           return (expectedA === textA && expectedB === textB);
         }, 'A', 'B');
+    });
+
+    it('should fail if navigation target is invalid', function() {
+      return nightmare.goto('http://this-is-not-a-real-domain.com')
+        .then()
+        .then(
+          function() {
+            throw new Error('Navigation to an invalid domain succeeded');
+          }, function(error) {
+            error.should.contain.keys('message', 'code', 'url');
+            error.code.should.be.a('number');
+          });
+    });
+
+    it('should fail if navigation target is a malformed URL', function(done) {
+      nightmare.goto('somewhere out there')
+        .then(function() {
+          done(new Error('Navigation to an invalid domain succeeded'));
+        })
+        .catch(function(error) {
+          done();
+        });
+    });
+
+    it('should fail if navigating to an unknown protocol', function(done) {
+      nightmare.goto('fake-protocol://blahblahblah')
+        .then(function() {
+          done(new Error('Navigation to an invalid protocol succeeded'));
+        })
+        .catch(function(error) {
+          done();
+        });
+    });
+
+    it('should not fail if the URL loads but a resource fails', function() {
+      return nightmare.goto(fixture('navigation/invalid-image')).then();
+    });
+
+    it('should not fail if a child frame fails', function() {
+      return nightmare.goto(fixture('navigation/invalid-frame')).then();
+    });
+
+    it('should return correct data when child frames are present', function*() {
+      var data = yield nightmare.goto(fixture('navigation/valid-frame'));
+      data.should.have.property('url');
+      data.url.should.equal(fixture('navigation/valid-frame'));
+    });
+
+    it('should not fail if response was a valid error (e.g. 404)', function() {
+      return nightmare.goto(fixture('navigation/not-a-real-page')).then();
+    });
+
+    it('should fail if the response dies in flight', function(done) {
+      nightmare.goto(fixture('do-not-respond'))
+        .then(function() {
+          done(new Error('Navigation succeeded but server connection died'));
+        })
+        .catch(function(error) {
+          done();
+        });
+    });
+
+    it('should not fail for a redirect', function() {
+      return nightmare.goto(fixture('redirect?url=%2Fnavigation')).then();
+    });
+
+    it('should fail for a redirect to an invalid URL', function(done) {
+      nightmare.goto(
+        fixture('redirect?url=http%3A%2F%2Fthis-is-not-a-real-domain.com'))
+        .then(function() {
+          done(new Error('Navigation succeeded with redirect to bad location'));
+        })
+        .catch(function(error) {
+          done();
+        });
+    });
+
+    it('should succeed properly if request handler is present', function() {
+      Nightmare.action(
+        'monitorRequest',
+        function(name, options, parent, win, renderer, done) {
+          win.webContents.session.webRequest.onBeforeRequest(
+            ['*://localhost:*'],
+            function(details, callback) {
+              callback({cancel: false});
+            }
+          );
+          done();
+        },
+        function(done) {
+          done();
+          return this;
+        });
+
+      return Nightmare({webPreferences: {partition: 'test-partition'}})
+        .goto(fixture('navigation'))
+        .end()
+        .then();
+    });
+
+    it('should fail properly if request handler is present', function(done) {
+      Nightmare.action(
+        'monitorRequest',
+        function(name, options, parent, win, renderer, done) {
+          win.webContents.session.webRequest.onBeforeRequest(
+            ['*://localhost:*'],
+            function(details, callback) {
+              callback({cancel: false});
+            }
+          );
+          done();
+        },
+        function(done) {
+          done();
+          return this;
+        });
+
+      Nightmare({webPreferences: {partition: 'test-partition'}})
+        .goto('http://this-is-not-a-real-domain.com')
+        .then(function() {
+          done(new Error('Navigation to an invalid domain succeeded'));
+        })
+        .catch(function(error) {
+          done();
+        });
     });
   });
 
@@ -873,8 +1011,11 @@ describe('Nightmare', function () {
         .on('did-fail-load', function () {
           fired = true;
         });
-      yield nightmare
-        .goto('https://alskdjfasdfuuu.com');
+      try {
+        yield nightmare
+          .goto('https://alskdjfasdfuuu.com');
+      }
+      catch(error) {}
       fired.should.be.true;
     });
 
@@ -1003,7 +1144,7 @@ describe('Nightmare', function () {
     });
 
     it('should set viewport', function*() {
-      var size = { width: 400, height: 300, 'use-content-size': true };
+      var size = { width: 400, height: 300, useContentSize: true };
       nightmare = Nightmare(size);
       var result = yield nightmare
         .goto(fixture('options'))
@@ -1348,6 +1489,34 @@ describe('Nightmare', function () {
 
 function fixture(path) {
   return url.resolve(base, path);
+}
+
+/**
+ * Track deprecation warnings.
+ */
+
+function withDeprecationTracking(constructor) {
+  var newConstructor = function() {
+    var instance = constructor.apply(this, arguments);
+    instance.proc.stderr.pipe(split()).on('data', (line) => {
+      if (line.indexOf('deprecated') > -1) {
+        newConstructor.__deprecations.add(line);
+      }
+    });
+    return instance;
+  };
+  newConstructor.__deprecations = new Set();
+  newConstructor.assertNoDeprecations = function() {
+    var deprecations = Nightmare.__deprecations;
+    if (deprecations.size) {
+      var plural = deprecations.size === 1 ? '' : 's';
+      throw new Error(
+        `Used ${deprecations.size} deprecated Electron API${plural}:
+        ${Array.from(deprecations).join('\n        ')}`);
+    }
+  }
+  Object.setPrototypeOf(newConstructor, constructor);
+  return newConstructor;
 }
 
 /**

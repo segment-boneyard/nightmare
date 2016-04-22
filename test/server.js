@@ -50,6 +50,24 @@ app.get('/headers', function (req, res) {
 });
 
 /**
+ * Redirect to the provided URL for testing redirects and headers
+ */
+
+app.get('/redirect', function (req, res) {
+  var code = Number(req.query.code) || 301;
+  var url = req.query.url || '/';
+  res.redirect(code, url);
+});
+
+/**
+ * Simply hang up on the connection for testing interrupted page loads
+ */
+
+app.get('/do-not-respond', function(req, res) {
+  res.socket.end();
+});
+
+/**
  * Serve the fixtures directory as static files.
  */
 

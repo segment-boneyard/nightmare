@@ -170,6 +170,23 @@ Complete any queue operations, disconnect and close the electron process.
 #### .goto(url[, headers])
 Load the page at `url`.  Optionally, a `headers` hash can be supplied to set headers on the `goto` request.
 
+When a page load is successful, `goto` returns an object with metadata about the page load, including:
+
+- `url`: The URL that was loaded
+- `code`: The HTTP status code (e.g. 200, 404, 500)
+- `method`: The HTTP method used (e.g. "GET", "POST")
+- `referrer`: The page that the window was displaying prior to this load or an empty string if this is the first page load.
+- `headers`: An object representing the response headers for the request as in `{header1-name: header1-value, header2-name: header2-value}`
+
+If the page load fails, the error will be an object wit the following properties:
+
+- `message`: A string describing the type of error
+- `code`: The underlying error code describing what went wrong. Note this is NOT the HTTP status code. For possible values, see https://code.google.com/p/chromium/codesearch#chromium/src/net/base/net_error_list.h
+- `details`: A string with additional details about the error. This may be null or an empty string.
+- `url`: The URL that failed to load
+
+Note that any valid response from a server is considered “successful.” That means things like 404 “not found” errors are successful results for `goto`. Only things that would cause no page to appear in the browser window, such as no server responding at the given address, the server hanging up in the middle of a response, or invalid URLs, are errors.
+
 #### .back()
 Go back to the previous page.
 
