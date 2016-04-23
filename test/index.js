@@ -1476,7 +1476,31 @@ describe('Nightmare', function () {
         function() {
           done();
         });
-    })
+    });
+
+    it('should log a warning when replacing a responder', function*() {
+      Nightmare.action('uhoh',
+        function(_, __, parent, ___, ____, done) {
+          parent.respondTo('test', function(done) {
+            done();
+          });
+          done();
+        },
+        function(done) {
+          this.child.call('test', done);
+        });
+
+      var logged = false;
+      yield Nightmare()
+        .on('nightmare:ipc:debug', function(message) {
+          if (message.toLowerCase().indexOf('replacing') > -1) {
+            logged = true;
+          }
+        })
+        .goto('about:blank')
+        .end();
+      logged.should.be.true;
+    });
   });
 });
 
