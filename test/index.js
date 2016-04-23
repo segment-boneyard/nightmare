@@ -1329,8 +1329,7 @@ describe('Nightmare', function () {
     });
 
     it('should support extending nightmare', function*() {
-      var nightmare = Nightmare()
-      var tagName = yield Nightmare()
+      var tagName = yield nightmare
         .goto(fixture('simple'))
         .use(select('h1'))
 
@@ -1374,16 +1373,20 @@ describe('Nightmare', function () {
 
   describe('devtools', function(){
     beforeEach(function() {
-      Nightmare.action('checkDevTools',
+      Nightmare.action('waitForDevTools',
         function(ns, options, parent, win, renderer, done){
-          parent.on('checkDevTools', function(){
-            parent.emit('checkDevTools', null, win.webContents.isDevToolsOpened());
+          parent.on('waitForDevTools', function() {
+            function opened() { parent.emit('waitForDevTools', null, true); }
+            if (win.webContents.isDevToolsOpened()) {
+              return opened();
+            }
+            win.webContents.once('devtools-opened', opened);
           });
           done();
         },
         function(done){
-          this.child.once('checkDevTools', done);
-          this.child.emit('checkDevTools');
+          this.child.once('waitForDevTools', done);
+          this.child.emit('waitForDevTools');
         });
       nightmare = Nightmare({show:true, openDevTools:true});
 
@@ -1396,8 +1399,7 @@ describe('Nightmare', function () {
     it('should open devtools', function*(){
       var devToolsOpen = yield nightmare
         .goto(fixture('simple'))
-        .wait(2000)
-        .checkDevTools();
+        .waitForDevTools();
 
       devToolsOpen.should.be.true;
     });
