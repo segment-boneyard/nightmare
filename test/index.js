@@ -317,6 +317,7 @@ describe('Nightmare', function () {
         .goto(fixture('navigation'))
         .goto(`javascript:window.location='${fixture('navigation/a.html')}'`);
       data.should.contain.keys('url', 'code', 'method', 'referrer', 'headers');
+      data.url.should.equal(fixture('navigation/a.html'));
 
       var linkText = yield nightmare
         .evaluate(function() {
