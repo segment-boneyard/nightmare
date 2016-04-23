@@ -179,7 +179,6 @@ describe('Nightmare', function () {
 
     it('should fail if navigation target is invalid', function() {
       return nightmare.goto('http://this-is-not-a-real-domain.com')
-        .then()
         .then(
           function() {
             throw new Error('Navigation to an invalid domain succeeded');
@@ -210,11 +209,11 @@ describe('Nightmare', function () {
     });
 
     it('should not fail if the URL loads but a resource fails', function() {
-      return nightmare.goto(fixture('navigation/invalid-image')).then();
+      return nightmare.goto(fixture('navigation/invalid-image'));
     });
 
     it('should not fail if a child frame fails', function() {
-      return nightmare.goto(fixture('navigation/invalid-frame')).then();
+      return nightmare.goto(fixture('navigation/invalid-frame'));
     });
 
     it('should return correct data when child frames are present', function*() {
@@ -224,7 +223,7 @@ describe('Nightmare', function () {
     });
 
     it('should not fail if response was a valid error (e.g. 404)', function() {
-      return nightmare.goto(fixture('navigation/not-a-real-page')).then();
+      return nightmare.goto(fixture('navigation/not-a-real-page'));
     });
 
     it('should fail if the response dies in flight', function(done) {
@@ -238,7 +237,7 @@ describe('Nightmare', function () {
     });
 
     it('should not fail for a redirect', function() {
-      return nightmare.goto(fixture('redirect?url=%2Fnavigation')).then();
+      return nightmare.goto(fixture('redirect?url=%2Fnavigation'));
     });
 
     it('should fail for a redirect to an invalid URL', function(done) {
@@ -271,8 +270,7 @@ describe('Nightmare', function () {
 
       return Nightmare({webPreferences: {partition: 'test-partition'}})
         .goto(fixture('navigation'))
-        .end()
-        .then();
+        .end();
     });
 
     it('should fail properly if request handler is present', function(done) {
@@ -1326,8 +1324,7 @@ describe('Nightmare', function () {
     });
 
     it('should support extending nightmare', function*() {
-      var nightmare = Nightmare()
-      var tagName = yield Nightmare()
+      var tagName = yield nightmare
         .goto(fixture('simple'))
         .use(select('h1'))
 
@@ -1371,16 +1368,20 @@ describe('Nightmare', function () {
 
   describe('devtools', function(){
     beforeEach(function() {
-      Nightmare.action('checkDevTools',
+      Nightmare.action('waitForDevTools',
         function(ns, options, parent, win, renderer, done){
-          parent.on('checkDevTools', function(){
-            parent.emit('checkDevTools', null, win.webContents.isDevToolsOpened());
+          parent.on('waitForDevTools', function() {
+            function opened() { parent.emit('waitForDevTools', null, true); }
+            if (win.webContents.isDevToolsOpened()) {
+              return opened();
+            }
+            win.webContents.once('devtools-opened', opened);
           });
           done();
         },
         function(done){
-          this.child.once('checkDevTools', done);
-          this.child.emit('checkDevTools');
+          this.child.once('waitForDevTools', done);
+          this.child.emit('waitForDevTools');
         });
       nightmare = Nightmare({show:true, openDevTools:true});
 
@@ -1393,8 +1394,7 @@ describe('Nightmare', function () {
     it('should open devtools', function*(){
       var devToolsOpen = yield nightmare
         .goto(fixture('simple'))
-        .wait(2000)
-        .checkDevTools();
+        .waitForDevTools();
 
       devToolsOpen.should.be.true;
     });
