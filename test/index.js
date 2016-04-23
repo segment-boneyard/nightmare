@@ -298,6 +298,32 @@ describe('Nightmare', function () {
           done();
         });
     });
+
+    it('should support javascript URLs', function*() {
+      var gotoResult = yield nightmare
+        .goto(fixture('navigation'))
+        .goto('javascript:void(document.querySelector(".a").textContent="LINK");');
+      gotoResult.should.be.an('object');
+
+      var linkText = yield nightmare
+        .evaluate(function() {
+          return document.querySelector('.a').textContent;
+        });
+      linkText.should.equal('LINK');
+    });
+
+    it('should support javascript URLs that load pages', function*() {
+      var data = yield nightmare
+        .goto(fixture('navigation'))
+        .goto(`javascript:window.location='${fixture('navigation/a.html')}'`);
+      data.should.contain.keys('url', 'code', 'method', 'referrer', 'headers');
+
+      var linkText = yield nightmare
+        .evaluate(function() {
+          return document.querySelector('.d').textContent;
+        });
+      linkText.should.equal('D');
+    });
   });
 
   describe('evaluation', function () {
