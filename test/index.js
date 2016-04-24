@@ -328,6 +328,72 @@ describe('Nightmare', function () {
     });
   });
 
+  describe('iframes', function () {
+    var nightmare;
+
+    beforeEach(function() {
+      nightmare = Nightmare();
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
+    it('should start in the main document', function*() {
+      var title = yield nightmare
+        .goto(fixture('iframes'))
+        .title()
+
+      title.should.equal('root')
+    });
+
+    it('should be able to enter an iframe', function*() {
+      var title = yield nightmare
+        .goto(fixture('iframes'))
+        .enterIframe('#root')
+        .title()
+
+      title.should.equal('first')
+    });
+
+    it('should be able to enter a nested iframe', function*() {
+      var title = yield nightmare
+        .goto(fixture('iframes'))
+        .enterIframe('#root')
+        .title()
+
+      title.should.equal('first')
+
+      var title = yield nightmare
+        .enterIframe('#first')
+        .title()
+
+      title.should.equal('second')
+    });
+
+    it('should be able to enter a (possibly nested) iframe and go back to the main document', function*() {
+      var title = yield nightmare
+        .goto(fixture('iframes'))
+        .enterIframe('#root')
+        .title()
+
+      title.should.equal('first')
+
+      var title = yield nightmare
+        .enterIframe('#first')
+        .title()
+
+      title.should.equal('second')
+
+      var title = yield nightmare
+        .exitIframe()
+        .title()
+
+      title.should.equal('root')
+    });
+
+  });
+
   describe('evaluation', function () {
     var nightmare;
 

@@ -196,6 +196,27 @@ Go forward to the next page.
 #### .refresh()
 Refresh the current page.
 
+#### .enterIframe(selector)
+Enter in the `selector` iframe element and use its `document` as the `document` for subsequent actions.
+
+Any action called after this will act as if it was called from inside the iframe element.
+
+It can be called again from inside an iframe, so you can traverse a series of embedded iframes.
+
+To go back to the root `document`, call `.exitIframe()`.
+
+If the iframe you are entering comes from another domain, you may want to create your first `Nightmare` instance with `{'webPreferences': {'webSecurity': false}}` as in:
+
+```
+var nightmare = Nightmare({show: true, 'webPreferences': {'webSecurity': false}});
+```
+You may want to check those and other possible configurations in the [Electron BrowserWindow options](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions) (the same documentation listed above in [Nightmare(options)](#nightmareoptions)).
+
+#### .exitIframe()
+Exit from all iframe elements entered with `.enterIframe(selector)` and return to the root document.
+
+Any action called after this will act as normal.
+
 #### .click(selector)
 Clicks the `selector` element once.
 
