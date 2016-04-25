@@ -162,7 +162,7 @@ describe('Nightmare', function () {
     });
 
     it('should wait for returned promise to be resolved', function*() {
-      const beggening = Date.now();
+      const beginning = Date.now();
 
       yield nightmare
         .goto(fixture('navigation'))
@@ -172,7 +172,25 @@ describe('Nightmare', function () {
           })
         });
 
-      beggening.should.be.below(Date.now() - 1000);
+      beginning.should.be.below(Date.now() - 1000);
+    });
+
+    it('should wait for returned promise to be resolved to truthy value', function() {
+      var nightmare = Nightmare({waitTimeout:1000});
+
+      return nightmare
+        .goto(fixture('navigation'))
+        .wait(function() {
+          return new Promise(function(resolve) {
+            setTimeout(resolve, 10, false);
+          })
+        })
+        .then(function () {
+          throw Error("Promise should have been rejected.");
+        })
+        .catch(function(error) {
+          error.message.should.be.equal(".wait() timed out after 1000msec");
+        });
     })
   });
 
