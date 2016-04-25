@@ -160,6 +160,20 @@ describe('Nightmare', function () {
           return (expectedA === textA && expectedB === textB);
         }, 'A', 'B');
     });
+
+    it('should wait for returned promise to be resolved', function*() {
+      const beggening = Date.now();
+
+      yield nightmare
+        .goto(fixture('navigation'))
+        .wait(function() {
+          return new Promise(function(resolve) {
+            setTimeout(resolve, 1000, true);
+          })
+        });
+
+      beggening.should.be.below(Date.now() - 1000);
+    })
   });
 
   describe('evaluation', function () {
