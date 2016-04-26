@@ -156,6 +156,9 @@ var nightmare = Nightmare({
 });
 ```
 
+#### .versions()
+Gets the versions for Nightmare, Electron and Chromium.
+
 #### .useragent(useragent)
 Set the `useragent` used by electron.
 
