@@ -161,7 +161,7 @@ package for Mocha, which enables the support for generators.
 
 ## API
 
-#### Nightmare(options)
+#### new Nightmare(options)
 Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions), along with the following nightmare-specific options.
 
 ##### waitTimeout (default: 30s)
@@ -216,19 +216,9 @@ var nightmare = new Nightmare({
   dock: true
 });
 ```
+#### Nightmare Lifecycle
 
-#### .setAudioMuted(audioMuted)
-Set if audio is muted on the electron process.
-
-#### .useragent(useragent)
-Set the `useragent` used by electron.
-
-#### .end()
-Complete any queue operations, disconnect and close the electron process.
-
-### Initialization
-
-With nightmare v3, the instance must first be initialized with the .init() method prior to calling any page interaction, however the init() method provides the ability to associate with an existing electron instance if needed.
+With Nightmare v3, the instance must first be initialized with the .init() method prior to calling any page interaction, however the init() method provides the ability to associate with an existing electron instance if needed.
 
 ```
    var nightmare = new Nightmare();
@@ -236,9 +226,100 @@ With nightmare v3, the instance must first be initialized with the .init() metho
    yield nightmare.goto("http://foo.com");
 ```
 
-### Interact with the Page
+##### Chain
+With Nightmare v3, all functions return promises, however, the API can still be chained using the .chain() function which dynamically creates a chainable promise:
 
-#### .goto(url)
+```
+   var nightmare = new Nightmare();
+   yield nightmare.chain()
+			      .goto("http://foo.com")
+				  .type('input[title="Search"]', 'github nightmare')
+				  .click('#UHSearchWeb')
+				  .wait('#main');
+```
+
+Nightmare calls the initialization function if it has not been called when running the chain.
+
+##### .end()
+Complete any queue operations, disconnect and close the electron process.
+
+##### .inject(type, file)
+Inject a local `file` onto the current page. The file `type` must be either `js` or `css`.
+
+##### .header([header, value])
+Add a header override for all HTTP requests.  If `header` is undefined, the header overrides will be reset.
+
+#### Core Actions
+
+##### .evaluate(fn[, arg1, arg2,...])
+Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On completion it returns the return value of `fn`. Useful for extracting information from the page. Here's an example:
+
+```js
+var selector = 'h1';
+var text = yield nightmare
+  .evaluate(function (selector) {
+    // now we're executing inside the browser scope.
+    return document.querySelector(selector).innerText;
+   }, selector); // <-- that's how you pass parameters from Node scope to browser scope
+```
+
+##### .evaluateAsync(fn[, arg1, arg2,...])
+Evaluates an asynchronous function on the page and waits until the returned promise/generator/thenable/callback completes.
+
+##### .exists(selector)
+Returns whether the selector exists or not on the page.
+
+##### .getClientRects(selector)
+Returns the client rectangle for the selector.
+
+##### .html(path, saveType)
+Save the current page as html as files to disk at the given path. Save type options are [here](https://github.com/atom/electron/blob/master/docs/api/web-contents.md#webcontentssavepagefullpath-savetype-callback).
+
+##### .pdf(path, options)
+Saves a PDF to the specified `path`. Options are [here](https://github.com/atom/electron/blob/v0.35.2/docs/api/web-contents.md#webcontentsprinttopdfoptions-callback).
+
+##### .screenshot([path][, clip])
+Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
+
+##### .setAudioMuted(audioMuted)
+Set if audio is muted on the electron process.
+
+##### .setAuthenticationCredentials(username, password)
+Sets authentication credentials that will be supplied if prompted for a basic/digest login.
+
+##### .title()
+Returns the title of the current page.
+
+##### .url()
+Returns the url of the current page.
+
+##### .useragent(useragent)
+Set the `useragent` used by electron.
+
+##### .viewport(width, height)
+Set the viewport size.
+
+##### .visible(selector)
+Returns whether the selector is visible or not
+
+##### .wait(ms)
+Wait for `ms` milliseconds e.g. `.wait(5000)`
+
+##### .wait(selector)
+Wait until the element `selector` is present e.g. `.wait('#pay-button')`
+
+##### .wait(fn[, arg1, arg2,...])
+Wait until the `fn` evaluated on the page with `arg1, arg2,...` returns `true`. All the `args` are optional. See `.evaluate()` for usage.
+
+#### Navigation actions
+
+##### .back()
+Go back to the previous page.
+
+##### .forward()
+Go forward to the next page.
+
+##### .goto(url)
 Load the page at `url`. Optionally, a `headers` hash can be supplied to set headers on the `goto` request.
 
 When a page load is successful, `goto` returns an object with metadata about the page load, including:
@@ -258,22 +339,53 @@ If the page load fails, the error will be an object wit the following properties
 
 Note that any valid response from a server is considered “successful.” That means things like 404 “not found” errors are successful results for `goto`. Only things that would cause no page to appear in the browser window, such as no server responding at the given address, the server hanging up in the middle of a response, or invalid URLs, are errors.
 
-#### .back()
-Go back to the previous page.
+##### .refresh()
+Refresh the current page using window.location.reload.
 
-#### .forward()
-Go forward to the next page.
+##### .reload()
+Reloads the current page via electron.
 
-#### .refresh()
-Refresh the current page.
+##### .stop()
+Stops the loading of the page.
 
-#### .click(selector)
+#### Input Actions
+
+##### .click(selector)
 Clicks the `selector` element once.
 
-#### .mousedown(selector)
+##### .clickAndWaitUntilFinishLoad(selector)
+Clicks the `selector` element once and waits until a navigation event completes (Useful for clicking on links)
+
+##### .check(selector)
+Checks the `selector` checkbox element.
+
+##### .emulateClick(selector)
+Emulates a click event using electron's sendInputEvent command.
+
+##### .emulateKeystrokes(selector)
+Emulates keystrokes using electron's sendInputEvent command.
+
+##### .expectNavigation(fn, timeout)
+Returns a promise which invokes the specified action which expects to perform a navigation action.
+
+##### .insert(selector[, text])
+Similar to `.type()`. `.insert()` enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
+
+`.insert()` is faster than `.type()` but does not trigger the keyboard events.
+
+##### .mousedown(selector)
 Mousedown the `selector` element once.
 
-#### .type(selector[, text])
+##### .mouseover(selector)
+Hover over the `selector` element once.
+
+##### .scrollTo(top, left)
+Scrolls the page to desired position. `top` and `left` are always relative to the top left corner of the document.
+
+##### .select(selector, option)
+Changes the `selector` dropdown element to the option with attribute [value=`option`]
+
+##### .type(selector[, text])
 Enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
 
 `.type()` mimics a user typing in a textbox and will emit the proper keyboard events
@@ -282,69 +394,75 @@ Key presses can also be fired using Unicode values with `.type()`. For example, 
 
 > If you don't need the keyboard events, consider using `.insert()` instead as it will be faster and more robust.
 
-#### .insert(selector[, text])
-Similar to `.type()`. `.insert()` enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
-
-`.insert()` is faster than `.type()` but does not trigger the keyboard events.
-
-#### .check(selector)
-checks the `selector` checkbox element.
-
-#### .uncheck(selector)
+##### .uncheck(selector)
 unchecks the `selector` checkbox element.
 
-#### .select(selector, option)
-Changes the `selector` dropdown element to the option with attribute [value=`option`]
+#### Cookies
 
-#### .scrollTo(top, left)
-Scrolls the page to desired position. `top` and `left` are always relative to the top left corner of the document.
+##### .cookies.get(name)
 
-#### .viewport(width, height)
+Get a cookie by it's `name`. The url will be the current url.
 
-Set the viewport size.
+##### .cookies.get(query)
 
-#### .inject(type, file)
-Inject a local `file` onto the current page. The file `type` must be either `js` or `css`.
-
-#### .evaluate(fn[, arg1, arg2,...])
-Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On completion it returns the return value of `fn`. Useful for extracting information from the page. Here's an example:
+Query multiple cookies with the `query` object. If a `query.name` is set, it will return the first cookie it finds with that name, otherwise it will query for an array of cookies. If no `query.url` is set, it will use the current url. Here's an example:
 
 ```js
-var selector = 'h1';
-var text = yield nightmare
-  .evaluate(function (selector) {
-    // now we're executing inside the browser scope.
-    return document.querySelector(selector).innerText;
-   }, selector); // <-- that's how you pass parameters from Node scope to browser scope
+// get all google cookies that are secure
+// and have the path `/query`
+var cookies = yield nightmare.chain()
+  .goto('http://google.com')
+  .cookies.get({
+    path: '/query',
+    secure: true
+  })
 ```
 
-#### .wait(ms)
-Wait for `ms` milliseconds e.g. `.wait(5000)`
+Available properties are documented here: https://github.com/atom/electron/blob/master/docs/api/session.md#sescookiesgetdetails-callback
 
-#### .wait(selector)
-Wait until the element `selector` is present e.g. `.wait('#pay-button')`
+##### .cookies.get()
 
-#### .wait(fn[, arg1, arg2,...])
-Wait until the `fn` evaluated on the page with `arg1, arg2,...` returns `true`. All the `args` are optional. See `.evaluate()` for usage.
+Get all the cookies for the current url. If you'd like get all cookies for all urls, use: `.get({ url: null })`.
 
-#### .header([header, value])
-Add a header override for all HTTP requests.  If `header` is undefined, the header overrides will be reset.
+##### .cookies.set(name, value)
 
-### Extract from the Page
+Set a cookie's `name` and `value`. Most basic form, the url will be the current url.
 
-#### .exists(selector)
-Returns whether the selector exists or not on the page.
+##### .cookies.set(cookie)
 
-#### .visible(selector)
-Returns whether the selector is visible or not
+Set a `cookie`. If `cookie.url` is not set, it will set the cookie on the current url. Here's an example:
 
-#### .on(event, callback)
+```js
+yield nightmare.chain()
+  .goto('http://google.com')
+  .cookies.set({
+    name: 'token',
+    value: 'some token',
+    path: '/query',
+    secure: true
+  })
+```
+
+Available properties are documented here:  https://github.com/atom/electron/blob/master/docs/api/session.md#sescookiessetdetails-callback
+
+##### .cookies.set(cookies)
+
+Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a look at the `.cookies.set(cookie)` documentation above for a better idea of what `cookie` should look like.
+
+##### .cookies.clear(name)
+
+Clear a cookie for the current domain.
+
+```js
+yield nightmare.chain()
+  .goto('http://google.com')
+  .cookies.clear('SomeCookieName');
+```
+
+#### Events
+
+###### .on(event, callback)
 Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents).
-
-##### Additional "page" events
-
-###### .on('page', function(type="error", message, stack))
-This event is triggered if any javascript exception is thrown on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is throwing an exception.
 
 ##### "page" events
 
@@ -366,11 +484,10 @@ Nightmare disables `window.prompt` from popping up by default, but you can still
 
 Nightmare disables `window.confirm` from popping up by default, but you can still listen for the message to come up. If you need to handle the confirmation differently, you'll need to use your own preload script.
 
-###### .on('console', function(type [, arguments, ...]))
+###### .on('page', function(type="error", message, stack))
+This event is triggered if any javascript exception is thrown on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is throwing an exception.
 
-`type` will be either `log`, `warn` or `error` and `arguments` are what gets passed from the console.
-
-##### Additional "console" events
+##### "console" events
 
 Listen for `console.log(...)`, `console.warn(...)`, and `console.error(...)`.
 
@@ -380,83 +497,6 @@ Listen for `console.log(...)`, `console.warn(...)`, and `console.error(...)`.
 
 ###### .on('console', function(type, errorMessage, errorStack))
 This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
-
-#### .screenshot([path][, clip])
-Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
-
-#### .html(path, saveType)
-Save the current page as html as files to disk at the given path. Save type options are [here](https://github.com/atom/electron/blob/master/docs/api/web-contents.md#webcontentssavepagefullpath-savetype-callback).
-
-#### .pdf(path, options)
-Saves a PDF to the specified `path`. Options are [here](https://github.com/atom/electron/blob/v0.35.2/docs/api/web-contents.md#webcontentsprinttopdfoptions-callback).
-
-#### .title()
-Returns the title of the current page.
-
-#### .url()
-Returns the url of the current page.
-
-### Cookies
-
-#### .cookies.get(name)
-
-Get a cookie by it's `name`. The url will be the current url.
-
-#### .cookies.get(query)
-
-Query multiple cookies with the `query` object. If a `query.name` is set, it will return the first cookie it finds with that name, otherwise it will query for an array of cookies. If no `query.url` is set, it will use the current url. Here's an example:
-
-```js
-// get all google cookies that are secure
-// and have the path `/query`
-var cookies = yield nightmare.chain()
-  .goto('http://google.com')
-  .cookies.get({
-    path: '/query',
-    secure: true
-  })
-```
-
-Available properties are documented here: https://github.com/atom/electron/blob/master/docs/api/session.md#sescookiesgetdetails-callback
-
-#### .cookies.get()
-
-Get all the cookies for the current url. If you'd like get all cookies for all urls, use: `.get({ url: null })`.
-
-#### .cookies.set(name, value)
-
-Set a cookie's `name` and `value`. Most basic form, the url will be the current url.
-
-#### .cookies.set(cookie)
-
-Set a `cookie`. If `cookie.url` is not set, it will set the cookie on the current url. Here's an example:
-
-```js
-yield nightmare.chain()
-  .goto('http://google.com')
-  .cookies.set({
-    name: 'token',
-    value: 'some token',
-    path: '/query',
-    secure: true
-  })
-```
-
-Available properties are documented here:  https://github.com/atom/electron/blob/master/docs/api/session.md#sescookiessetdetails-callback
-
-#### .cookies.set(cookies)
-
-Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a look at the `.cookies.set(cookie)` documentation above for a better idea of what `cookie` should look like.
-
-#### .cookies.clear(name)
-
-Clear a cookie for the current domain.
-
-```js
-yield nightmare.chain()
-  .goto('http://google.com')
-  .cookies.clear('SomeCookieName');
-```
 
 ### Extending Nightmare
 

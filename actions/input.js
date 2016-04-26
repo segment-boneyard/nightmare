@@ -121,7 +121,7 @@ Nightmare.prototype.emulateClick = [
     }];
 
 /**
-  * Click an element using electron's sendInputEvent command.
+  * Emulates keystrokes using electron's sendInputEvent command.
   *
   * @param {String} selector
   */
