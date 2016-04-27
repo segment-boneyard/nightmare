@@ -93,6 +93,9 @@ package for Mocha, which enables the support for generators.
 #### Nightmare(options)
 Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions), along with the following nightmare-specific options.
 
+#### Nightmare.version
+Returns the current version of Nightmare.
+
 ##### waitTimeout (default: 30s)
 This will throw an exception if the `.wait()` didn't return `true` within the set timeframe.
 
@@ -155,6 +158,8 @@ var nightmare = Nightmare({
   show: true
 });
 ```
+#### .engineVersions
+A hash containing the versions of Chromium and Electron that Nightmare is currently using.
 
 #### .useragent(useragent)
 Set the `useragent` used by electron.
