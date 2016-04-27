@@ -28,6 +28,8 @@ Since all methods return promises, it's easy to synchronize between other Promis
 
 This allows nightmare to work better in conjunction with other libraries, but still retain the original goal of having a simple, non-pyramid-of-doom API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
 
+See Nightmare.prototype, for more information.
+
 ####Modules
 
 Starting with Nightmare v3 one can choose the specific base functions that are defined on the Nightmare object.
