@@ -25,12 +25,14 @@
     "electron-prebuilt": "^0.37.6",
     "istanbul": "^0.4.3",
     "lodash": "^4.11.1",
-    "shortid": "^2.2.6"
+    "shortid": "^2.2.6",
+    "split2": "^2.0.1"
   },
   "devDependencies": {
     "basic-auth": "^1.0.3",
     "basic-auth-connect": "^1.0.0",
     "chai": "^3.4.1",
+    "chai-as-promised": "^5.3.0",
     "express": "^4.13.3",
     "istanbul": "^0.4.2",
     "mkdirp": "^0.5.1",

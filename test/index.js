@@ -7,6 +7,7 @@ require('mocha-generators').install();
 
 var Nightmare = require('..');
 var chai = require('chai');
+var asPromised = require('chai-as-promised');
 var url = require('url');
 var server = require('./server');
 var fs = require('fs');
@@ -19,6 +20,8 @@ var child_process = require('child_process');
 
 var should = chai.should();
 var expect = chai.expect;
+
+chai.use(asPromised);
 
 /**
  * Temporary directory
@@ -422,16 +425,11 @@ describe('Nightmare', function () {
             title.should.equal('Evaluation -- testparameter');
         });
 
-        it('should capture invalid evaluate fn', function* () {
-            var didFail = false;
-            try {
-                yield nightmare.chain()
-                    .goto(fixture('evaluation'))
-                    .evaluate('not_a_function');
-            } catch (e) {
-                didFail = true;
-            }
-            didFail.should.be.true;
+        it('should capture invalid evaluate fn', function () {
+            return nightmare.chain()
+                .goto(fixture('evaluation'))
+                .evaluate('not_a_function')
+                .should.be.rejected;
         });
 
         it('should evaluate javascript and return undefined', function* () {
@@ -695,6 +693,20 @@ describe('Nightmare', function () {
 
             value.should.equal('');
         })
+
+        it('should not type in a nonexistent selector', function () {
+            return nightmare.chain()
+                .goto(fixture('manipulation'))
+                .type('does-not-exist', 'nightmare')
+                .should.be.rejected;
+        });
+
+        it('should not insert in a nonexistent selector', function () {
+            return nightmare.chain()
+                .goto(fixture('manipulation'))
+                .insert('does-not-exist', 'nightmare')
+                .should.be.rejected;
+        });
 
         it('should blur the active element when something is clicked', function* () {
             var isBody = yield nightmare.chain()
@@ -1311,50 +1323,32 @@ describe('Nightmare', function () {
             useragent.should.eql('firefox');
         });
 
-        it('should wait and fail with waitTimeout', function* () {
-            var didFail = false;
-            try {
-                nightmare = new Nightmare({ waitTimeout: 254 });
-                yield nightmare.init();
+        it('should wait and fail with waitTimeout', function () {
+            nightmare = new Nightmare({ waitTimeout: 254 });
 
-                yield nightmare.chain()
-                    .goto(fixture('navigation'))
-                    .wait('foobar');
-            } catch (e) {
-                didFail = true;
-            }
-            didFail.should.be.true;
+            return nightmare.chain()
+                .goto(fixture('navigation'))
+                .wait('foobar')
+                .should.be.rejected;
         });
 
-        it('should wait and fail with waitTimeout and a ms wait time', function* () {
-            var didFail = false;
-            try {
-                nightmare = new Nightmare({ waitTimeout: 254 });
-                yield nightmare.init();
+        it('should wait and fail with waitTimeout and a ms wait time', function () {
+            nightmare = new Nightmare({ waitTimeout: 254 });
 
-                yield nightmare.chain()
-                    .goto(fixture('navigation'))
-                    .wait(1000);
-            } catch (e) {
-                didFail = true;
-            }
-            didFail.should.be.true;
+            return nightmare.chain()
+                .goto(fixture('navigation'))
+                .wait(1000)
+                .should.be.rejected;
         });
 
-        it('should wait and fail with waitTimeout with queued functions', function* () {
-            var didFail = false;
-            try {
-                nightmare = new Nightmare({ waitTimeout: 254 });
-                yield nightmare.init();
+        it('should wait and fail with waitTimeout with queued functions', function () {
+            nightmare = new Nightmare({ waitTimeout: 254 });
 
-                yield nightmare.chain()
-                    .goto(fixture('navigation'))
-                    .wait('foobar')
-                    .exists('baz');
-            } catch (e) {
-                didFail = true;
-            }
-            didFail.should.be.true;
+            return nightmare.chain()
+                .goto(fixture('navigation'))
+                .wait('foobar')
+                .exists('baz')
+                .should.be.rejected;
         });
 
         it('should set authentication', function* () {
