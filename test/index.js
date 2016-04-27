@@ -56,15 +56,14 @@ describe('Nightmare', function () {
 
   it('should have version information', function*(){
     var nightmare = Nightmare();
-    var versions = yield nightmare.versions();
-    nightmare.versions.nightmare.should.be.ok;
-    nightmare.versions.electron.should.be.ok;
-    nightmare.versions.chrome.should.be.ok;
+    var versions = yield nightmare.engineVersions();
+    nightmare.engineVersions.electron.should.be.ok;
+    nightmare.engineVersions.chrome.should.be.ok;
 
-    versions.nightmare.should.be.ok;
     versions.electron.should.be.ok;
     versions.chrome.should.be.ok;
-    
+   
+    Nightmare.version.should.be.ok;
     yield nightmare.end();
   });
 
