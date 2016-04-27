@@ -155,6 +155,11 @@ var nightmare = Nightmare({
   show: true
 });
 ```
+#### .version
+Returns the current version of Nightmare.
+
+#### .engineVersions
+A hash containing the versions of Chromium and Electron that Nightmare is currently using.
 
 #### .useragent(useragent)
 Set the `useragent` used by electron.
