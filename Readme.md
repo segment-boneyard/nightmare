@@ -350,6 +350,9 @@ Stops the loading of the page.
 
 #### Input Actions
 
+##### .blur(selector)
+Blurs the specified selector.
+
 ##### .click(selector)
 Clicks the `selector` element once.
 
@@ -367,6 +370,9 @@ Emulates keystrokes using electron's sendInputEvent command.
 
 ##### .expectNavigation(fn, timeout)
 Returns a promise which invokes the specified action which expects to perform a navigation action.
+
+##### .focus(selector)
+Sets focus on the specified selector.
 
 ##### .insert(selector[, text])
 Similar to `.type()`. `.insert()` enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.

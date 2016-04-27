@@ -7,6 +7,18 @@ const _ = require("lodash");
 const delay = require("delay");
 
 /**
+  * Blurs the specified selector
+  *
+  * @param {String} selector
+  * @param {String} text
+  */
+Nightmare.prototype.blur = function (selector) {
+    return this.evaluate_now(function (selector) {
+        document.querySelector(selector).blur();
+    }, selector);
+};
+
+/**
   * Click an element using a JavaScript based event.
   *
   * @param {String} selector
@@ -233,6 +245,17 @@ Nightmare.prototype.expectNavigation = function (fn, timeout) {
     return Promise.race([waitPromise, timeoutPromise]);
 };
 
+/**
+  * Sets focus on the specified selector
+  *
+  * @param {String} selector
+  * @param {String} text
+  */
+Nightmare.prototype.focus = function (selector) {
+    return this.evaluate_now(function (selector) {
+        document.querySelector(selector).focus();
+    }, selector);
+};
 
 /**
   * Insert text
@@ -252,23 +275,17 @@ Nightmare.prototype.insert = [
 
         let self = this;
         return co(function* () {
+            yield self.focus(selector);
+
             if (!text) {
-                return self.evaluate_now(function (selector) {
-                    document.querySelector(selector).focus();
+                yield self.evaluate_now(function (selector) {
                     document.querySelector(selector).value = '';
                 }, selector);
             } else {
-                try {
-                    yield self.evaluate_now(function (selector) {
-                        document.querySelector(selector).focus();
-                    }, selector);
-                }
-                catch (ex) {
-                    throw ex;
-                }
-
-                return self._invokeRunnerOperation("insert", text);
+                yield self._invokeRunnerOperation("insert", text);
             }
+
+            yield self.blur(selector);
         });
     }];
 
@@ -408,23 +425,17 @@ Nightmare.prototype.type = [
         let child = this.child;
         let self = this;
         return co(function* () {
+            yield self.focus(selector);
+
             if (!text) {
-                return self.evaluate_now(function (selector) {
-                    document.querySelector(selector).focus();
+                yield self.evaluate_now(function (selector) {
                     document.querySelector(selector).value = '';
                 }, selector);
             } else {
-                try {
-                    yield self.evaluate_now(function (selector) {
-                        document.querySelector(selector).focus();
-                    }, selector);
-                }
-                catch (ex) {
-                    throw ex;
-                }
-
-                return self._invokeRunnerOperation("type", text);
+                yield self._invokeRunnerOperation("type", text);
             }
+
+            yield self.blur(selector);
         });
     }];
 
