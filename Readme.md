@@ -616,11 +616,7 @@ var size = yield new Nightmare().chain()
 
 However, what is this is doing is associating a 'size' function property on the Nightmare prototype for you.
 
-> Remember, this is attached to the static class `Nightmare`, not the instance.
-
-You'll notice we used an internal function `evaluate_now`. This function is different than `nightmare.evaluate` because it runs it immediately, whereas `nightmare.evaluate` is queued.
-
-An easy way to remember: when in doubt, use `evaluate`. If you're creating custom actions, use `evaluate_now`. The technical reason is that since our action has already been queued and we're running it now, we shouldn't re-queue the evaluate function.
+Any methods defined on the prototype can be called using the this. object. In Nightmare v3 the only difference between ```evaluate_now``` and ```evaluate``` is that evaluate checks that the argument passed is a function. Both return promises.
 
 We can also create custom namespaces. We do this internally for `nightmare.cookies.get` and `nightmare.cookies.set`. These are useful if you have a bundle of actions you want to expose, but it will clutter up the main nightmare object. Here's an example of that:
 
