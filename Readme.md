@@ -6,16 +6,9 @@ Nightmare is a high-level browser automation library.
 
 ###Nightmare v3
 
-This version of Nightmare relies on promises. The primary API change is that all functions now return promises instead of the this object. However, Nightmare is still chainable through the .chain() function. This simplifies the programming and extension model as all custom functions and namespaces added through .action() are inheritly chainable.
+This version of Nightmare relies on promises. The primary API change is that all functions now return promises instead of the this object.
 
-```
-  var Nightmare = require("nightmare");
-  var title = new Nightmare().chain()
-    .goto("http://foo.com")
-    .title();
-```
-
-Since all methods return promises, it's easy to synchronize between other Promise based apis.
+Since all methods return promises, it's easy to synchronize between other Promise-based apis.
 
 ```
   Promise.race([nightmare.goto('http://foo.com'), timeout(500)])
@@ -26,16 +19,25 @@ Since all methods return promises, it's easy to synchronize between other Promis
     });
 ```
 
-This allows nightmare to work better in conjunction with other libraries, but still retain the original goal of having a simple, non-pyramid-of-doom API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
+However, Nightmare is still chainable through the .chain() function.
 
-See Nightmare.prototype, for more information.
+```
+  var Nightmare = require("nightmare");
+  var title = new Nightmare().chain()
+    .goto("http://foo.com")
+    .title();
+```
+
+All custom functions and namespaces added are chainable thorugh this method. This simplifies the programming and extension model. No more done argument mashing either.
+
+
+Using promises allows nightmare to work better in conjunction with other libraries, but through chain() still retain the original goal of having a simple, non-pyramid-of-doom API that feels synchronous for each block of scripting, rather than deeply nested callbacks.
 
 ####Modules
 
 Starting with Nightmare v3 one can choose the specific base functions that are defined on the Nightmare object.
 
-By default, all modules are associated with the nightmare instance. If you only want to use a portion of the functionality you can include
-just the modules you're interested in.
+By default, all modules are associated with the nightmare instance whe using require("nightmare"). If you only want to use a portion of the functionality you can include only the modules you're interested in.
 
 ```
 const Nightmare = require("nightmare/lib/nightmare"); //require the base nightmare class.
@@ -44,10 +46,10 @@ require("nightmare/actions/core"); //only pull in the 'core' set of actions.
 
 The available modules are:
 
-	* Core - Contains the core functionality: evaluate, title, wait and so forth.
-	* Cookies - Contains the 'cookies' namespace used to get/set/clear cookies
-	* Input - Contains the functions associated with interacting with a page - typing, setting values, etc.
-	* Navigation - Contains the functions associated with navigating - goto, stop, reload and so forth.
+	* [Core](#core-actions) - Contains the core functionality: evaluate, title, wait and so forth.
+	* [Cookies](#cookies) - Contains the 'cookies' namespace used to get/set/clear cookies
+	* [Navigation](#input-actions) - Contains the functions associated with interacting with a page - typing, setting values, etc.
+	* [Navigation](#navigation-actions) - Contains the functions associated with navigating - goto, stop, reload and so forth.
 
 ####Simpler Extension
 
@@ -75,9 +77,11 @@ var size = yield nightmare.chain()
 	.size(scaleFactor, offsetFactor)
 ```
 
-This simplifies creating extensions and lets IDEs with autocomplete pick up the API automatically. Arguments don't need to be specially handled to support done() -- simply return a promise. The chain() method will pickup all functions associated with the prototype and make them chainable so you don't have to.
+This simplifies creating extensions and lets IDEs with autocomplete pick up the API automatically. Arguments don't need to be specially handled to support done() -- simply return a promise.
 
-Nightmare can be subclassed too!
+The chain() method will pickup all functions associated with the prototype and make them chainable so you don't have to explicitly return the this object.
+
+See Nightmare.prototype for more information.
 
 ####About
 
@@ -89,9 +93,12 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help
 
 * [Examples](#examples)
 * [API](#api)
+  - [Nightmare Lifecycle](#nightmarelifecycle)
   - [Set up an instance](#nightmareoptions)
-  - [Interact with the page](#interact-with-the-page)
-  - [Extract from the page](#extract-from-the-page)
+  - [Core Actions](#core-actions)
+  - [Navigation Actions](#navigation-actions)
+  - [Input Actions](#input-actions)
+  - [Cookies](#cookies)
   - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
