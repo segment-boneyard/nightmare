@@ -28,7 +28,7 @@ However, Nightmare is still chainable through the .chain() function.
     .title();
 ```
 
-All custom functions and namespaces added are chainable thorugh this method. This simplifies the programming and extension model. No more done argument mashing either.
+All custom functions and namespaces added are chainable thorugh this method. This simplifies the programming and extension model. No more done callback argument mashing either.
 
 
 Using promises allows nightmare to work better in conjunction with other libraries, but through chain() still retain the original goal of having a simple, non-pyramid-of-doom API that feels synchronous for each block of scripting, rather than deeply nested callbacks.
@@ -37,7 +37,7 @@ Using promises allows nightmare to work better in conjunction with other librari
 
 Starting with Nightmare v3 one can choose the specific base functions that are defined on the Nightmare object.
 
-By default, all modules are associated with the nightmare instance whe using require("nightmare"). If you only want to use a portion of the functionality you can include only the modules you're interested in.
+By default, all modules are associated with the nightmare instance whe using require("nightmare"). If you only want to use a portion of the functionality you can include only the modules you're interested in, or, if you're not happy with the included ones, completely rewrite your own actions.
 
 ```
 const Nightmare = require("nightmare/lib/nightmare"); //require the base nightmare class.
