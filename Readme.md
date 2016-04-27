@@ -81,7 +81,7 @@ This simplifies creating extensions and lets IDEs with autocomplete pick up the 
 
 The chain() method will pickup all functions associated with the prototype and make them chainable so you don't have to explicitly return the this object.
 
-See [Nightmare.prototype](#nightmare-prototype) for more information.
+See [Nightmare.prototype](#nightmareprototype) for more information.
 
 ####About
 
@@ -91,7 +91,7 @@ Under the covers it uses [Electron](http://electron.atom.io/), which is similar 
 
 Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help on Nightmare.
 
-## Documentation
+## Nightmare Documentation
 
 * [Examples](#examples)
 * [API](#api)
@@ -608,6 +608,8 @@ Nightmare.prototype.getTitle = [
 
 These tuples are automatically detached from the prototype by the Nightmare constructor, so if they are mutated later it doesn't affect existing instances.
 
+Namespaces with custom electron actions can be defined too. See the mocha tests for examples.
+
 #### Nightmare.action(name, action|namespace)
 
 While in v3 promises are favored, the .action method is still retained for backward compatability. Here's an example:
@@ -685,8 +687,8 @@ $ npm install --save nightmare
 #### Execution
 Nightmare is a node module that can be used in a Node.js script or module. Here's a simple script to open a web page:
 ```js
-var Nightmare = require('nightmare'),
-  nightmare = new Nightmare();
+var Nightmare = require('nightmare');
+var nightmare = new Nightmare();
 
 nightmare.chain()
   .goto('http://cnn.com')
@@ -702,7 +704,7 @@ If you save this as `cnn.js`, you can run it on the command line like this:
 
 ```bash
 npm install nightmare
-node --harmony cnn.js
+node cnn.js
 ```
 
 #### Debugging
@@ -732,9 +734,17 @@ Only actions
 
 `DEBUG=nightmare:actions*`
 
+Only events
+
+`DEBUG=nightmare:eventLog*`
+
 Only logs
 
 `DEBUG=nightmare:log*`
+
+Verbose messages
+
+`DEBUG=nightmare:verbose*`
 
 #### Tests
 Automated tests for nightmare itself are run using [Mocha](http://mochajs.org/) and Chai, both of which will be installed via `npm install`. To run nightmare's tests, just run `make test`.
@@ -744,7 +754,7 @@ When the tests are done, you'll see something like this:
 ```bash
 make test
   ․․․․․․․․․․․․․․․․․․
-  18 passing (1m)
+  118 passing (1m)
 ```
 
 Note that if you are using `xvfb`, `make test` will automatically run the tests under an `xvfb-run` wrapper.  If you are planning to run the tests headlessly without running `xvfb` first, set the `HEADLESS` environment variable to `0`.
