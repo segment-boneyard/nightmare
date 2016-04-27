@@ -1878,16 +1878,16 @@ describe('Nightmare', function () {
         var nightmare;
 
         beforeEach(function () {
-            Nightmare.action('checkDevTools',
+            Nightmare.action('waitForDevTools',
                 function (ns, options, parent, win, renderer) {
-                    parent.on('checkDevTools', function () {
-                        parent.emit('checkDevTools', {
+                    parent.on('waitForDevTools', function () {
+                        parent.emit('waitForDevTools', {
                             result: win.webContents.isDevToolsOpened()
                         });
                     });
                 },
                 function () {
-                    return this._invokeRunnerOperation("checkDevTools");
+                    return this._invokeRunnerOperation("waitForDevTools");
                 });
             nightmare = new Nightmare({ show: true, openDevTools: true });
 
@@ -1900,7 +1900,7 @@ describe('Nightmare', function () {
         it('should open devtools', function* () {
             var devToolsOpen = yield nightmare.chain()
                 .goto(fixture('simple'))
-                .checkDevTools();
+                .waitForDevTools();
 
             devToolsOpen.should.be.true;
         });
