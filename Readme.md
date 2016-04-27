@@ -83,6 +83,12 @@ The chain() method will pickup all functions associated with the prototype and m
 
 See [Nightmare.prototype](#nightmareprototype) for more information.
 
+#### Migration from v2 to v3
+
+* Ensure that all instances are created with new Nightmare(...);
+* When chaining functionality, add the .chain() method. e.g. ``` let nightmare = new Nightmare(); nightmare.chain().goto("http://www.github.com").title(); ```
+* Ensure that .init() is called when chain isn't.
+
 ####About
 
 Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but faster and more modern.
