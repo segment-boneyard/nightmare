@@ -15,7 +15,7 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var PNG = require('pngjs').PNG;
 var rimraf = require('rimraf');
-var split = require("split");
+var split2 = require("split2");
 var child_process = require('child_process');
 
 var should = chai.should();
@@ -1949,7 +1949,7 @@ function withDeprecationTracking(cls) {
 
   cls.prototype.childReady = function() {
     var self = this;
-    self.proc.stderr.pipe(split()).on('data', function(line) {
+    self.proc.stderr.pipe(split2()).on('data', function(line) {
       if (line.indexOf('deprecated') > -1) {
         Nightmare.__deprecations.unshift(line);
       }
