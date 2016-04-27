@@ -506,14 +506,99 @@ This event is triggered if `console.log` is used on the page. But this event is 
 
 ### Extending Nightmare
 
+#### Nightmare.prototype
+
+With nightmare v3 the primary mechanism of adding custom behavior is by adding methods to the prototype. This is how Nightmare v3 implements its actions itself.
+
+Functions added to the prototype can be simple prototype functions that can return promises or values. Callback methods can be utilized, but are not required. Custom functions can be generators as well.
+
+```
+Nightmare.prototype.size = function (scale, offset) {
+                return this.evaluate_now(function (scale, offset) {
+                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+                    return {
+                        height: h,
+                        width: w,
+                        scaledHeight: h * scale + offset,
+                        scaledWidth: w * scale + offset
+                    };
+                }, scale, offset)
+            };
+```
+
+As described above, the built-in chain() function will make all functions exposed on the nightmare prototype chainable, so the 'this' object need not be returned by the extension function.
+
+Thus, the above method can be called simply by:
+```
+let scaleFactor = 2.0;
+let offsetFactor = 1;
+
+let nightmare = new Nightmare();
+let size = yield nightmare.chain()
+	.goto('http://www.github.com')
+	.size(scaleFactor, offsetFactor);
+```
+
+Custom 'namespaces' can be implemented by adding a psudo-class and calling the static method 'registerNamespace':
+
+```
+'use strict';
+Nightmare.prototype.MyStyle = class {
+	*background() {
+	    return yield this.evaluate_now(function () {
+	        return window.getComputedStyle(document.body, null).backgroundColor;
+	    })
+	}
+	*color() {
+	    return yield this.evaluate_now(function () {
+	        return window.getComputedStyle(document.body, null).color;
+	    })
+	}
+};
+
+Nightmare.registerNamespace("MyStyle");
+```
+
+Nightmare v3 will automatically make these chainable as well.
+
+```
+let nightmare = new Nightmare();
+let color = yield nightmare.chain()
+        .goto('http://www.github.com')
+        .MyStyle.background()
+        .MyStyle.color();
+```
+
+Custom electron behaviors can be attached by adding tuples of [ {electron function}, {function} ]to the Nightmare prototype. For instance:
+
+```
+Nightmare.prototype.getTitle = [
+        function (ns, options, parent, win, renderer) {
+            parent.on('getTitle', function () {
+                parent.emit('getTitle', {
+                    result: win.webContents.getTitle()
+                });
+            });
+        },
+        function (path, saveType) {
+            return this._invokeRunnerOperation("getTitle", path, saveType);
+        }
+    ];
+
+    let title = yield nightmare.chain()
+        .goto("http://www.github.com")
+        .getTitle();
+```
+
+These touples are automatically detached from the prototype by the Nightmare constructor, so if they are mutated later it doesn't affect existing instances.
+
 #### Nightmare.action(name, action|namespace)
 
-With nightmare v3 it's easy to extend the Nightmare psudo-class to provide custom behavior, either by extending the class or by adding functions to the nightmare prototype.
-
-However, the .action method is still retained for backward compatability. Here's an example:
+While in v3 promises are favored, the .action method is still retained for backward compatability. Here's an example:
 
 ```js
-Nightmare.action('size', function (done) {
+Nightmare.action('size', function () {
   this.evaluate_now(function() {
     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
@@ -521,13 +606,15 @@ Nightmare.action('size', function (done) {
       height: h,
       width: w
     }
-  }, done)
+  })
 })
 
 var size = yield new Nightmare().chain()
   .goto('http://cnn.com')
   .size()
 ```
+
+However, what is this is doing is associating a 'size' function property on the Nightmare prototype for you.
 
 > Remember, this is attached to the static class `Nightmare`, not the instance.
 
