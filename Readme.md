@@ -87,7 +87,7 @@ See [Nightmare.prototype](#nightmareprototype) for more information.
 
 * Ensure that all instances are created with ```new Nightmare(...);```
 * When chaining functionality, add the .chain() method. e.g. ``` let nightmare = new Nightmare(); nightmare.chain().goto("http://www.github.com").title(); ```
-* Ensure that ```.init()`` is called if ```.chain()``` isn't the first function called.
+* Ensure that ```.init()``` is called if ```.chain()``` isn't the first function called.
 
 ####About
 
