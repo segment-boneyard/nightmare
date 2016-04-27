@@ -62,7 +62,7 @@ Nightmare.prototype.goto = [
         const electron = require('electron');
         const urlFormat = require('url');
 
-        const KNOWN_PROTOCOLS = ['http', 'https', 'file', 'about'];
+        const KNOWN_PROTOCOLS = ['http', 'https', 'file', 'about', 'javascript'];
 
         parent.on('goto', function (url, headers) {
             var extraHeaders = '';
@@ -121,8 +121,8 @@ Nightmare.prototype.goto = [
 
                 // In most environments, loadURL handles this logic for us, but in some
                 // it just hangs for unhandled protocols. Mitigate by checking ourselves.
-                let canLoadProtocol = function(url, callback) {
-                    let protocol = (urlFormat.parse(url).protocol || '').replace(/:$/, '');
+                let canLoadProtocol = function(protocol, callback) {
+                    protocol = (protocol || '').replace(/:$/, '');
                     if (!protocol || KNOWN_PROTOCOLS.includes(protocol)) {
                         callback(true);
                         return;
@@ -130,7 +130,8 @@ Nightmare.prototype.goto = [
                     electron.protocol.isProtocolHandled(protocol, callback);
                 }
 
-                canLoadProtocol(url, function(canLoadProtocol) {
+                var protocol = urlFormat.parse(url).protocol;
+                canLoadProtocol(protocol, function(canLoadProtocol) {
                     if (canLoadProtocol) {
                         win.webContents.on('did-fail-load', rejectGoto);
                         win.webContents.on('did-get-response-details', getDetails);
@@ -139,6 +140,23 @@ Nightmare.prototype.goto = [
                         win.webContents.loadURL(url, {
                           extraHeaders: extraHeaders
                         });
+
+                        // javascript: URLs *may* trigger page loads; wait a bit to see
+                        if (protocol === 'javascript:') {
+                            setTimeout(function () {
+                                if (!win.webContents.isLoading()) {
+                                    done({
+                                        result: {
+                                            url: url,
+                                            code: 200,
+                                            method: 'GET',
+                                            referrer: win.webContents.getURL(),
+                                            headers: {}
+                                        }
+                                    });
+                                }
+                            }, 10);
+                        }
                         return;
                     }
 
