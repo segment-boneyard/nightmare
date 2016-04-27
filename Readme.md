@@ -591,7 +591,7 @@ Nightmare.prototype.getTitle = [
         .getTitle();
 ```
 
-These touples are automatically detached from the prototype by the Nightmare constructor, so if they are mutated later it doesn't affect existing instances.
+These tuples are automatically detached from the prototype by the Nightmare constructor, so if they are mutated later it doesn't affect existing instances.
 
 #### Nightmare.action(name, action|namespace)
 
