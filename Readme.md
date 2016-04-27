@@ -8,7 +8,7 @@ Nightmare is a high-level browser automation library.
 
 This version of Nightmare relies on promises. The primary API change is that all functions now return promises instead of the this object.
 
-Since all methods return promises, it's easy to synchronize between other Promise-based apis.
+Since all functions return promises, it's easy to synchronize between other Promise-based apis.
 
 ```
   Promise.race([nightmare.goto('http://foo.com'), timeout(500)])
@@ -85,9 +85,9 @@ See [Nightmare.prototype](#nightmareprototype) for more information.
 
 #### Migration from v2 to v3
 
-* Ensure that all instances are created with new Nightmare(...);
+* Ensure that all instances are created with ```new Nightmare(...);```
 * When chaining functionality, add the .chain() method. e.g. ``` let nightmare = new Nightmare(); nightmare.chain().goto("http://www.github.com").title(); ```
-* Ensure that .init() is called when chain isn't.
+* Ensure that ```.init()`` is called if ```.chain()``` isn't the first function called.
 
 ####About
 
@@ -237,7 +237,7 @@ var nightmare = new Nightmare({
 ```
 #### Nightmare Lifecycle
 
-With Nightmare v3, once a new Nightmare instance is created, the instance must first be initialized with the .init() method prior to calling any page interaction functions.
+With Nightmare v3, once a new Nightmare instance is created, the instance must first be initialized with the .init() function prior to calling any page interaction functions.
 
 ```
    var nightmare = new Nightmare();
@@ -529,9 +529,9 @@ This event is triggered if `console.log` is used on the page. But this event is 
 
 #### Nightmare.prototype
 
-With nightmare v3 the primary mechanism of adding custom behavior is by adding methods to the prototype. This is how Nightmare v3 implements its actions itself.
+With nightmare v3 the primary mechanism of adding custom behavior is by adding functions to the prototype. This is how Nightmare v3 implements its actions itself.
 
-Functions added to the prototype can be simple prototype functions that can return promises or values. Callback methods can be utilized, but are not required. Custom functions can be generators as well.
+Functions added to the prototype can be simple prototype functions that can return promises or values. Callback functions can be utilized, but are not required. Custom functions can be generators as well.
 
 ```
 Nightmare.prototype.size = function (scale, offset) {
@@ -550,7 +550,7 @@ Nightmare.prototype.size = function (scale, offset) {
 
 As described above, the built-in chain() function will make all functions exposed on the nightmare prototype chainable, so the 'this' object need not be returned by the extension function.
 
-Thus, the above method can be called simply by:
+Thus, the above custom action can be called simply by:
 ```
 let scaleFactor = 2.0;
 let offsetFactor = 1;
@@ -561,7 +561,7 @@ let size = yield nightmare.chain()
 	.size(scaleFactor, offsetFactor);
 ```
 
-Custom 'namespaces' can be implemented by adding a psudo-class and calling the static method 'registerNamespace':
+Custom 'namespaces' can be implemented by adding a psudo-class and calling the static function 'registerNamespace':
 
 ```
 'use strict';
@@ -618,7 +618,7 @@ Namespaces with custom electron actions can be defined too. See the mocha tests 
 
 #### Nightmare.action(name, action|namespace)
 
-While in v3 promises are favored, the .action method is still retained for backward compatability. Here's an example:
+While in v3 promises are favored, the .action function is still retained for backward compatability. Here's an example:
 
 ```js
 Nightmare.action('size', function () {
@@ -639,7 +639,7 @@ var size = yield new Nightmare().chain()
 
 However, what is this is doing is associating a 'size' function property on the Nightmare prototype for you.
 
-Any methods defined on the prototype can be called using the this. object. In Nightmare v3 the only difference between ```evaluate_now``` and ```evaluate``` is that evaluate checks that the argument passed is a function. Both return promises.
+Any functions defined on the prototype can be called using the this. object. In Nightmare v3 the only difference between ```evaluate_now``` and ```evaluate``` is that evaluate checks that the argument passed is a function. Both return promises.
 
 We can also create custom namespaces. We do this internally for `nightmare.cookies.get` and `nightmare.cookies.set`. These are useful if you have a bundle of actions you want to expose, but it will clutter up the main nightmare object. Here's an example of that:
 
