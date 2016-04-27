@@ -81,7 +81,7 @@ This simplifies creating extensions and lets IDEs with autocomplete pick up the 
 
 The chain() method will pickup all functions associated with the prototype and make them chainable so you don't have to explicitly return the this object.
 
-See Nightmare.prototype for more information.
+See [Nightmare.prototype](#nightmare-prototype) for more information.
 
 ####About
 
@@ -90,6 +90,8 @@ Under the covers it uses [Electron](http://electron.atom.io/), which is similar 
 [Daydream](https://github.com/segmentio/daydream) is a complementary chrome extension built by [@stevenmiller888](https://github.com/stevenmiller888) that generates Nightmare scripts for you while you browse.
 
 Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help on Nightmare.
+
+## Documentation
 
 * [Examples](#examples)
 * [API](#api)
