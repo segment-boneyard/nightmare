@@ -168,7 +168,7 @@ Create a new instance that can navigate around the web. The available options ar
 This will throw an exception if the `.wait()` didn't return `true` within the set timeframe.
 
 ```js
-var nightmare = Nightmare({
+var nightmare = new Nightmare({
   waitTimeout: 1000 // in ms
 });
 ```
@@ -179,7 +179,7 @@ The default system paths that Electron knows about. Here's a list of available p
 You can overwrite them in Nightmare by doing the following:
 
 ```js
-var nightmare = Nightmare({
+var nightmare = new Nightmare({
   paths: {
     userData: '/user/data'
   }
@@ -191,7 +191,7 @@ The command line switches used by the Chrome browser that are also supported by 
 https://github.com/atom/electron/blob/master/docs/api/chrome-command-line-switches.md
 
 ```js
-var nightmare = Nightmare({
+var nightmare = new Nightmare({
   switches: {
     'proxy-server': '1.2.3.4:5678',
     'ignore-certificate-errors': true
@@ -203,7 +203,7 @@ var nightmare = Nightmare({
 The path to prebuilt Electron binary.  This is useful for testing on different version Electron.  Note that Nightmare only supports the version this package depending on.  Please use this option at your own risk.
 
 ```js
-var nightmare = Nightmare({
+var nightmare = new Nightmare({
   electronPath: require('electron-prebuilt')
 });
 ```
