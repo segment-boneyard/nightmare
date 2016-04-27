@@ -218,13 +218,15 @@ var nightmare = new Nightmare({
 ```
 #### Nightmare Lifecycle
 
-With Nightmare v3, the instance must first be initialized with the .init() method prior to calling any page interaction, however the init() method provides the ability to associate with an existing electron instance if needed.
+With Nightmare v3, once a new Nightmare instance is created, the instance must first be initialized with the .init() method prior to calling any page interaction functions.
 
 ```
    var nightmare = new Nightmare();
-   yield nightmare.init(myElectron);
+   yield nightmare.init();
    yield nightmare.goto("http://foo.com");
 ```
+
+*Eventually, it will be possible to attach to an existing Electron instance by providing it as an argument to the init function.*
 
 ##### Chain
 With Nightmare v3, all functions return promises, however, the API can still be chained using the .chain() function which dynamically creates a chainable promise:
@@ -232,10 +234,10 @@ With Nightmare v3, all functions return promises, however, the API can still be 
 ```
    var nightmare = new Nightmare();
    yield nightmare.chain()
-			      .goto("http://foo.com")
-				  .type('input[title="Search"]', 'github nightmare')
-				  .click('#UHSearchWeb')
-				  .wait('#main');
+      .goto("http://foo.com")
+      .type('input[title="Search"]', 'github nightmare')
+      .click('#UHSearchWeb')
+      .wait('#main');
 ```
 
 Nightmare calls the initialization function if it has not been called when running the chain.
