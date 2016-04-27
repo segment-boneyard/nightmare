@@ -46,10 +46,10 @@ require("nightmare/actions/core"); //only pull in the 'core' set of actions.
 
 The available modules are:
 
-	* [Core](#core-actions) - Contains the core functionality: evaluate, title, wait and so forth.
-	* [Cookies](#cookies) - Contains the 'cookies' namespace used to get/set/clear cookies
-	* [Navigation](#input-actions) - Contains the functions associated with interacting with a page - typing, setting values, etc.
-	* [Navigation](#navigation-actions) - Contains the functions associated with navigating - goto, stop, reload and so forth.
+* [Core](#core-actions) - Contains the core functionality: evaluate, title, wait and so forth.
+* [Cookies](#cookies) - Contains the 'cookies' namespace used to get/set/clear cookies
+* [Input](#input-actions) - Contains the functions associated with interacting with a page - typing, setting values, etc.
+* [Navigation](#navigation-actions) - Contains the functions associated with navigating - goto, stop, reload and so forth.
 
 ####Simpler Extension
 
@@ -93,12 +93,13 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help
 
 * [Examples](#examples)
 * [API](#api)
-  - [Nightmare Lifecycle](#nightmarelifecycle)
-  - [Set up an instance](#nightmareoptions)
+  - [Set up an instance](#api)
+  - [Nightmare Lifecycle](#nightmare-lifecycle)
   - [Core Actions](#core-actions)
   - [Navigation Actions](#navigation-actions)
   - [Input Actions](#input-actions)
-  - [Cookies](#cookies)
+  - [Cookie Actions](#cookies)
+  - [Events](#events)
   - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
