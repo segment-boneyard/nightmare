@@ -93,7 +93,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help
 
 * [Examples](#examples)
 * [API](#api)
-  - [Set up an instance](#api)
+  - [Set up an instance](#new-nightmareoptions)
   - [Nightmare Lifecycle](#nightmare-lifecycle)
   - [Core Actions](#core-actions)
   - [Navigation Actions](#navigation-actions)
