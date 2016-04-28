@@ -18,20 +18,20 @@ Nightmare.prototype.cookies.prototype.get = [
         parent.on('cookie.get', function (query) {
             var details = _.assign({}, {
                 url: win.webContents.getURL(),
-            }, query)
+            }, query);
 
-            parent.emit('log', 'getting cookie: ' + JSON.stringify(details))
+            parent.emit('log', 'getting cookie: ' + JSON.stringify(details));
             win.webContents.session.cookies.get(details, function (err, cookies) {
                 if (err) return parent.emit('cookie.get', err);
                 parent.emit('cookie.get', {
                     result: details.name ? cookies[0] : cookies
                 });
-            })
-        })
+            });
+        });
     },
     function (name) {
-        debug('cookies.get()')
-        let query = {}
+        debug('cookies.get()');
+        let query = {};
 
         if (_.isObject(name))
             query = name;
@@ -53,20 +53,20 @@ Nightmare.prototype.cookies.prototype.set = [
             for (var cookie of cookies) {
                 var details = _.assign({}, {
                     url: win.webContents.getURL()
-                }, cookie)
+                }, cookie);
 
-                parent.emit('log', 'setting cookie: ' + JSON.stringify(details))
+                parent.emit('log', 'setting cookie: ' + JSON.stringify(details));
                 win.webContents.session.cookies.set(details, function (err) {
                     if (err) parent.emit('cookie.set', {
                         error: err
                     });
-                    else if (!--pending) parent.emit('cookie.set')
-                })
+                    else if (!--pending) parent.emit('cookie.set');
+                });
             }
-        })
+        });
     },
     function (name, value) {
-        debug('cookies.set()')
+        debug('cookies.set()');
 
         let cookies = [];
         if (_.isArray(name))
@@ -98,15 +98,15 @@ Nightmare.prototype.cookies.prototype.clear = [
                 let url = cookie.url || win.webContents.getURL();
                 let name = cookie.name;
 
-                parent.emit('log', 'clearing cookie: ' + JSON.stringify(cookie))
+                parent.emit('log', 'clearing cookie: ' + JSON.stringify(cookie));
                 win.webContents.session.cookies.remove(url, name, function (err) {
                     if (err) parent.emit('cookie.clear', {
                         error: err,
                     });
-                    else if (!--pending) parent.emit('cookie.clear')
+                    else if (!--pending) parent.emit('cookie.clear');
                 });
             }
-        })
+        });
     },
     function(name, url) {
         debug('cookies.clear()');

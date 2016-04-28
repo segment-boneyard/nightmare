@@ -68,7 +68,7 @@ Nightmare.prototype.getClientRects = function (selector) {
         var clientRects = element.getClientRects();
 
         if (!clientRects)
-            throw "Client rects could not be retrieved."
+            throw "Client rects could not be retrieved.";
 
         var result = [];
 
@@ -94,7 +94,7 @@ Nightmare.prototype.html = [
     function (ns, options, parent, win, renderer) {
         parent.on('html', function (path, saveType) {
             // https://github.com/atom/electron/blob/master/docs/api/web-contents.md#webcontentssavepagefullpath-savetype-callback
-            saveType = saveType || 'HTMLComplete'
+            saveType = saveType || 'HTMLComplete';
             win.webContents.savePage(path, saveType, function (err) {
                 parent.emit('html', {
                     err: err

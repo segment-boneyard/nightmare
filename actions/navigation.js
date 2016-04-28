@@ -117,7 +117,7 @@ Nightmare.prototype.goto = [
                     win.webContents.removeListener('did-finish-load', resolveGoto);
                     // wait a tick before notifying to resolve race conditions for events
                     setImmediate(() => parent.emit('goto', data));
-                }
+                };
 
                 // In most environments, loadURL handles this logic for us, but in some
                 // it just hangs for unhandled protocols. Mitigate by checking ourselves.
@@ -128,7 +128,7 @@ Nightmare.prototype.goto = [
                         return;
                     }
                     electron.protocol.isProtocolHandled(protocol, callback);
-                }
+                };
 
                 var protocol = urlFormat.parse(url).protocol;
                 canLoadProtocol(protocol, function(canLoadProtocol) {

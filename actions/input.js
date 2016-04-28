@@ -181,10 +181,10 @@ Nightmare.prototype.emulateKeystrokes = [
                 setTimeout(function () {
                     parent.emit("emulateKeystrokes");
                 }, keystrokeOpts.finalKeystrokeDelay);
-            }
+            };
 
             for (var keyCode of keystrokeOpts.keyCodes) {
-                q.push(keyCode)
+                q.push(keyCode);
             }
         });
     },
@@ -204,7 +204,7 @@ Nightmare.prototype.emulateKeystrokes = [
         let self = this;
         return co(function* () {
             if (selector) {
-                yield self.emulateClick(selector)
+                yield self.emulateClick(selector);
                 yield delay(opts.initialFocusDelay);
             }
 
@@ -266,9 +266,9 @@ Nightmare.prototype.focus = function (selector) {
 Nightmare.prototype.insert = [
     function (ns, options, parent, win, renderer) {
         parent.on('insert', function (value) {
-            win.webContents.insertText(String(value))
-            parent.emit('insert')
-        })
+            win.webContents.insertText(String(value));
+            parent.emit('insert');
+        });
     },
     function (selector, text) {
         debug('.insert() %s into %s', text, selector);
@@ -375,10 +375,10 @@ Nightmare.prototype.select = function (selector, option) {
 Nightmare.prototype.type = [
     function (ns, options, parent, win, renderer) {
         parent.on('type', function (value) {
-            var chars = String(value).split('')
+            var chars = String(value).split('');
 
             function type() {
-                var ch = chars.shift()
+                var ch = chars.shift();
                 if (ch === undefined) {
                     parent.emit('type');
                     return;
@@ -413,7 +413,7 @@ Nightmare.prototype.type = [
 
             // start
             type();
-        })
+        });
     },
     function () {
         let selector = arguments[0], text;
