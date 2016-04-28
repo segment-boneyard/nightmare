@@ -1,4 +1,4 @@
-[![Build Status](https://circleci.com/gh/segmentio/nightmare.png?circle-token=dbb94336673268633371a89865e008b70ffedf6d)](https://circleci.com/gh/segmentio/nightmare)
+[![Circle CI](https://circleci.com/gh/Oceanswave/nightmare-promise.svg?style=svg)](https://circleci.com/gh/Oceanswave/nightmare-promise)
 Nightmare
 =========
 
