@@ -612,13 +612,13 @@ Nightmare.prototype.getTitle = [
         .getTitle();
 ```
 
-These tuples are automatically detached from the prototype by the Nightmare constructor, so if they are mutated later it doesn't affect existing instances.
+These tuples are automatically detached from the prototype by the Nightmare init() function, so if they are mutated later it doesn't affect existing instances.
 
 Namespaces with custom electron actions can be defined too. See the mocha tests for examples.
 
 #### Nightmare.action(name, action|namespace)
 
-While in v3 promises are favored, the .action function is still retained for backward compatability. Here's an example:
+While in v3 extending nightmare through Nightmare.prototype is favored, the .action function is still retained for backward compatability. Here's an example:
 
 ```js
 Nightmare.action('size', function () {
