@@ -1,7 +1,3 @@
 machine:
   node:
     version: 5.0.0
-    
-dependencies:
-  override:
-    - npm install -f
