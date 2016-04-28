@@ -6,16 +6,9 @@ Nightmare is a high-level browser automation library.
 
 ###Nightmare v3
 
-This version of Nightmare relies on promises. The primary API change is that all functions now return promises instead of the this object. However, Nightmare is still chainable through the .chain() function. This simplifies the programming and extension model as all custom functions and namespaces added through .action() are inheritly chainable.
+This version of Nightmare relies on promises. The primary API change is that all functions now return promises instead of the this object.
 
-```
-  var Nightmare = require("nightmare");
-  var title = new Nightmare().chain()
-    .goto("http://foo.com")
-    .title();
-```
-
-Since all methods return promises, it's easy to synchronize between other Promise based apis.
+Since all functions return promises, it's easy to synchronize between other Promise-based apis.
 
 ```
   Promise.race([nightmare.goto('http://foo.com'), timeout(500)])
@@ -26,14 +19,25 @@ Since all methods return promises, it's easy to synchronize between other Promis
     });
 ```
 
-This allows nightmare to work better in conjunction with other libraries, but still retain the original goal of having a simple, non-pyramid-of-doom API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
+However, Nightmare is still chainable through the .chain() function.
+
+```
+  var Nightmare = require("nightmare");
+  var title = new Nightmare().chain()
+    .goto("http://foo.com")
+    .title();
+```
+
+All custom functions and namespaces added are chainable thorugh this method. This simplifies the programming and extension model. No more done callback argument mashing either.
+
+
+Using promises allows nightmare to work better in conjunction with other libraries, but through chain() still retain the original goal of having a simple, non-pyramid-of-doom API that feels synchronous for each block of scripting, rather than deeply nested callbacks.
 
 ####Modules
 
 Starting with Nightmare v3 one can choose the specific base functions that are defined on the Nightmare object.
 
-By default, all modules are associated with the nightmare instance. If you only want to use a portion of the functionality you can include
-just the modules you're interested in.
+By default, all modules are associated with the nightmare instance whe using require("nightmare"). If you only want to use a portion of the functionality you can include only the modules you're interested in, or, if you're not happy with the included ones, completely rewrite your own actions.
 
 ```
 const Nightmare = require("nightmare/lib/nightmare"); //require the base nightmare class.
@@ -42,10 +46,10 @@ require("nightmare/actions/core"); //only pull in the 'core' set of actions.
 
 The available modules are:
 
-	* Core - Contains the core functionality: evaluate, title, wait and so forth.
-	* Cookies - Contains the 'cookies' namespace used to get/set/clear cookies
-	* Input - Contains the functions associated with interacting with a page - typing, setting values, etc.
-	* Navigation - Contains the functions associated with navigating - goto, stop, reload and so forth.
+* [Core](#core-actions) - Contains the core functionality: evaluate, title, wait and so forth.
+* [Cookies](#cookies) - Contains the 'cookies' namespace used to get/set/clear cookies
+* [Input](#input-actions) - Contains the functions associated with interacting with a page - typing, setting values, etc.
+* [Navigation](#navigation-actions) - Contains the functions associated with navigating - goto, stop, reload and so forth.
 
 ####Simpler Extension
 
@@ -73,9 +77,17 @@ var size = yield nightmare.chain()
 	.size(scaleFactor, offsetFactor)
 ```
 
-This simplifies creating extensions and lets IDEs with autocomplete pick up the API automatically. Arguments don't need to be specially handled to support done() -- simply return a promise. The chain() method will pickup all functions associated with the prototype and make them chainable so you don't have to.
+This simplifies creating extensions and lets IDEs with autocomplete pick up the API automatically. Arguments don't need to be specially handled to support done() -- simply return a promise.
 
-Nightmare can be subclassed too!
+The chain() method will pickup all functions associated with the prototype and make them chainable so you don't have to explicitly return the this object.
+
+See [Nightmare.prototype](#nightmareprototype) for more information.
+
+#### Migration from v2 to v3
+
+* Ensure that all instances are created with ```new Nightmare(...);```
+* When chaining functionality, add the .chain() method. e.g. ``` let nightmare = new Nightmare(); nightmare.chain().goto("http://www.github.com").title(); ```
+* Ensure that ```.init()``` is called if ```.chain()``` isn't the first function called.
 
 ####About
 
@@ -85,11 +97,18 @@ Under the covers it uses [Electron](http://electron.atom.io/), which is similar 
 
 Many thanks to [@matthewmueller](https://github.com/matthewmueller) for his help on Nightmare.
 
+## Nightmare Documentation
+
 * [Examples](#examples)
 * [API](#api)
-  - [Set up an instance](#nightmareoptions)
-  - [Interact with the page](#interact-with-the-page)
-  - [Extract from the page](#extract-from-the-page)
+  - [Set up an instance](#new-nightmareoptions)
+  - [Nightmare Lifecycle](#nightmare-lifecycle)
+  - Actions
+    - [Core Actions](#core-actions)
+    - [Navigation Actions](#navigation-actions)
+    - [Input Actions](#input-actions)
+    - [Cookie Actions](#cookies)
+  - [Events](#events)
   - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
@@ -168,7 +187,7 @@ Create a new instance that can navigate around the web. The available options ar
 This will throw an exception if the `.wait()` didn't return `true` within the set timeframe.
 
 ```js
-var nightmare = Nightmare({
+var nightmare = new Nightmare({
   waitTimeout: 1000 // in ms
 });
 ```
@@ -179,7 +198,7 @@ The default system paths that Electron knows about. Here's a list of available p
 You can overwrite them in Nightmare by doing the following:
 
 ```js
-var nightmare = Nightmare({
+var nightmare = new Nightmare({
   paths: {
     userData: '/user/data'
   }
@@ -191,7 +210,7 @@ The command line switches used by the Chrome browser that are also supported by 
 https://github.com/atom/electron/blob/master/docs/api/chrome-command-line-switches.md
 
 ```js
-var nightmare = Nightmare({
+var nightmare = new Nightmare({
   switches: {
     'proxy-server': '1.2.3.4:5678',
     'ignore-certificate-errors': true
@@ -203,7 +222,7 @@ var nightmare = Nightmare({
 The path to prebuilt Electron binary.  This is useful for testing on different version Electron.  Note that Nightmare only supports the version this package depending on.  Please use this option at your own risk.
 
 ```js
-var nightmare = Nightmare({
+var nightmare = new Nightmare({
   electronPath: require('electron-prebuilt')
 });
 ```
@@ -218,13 +237,15 @@ var nightmare = new Nightmare({
 ```
 #### Nightmare Lifecycle
 
-With Nightmare v3, the instance must first be initialized with the .init() method prior to calling any page interaction, however the init() method provides the ability to associate with an existing electron instance if needed.
+With Nightmare v3, once a new Nightmare instance is created, the instance must first be initialized with the .init() function prior to calling any page interaction functions.
 
 ```
    var nightmare = new Nightmare();
-   yield nightmare.init(myElectron);
+   yield nightmare.init();
    yield nightmare.goto("http://foo.com");
 ```
+
+*Eventually, it will be possible to attach to an existing Electron instance by providing it as an argument to the init function.*
 
 ##### Chain
 With Nightmare v3, all functions return promises, however, the API can still be chained using the .chain() function which dynamically creates a chainable promise:
@@ -232,10 +253,10 @@ With Nightmare v3, all functions return promises, however, the API can still be 
 ```
    var nightmare = new Nightmare();
    yield nightmare.chain()
-			      .goto("http://foo.com")
-				  .type('input[title="Search"]', 'github nightmare')
-				  .click('#UHSearchWeb')
-				  .wait('#main');
+      .goto("http://foo.com")
+      .type('input[title="Search"]', 'github nightmare')
+      .click('#UHSearchWeb')
+      .wait('#main');
 ```
 
 Nightmare calls the initialization function if it has not been called when running the chain.
@@ -508,9 +529,9 @@ This event is triggered if `console.log` is used on the page. But this event is 
 
 #### Nightmare.prototype
 
-With nightmare v3 the primary mechanism of adding custom behavior is by adding methods to the prototype. This is how Nightmare v3 implements its actions itself.
+With nightmare v3 the primary mechanism of adding custom behavior is by adding functions to the prototype. This is how Nightmare v3 implements its actions itself.
 
-Functions added to the prototype can be simple prototype functions that can return promises or values. Callback methods can be utilized, but are not required. Custom functions can be generators as well.
+Functions added to the prototype can be simple prototype functions that can return promises or values. Callback functions can be utilized, but are not required. Custom functions can be generators as well.
 
 ```
 Nightmare.prototype.size = function (scale, offset) {
@@ -529,7 +550,7 @@ Nightmare.prototype.size = function (scale, offset) {
 
 As described above, the built-in chain() function will make all functions exposed on the nightmare prototype chainable, so the 'this' object need not be returned by the extension function.
 
-Thus, the above method can be called simply by:
+Thus, the above custom action can be called simply by:
 ```
 let scaleFactor = 2.0;
 let offsetFactor = 1;
@@ -540,7 +561,7 @@ let size = yield nightmare.chain()
 	.size(scaleFactor, offsetFactor);
 ```
 
-Custom 'namespaces' can be implemented by adding a psudo-class and calling the static method 'registerNamespace':
+Custom 'namespaces' can be implemented by adding a psudo-class and calling the static function 'registerNamespace':
 
 ```
 'use strict';
@@ -591,11 +612,13 @@ Nightmare.prototype.getTitle = [
         .getTitle();
 ```
 
-These touples are automatically detached from the prototype by the Nightmare constructor, so if they are mutated later it doesn't affect existing instances.
+These tuples are automatically detached from the prototype by the Nightmare constructor, so if they are mutated later it doesn't affect existing instances.
+
+Namespaces with custom electron actions can be defined too. See the mocha tests for examples.
 
 #### Nightmare.action(name, action|namespace)
 
-While in v3 promises are favored, the .action method is still retained for backward compatability. Here's an example:
+While in v3 promises are favored, the .action function is still retained for backward compatability. Here's an example:
 
 ```js
 Nightmare.action('size', function () {
@@ -616,11 +639,7 @@ var size = yield new Nightmare().chain()
 
 However, what is this is doing is associating a 'size' function property on the Nightmare prototype for you.
 
-> Remember, this is attached to the static class `Nightmare`, not the instance.
-
-You'll notice we used an internal function `evaluate_now`. This function is different than `nightmare.evaluate` because it runs it immediately, whereas `nightmare.evaluate` is queued.
-
-An easy way to remember: when in doubt, use `evaluate`. If you're creating custom actions, use `evaluate_now`. The technical reason is that since our action has already been queued and we're running it now, we shouldn't re-queue the evaluate function.
+Any functions defined on the prototype can be called using the this. object. In Nightmare v3 the only difference between ```evaluate_now``` and ```evaluate``` is that evaluate checks that the argument passed is a function. Both return promises.
 
 We can also create custom namespaces. We do this internally for `nightmare.cookies.get` and `nightmare.cookies.set`. These are useful if you have a bundle of actions you want to expose, but it will clutter up the main nightmare object. Here's an example of that:
 
@@ -674,8 +693,8 @@ $ npm install --save nightmare
 #### Execution
 Nightmare is a node module that can be used in a Node.js script or module. Here's a simple script to open a web page:
 ```js
-var Nightmare = require('nightmare'),
-  nightmare = new Nightmare();
+var Nightmare = require('nightmare');
+var nightmare = new Nightmare();
 
 nightmare.chain()
   .goto('http://cnn.com')
@@ -691,7 +710,7 @@ If you save this as `cnn.js`, you can run it on the command line like this:
 
 ```bash
 npm install nightmare
-node --harmony cnn.js
+node cnn.js
 ```
 
 #### Debugging
@@ -721,9 +740,17 @@ Only actions
 
 `DEBUG=nightmare:actions*`
 
+Only events
+
+`DEBUG=nightmare:eventLog*`
+
 Only logs
 
 `DEBUG=nightmare:log*`
+
+Verbose messages
+
+`DEBUG=nightmare:verbose*`
 
 #### Tests
 Automated tests for nightmare itself are run using [Mocha](http://mochajs.org/) and Chai, both of which will be installed via `npm install`. To run nightmare's tests, just run `make test`.
@@ -733,7 +760,7 @@ When the tests are done, you'll see something like this:
 ```bash
 make test
   ․․․․․․․․․․․․․․․․․․
-  18 passing (1m)
+  118 passing (1m)
 ```
 
 Note that if you are using `xvfb`, `make test` will automatically run the tests under an `xvfb-run` wrapper.  If you are planning to run the tests headlessly without running `xvfb` first, set the `HEADLESS` environment variable to `0`.

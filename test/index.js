@@ -1921,6 +1921,7 @@ describe('Nightmare', function () {
         it('should open devtools', function* () {
             var devToolsOpen = yield nightmare.chain()
                 .goto(fixture('simple'))
+                .wait(1000)
                 .waitForDevTools();
 
             devToolsOpen.should.be.true;

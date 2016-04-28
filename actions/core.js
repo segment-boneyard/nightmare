@@ -5,6 +5,7 @@ const Nightmare = require("../lib/nightmare");
 const _ = require("lodash");
 const fs = require("fs");
 const delay = require("delay");
+const co = require("co");
 
 /**
  * Contains the core set of actions
@@ -346,7 +347,7 @@ Nightmare.prototype.wait = function () {
     }
     else if (_.isFunction(arg)) {
         debug('.wait() for fn');
-        return this.waitUntilTrue.apply(args);
+        return this.waitUntilTrue.apply(this, args);
     }
 
     throw new Error("wait() Unsupported Arguments.");
@@ -363,15 +364,15 @@ Nightmare.prototype.waitUntilTrue = function (fn/**, arg1, arg2...**/) {
     let self = this;
 
     let timeout = new Promise(function (resolve, reject) {
-        setTimeout(reject, self._options.waitTimeout, task.name + " timed out after " + self._options.waitTimeout);
+        setTimeout(reject, self._options.waitTimeout, ".waitUntilTrue() timed out after " + self._options.waitTimeout);
     });
 
-    let check = function* () {
+    let check = co(function* () {
         let testResult = false;
         do {
             testResult = yield self.evaluate_now.apply(self, args);
         } while (!testResult)
-    };
+    });
 
     return Promise.race([check, timeout]);
 };
