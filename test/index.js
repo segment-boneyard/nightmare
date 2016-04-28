@@ -1781,6 +1781,28 @@ describe('Nightmare', function () {
             backgroundCount.should.equal(1);
         });
 
+        it('should support custom namespaces by simply extending the prototype with deep this support', function* () {
+
+            Nightmare.prototype.MyStyle = class {
+                inner() {
+                    return this.evaluate_now(function () {
+                        return window.getComputedStyle(document.body, null).backgroundColor;
+                    });
+                }
+                outer() {
+                    return this.MyStyle.inner();
+                }
+            }
+
+            Nightmare.registerNamespace("MyStyle");
+            
+            let color = yield nightmare.chain()
+                .goto(fixture('simple'))
+                .MyStyle.outer()
+
+            color.should.equal('rgba(0, 0, 0, 0)');
+        });
+
         it('should support custom combinations of electron actions and nightmare actions by extending the prototype with arrays', function* () {
 
             Nightmare.prototype.getTitle = [
