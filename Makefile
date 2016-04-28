@@ -18,6 +18,6 @@ else
 endif
 
 node_modules: package.json
-	@npm install --dev
+	@npm install
 
 .PHONY: test
