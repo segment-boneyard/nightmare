@@ -11,11 +11,11 @@ test: node_modules
 #if this build is not on circle, is not headless, and xvfb is not already running,
 #run mocha as usual
 #otherwise, run mocha under the xvfb wrapper
-ifeq ($(CIRCLE_PROJECT_REPONAME)$(HEADLESS)$(XVFB_RUNNING), 111)
+#ifeq ($(CIRCLE_PROJECT_REPONAME)$(HEADLESS)$(XVFB_RUNNING), 111)
 	@node_modules/.bin/mocha --grep "$(GREP)"
-else
-	@./test/bb-xvfb node_modules/.bin/mocha --grep "$(GREP)"
-endif
+#else
+#	@./test/bb-xvfb node_modules/.bin/mocha --grep "$(GREP)"
+#endif
 
 node_modules: package.json
 	@npm install
