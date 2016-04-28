@@ -4,4 +4,4 @@ machine:
     
 dependencies:
   override:
-    - npm install --dev
+    - npm install -f
