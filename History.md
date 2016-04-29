@@ -1,3 +1,17 @@
+2.3.4 / 2016-04-23
+==================
+
+  * blurs text inputs when finished with `.type()` or `.input()`, including clearing selectors
+  * now errors properly for non-existent selectors when using `.type()` and `.input()`
+  * strips `sender` from Electron -> parent process forwarded events
+  * improves test speed for dev tools
+  * fixes `.then()` to comply with A+ promises
+  * pipes Electron output to `debug` prefixed with `electron:`
+  * cleans up several exception test cases using `.should.be.rejected` from `chai-as-promised`
+  * upgrades to Electron 0.37.7
+  * removes `process` event listeners when a Nightmare instance ends
+  * fixes support for `javascript:` urls
+
 2.3.3 / 2016-04-19
 ==================
 

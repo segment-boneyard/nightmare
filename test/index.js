@@ -17,6 +17,9 @@ var child_process = require('child_process');
 var PNG = require('pngjs').PNG;
 var should = chai.should();
 var split = require('split');
+var asPromised = require('chai-as-promised');
+
+chai.use(asPromised);
 
 /**
  * Temporary directory
@@ -177,7 +180,6 @@ describe('Nightmare', function () {
 
     it('should fail if navigation target is invalid', function() {
       return nightmare.goto('http://this-is-not-a-real-domain.com')
-        .then()
         .then(
           function() {
             throw new Error('Navigation to an invalid domain succeeded');
@@ -208,11 +210,11 @@ describe('Nightmare', function () {
     });
 
     it('should not fail if the URL loads but a resource fails', function() {
-      return nightmare.goto(fixture('navigation/invalid-image')).then();
+      return nightmare.goto(fixture('navigation/invalid-image'));
     });
 
     it('should not fail if a child frame fails', function() {
-      return nightmare.goto(fixture('navigation/invalid-frame')).then();
+      return nightmare.goto(fixture('navigation/invalid-frame'));
     });
 
     it('should return correct data when child frames are present', function*() {
@@ -222,7 +224,7 @@ describe('Nightmare', function () {
     });
 
     it('should not fail if response was a valid error (e.g. 404)', function() {
-      return nightmare.goto(fixture('navigation/not-a-real-page')).then();
+      return nightmare.goto(fixture('navigation/not-a-real-page'));
     });
 
     it('should fail if the response dies in flight', function(done) {
@@ -236,7 +238,7 @@ describe('Nightmare', function () {
     });
 
     it('should not fail for a redirect', function() {
-      return nightmare.goto(fixture('redirect?url=%2Fnavigation')).then();
+      return nightmare.goto(fixture('redirect?url=%2Fnavigation'));
     });
 
     it('should fail for a redirect to an invalid URL', function(done) {
@@ -269,8 +271,7 @@ describe('Nightmare', function () {
 
       return Nightmare({webPreferences: {partition: 'test-partition'}})
         .goto(fixture('navigation'))
-        .end()
-        .then();
+        .end();
     });
 
     it('should fail properly if request handler is present', function(done) {
@@ -298,6 +299,33 @@ describe('Nightmare', function () {
         .catch(function(error) {
           done();
         });
+    });
+
+    it('should support javascript URLs', function*() {
+      var gotoResult = yield nightmare
+        .goto(fixture('navigation'))
+        .goto('javascript:void(document.querySelector(".a").textContent="LINK");');
+      gotoResult.should.be.an('object');
+
+      var linkText = yield nightmare
+        .evaluate(function() {
+          return document.querySelector('.a').textContent;
+        });
+      linkText.should.equal('LINK');
+    });
+
+    it('should support javascript URLs that load pages', function*() {
+      var data = yield nightmare
+        .goto(fixture('navigation'))
+        .goto(`javascript:window.location='${fixture('navigation/a.html')}'`);
+      data.should.contain.keys('url', 'code', 'method', 'referrer', 'headers');
+      data.url.should.equal(fixture('navigation/a.html'));
+
+      var linkText = yield nightmare
+        .evaluate(function() {
+          return document.querySelector('.d').textContent;
+        });
+      linkText.should.equal('D');
     });
   });
 
@@ -365,16 +393,11 @@ describe('Nightmare', function () {
       title.should.equal('Evaluation -- testparameter');
     });
 
-    it('should capture invalid evaluate fn', function*() {
-      var didFail = false;
-      try {
-        yield nightmare
-          .goto(fixture('evaluation'))
-          .evaluate('not_a_function');
-      } catch (e) {
-        didFail = true;
-      }
-      didFail.should.be.true;
+    it('should capture invalid evaluate fn', function() {
+      return nightmare
+        .goto(fixture('evaluation'))
+        .evaluate('not_a_function')
+        .should.be.rejected;
     });
   });
 
@@ -547,6 +570,20 @@ describe('Nightmare', function () {
 
       value.should.equal('');
     })
+
+    it('should not type in a nonexistent selector', function(){
+      return nightmare
+        .goto(fixture('manipulation'))
+        .type('does-not-exist', 'nightmare')
+        .should.be.rejected;
+    });
+
+    it('should not insert in a nonexistent selector', function(){
+      return nightmare
+        .goto(fixture('manipulation'))
+        .insert('does-not-exist', 'nightmare')
+        .should.be.rejected;
+    });
 
     it('should blur the active element when something is clicked', function*() {
       var isBody = yield nightmare
@@ -1092,44 +1129,29 @@ describe('Nightmare', function () {
       useragent.should.eql('firefox');
     });
 
-    it('should wait and fail with waitTimeout', function*() {
-      var didFail = false;
-      try {
-        nightmare = Nightmare({waitTimeout: 254});
-        yield nightmare
-          .goto(fixture('navigation'))
-          .wait('foobar');
-      } catch (e) {
-        didFail = true;
-      }
-      didFail.should.be.true;
+    it('should wait and fail with waitTimeout', function() {
+      nightmare = Nightmare({waitTimeout: 254});
+      return nightmare
+        .goto(fixture('navigation'))
+        .wait('foobar')
+        .should.be.rejected;
     });
 
-    it('should wait and fail with waitTimeout and a ms wait time', function*() {
-      var didFail = false;
-      try {
-        nightmare = Nightmare({waitTimeout: 254});
-       yield nightmare
-          .goto(fixture('navigation'))
-          .wait(1000);
-      } catch (e) {
-        didFail = true;
-      }
-      didFail.should.be.true;
+    it('should wait and fail with waitTimeout and a ms wait time', function() {
+      nightmare = Nightmare({waitTimeout: 254});
+      return nightmare
+        .goto(fixture('navigation'))
+        .wait(1000)
+        .should.be.rejected;
     });
 
-    it('should wait and fail with waitTimeout with queued functions', function*() {
-      var didFail = false;
-      try {
-        nightmare = Nightmare({waitTimeout: 254});
-        yield nightmare
-          .goto(fixture('navigation'))
-          .wait('foobar')
-          .exists('baz');
-      } catch (e) {
-        didFail = true;
-      }
-      didFail.should.be.true;
+    it('should wait and fail with waitTimeout with queued functions', function() {
+      nightmare = Nightmare({waitTimeout: 254});
+      return nightmare
+        .goto(fixture('navigation'))
+        .wait('foobar')
+        .exists('baz')
+        .should.be.rejected;
     });
 
     it('should set authentication', function*() {
@@ -1330,8 +1352,7 @@ describe('Nightmare', function () {
     });
 
     it('should support extending nightmare', function*() {
-      var nightmare = Nightmare()
-      var tagName = yield Nightmare()
+      var tagName = yield nightmare
         .goto(fixture('simple'))
         .use(select('h1'))
 
@@ -1375,16 +1396,20 @@ describe('Nightmare', function () {
 
   describe('devtools', function(){
     beforeEach(function() {
-      Nightmare.action('checkDevTools',
+      Nightmare.action('waitForDevTools',
         function(ns, options, parent, win, renderer, done){
-          parent.on('checkDevTools', function(){
-            parent.emit('checkDevTools', null, win.webContents.isDevToolsOpened());
+          parent.on('waitForDevTools', function() {
+            function opened() { parent.emit('waitForDevTools', null, true); }
+            if (win.webContents.isDevToolsOpened()) {
+              return opened();
+            }
+            win.webContents.once('devtools-opened', opened);
           });
           done();
         },
         function(done){
-          this.child.once('checkDevTools', done);
-          this.child.emit('checkDevTools');
+          this.child.once('waitForDevTools', done);
+          this.child.emit('waitForDevTools');
         });
       nightmare = Nightmare({show:true, openDevTools:true});
 
@@ -1397,8 +1422,7 @@ describe('Nightmare', function () {
     it('should open devtools', function*(){
       var devToolsOpen = yield nightmare
         .goto(fixture('simple'))
-        .wait(2000)
-        .checkDevTools();
+        .waitForDevTools();
 
       devToolsOpen.should.be.true;
     });
