@@ -33,8 +33,8 @@ var nightmare = Nightmare({ show: true })
 
 nightmare
   .goto('http://yahoo.com')
-  .type('input[title="Search"]', 'github nightmare')
-  .click('#uh-search-button')
+  .type('form[action*="/search"] [name=p]', 'github nightmare')
+  .click('form[action*="/search"] [type=submit]')
   .wait('#main')
   .evaluate(function () {
     return document.querySelector('#main .searchCenterMiddle li a').href
@@ -43,7 +43,9 @@ nightmare
   .then(function (result) {
     console.log(result)
   })
-
+  .catch(function (error) {
+    console.error('Search failed:', error);
+  });
 ```
 
 You can run this with:
@@ -64,8 +66,8 @@ describe('test yahoo search results', function() {
     var nightmare = Nightmare()
     var link = yield nightmare
       .goto('http://yahoo.com')
-      .type('input[title="Search"]', 'github nightmare')
-      .click('#UHSearchWeb')
+      .type('form[action*="/search"] [name=p]', 'github nightmare')
+      .click('form[action*="/search"] [type=submit]')
       .wait('#main')
       .evaluate(function () {
         return document.querySelector('#main .searchCenterMiddle li a').href
@@ -207,7 +209,7 @@ Enters the `text` provided into the `selector` element.  Empty or falsey values 
 
 `.type()` mimics a user typing in a textbox and will emit the proper keyboard events
 
-Key presses can also be fired using Unicode values with `.type()`. For example, if you wanted to fire an enter key press, you would  write `.type('document', '\u000d')`. 
+Key presses can also be fired using Unicode values with `.type()`. For example, if you wanted to fire an enter key press, you would  write `.type('document', '\u000d')`.
 
 > If you don't need the keyboard events, consider using `.insert()` instead as it will be faster and more robust.
 
