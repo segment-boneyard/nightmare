@@ -27,7 +27,7 @@ chai.use(asPromised);
  * Temporary directory
  */
 
-var tmp_dir = path.join(__dirname, 'tmp')
+var tmp_dir = path.join(__dirname, 'tmp');
 
 /**
  * Get rid of a warning.
@@ -119,7 +119,7 @@ describe('Nightmare', function () {
                 .clickAndWaitUntilFinishLoad('a')
                 .title();
 
-            title.should.equal('A')
+            title.should.equal('A');
 
             var title = yield nightmare.chain()
                 .back()
@@ -190,7 +190,7 @@ describe('Nightmare', function () {
           let error = {};
 
           try {
-            yield nightmare.goto(fixture('do-not-respond'))
+            yield nightmare.goto(fixture('do-not-respond'));
           }
           catch(ex) {
             error = ex;
@@ -281,12 +281,12 @@ describe('Nightmare', function () {
             ]);
 
             title[1].should.equal('A');
-        })
+        });
 
         it('should click on a link, go back, and then go forward', function* () {
             yield nightmare.goto(fixture('navigation'));
             var title = yield nightmare.title();
-            title.should.equal('Navigation')
+            title.should.equal('Navigation');
             yield nightmare.clickAndWaitUntilFinishLoad('a');
 
             yield nightmare.back();
@@ -300,7 +300,7 @@ describe('Nightmare', function () {
             yield nightmare.goto(fixture('navigation'));
             var title = yield nightmare.title();
             title.should.equal('Navigation');
-            yield nightmare.expectNavigation(function() { return this.click('a') }, 2000);
+            yield nightmare.expectNavigation(function() { return this.click('a'); }, 2000);
 
             var title = yield nightmare.title();
             title.should.equal('A');
@@ -603,8 +603,8 @@ describe('Nightmare', function () {
         });
 
         it('should type', function* () {
-            var input = 'nightmare'
-            var events = input.length * 3
+            var input = 'nightmare';
+            var events = input.length * 3;
 
             var value = yield nightmare.chain()
                 .on('console', function (type, input, message) {
@@ -678,8 +678,8 @@ describe('Nightmare', function () {
         });
 
         it('should clear inputs', function* () {
-            var input = 'nightmare'
-            var events = input.length * 3
+            var input = 'nightmare';
+            var events = input.length * 3;
 
             var value = yield nightmare.chain()
                 .on('console', function (type, input, message) {
@@ -697,7 +697,7 @@ describe('Nightmare', function () {
         });
 
         it('should support inserting text', function* () {
-            var input = 'nightmare insert typing'
+            var input = 'nightmare insert typing';
 
             var value = yield nightmare.chain()
                 .goto(fixture('manipulation'))
@@ -707,7 +707,7 @@ describe('Nightmare', function () {
                 });
 
             value.should.equal('nightmare insert typing');
-        })
+        });
 
         it('should support clearing inserted text', function* () {
 
@@ -719,7 +719,7 @@ describe('Nightmare', function () {
                 });
 
             value.should.equal('');
-        })
+        });
 
         it('should not type in a nonexistent selector', function () {
             return nightmare.chain()
@@ -908,36 +908,35 @@ describe('Nightmare', function () {
         });
 
         it('.set(name, value) & .get(name)', function* () {
-            var cookies = nightmare.cookies
+            var cookies = nightmare.cookies;
 
-            yield cookies.set('hi', 'hello')
-            var cookie = yield cookies.get('hi')
+            yield cookies.set('hi', 'hello');
+            var cookie = yield cookies.get('hi');
 
-            cookie.name.should.equal('hi')
-            cookie.value.should.equal('hello')
-            cookie.path.should.equal('/')
-            cookie.secure.should.equal(false)
-        })
+            cookie.name.should.equal('hi');
+            cookie.value.should.equal('hello');
+            cookie.path.should.equal('/');
+            cookie.secure.should.equal(false);
+        });
 
         it('.set(obj) & .get(name)', function* () {
-            var cookies = nightmare.cookies
+            var cookies = nightmare.cookies;
 
             yield cookies.set({
                 name: 'nightmare',
                 value: 'rocks',
                 path: '/cookie'
-            })
-            var cookie = yield cookies.get('nightmare')
+            });
+            var cookie = yield cookies.get('nightmare');
 
-            cookie.name.should.equal('nightmare')
-            cookie.value.should.equal('rocks')
-            cookie.path.should.equal('/cookie')
-            cookie.secure.should.equal(false)
-        })
+            cookie.name.should.equal('nightmare');
+            cookie.value.should.equal('rocks');
+            cookie.path.should.equal('/cookie');
+            cookie.secure.should.equal(false);
+        });
 
         it('.set([cookie1, cookie2]) & .get()', function* () {
-            var cookies = nightmare.cookies
-
+            var cookies = nightmare.cookies;
             yield cookies.set([
                 {
                     name: 'hi',
@@ -949,31 +948,31 @@ describe('Nightmare', function () {
                     value: 'rocks',
                     path: '/cookie'
                 }
-            ])
+            ]);
 
-            var cookies = yield cookies.get()
-            cookies.length.should.equal(2)
+            var cookies = yield cookies.get();
+            cookies.length.should.equal(2);
 
             // sort in case they come in a different order
             cookies = cookies.sort(function (a, b) {
-                if (a.name > b.name) return 1
-                if (a.name < b.name) return -1
-                return 0
-            })
+                if (a.name > b.name) return 1;
+                if (a.name < b.name) return -1;
+                return 0;
+            });
 
-            cookies[0].name.should.equal('hi')
-            cookies[0].value.should.equal('hello')
-            cookies[0].path.should.equal('/')
-            cookies[0].secure.should.equal(false)
+            cookies[0].name.should.equal('hi');
+            cookies[0].value.should.equal('hello');
+            cookies[0].path.should.equal('/');
+            cookies[0].secure.should.equal(false);
 
-            cookies[1].name.should.equal('nightmare')
-            cookies[1].value.should.equal('rocks')
-            cookies[1].path.should.equal('/cookie')
-            cookies[1].secure.should.equal(false)
-        })
+            cookies[1].name.should.equal('nightmare');
+            cookies[1].value.should.equal('rocks');
+            cookies[1].path.should.equal('/cookie');
+            cookies[1].secure.should.equal(false);
+        });
 
         it('.set([cookie1, cookie2]) & .get(query)', function* () {
-            var cookies = nightmare.cookies
+            var cookies = nightmare.cookies;
 
             yield cookies.set([
                 {
@@ -986,19 +985,19 @@ describe('Nightmare', function () {
                     value: 'rocks',
                     path: '/cookie'
                 }
-            ])
+            ]);
 
-            var cookies = yield cookies.get({ path: '/cookie' })
-            cookies.length.should.equal(1)
+            var cookies = yield cookies.get({ path: '/cookie' });
+            cookies.length.should.equal(1);
 
-            cookies[0].name.should.equal('nightmare')
-            cookies[0].value.should.equal('rocks')
-            cookies[0].path.should.equal('/cookie')
-            cookies[0].secure.should.equal(false)
-        })
+            cookies[0].name.should.equal('nightmare');
+            cookies[0].value.should.equal('rocks');
+            cookies[0].path.should.equal('/cookie');
+            cookies[0].secure.should.equal(false);
+        });
 
         it('.set([cookie]) & .clear(name) & .get(query)', function* () {
-            var cookies = nightmare.cookies
+            var cookies = nightmare.cookies;
 
             yield cookies.set([
                 {
@@ -1011,26 +1010,26 @@ describe('Nightmare', function () {
                     value: 'rocks',
                     path: '/cookie'
                 }
-            ])
+            ]);
 
             yield cookies.clear('nightmare');
 
             var cookies = yield cookies.get({ path: '/cookie' });
 
             cookies.length.should.equal(0);
-        })
-    })
+        });
+    });
 
     describe('rendering', function () {
         var nightmare;
 
         before(function (done) {
-            mkdirp(tmp_dir, done)
-        })
+            mkdirp(tmp_dir, done);
+        });
 
         after(function (done) {
-            rimraf(tmp_dir, done)
-        })
+            rimraf(tmp_dir, done);
+        });
 
         beforeEach(function* () {
             nightmare = new Nightmare();
@@ -1225,10 +1224,10 @@ describe('Nightmare', function () {
             var log = '';
 
             nightmare.on('console', function (type, str) {
-                if (type === 'log') log = str
+                if (type === 'log') log = str;
             });
 
-            yield nightmare.goto(fixture('events'))
+            yield nightmare.goto(fixture('events'));
 
             log.should.equal('my log');
         });
@@ -1270,11 +1269,11 @@ describe('Nightmare', function () {
 
         it('should fire an event on javascript window.prompt', function* () {
             var prompt = '';
-            var response = ''
+            var response = '';
             nightmare.on('page', function (type, message, res) {
                 if (type === 'prompt') {
                     prompt = message;
-                    response = res
+                    response = res;
                 }
             });
 
@@ -1289,11 +1288,11 @@ describe('Nightmare', function () {
 
         it('should fire an event on javascript window.confirm', function* () {
             var confirm = '';
-            var response = ''
+            var response = '';
             nightmare.on('page', function (type, message, res) {
                 if (type === 'confirm') {
                     confirm = message;
-                    response = res
+                    response = res;
                 }
             });
 
@@ -1476,7 +1475,7 @@ describe('Nightmare', function () {
             nightmare = new Nightmare({ electronPath: require('electron-prebuilt') });
             yield nightmare.init();
             nightmare.should.be.ok;
-        })
+        });
     });
 
     describe('Nightmare.action(name, fn)', function () {
@@ -1493,13 +1492,13 @@ describe('Nightmare', function () {
         it('should support custom actions that are generators', function* () {
             Nightmare.action("size", function* () {
                 return yield this.evaluate_now(function () {
-                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
                     return {
                         height: h,
                         width: w
-                    }
-                })
+                    };
+                });
             });
 
             yield nightmare.init();
@@ -1508,20 +1507,20 @@ describe('Nightmare', function () {
                 .goto(fixture('simple'))
                 .size();
 
-            size.height.should.be.a('number')
-            size.width.should.be.a('number')
+            size.height.should.be.a('number');
+            size.width.should.be.a('number');
         });
 
         it('should support custom actions that are promises', function* () {
             Nightmare.action("size", function () {
                 return this.evaluate_now(function () {
-                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
                     return {
                         height: h,
                         width: w
-                    }
-                })
+                    };
+                });
             });
 
             yield nightmare.init();
@@ -1530,22 +1529,22 @@ describe('Nightmare', function () {
                 .goto(fixture('simple'))
                 .size();
 
-            size.height.should.be.a('number')
-            size.width.should.be.a('number')
+            size.height.should.be.a('number');
+            size.width.should.be.a('number');
         });
 
         it('should support custom actions with arguments', function* () {
             Nightmare.action("size", function (scale, offset) {
                 return this.evaluate_now(function (scale, offset) {
-                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
                     return {
                         height: h,
                         width: w,
                         scaledHeight: h * scale + offset,
                         scaledWidth: w * scale + offset
                     };
-                }, scale, offset)
+                }, scale, offset);
             });
 
             yield nightmare.init();
@@ -1555,7 +1554,7 @@ describe('Nightmare', function () {
             
             var size = yield nightmare.chain()
                 .goto(fixture('simple'))
-                .size(scaleFactor, offsetFactor)
+                .size(scaleFactor, offsetFactor);
 
             size.height.should.be.a('number');
             size.width.should.be.a('number');
@@ -1570,12 +1569,12 @@ describe('Nightmare', function () {
                 background: function* () {
                     return yield this.evaluate_now(function () {
                         return window.getComputedStyle(document.body, null).backgroundColor;
-                    })
+                    });
                 },
                 color: function* () {
                     return yield this.evaluate_now(function () {
                         return window.getComputedStyle(document.body, null).color;
-                    })
+                    });
                 }
             });
 
@@ -1594,7 +1593,7 @@ describe('Nightmare', function () {
                 multiply: function* (a, b) {
                     return yield this.evaluate_now(function (a, b) {
                         return a * b;
-                    }, a, b)
+                    }, a, b);
                 }
             });
 
@@ -1611,25 +1610,25 @@ describe('Nightmare', function () {
             var backgroundCount = 0;
             var colorCount = 0;
 
-            Nightmare.action("style", {
+            Nightmare.action("style2", {
                 background: function* () {
                     backgroundCount++;
                     return yield this.evaluate_now(function () {
                         return window.getComputedStyle(document.body, null).backgroundColor;
-                    })
+                    });
                 },
                 color: function* () {
                     colorCount++;
                     return yield this.evaluate_now(function () {
                         return window.getComputedStyle(document.body, null).color;
-                    })
+                    });
                 }
             });
             
             var color = yield nightmare.chain()
                 .goto(fixture('simple'))
-                .style.background()
-                .style.color();
+                .style2.background()
+                .style2.color();
 
             color.should.equal('rgb(0, 0, 0)');
             colorCount.should.equal(1);
@@ -1643,7 +1642,7 @@ describe('Nightmare', function () {
                         "use strict";
                         if (renderer.listeners(name).length === 0) {
                             renderer.on(name, function () {
-                                parent.emit.apply(parent, [name].concat(Array.from(arguments).slice(1)))
+                                parent.emit.apply(parent, [name].concat(Array.from(arguments).slice(1)));
                             });
                         }
                         parent.emit('bind');
@@ -1680,7 +1679,7 @@ describe('Nightmare', function () {
             eventResults[1].should.equal(3);
             eventResults[2].sample.should.equal('sample');
         });
-    })
+    });
 
     describe('Nightmare.use', function () {
         var nightmare;
@@ -1703,11 +1702,11 @@ describe('Nightmare', function () {
             function select(tagname) {
                 return function* (nightmare) {
                     return yield this.evaluate(function (tagname) {
-                        return document.querySelector(tagname).tagName
-                    }, tagname)
-                }
+                        return document.querySelector(tagname).tagName;
+                    }, tagname);
+                };
             }
-        })
+        });
     });
 
     describe('Nightmare.prototype', function () {
@@ -1723,15 +1722,15 @@ describe('Nightmare', function () {
         it('should support custom behavior by simply extending the prototype', function* () {
             Nightmare.prototype.size = function (scale, offset) {
                 return this.evaluate_now(function (scale, offset) {
-                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
                     return {
                         height: h,
                         width: w,
                         scaledHeight: h * scale + offset,
                         scaledWidth: w * scale + offset
                     };
-                }, scale, offset)
+                }, scale, offset);
             };
 
             var scaleFactor = 2.0;
@@ -1739,7 +1738,7 @@ describe('Nightmare', function () {
 
             var size = yield nightmare.chain()
                 .goto(fixture('simple'))
-                .size(scaleFactor, offsetFactor)
+                .size(scaleFactor, offsetFactor);
 
             size.height.should.be.a('number');
             size.width.should.be.a('number');
@@ -1759,13 +1758,13 @@ describe('Nightmare', function () {
                     backgroundCount++;
                     return yield this.evaluate_now(function () {
                         return window.getComputedStyle(document.body, null).backgroundColor;
-                    })
+                    });
                 }
                 *color() {
                     colorCount++;
                     return yield this.evaluate_now(function () {
                         return window.getComputedStyle(document.body, null).color;
-                    })
+                    });
                 }
             };
 
@@ -1783,22 +1782,22 @@ describe('Nightmare', function () {
 
         it('should support custom namespaces by simply extending the prototype with deep this support', function* () {
 
-            Nightmare.prototype.MyStyle = class {
+            Nightmare.prototype.MyStyle2 = class {
                 inner() {
                     return this.evaluate_now(function () {
                         return window.getComputedStyle(document.body, null).backgroundColor;
                     });
                 }
                 outer() {
-                    return this.MyStyle.inner();
+                    return this.MyStyle2.inner();
                 }
-            }
+            };
 
-            Nightmare.registerNamespace("MyStyle");
+            Nightmare.registerNamespace("MyStyle2");
             
             let color = yield nightmare.chain()
                 .goto(fixture('simple'))
-                .MyStyle.outer()
+                .MyStyle2.outer();
 
             color.should.equal('rgba(0, 0, 0, 0)');
         });
@@ -1894,6 +1893,35 @@ describe('Nightmare', function () {
 
             title.should.equal('Simple');
         });
+        
+         it('should fail if  a namespace is registered twice.', function* () {
+
+            Nightmare.prototype.MyTitle = class {
+                getTitle() {
+                    return this.evaluate_now(function() {
+                        return document.title;
+                    });
+                }
+            };
+
+            var thrown = false;
+            try {
+                Nightmare.action("Mytitle", {
+                    getTitle: function () {
+                        return this.evaluate_now(function() {
+                            return document.title;
+                        });
+                    }
+                });
+                
+                Nightmare.registerNamespace("Mytitle");
+            }
+            catch (ex) {
+                thrown = true;
+            }
+            
+            thrown.should.equal(true);
+        });
     });
 
     describe('custom preload script', function () {
@@ -1902,7 +1930,7 @@ describe('Nightmare', function () {
                 webPreferences: {
                     preload: path.join(__dirname, 'fixtures', 'preload', 'index.js')
                 }
-            })
+            });
 
             try {
                 var value = yield nightmare.chain()
@@ -1914,7 +1942,7 @@ describe('Nightmare', function () {
             } finally {
                 nightmare.end();
             }
-        })
+        });
     });
 
     describe('devtools', function () {
@@ -1987,7 +2015,7 @@ function withDeprecationTracking(cls) {
         `Used ${deprecations.length} deprecated Electron API${plural}:
         ${Array.from(deprecations).join('\n        ')}`);
     }
-  }
+  };
 
   return cls;
 };
