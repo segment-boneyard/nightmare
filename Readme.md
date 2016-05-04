@@ -128,8 +128,8 @@ var nightmare = Nightmare({
 });
 ```
 
-##### chromium arguments
-Append an argument to Chromium’s command line.
+##### chromiumArguments
+Append an argument to Chromium’s command line for low level tweaking of the runtime.
 
 A list of switches can be found here
 http://peter.sh/experiments/chromium-command-line-switches/
