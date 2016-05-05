@@ -33,8 +33,8 @@ var nightmare = Nightmare({ show: true })
 
 nightmare
   .goto('http://yahoo.com')
-  .type('input[title="Search"]', 'github nightmare')
-  .click('#uh-search-button')
+  .type('form[action*="/search"] [name=p]', 'github nightmare')
+  .click('form[action*="/search"] [type=submit]')
   .wait('#main')
   .evaluate(function () {
     return document.querySelector('#main .searchCenterMiddle li a').href
@@ -43,7 +43,9 @@ nightmare
   .then(function (result) {
     console.log(result)
   })
-
+  .catch(function (error) {
+    console.error('Search failed:', error);
+  });
 ```
 
 You can run this with:
@@ -64,8 +66,8 @@ describe('test yahoo search results', function() {
     var nightmare = Nightmare()
     var link = yield nightmare
       .goto('http://yahoo.com')
-      .type('input[title="Search"]', 'github nightmare')
-      .click('#UHSearchWeb')
+      .type('form[action*="/search"] [name=p]', 'github nightmare')
+      .click('form[action*="/search"] [type=submit]')
       .wait('#main')
       .evaluate(function () {
         return document.querySelector('#main .searchCenterMiddle li a').href
