@@ -1,3 +1,11 @@
+2.4.0 / 2016-05-05
+==================
+
+  * adds call safety with IPC callbacks
+  * adds `.engineVersions()` to get Electron and Chrome versions, as well as Nightmare.version
+  * changes Yahoo example to use more robust selectors, adds `.catch()`
+  * adds a check for `runner` arguments
+
 2.3.4 / 2016-04-23
 ==================
 
