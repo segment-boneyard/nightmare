@@ -1130,6 +1130,8 @@ describe('Nightmare', function () {
     var server;
 
     before(function(done) {
+      // set up an HTTPS server using self-signed certificates -- Nightmare
+      // will only be able to talk to it if 'ignore-certificate-errors' is set.
       server = https.createServer({
         key: fs.readFileSync(path.join(__dirname, 'files', 'server.key')),
         cert: fs.readFileSync(path.join(__dirname, 'files', 'server.crt'))
