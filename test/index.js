@@ -57,6 +57,19 @@ describe('Nightmare', function () {
         nightmare.end();
     });
 
+    it('should have version information', function* () {
+        let nightmare = new Nightmare();
+        let versions = yield nightmare.init();
+        versions.electron.should.be.ok;
+        versions.chrome.should.be.ok;
+        
+        nightmare.engineVersions.electron.should.be.ok;
+        nightmare.engineVersions.chrome.should.be.ok;
+
+        Nightmare.version.should.be.ok;
+        nightmare.end();
+    });
+
     it('should kill its electron process when it is killed', function (done) {
         var child = child_process.fork(
             path.join(__dirname, 'files', 'nightmare-unended.js'));

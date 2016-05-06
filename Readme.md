@@ -272,6 +272,9 @@ Add a header override for all HTTP requests.  If `header` is undefined, the head
 
 #### Core Actions
 
+##### .engineVersions()
+Gets the versions for Electron and Chromium.
+
 ##### .evaluate(fn[, arg1, arg2,...])
 Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On completion it returns the return value of `fn`. Useful for extracting information from the page. Here's an example:
 
@@ -331,6 +334,9 @@ Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 
 ##### .wait(fn[, arg1, arg2,...])
 Wait until the `fn` evaluated on the page with `arg1, arg2,...` returns `true`. All the `args` are optional. See `.evaluate()` for usage.
+
+##### Nightmare.version
+Returns the version of Nightmare.
 
 #### Navigation actions
 
