@@ -1922,6 +1922,64 @@ describe('Nightmare', function () {
             
             thrown.should.equal(true);
         });
+        
+        it('should support namespaces that do not want this binding', function* () {
+                Nightmare.prototype.maths = class {
+                    constructor(nm) {
+                        this._nightmare = nm;
+                    }
+                    get a() {
+                        return this._a;
+                    }
+                    set a(value) {
+                        this._a = value;
+                    }
+                    *getMeaningOfTitle() {
+                        var title = yield this.getTitle();
+                        return title + " " + (this.a + this.b);
+                    }
+                    getTitle() {
+                        return this._nightmare.evaluate_now(function () {
+                            return document.title;
+                        });
+                    }
+                };
+                
+                Nightmare.registerNamespace("maths", false);
+                yield nightmare.init();
+                
+                nightmare.maths.a = 40;
+                nightmare.maths.b = 2;
+                
+                yield nightmare.goto(fixture('simple'));
+               var result =  yield nightmare.maths.getMeaningOfTitle();
+               result.should.equal("Simple 42");
+               nightmare.maths._nightmare.should.equal(nightmare);
+        });
+        
+        it('should support chaining namespaces that do not want this binding', function* () {
+                Nightmare.prototype.moreMaths = class {
+                    constructor(nm) {
+                        this._nightmare = nm;
+                    }
+                    *getMeaningOfTitle() {
+                        var title = yield this.getTitle();
+                        return title + " " + 42;
+                    }
+                    getTitle() {
+                        return this._nightmare.evaluate_now(function () {
+                            return document.title;
+                        });
+                    }
+                };
+                
+                Nightmare.registerNamespace("moreMaths", false);
+
+                var result = yield nightmare.chain()
+                    .goto(fixture('simple'))
+                    .moreMaths.getMeaningOfTitle();
+                result.should.equal("Simple 42");
+        });
     });
 
     describe('custom preload script', function () {
