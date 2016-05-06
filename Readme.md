@@ -123,8 +123,8 @@ var nightmare = new Nightmare({ show: true })
 
 nightmare.chain()
   .goto('http://yahoo.com')
-  .type('input[title="Search"]', 'github nightmare')
-  .click('#uh-search-button')
+  .type('form[action*="/search"] [name=p]', 'github nightmare')
+  .click('form[action*="/search"] [type=submit]')
   .wait('#main')
   .evaluate(function () {
     return document.querySelector('#main .searchCenterMiddle li a').href
@@ -133,6 +133,9 @@ nightmare.chain()
   .then(function (result) {
     console.log(result)
   })
+  .catch(function (error) {
+    console.error('Search failed:', error);
+  });
 
 ```
 
@@ -154,8 +157,8 @@ describe('test yahoo search results', function() {
     var nightmare = new Nightmare()
     var link = yield nightmare.chain()
       .goto('http://yahoo.com')
-      .type('input[title="Search"]', 'github nightmare')
-      .click('#UHSearchWeb')
+      .type('form[action*="/search"] [name=p]', 'github nightmare')
+      .click('form[action*="/search"] [type=submit]')
       .wait('#main')
       .evaluate(function () {
         return document.querySelector('#main .searchCenterMiddle li a').href
