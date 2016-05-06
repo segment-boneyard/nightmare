@@ -1138,7 +1138,7 @@ describe('Nightmare', function () {
       }, function(request, response) {
         response.end('ok\n');
       }).listen(0, 'localhost', function() {
-        var address= server.address();
+        var address = server.address();
         server.url = `https://${address.address}:${address.port}`;
         done();
       });
