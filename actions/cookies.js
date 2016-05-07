@@ -15,17 +15,15 @@ Nightmare.prototype.cookies = (function () { });
 Nightmare.prototype.cookies.prototype.get = [
     function (ns, options, parent, win, renderer) {
         const _ = require("lodash");
-        parent.on('cookie.get', function (query) {
+        parent.respondTo('cookie.get', function (query, done) {
             var details = _.assign({}, {
                 url: win.webContents.getURL(),
             }, query);
 
             parent.emit('log', 'getting cookie: ' + JSON.stringify(details));
             win.webContents.session.cookies.get(details, function (err, cookies) {
-                if (err) return parent.emit('cookie.get', err);
-                parent.emit('cookie.get', {
-                    result: details.name ? cookies[0] : cookies
-                });
+                if (err) return done.reject(err);
+                done.resolve(details.name ? cookies[0] : cookies);
             });
         });
     },
@@ -48,7 +46,7 @@ Nightmare.prototype.cookies.prototype.get = [
 Nightmare.prototype.cookies.prototype.set = [
     function (ns, options, parent, win, renderer) {
         const _ = require("lodash");
-        parent.on('cookie.set', function (cookies) {
+        parent.respondTo('cookie.set', function (cookies, done) {
             var pending = cookies.length;
             for (var cookie of cookies) {
                 var details = _.assign({}, {
@@ -57,10 +55,8 @@ Nightmare.prototype.cookies.prototype.set = [
 
                 parent.emit('log', 'setting cookie: ' + JSON.stringify(details));
                 win.webContents.session.cookies.set(details, function (err) {
-                    if (err) parent.emit('cookie.set', {
-                        error: err
-                    });
-                    else if (!--pending) parent.emit('cookie.set');
+                    if (err) return done.reject(err);
+                    if (!--pending) done.resolve();
                 });
             }
         });
@@ -90,7 +86,7 @@ Nightmare.prototype.cookies.prototype.set = [
   */
 Nightmare.prototype.cookies.prototype.clear = [
     function (ns, options, parent, win, renderer) {
-        parent.on('cookie.clear', function (cookies) {
+        parent.respondTo('cookie.clear', function (cookies,done) {
             var pending = cookies.length;
             parent.emit('log', 'listing params', cookies);
 
@@ -100,10 +96,8 @@ Nightmare.prototype.cookies.prototype.clear = [
 
                 parent.emit('log', 'clearing cookie: ' + JSON.stringify(cookie));
                 win.webContents.session.cookies.remove(url, name, function (err) {
-                    if (err) parent.emit('cookie.clear', {
-                        error: err,
-                    });
-                    else if (!--pending) parent.emit('cookie.clear');
+                    if (err) return done.reject(err);
+                    if (!--pending) done.resolve();
                 });
             }
         });

@@ -10,7 +10,7 @@ This version of Nightmare relies on promises. The primary API change is that all
 
 Since all functions return promises, it's easy to synchronize between other Promise-based apis.
 
-```
+``` js
   Promise.race([nightmare.goto('http://foo.com'), timeout(500)])
     .then(function() {
       console.log("success!");
@@ -21,7 +21,7 @@ Since all functions return promises, it's easy to synchronize between other Prom
 
 However, Nightmare is still chainable through the .chain() function.
 
-```
+``` js
   var Nightmare = require("nightmare");
   var title = new Nightmare().chain()
     .goto("http://foo.com")
@@ -39,7 +39,7 @@ Starting with Nightmare v3 one can choose the specific base functions that are d
 
 By default, all modules are associated with the nightmare instance whe using require("nightmare"). If you only want to use a portion of the functionality you can include only the modules you're interested in, or, if you're not happy with the included ones, completely rewrite your own actions.
 
-```
+``` js
 const Nightmare = require("nightmare/lib/nightmare"); //require the base nightmare class.
 require("nightmare/actions/core"); //only pull in the 'core' set of actions.
 ```
@@ -55,7 +55,7 @@ The available modules are:
 
 Nightmare v3 can be extended by simply adding functions to Nightmare.prototype.
 
-```
+``` js
 Nightmare.prototype.size = function (scale, offset) {
         return this.evaluate_now(function (scale, offset) {
             var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
@@ -242,7 +242,7 @@ var nightmare = new Nightmare({
 
 With Nightmare v3, once a new Nightmare instance is created, the instance must first be initialized with the .init() function prior to calling any page interaction functions.
 
-```
+```js
    var nightmare = new Nightmare();
    yield nightmare.init();
    yield nightmare.goto("http://foo.com");
@@ -253,7 +253,7 @@ With Nightmare v3, once a new Nightmare instance is created, the instance must f
 ##### Chain
 With Nightmare v3, all functions return promises, however, the API can still be chained using the .chain() function which dynamically creates a chainable promise:
 
-```
+```js
    var nightmare = new Nightmare();
    yield nightmare.chain()
       .goto("http://foo.com")
@@ -542,7 +542,7 @@ With nightmare v3 the primary mechanism of adding custom behavior is by adding f
 
 Functions added to the prototype can be simple prototype functions that can return promises or values. Callback functions can be utilized, but are not required. Custom functions can be generators as well.
 
-```
+```js
 Nightmare.prototype.size = function (scale, offset) {
                 return this.evaluate_now(function (scale, offset) {
                     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
@@ -560,7 +560,7 @@ Nightmare.prototype.size = function (scale, offset) {
 As described above, the built-in chain() function will make all functions exposed on the nightmare prototype chainable, so the 'this' object need not be returned by the extension function.
 
 Thus, the above custom action can be called simply by:
-```
+```js
 let scaleFactor = 2.0;
 let offsetFactor = 1;
 
@@ -572,7 +572,7 @@ let size = yield nightmare.chain()
 
 Custom 'namespaces' can be implemented by adding a psudo-class and calling the static function 'registerNamespace':
 
-```
+``` js
 'use strict';
 Nightmare.prototype.MyStyle = class {
 	*background() {
@@ -592,7 +592,7 @@ Nightmare.registerNamespace("MyStyle");
 
 Nightmare v3 will automatically make these chainable as well.
 
-```
+``` js
 let nightmare = new Nightmare();
 let color = yield nightmare.chain()
         .goto('http://www.github.com')
@@ -602,17 +602,15 @@ let color = yield nightmare.chain()
 
 Custom electron behaviors can be attached by adding tuples of [ {electron function}, {function} ]to the Nightmare prototype. For instance:
 
-```
+``` js
 Nightmare.prototype.getTitle = [
         function (ns, options, parent, win, renderer) {
-            parent.on('getTitle', function () {
-                parent.emit('getTitle', {
-                    result: win.webContents.getTitle()
-                });
+            parent.respondTo('getTitle', function (done) {
+                done.resolve(win.webContents.getTitle());
             });
         },
-        function (path, saveType) {
-            return this._invokeRunnerOperation("getTitle", path, saveType);
+        function () {
+            return this._invokeRunnerOperation("getTitle");
         }
     ];
 
@@ -647,6 +645,20 @@ var size = yield new Nightmare().chain()
 ```
 
 However, what is this is doing is associating a 'size' function property on the Nightmare prototype for you.
+
+.action() can be used to define custom Electron actions like before.
+
+```js
+Nightmare.action('clearCache',
+  function(name, options, parent, win, renderer) {
+    parent.respondTo('clearCache', function(done) {
+      win.webContents.session.clearCache(done.resolve);
+    });
+  },
+  function(message) {
+    return this._invokeRunnerOperation("clearCache");
+  }
+```
 
 Any functions defined on the prototype can be called using the this. object. In Nightmare v3 the only difference between ```evaluate_now``` and ```evaluate``` is that evaluate checks that the argument passed is a function. Both return promises.
 

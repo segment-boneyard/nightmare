@@ -8,16 +8,12 @@ const Nightmare = require("../lib/nightmare");
   */
 Nightmare.prototype.back = [
     function (ns, options, parent, win, renderer) {
-        parent.on('goBack', function () {
+        parent.respondTo('goBack', function (done) {
             if (!win.webContents.canGoBack()) {
-                parent.emit('goBack', {
-                    error: true
-                });
+                done.reject("Browser unable to go back.");
             } else {
                 win.webContents.once('did-finish-load', function () {
-                    parent.emit('goBack', {
-                        result: win.webContents.getURL()
-                    });
+                    done.resolve('goBack', win.webContents.getURL());
                 });
                 win.webContents.goBack();
             }
@@ -33,14 +29,12 @@ Nightmare.prototype.back = [
  */
 Nightmare.prototype.forward = [
     function (ns, options, parent, win, renderer) {
-        parent.on('goForward', function () {
+        parent.respondTo('goForward', function (done) {
             if (!win.webContents.canGoForward()) {
-                parent.emit('goForward', true);
+                done.reject("Browser unable to go forward.");
             } else {
                 win.webContents.once('did-finish-load', function () {
-                    parent.emit('goForward', {
-                        result: win.webContents.getURL()
-                    });
+                    done.resolve(win.webContents.getURL());
                 });
                 win.webContents.goForward();
             }
@@ -64,7 +58,7 @@ Nightmare.prototype.goto = [
 
         const KNOWN_PROTOCOLS = ['http', 'https', 'file', 'about', 'javascript'];
 
-        parent.on('goto', function (url, headers) {
+        parent.respondTo('goto', function (url, headers, done) {
             var extraHeaders = '';
             for (var key in headers) {
                 extraHeaders += key + ': ' + headers[key] + '\n';
@@ -78,22 +72,22 @@ Nightmare.prototype.goto = [
                 var responseData = {};
 
                 let resolveGoto = function (message) {
-                    done({
-                        result: responseData
-                    });
+                    cleanup();
+                    
+                    done.resolve(responseData);
                 };
 
                 let rejectGoto = function (event, code, detail, failedUrl, isMainFrame) {
                      if (!isMainFrame)
                         return;
-
-                     done({
-                            err: {
-                            message: 'navigation error',
-                            code: code,
-                            details: detail,
-                            url: failedUrl || url
-                          }
+                        
+                     cleanup();
+                     
+                     done.reject({
+                         message: 'navigation error',
+                         code: code,
+                         details: detail,
+                         url: failedUrl || url
                      });
                 };
 
@@ -111,12 +105,12 @@ Nightmare.prototype.goto = [
                     };
                 };
 
-                let done = function(data) {
+                let cleanup = function(data) {
                     win.webContents.removeListener('did-fail-load', rejectGoto);
                     win.webContents.removeListener('did-get-response-details', getDetails);
                     win.webContents.removeListener('did-finish-load', resolveGoto);
                     // wait a tick before notifying to resolve race conditions for events
-                    setImmediate(() => parent.emit('goto', data));
+                    //setImmediate(() => parent.emit('goto', data));
                 };
 
                 // In most environments, loadURL handles this logic for us, but in some
@@ -145,14 +139,13 @@ Nightmare.prototype.goto = [
                         if (protocol === 'javascript:') {
                             setTimeout(function () {
                                 if (!win.webContents.isLoading()) {
-                                    done({
-                                        result: {
-                                            url: url,
-                                            code: 200,
-                                            method: 'GET',
-                                            referrer: win.webContents.getURL(),
-                                            headers: {}
-                                        }
+                                    cleanup();
+                                    done.resolve({
+                                        url: url,
+                                        code: 200,
+                                        method: 'GET',
+                                        referrer: win.webContents.getURL(),
+                                        headers: {}
                                     });
                                 }
                             }, 10);
@@ -160,13 +153,13 @@ Nightmare.prototype.goto = [
                         return;
                     }
 
-                    done({
-                      err:{
+                    cleanup();
+                    done.reject({
                         message: 'navigation error',
                         code: -300,
                         details: 'ERR_INVALID_URL',
                         url: url
-                    }});
+                    });
                 });
             }
         });
@@ -197,9 +190,9 @@ Nightmare.prototype.refresh = function (ns, options, parent, win, renderer) {
   */
 Nightmare.prototype.reload = [
     function () {
-        parent.on('reload', function () {
+        parent.respondTo('reload', function (done) {
             win.webContents.reload();
-            parent.emit('reload');
+            done.resolve();
         });
     },
     function () {
@@ -212,9 +205,9 @@ Nightmare.prototype.reload = [
   */
 Nightmare.prototype.stop = [
     function (ns, options, parent, win, renderer) {
-        parent.on('stop', function () {
+        parent.respondTo('stop', function (done) {
             win.webContents.stop();
-            parent.emit('stop');
+            done.resolve();
         });
     },
     function () {

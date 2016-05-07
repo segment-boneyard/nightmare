@@ -92,13 +92,12 @@ Nightmare.prototype.getClientRects = function (selector) {
  */
 Nightmare.prototype.html = [
     function (ns, options, parent, win, renderer) {
-        parent.on('html', function (path, saveType) {
+        parent.respondTo('html', function (path, saveType, done) {
             // https://github.com/atom/electron/blob/master/docs/api/web-contents.md#webcontentssavepagefullpath-savetype-callback
             saveType = saveType || 'HTMLComplete';
             win.webContents.savePage(path, saveType, function (err) {
-                parent.emit('html', {
-                    err: err
-                });
+                if (err) return done.reject(err);
+                done.resolve();
             });
         });
     },
@@ -117,7 +116,7 @@ Nightmare.prototype.html = [
 Nightmare.prototype.pdf = [
     function (ns, options, parent, win, renderer) {
         const _ = require("lodash");
-        parent.on('pdf', function (path, options) {
+        parent.respondTo('pdf', function (path, options, done) {
             // https://github.com/fraserxu/electron-pdf/blob/master/index.js#L98
             options = _.defaults(options, {
                 marginType: 0,
@@ -127,10 +126,8 @@ Nightmare.prototype.pdf = [
             });
 
             win.webContents.printToPDF(options, function (err, data) {
-                if (err) return parent.emit('pdf', arguments);
-                parent.emit('pdf', {
-                    result: data
-                });
+                if (err) return done.reject(err);
+                done.resolve(data);
             });
         });
     },
@@ -160,12 +157,10 @@ Nightmare.prototype.pdf = [
   */
 Nightmare.prototype.screenshot = [
     function (ns, options, parent, win, renderer, frameManager) {
-        parent.on('screenshot', function (clip) {
+        parent.respondTo('screenshot', function (clip, done) {
             // https://gist.github.com/twolfson/0d374d9d7f26eefe7d38
             var args = [function handleCapture(img) {
-                parent.emit('screenshot', {
-                    result: img.toPng()
-                });
+                done.resolve(img.toPng());
             }];
             if (clip) args.unshift(clip);
             frameManager.requestFrame(function () {
@@ -199,11 +194,9 @@ Nightmare.prototype.screenshot = [
   */
 Nightmare.prototype.setAudioMuted = [
     function (ns, options, parent, win, renderer) {
-        parent.on('audio', function (audio) {
+        parent.respondTo('audio', function (audio, done) {
             win.webContents.setAudioMuted(audio);
-            parent.emit('audio', {
-                result: win.webContents.isAudioMuted()
-            });
+            done.resolve(win.webContents.isAudioMuted());
         });
     },
     function (isMuted) {
@@ -216,11 +209,11 @@ Nightmare.prototype.setAudioMuted = [
   */
 Nightmare.prototype.setAuthenticationCredentials = [
     function (ns, options, parent, win, renderer) {
-        parent.on('setAuthenticationCredentials', function (username, password) {
+        parent.respondTo('setAuthenticationCredentials', function (username, password, done) {
             win.webContents.on('login', function (webContents, request, authInfo, callback) {
                 callback(username, password);
             });
-            parent.emit('setAuthenticationCredentials');
+            done.resolve();
         });
     },
     function (username, password) {
@@ -234,10 +227,8 @@ Nightmare.prototype.setAuthenticationCredentials = [
   */
 Nightmare.prototype.title = [
     function (ns, options, parent, win, renderer) {
-        parent.on('title', function () {
-            parent.emit("title", {
-                result: win.webContents.getTitle()
-            });
+        parent.respondTo('title', function (done) {
+            done.resolve(win.webContents.getTitle());
         });
     },
     function () {
@@ -251,10 +242,8 @@ Nightmare.prototype.title = [
  */
 Nightmare.prototype.url = [
     function (ns, options, parent, win, renderer) {
-        parent.on('url', function () {
-            parent.emit("url", {
-                result: win.webContents.getURL()
-            });
+        parent.respondTo('url', function (done) {
+            done.resolve(win.webContents.getURL());
         });
     },
     function () {
@@ -270,9 +259,9 @@ Nightmare.prototype.url = [
   */
 Nightmare.prototype.useragent = [
     function (ns, options, parent, win, renderer) {
-        parent.on('useragent', function (useragent) {
+        parent.respondTo('useragent', function (useragent, done) {
             win.webContents.setUserAgent(useragent);
-            parent.emit('useragent');
+            done.resolve();
         });
     },
     function (useragent) {
@@ -289,9 +278,9 @@ Nightmare.prototype.useragent = [
   */
 Nightmare.prototype.viewport = [
     function (ns, options, parent, win, renderer) {
-        parent.on('size', function (width, height) {
+        parent.respondTo('size', function (width, height, done) {
             win.setSize(width, height);
-            parent.emit("size");
+            done.resolve();
         });
     },
     function (width, height) {
@@ -342,7 +331,7 @@ Nightmare.prototype.wait = function () {
         let fn = function (selector) {
             var element = document.querySelector(selector);
             return (element ? true : false);
-        }
+        };
         return this.waitUntilTrue(fn, arg);
     }
     else if (_.isFunction(arg)) {
@@ -371,7 +360,7 @@ Nightmare.prototype.waitUntilTrue = function (fn/**, arg1, arg2...**/) {
         let testResult = false;
         do {
             testResult = yield self.evaluate_now.apply(self, args);
-        } while (!testResult)
+        } while (!testResult);
     });
 
     return Promise.race([check, timeout]);
@@ -382,7 +371,7 @@ Nightmare.prototype.waitUntilTrue = function (fn/**, arg1, arg2...**/) {
   */
 Nightmare.prototype.waitUntilFinishLoad = [
     function (ns, options, parent, win, renderer) {
-        parent.on("waitUntilFinishLoad", function () {
+        parent.respondTo("waitUntilFinishLoad", function (done) {
 
             var start;
             var init = new Promise(function (resolve, reject) {
@@ -417,13 +406,9 @@ Nightmare.prototype.waitUntilFinishLoad = [
                     win.webContents.once('did-finish-load', resolveGoto);
                 });
             }).then(function (url) {
-                parent.emit('waitUntilFinishLoad', {
-                    result: url
-                });
+                done.resolve(url);
             }, function (message) {
-                parent.emit('waitUntilFinishLoad', {
-                    error: message
-                });
+                done.reject(message);
             });
 
             start();

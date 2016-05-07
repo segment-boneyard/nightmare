@@ -3,4 +3,5 @@ node_modules
 test/tmp
 test/DevTools Extensions
 .vs/
+.vscode/
 coverage/

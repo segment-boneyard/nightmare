@@ -83,7 +83,7 @@ Nightmare.prototype.emulateClick = [
     function (ns, options, parent, win, renderer) {
         const _ = require("lodash");
         //Retrieves the specified element from clickOpts.selector and clicks it using webContents.sendInputEvent.
-        parent.on('emulateClick', function (clickOpts) {
+        parent.respondTo('emulateClick', function (clickOpts, done) {
             const _ = require("lodash");
             clickOpts = _.defaults(clickOpts, {
                 button: "left",
@@ -97,9 +97,7 @@ Nightmare.prototype.emulateClick = [
             win.webContents.sendInputEvent({ type: 'mouseDown', x: x, y: y, button: clickOpts.button, clickCount: clickOpts.clickCount });
             setTimeout(function () {
                 win.webContents.sendInputEvent({ type: 'mouseUp', x: x, y: y, button: clickOpts.button, clickCount: clickOpts.clickCount });
-                parent.emit("emulateClick", {
-                    result: { x: x, y: y }
-                });
+                done.resolve({ x: x, y: y });
             }, clickOpts.clickDelay);
 
         });
@@ -142,7 +140,7 @@ Nightmare.prototype.emulateKeystrokes = [
         const _ = require("lodash");
         const async = require("async");
 
-        parent.on('emulateKeystrokes', function (keystrokeOpts) {
+        parent.respondTo('emulateKeystrokes', function (keystrokeOpts, done) {
             keystrokeOpts = _.defaults(keystrokeOpts, {
                 keyCodes: [],
                 keystrokeDelay: 87,
@@ -179,7 +177,7 @@ Nightmare.prototype.emulateKeystrokes = [
             q.drain = function () {
                 //this is to allow the final keyup to be fired.
                 setTimeout(function () {
-                    parent.emit("emulateKeystrokes");
+                    done.resolve();
                 }, keystrokeOpts.finalKeystrokeDelay);
             };
 
@@ -265,9 +263,9 @@ Nightmare.prototype.focus = function (selector) {
   */
 Nightmare.prototype.insert = [
     function (ns, options, parent, win, renderer) {
-        parent.on('insert', function (value) {
+        parent.respondTo('insert', function (value, done) {
             win.webContents.insertText(String(value));
-            parent.emit('insert');
+            done.resolve();
         });
     },
     function (selector, text) {
@@ -374,15 +372,13 @@ Nightmare.prototype.select = function (selector, option) {
  */
 Nightmare.prototype.type = [
     function (ns, options, parent, win, renderer) {
-        parent.on('type', function (value) {
+        parent.respondTo('type', function (value, done) {
             var chars = String(value).split('');
 
             function type() {
                 var ch = chars.shift();
-                if (ch === undefined) {
-                    parent.emit('type');
-                    return;
-                }
+                if (ch === undefined)
+                    return done.resolve();
 
                 // keydown
                 win.webContents.sendInputEvent({
