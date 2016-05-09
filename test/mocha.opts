@@ -1,2 +1,4 @@
 --slow 10s
 --timeout 20s
+test/*.js
+test/unit/**/*.js
