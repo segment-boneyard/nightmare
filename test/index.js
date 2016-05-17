@@ -63,7 +63,7 @@ describe('Nightmare', function () {
 
     versions.electron.should.be.ok;
     versions.chrome.should.be.ok;
-   
+
     Nightmare.version.should.be.ok;
     yield nightmare.end();
   });
@@ -94,6 +94,19 @@ describe('Nightmare', function () {
 
       child.once('exit', function(code) {
         code.should.not.equal(0);
+        done();
+      });
+  });
+
+  it('should provide a .catch function', function(done) {
+    var nightmare = Nightmare();
+
+    nightmare
+      .goto('about:blank')
+      .evaluate(function() {
+        throw new Error('Test');
+      })
+      .catch(function(err) {
         done();
       });
   });
