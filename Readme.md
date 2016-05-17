@@ -107,6 +107,15 @@ var nightmare = Nightmare({
 });
 ```
 
+##### gotoTimeout (default: 30s)
+This will throw an exception if the `.goto()` didn't finish loading within the set timeframe.
+
+```js
+var nightmare = Nightmare({
+  gotoTimeout: 1000 // in ms
+});
+```
+
 ##### paths
 The default system paths that Electron knows about. Here's a list of available paths: https://github.com/atom/electron/blob/master/docs/api/app.md#appgetpathname
 
@@ -175,8 +184,8 @@ Complete any queue operations, disconnect and close the electron process.
 
 ### Interact with the Page
 
-#### .goto(url[, headers])
-Load the page at `url`.  Optionally, a `headers` hash can be supplied to set headers on the `goto` request.
+#### .goto(url[, headers, timeout])
+Load the page at `url`.  Optionally, a `headers` hash can be supplied to set headers on the `goto` request. `timeout` is an optional maximum number of milliseconds to wait for the page’s resources to load (if unspecified, it will default to 30,000 ms). When a page load times out, an error is raised only if the DOM itself has not yet loaded.
 
 When a page load is successful, `goto` returns an object with metadata about the page load, including:
 
