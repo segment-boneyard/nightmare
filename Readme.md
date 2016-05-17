@@ -33,26 +33,23 @@ var nightmare = Nightmare({ show: true })
 
 nightmare
   .goto('http://yahoo.com')
-  .type('form[action*="/search"] [name=p]', 'github nightmare')
-  .click('form[action*="/search"] [type=submit]')
+  .type('input[id="UHSearchBox"]', 'github nightmare')
+  .click('#UHSearchWeb')
   .wait('#main')
   .evaluate(function () {
     return document.querySelector('#main .searchCenterMiddle li a').href
   })
-  .end()
   .then(function (result) {
     console.log(result)
   })
-  .catch(function (error) {
-    console.error('Search failed:', error);
-  });
-```
+
+nightmare.end()
 
 You can run this with:
 
 ```shell
 npm install nightmare
-node yahoo.js
+node example.js
 ```
 
 Or, let's run some mocha tests:
