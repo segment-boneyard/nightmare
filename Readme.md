@@ -44,6 +44,7 @@ nightmare
   })
 
 nightmare.end()
+```
 
 You can run this with:
 
