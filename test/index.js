@@ -63,7 +63,7 @@ describe('Nightmare', function () {
 
     versions.electron.should.be.ok;
     versions.chrome.should.be.ok;
-   
+
     Nightmare.version.should.be.ok;
     yield nightmare.end();
   });
@@ -114,6 +114,24 @@ describe('Nightmare', function () {
     it('should return data about the response', function*() {
       var data = yield nightmare.goto(fixture('navigation'));
       data.should.contain.keys('url', 'code', 'method', 'referrer', 'headers');
+    });
+
+    it('should reject with a useful message when no URL', function() {
+      return nightmare.goto(undefined).then(
+        function() {throw new Error('goto(undefined) didn’t cause an error');},
+        function(error) {
+          error.should.include('url');
+        }
+      );
+    });
+
+    it('should reject with a useful message for an empty URL', function() {
+      return nightmare.goto('').then(
+        function() {throw new Error('goto(undefined) didn’t cause an error');},
+        function(error) {
+          error.should.include('url');
+        }
+      );
     });
 
     it('should click on a link and then go back', function*() {
