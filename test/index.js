@@ -374,30 +374,22 @@ describe('Nightmare', function () {
     });
 
     describe('timeouts', function() {
-      it('should time out after 30 seconds of loading', function(done) {
+      it('should time out after 30 seconds of loading', function() {
         // allow this test to go particularly long
         this.timeout(40000);
-        nightmare
-          .goto(fixture('wait'))
-          .then(function() {
-            done(new Error('Navigation did not time out'));
-          }, function(error) {
+        return nightmare.goto(fixture('wait')).should.be.rejected
+          .then(function(error) {
             error.code.should.equal(-7);
-            done();
           });
       });
 
-      it('should allow custom goto timeout on the constructor', function(done) {
+      it('should allow custom goto timeout on the constructor', function() {
         var startTime = Date.now();
-        Nightmare({gotoTimeout: 1000})
-          .goto(fixture('wait'))
-          .end()
-          .then(function() {
-            done(new Error('Navigation did not time out'));
-          }, function(error) {
+        return Nightmare({gotoTimeout: 1000}).goto(fixture('wait')).end()
+          .should.be.rejected
+          .then(function(error) {
             // allow a few extra seconds for browser startup
             (startTime - Date.now()).should.be.below(3000);
-            done();
           });
       });
 
@@ -421,14 +413,11 @@ describe('Nightmare', function () {
       });
 
       it('should allow loading a new page after timing out', function() {
-        var instance = Nightmare({gotoTimeout: 1000});
-        return instance
-          .goto(fixture('wait'))
-          .then(function(title) {
-            instance.end().then();
-            throw new Error('Navigation did not time out');
-          }, function() {
-            return instance.goto(fixture('navigation')).end();
+        nightmare.end().then();
+        nightmare = Nightmare({gotoTimeout: 1000});
+        return nightmare.goto(fixture('wait')).should.be.rejected
+          .then(function() {
+            return nightmare.goto(fixture('navigation'));
           });
       });
     });
