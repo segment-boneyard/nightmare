@@ -1,3 +1,13 @@
+2.4.1 / 2016-05-19
+==================
+
+  * Switches javascript templates over to using template strings.
+  * Adds better switch tests
+  * Javascript `goto`s now only wait if the main frame is loading
+  * Allows a Nightmare instance to use `.catch()` without a `.then()`
+  * Fixes a deprecated IPC inclusion in tests
+  * `.goto()` rejects with a helpful message when `url` is not provided
+
 2.4.0 / 2016-05-05
 ==================
 
