@@ -99,6 +99,19 @@ describe('Nightmare', function () {
       });
   });
 
+  it('should provide a .catch function', function(done) {
+    var nightmare = Nightmare();
+
+    nightmare
+      .goto('about:blank')
+      .evaluate(function() {
+        throw new Error('Test');
+      })
+      .catch(function(err) {
+        done();
+      });
+  });
+
   describe('navigation', function () {
     var nightmare;
 
