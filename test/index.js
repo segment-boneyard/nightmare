@@ -9,6 +9,7 @@ var IPC = require('../lib/ipc');
 var chai = require('chai');
 var url = require('url');
 var server = require('./server');
+var https = require('https');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var path = require('path');
@@ -98,6 +99,19 @@ describe('Nightmare', function () {
       });
   });
 
+  it('should provide a .catch function', function(done) {
+    var nightmare = Nightmare();
+
+    nightmare
+      .goto('about:blank')
+      .evaluate(function() {
+        throw new Error('Test');
+      })
+      .catch(function(err) {
+        done();
+      });
+  });
+
   describe('navigation', function () {
     var nightmare;
 
@@ -114,6 +128,24 @@ describe('Nightmare', function () {
     it('should return data about the response', function*() {
       var data = yield nightmare.goto(fixture('navigation'));
       data.should.contain.keys('url', 'code', 'method', 'referrer', 'headers');
+    });
+
+    it('should reject with a useful message when no URL', function() {
+      return nightmare.goto(undefined).then(
+        function() {throw new Error('goto(undefined) didn’t cause an error');},
+        function(error) {
+          error.should.include('url');
+        }
+      );
+    });
+
+    it('should reject with a useful message for an empty URL', function() {
+      return nightmare.goto('').then(
+        function() {throw new Error('goto(undefined) didn’t cause an error');},
+        function(error) {
+          error.should.include('url');
+        }
+      );
     });
 
     it('should click on a link and then go back', function*() {
@@ -1186,6 +1218,27 @@ describe('Nightmare', function () {
 
   describe('options', function () {
     var nightmare;
+    var server;
+
+    before(function(done) {
+      // set up an HTTPS server using self-signed certificates -- Nightmare
+      // will only be able to talk to it if 'ignore-certificate-errors' is set.
+      server = https.createServer({
+        key: fs.readFileSync(path.join(__dirname, 'files', 'server.key')),
+        cert: fs.readFileSync(path.join(__dirname, 'files', 'server.crt'))
+      }, function(request, response) {
+        response.end('ok\n');
+      }).listen(0, 'localhost', function() {
+        var address = server.address();
+        server.url = `https://${address.address}:${address.port}`;
+        done();
+      });
+    });
+
+    after(function() {
+      server.close();
+      server = null;
+    });
 
     afterEach(function*() {
       yield nightmare.end();
@@ -1303,8 +1356,31 @@ describe('Nightmare', function () {
     });
 
     it('should be constructable with switches', function*() {
-      nightmare = Nightmare({ switches:{} });
+      nightmare = Nightmare({
+        switches: {
+          // empty string and non-string values all represent no value
+          'ignore-certificate-errors': null,
+          'touch-events': ''
+        }
+      });
       nightmare.should.be.ok;
+      var touchEvents = yield nightmare
+        .goto(server.url)
+        .evaluate(function() {
+          return 'ontouchstart' in window;
+        });
+      touchEvents.should.be.true;
+    });
+
+    it('should support switches with values', function*() {
+      nightmare = Nightmare({ switches: { 'force-device-scale-factor': '5' } });
+      nightmare.should.be.ok;
+      var scaleFactor = yield nightmare
+        .goto('about:blank')
+        .evaluate(function() {
+          return window.devicePixelRatio;
+        });
+      scaleFactor.should.equal(5);
     });
 
     it('should allow to use external Electron', function*() {
