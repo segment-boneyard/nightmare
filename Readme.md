@@ -108,7 +108,7 @@ var nightmare = Nightmare({
 ```
 
 ##### gotoTimeout (default: 30s)
-This will throw an exception if the `.goto()` didn't finish loading within the set timeframe.
+This will throw an exception if the `.goto()` didn't finish loading within the set timeframe. Note that, even though `goto` normally waits for all the resources on a page to load, a timeout exception is only raised if the DOM itself has not yet loaded.
 
 ```js
 var nightmare = Nightmare({
@@ -184,8 +184,8 @@ Complete any queue operations, disconnect and close the electron process.
 
 ### Interact with the Page
 
-#### .goto(url[, headers, timeout])
-Load the page at `url`.  Optionally, a `headers` hash can be supplied to set headers on the `goto` request. `timeout` is an optional maximum number of milliseconds to wait for the page’s resources to load (if unspecified, it will default to 30,000 ms). When a page load times out, an error is raised only if the DOM itself has not yet loaded.
+#### .goto(url[, headers])
+Load the page at `url`.  Optionally, a `headers` hash can be supplied to set headers on the `goto` request.
 
 When a page load is successful, `goto` returns an object with metadata about the page load, including:
 
@@ -203,6 +203,8 @@ If the page load fails, the error will be an object wit the following properties
 - `url`: The URL that failed to load
 
 Note that any valid response from a server is considered “successful.” That means things like 404 “not found” errors are successful results for `goto`. Only things that would cause no page to appear in the browser window, such as no server responding at the given address, the server hanging up in the middle of a response, or invalid URLs, are errors.
+
+You can also adjust how long `goto` will wait before timing out by setting the [`gotoTimeout` option](#gototimeout-default-30s) on the Nightmare constructor.
 
 #### .back()
 Go back to the previous page.

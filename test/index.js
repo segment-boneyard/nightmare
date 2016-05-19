@@ -355,20 +355,7 @@ describe('Nightmare', function () {
           });
       });
 
-      it('should allow specifying timeout on the goto call', function(done) {
-        var startTime = Date.now();
-        nightmare
-          .goto(fixture('wait'), null, 1000)
-          .then(function() {
-            done(new Error('Navigation did not time out'));
-          }, function(error) {
-            // allow a few extra seconds for browser startup
-            (startTime - Date.now()).should.be.below(3000);
-            done();
-          });
-      });
-
-      it('should allow specifying timeout on the constructor', function(done) {
+      it('should allow custom goto timeout on the constructor', function(done) {
         var startTime = Date.now();
         Nightmare({gotoTimeout: 1000})
           .goto(fixture('wait'))
@@ -383,29 +370,33 @@ describe('Nightmare', function () {
       });
 
       it('should allow a timeout to succeed if DOM loaded', function() {
-        return nightmare
-          .goto(fixture('navigation/hanging-resources.html'), null, 1000)
+        return Nightmare({gotoTimeout: 1000})
+          .goto(fixture('navigation/hanging-resources.html'))
+          .end()
           .then(function(data) {
             data.details.should.include('1000 ms');
           });
       });
 
       it('should allow actions on a hanging page', function() {
-        return nightmare
-          .goto(fixture('navigation/hanging-resources.html'), null, 500)
+        return Nightmare({gotoTimeout: 500})
+          .goto(fixture('navigation/hanging-resources.html'))
           .evaluate(() => document.title)
+          .end()
           .then(function(title) {
             title.should.equal('Hanging resource load');
           });
       });
 
       it('should allow loading a new page after timing out', function() {
-        return nightmare
-          .goto(fixture('wait'), null, 1000)
+        var instance = Nightmare({gotoTimeout: 1000});
+        return instance
+          .goto(fixture('wait'))
           .then(function(title) {
+            instance.end().then();
             throw new Error('Navigation did not time out');
           }, function() {
-            return nightmare.goto(fixture('navigation'));
+            return instance.goto(fixture('navigation')).end();
           });
       });
     });
