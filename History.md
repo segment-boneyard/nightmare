@@ -1,6 +1,7 @@
 2.4.1 / 2016-05-19
 ==================
 
+  * Points invalid test URLs to the `.tld` domain
   * Switches javascript templates over to using template strings.
   * Adds better switch tests
   * Javascript `goto`s now only wait if the main frame is loading
