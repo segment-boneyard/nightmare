@@ -224,7 +224,7 @@ describe('Nightmare', function () {
     });
 
     it('should fail if navigation target is invalid', function() {
-      return nightmare.goto('http://this-is-not-a-real-domain.com')
+      return nightmare.goto('http://this-is-not-a-real-domain.tld')
         .then(
           function() {
             throw new Error('Navigation to an invalid domain succeeded');
@@ -288,7 +288,7 @@ describe('Nightmare', function () {
 
     it('should fail for a redirect to an invalid URL', function(done) {
       nightmare.goto(
-        fixture('redirect?url=http%3A%2F%2Fthis-is-not-a-real-domain.com'))
+        fixture('redirect?url=http%3A%2F%2Fthis-is-not-a-real-domain.tld'))
         .then(function() {
           done(new Error('Navigation succeeded with redirect to bad location'));
         })
@@ -337,7 +337,7 @@ describe('Nightmare', function () {
         });
 
       Nightmare({webPreferences: {partition: 'test-partition'}})
-        .goto('http://this-is-not-a-real-domain.com')
+        .goto('http://this-is-not-a-real-domain.tld')
         .then(function() {
           done(new Error('Navigation to an invalid domain succeeded'));
         })
