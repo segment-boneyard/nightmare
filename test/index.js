@@ -112,6 +112,42 @@ describe('Nightmare', function () {
       });
   });
 
+  it('should provide useful errors for .click', function(done) {
+    var nightmare = Nightmare();
+
+    nightmare
+      .goto('about:blank')
+      .click('a.not-here')
+      .catch(function (error) {
+        error.should.include('a.not-here');
+        done();
+      });
+  });
+
+  it('should provide useful errors for .mousedown', function(done) {
+    var nightmare = Nightmare();
+
+    nightmare
+      .goto('about:blank')
+      .mousedown('a.not-here')
+      .catch(function (error) {
+        error.should.include('a.not-here');
+        done();
+      });
+  });
+
+  it('should provide useful errors for .mouseover', function(done) {
+    var nightmare = Nightmare();
+
+    nightmare
+      .goto('about:blank')
+      .mouseover('a.not-here')
+      .catch(function (error) {
+        error.should.include('a.not-here');
+        done();
+      });
+  });
+
   describe('navigation', function () {
     var nightmare;
 
