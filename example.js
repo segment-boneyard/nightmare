@@ -3,7 +3,7 @@ var nightmare = Nightmare({ show: true })
 
 nightmare
   .goto('http://yahoo.com')
-  .type('input[title="Search"]', 'github nightmare')
+  .type('input[id="UHSearchBox"]', 'github nightmare')
   .click('#UHSearchWeb')
   .wait('#main')
   .evaluate(function () {
