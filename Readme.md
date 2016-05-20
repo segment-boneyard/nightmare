@@ -90,6 +90,10 @@ package for Mocha, which enables the support for generators.
 
     npm test
 
+### Node versions
+
+Nightmare is intended to be run on NodeJS 4.x or higher.
+
 ## API
 
 #### Nightmare(options)
