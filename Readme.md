@@ -516,7 +516,7 @@ If you save this as `cnn.js`, you can run it on the command line like this:
 
 ```bash
 npm install nightmare
-node --harmony cnn.js
+node cnn.js
 ```
 
 #### Debugging
@@ -526,7 +526,7 @@ There are three good ways to get more information about what's happening inside 
 2. Pass `{ show: true }` to the [nightmare constructor](#nightmareoptions) to have it create a visible, rendered window that you can watch what's happening.
 3. Listen for [specific events](#onevent-callback).
 
-To run the same file with debugging output, run it like this `DEBUG=nightmare node --harmony cnn.js` (on Windows use `set DEBUG=nightmare & node cnn.js`).
+To run the same file with debugging output, run it like this `DEBUG=nightmare node cnn.js` (on Windows use `set DEBUG=nightmare & node cnn.js`).
 
 This will print out some additional information about what's going on:
 
