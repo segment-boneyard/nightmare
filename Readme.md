@@ -52,7 +52,7 @@ You can run this with:
 
 ```shell
 npm install nightmare
-node .\node_modules\nightmare\example.js
+node example.js
 ```
 
 Or, let's run some mocha tests:
