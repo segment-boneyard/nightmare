@@ -1604,12 +1604,17 @@ describe('Nightmare', function () {
         });
 
       var logged = false;
-      yield Nightmare()
-        .on('nightmare:ipc:debug', function(message) {
+      var instance = Nightmare();
+      instance._queue.splice(1, 0, [function(done) {
+        this.child.on('nightmare:ipc:debug', function(message) {
           if (message.toLowerCase().indexOf('replacing') > -1) {
             logged = true;
           }
-        })
+        });
+        done();
+      }, []]);
+
+      yield instance
         .goto('about:blank')
         .end();
       logged.should.be.true;
@@ -1635,10 +1640,13 @@ function fixture(path) {
 function withDeprecationTracking(constructor) {
   var newConstructor = function() {
     var instance = constructor.apply(this, arguments);
-    instance.proc.stderr.pipe(split()).on('data', (line) => {
-      if (line.indexOf('deprecated') > -1) {
-        newConstructor.__deprecations.add(line);
-      }
+    instance.queue((done)=>{
+      instance.proc.stderr.pipe(split()).on('data', (line) => {
+        if (line.indexOf('deprecated') > -1) {
+          newConstructor.__deprecations.add(line);
+        }
+      });
+      done();
     });
     return instance;
   };
