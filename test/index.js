@@ -112,6 +112,14 @@ describe('Nightmare', function () {
       });
   });
 
+  it('should allow ending more than once', function(done){
+    var nightmare = Nightmare();
+    nightmare.goto(fixture('navigation'))
+      .end()
+      .then(() => nightmare.end())
+      .then(() => done());
+  });
+
   describe('navigation', function () {
     var nightmare;
 
