@@ -12,9 +12,9 @@ test: node_modules
 #run mocha as usual
 #otherwise, run mocha under the xvfb wrapper
 ifeq ($(CIRCLE_PROJECT_REPONAME)$(HEADLESS)$(XVFB_RUNNING), 111)
-	@node_modules/.bin/mocha --harmony --grep "$(GREP)"
+	@node_modules/.bin/mocha --grep "$(GREP)"
 else
-	@./test/bb-xvfb node_modules/.bin/mocha --harmony --grep "$(GREP)"
+	@./test/bb-xvfb node_modules/.bin/mocha --grep "$(GREP)"
 endif
 
 node_modules: package.json
