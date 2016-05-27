@@ -1,3 +1,14 @@
+2.5.0 / 2015-05-27
+==================
+
+  * adds a timeout to `.goto()` such that pages that load the DOM but never finish are considered successful, otherwise failing, preventing a hang.
+  * updates the example script and readme file for consistency.
+  * reports with more helpful messages when the element does not exist when running `.click()`, `.mousedown()` and `.mouseover()`.
+  * `.coookies.clear()` with no arguments will clear all cookies for the current domain.
+  * adds Node engine information to package and ensures CircleCI builds and tests against 4.x, 5.x and 6.x.
+  * removes extranneous `javascript` event listeners upon execution completion or error.
+  * adds `.once()` and `.removeListener()` for more complete Electron process event handling.
+
 2.4.1 / 2016-05-19
 ==================
 
