@@ -1262,6 +1262,43 @@ describe('Nightmare', function () {
       confirm.should.equal('my confirm');
       response.should.equal('hello!');
     });
+
+    it('should only fire once when using once', function*() {
+      var events = 0;
+      nightmare.once('page', function(type, message) {
+        events++;
+      });
+
+      yield nightmare
+        .goto(fixture('events'))
+      events.should.equal(1);
+    });
+
+    it('should remove event listener', function*() {
+      var events = 0;
+      var handler = function(type, message) {
+        if (type === 'alert') {
+          events++;
+        }
+      };
+
+      nightmare.on('page', handler);
+
+      yield nightmare
+        .goto(fixture('events'))
+        .evaluate(function(){
+          alert('alert one');
+        });
+
+      nightmare.removeListener('page', handler);
+      
+      yield nightmare
+        .evaluate(function(){
+          alert('alert two');
+        });
+
+      events.should.equal(1);
+    });
   });
 
   describe('options', function () {
