@@ -372,6 +372,55 @@ describe('Nightmare', function () {
         });
       linkText.should.equal('D');
     });
+
+    describe('timeouts', function() {
+      it('should time out after 30 seconds of loading', function() {
+        // allow this test to go particularly long
+        this.timeout(40000);
+        return nightmare.goto(fixture('wait')).should.be.rejected
+          .then(function(error) {
+            error.code.should.equal(-7);
+          });
+      });
+
+      it('should allow custom goto timeout on the constructor', function() {
+        var startTime = Date.now();
+        return Nightmare({gotoTimeout: 1000}).goto(fixture('wait')).end()
+          .should.be.rejected
+          .then(function(error) {
+            // allow a few extra seconds for browser startup
+            (startTime - Date.now()).should.be.below(3000);
+          });
+      });
+
+      it('should allow a timeout to succeed if DOM loaded', function() {
+        return Nightmare({gotoTimeout: 1000})
+          .goto(fixture('navigation/hanging-resources.html'))
+          .end()
+          .then(function(data) {
+            data.details.should.include('1000 ms');
+          });
+      });
+
+      it('should allow actions on a hanging page', function() {
+        return Nightmare({gotoTimeout: 500})
+          .goto(fixture('navigation/hanging-resources.html'))
+          .evaluate(() => document.title)
+          .end()
+          .then(function(title) {
+            title.should.equal('Hanging resource load');
+          });
+      });
+
+      it('should allow loading a new page after timing out', function() {
+        nightmare.end().then();
+        nightmare = Nightmare({gotoTimeout: 1000});
+        return nightmare.goto(fixture('wait')).should.be.rejected
+          .then(function() {
+            return nightmare.goto(fixture('navigation'));
+          });
+      });
+    });
   });
 
   describe('evaluation', function () {
