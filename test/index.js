@@ -1037,7 +1037,7 @@ describe('Nightmare', function () {
     });
   });
 
-  describe.only('events', function () {
+  describe('events', function () {
     var nightmare;
 
     beforeEach(function() {
