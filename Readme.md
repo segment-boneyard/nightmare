@@ -701,7 +701,7 @@ The only requirement for that script is that you'll need the following prelude:
 
 ```js
 window.__nightmare = {};
-__nightmare.ipc = require('ipc');
+__nightmare.ipc = require('electron').preRenderer;
 ```
 
 ## Usage
