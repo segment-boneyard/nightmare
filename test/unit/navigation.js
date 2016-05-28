@@ -67,7 +67,7 @@ describe('Nightmare', function () {
             let error = {};
 
             try {
-                yield nightmare.goto('http://this-is-not-a-real-domain.com');
+                yield nightmare.goto('http://this-is-not-a-real-domain.tld');
             }
             catch (ex) {
                 error = ex;
@@ -143,7 +143,7 @@ describe('Nightmare', function () {
 
             try {
                 yield nightmare.goto(
-                    fixture('redirect?url=http%3A%2F%2Fthis-is-not-a-real-domain.com'));
+                    fixture('redirect?url=http%3A%2F%2Fthis-is-not-a-real-domain.tld'));
             }
             catch (ex) {
                 error = ex;
@@ -191,7 +191,7 @@ describe('Nightmare', function () {
 
             try {
                 yield nm.chain()
-                    .goto('http://this-is-not-a-real-domain.com');
+                    .goto('http://this-is-not-a-real-domain.tld');
 
             }
             catch (ex) {
