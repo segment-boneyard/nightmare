@@ -1,5 +1,5 @@
-var Nightmare = require('./');
-var nightmare = Nightmare({ show: true })
+let Nightmare = require('./');
+let nightmare = Nightmare({ show: true });
 
 nightmare.chain()
   .goto('http://yahoo.com')
@@ -7,10 +7,10 @@ nightmare.chain()
   .click('#UHSearchWeb')
   .wait('#main')
   .evaluate(function () {
-    return document.querySelector('#main .searchCenterMiddle li a').href
+    return document.querySelector('#main .searchCenterMiddle li a').href;
   })
   .then(function (result) {
-    console.log(result)
-  })
+    console.log(result);
+  });
 
-nightmare.end()
+nightmare.end();

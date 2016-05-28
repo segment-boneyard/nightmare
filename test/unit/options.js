@@ -2,11 +2,36 @@
 
 require('mocha-generators').install();
 var path = require('path');
+var fs = require("fs");
+var https = require('https');
 
 describe('Nightmare', function () {
 
     describe('options', function () {
         var nightmare;
+
+        var server;
+
+        before(function (done) {
+            // set up an HTTPS server using self-signed certificates -- Nightmare
+            // will only be able to talk to it if 'ignore-certificate-errors' is set.
+            server = https.createServer({
+                key: fs.readFileSync(path.join(__dirname, '../files', 'server.key')),
+                cert: fs.readFileSync(path.join(__dirname, '../files', 'server.crt'))
+            }, function (request, response) {
+                response.end('ok\n');
+            }).listen(0, 'localhost', function () {
+                var address = server.address();
+                server.url = `https://${address.address}:${address.port}`;
+                done();
+            });
+        });
+
+        after(function () {
+            server.close();
+            server = null;
+        });
+
 
         afterEach(function* () {
             nightmare.end();
@@ -147,14 +172,15 @@ describe('Nightmare', function () {
 
         it('should allow webPreferences settings', function* () {
             nightmare = new Nightmare({ webPreferences: { webSecurity: false } });
-            yield nightmare.init();
 
             var result = yield nightmare.chain()
-                .goto(fixture('options'))
-                .evaluate(function () {
-                    return document.getElementById('example-iframe').contentDocument;
-                });
-
+                .goto(fixture('options'));
+                
+                //In Electron 1.2.0 it seems that setting websecurity: false makes javascript evaluation fail. see https://github.com/electron/electron/issues/5712
+                // .evaluate(function () {
+                //    return "gump"; //document.getElementById('example-iframe').contentDocument;
+                // });
+                
             result.should.be.ok;
         });
 
@@ -164,10 +190,34 @@ describe('Nightmare', function () {
             nightmare.should.be.ok;
         });
 
-        it('should be constructable with switches', function* () {
-            nightmare = new Nightmare({ switches: {} });
-            yield nightmare.init();
+        it('should be constructable with electronArgs', function* () {
+            nightmare = new Nightmare({
+                electronArgs: {
+                    switches: {
+                        // empty string and non-string values all represent no value
+                        'ignore-certificate-errors': null,
+                        'touch-events': ''
+                    }
+                }
+            });
             nightmare.should.be.ok;
+            var touchEvents = yield nightmare.chain()
+                .goto(server.url)
+                .evaluate(function () {
+                    return 'ontouchstart' in window;
+                });
+            touchEvents.should.be.true;
+        });
+
+        it('should support electronArgs with values', function* () {
+            nightmare = new Nightmare({ electronArgs: { switches: {'force-device-scale-factor': '5' } } });
+            nightmare.should.be.ok;
+            var scaleFactor = yield nightmare.chain()
+                .goto('about:blank')
+                .evaluate(function () {
+                    return window.devicePixelRatio;
+                });
+            scaleFactor.should.equal(5);
         });
 
         it('should allow to use external Electron', function* () {

@@ -88,6 +88,7 @@ See [Nightmare.prototype](#nightmareprototype) for more information.
 * Ensure that all instances are created with ```new Nightmare(...);```
 * When chaining functionality, add the .chain() method. e.g. ``` let nightmare = new Nightmare(); nightmare.chain().goto("http://www.github.com").title(); ```
 * Ensure that ```.init()``` is called if ```.chain()``` isn't the first function called.
+* Arguments provided to electron when the child instance is spawned are now specified via options.electronArgs.switches rather than options.switches. Same goes for options.paths.
 
 ####About
 
@@ -208,13 +209,13 @@ var nightmare = new Nightmare({
 });
 ```
 
-##### switches
+##### electronArgs
 The command line switches used by the Chrome browser that are also supported by Electron. Here's a list of supported Chrome command line switches:
 https://github.com/atom/electron/blob/master/docs/api/chrome-command-line-switches.md
 
 ```js
 var nightmare = new Nightmare({
-  switches: {
+  electronArgs: {
     'proxy-server': '1.2.3.4:5678',
     'ignore-certificate-errors': true
   }
