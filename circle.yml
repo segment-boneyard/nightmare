@@ -1,3 +1,7 @@
-machine:
-  node:
-    version: 5.0.0
+dependencies:
+  pre:
+    - sudo apt-get update; sudo apt-get install libnotify-bin
+test:
+  override:
+    - nvm use 5 && npm test
+    - nvm use 6 && npm test

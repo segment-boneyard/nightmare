@@ -85,6 +85,7 @@ See [Nightmare.prototype](#nightmareprototype) for more information.
 
 #### Migration from v2 to v3
 
+* Use NodeJS >= 5.0
 * Ensure that all instances are created with ```new Nightmare(...);```
 * When chaining functionality, add the .chain() method. e.g. ``` let nightmare = new Nightmare(); nightmare.chain().goto("http://www.github.com").title(); ```
 * Ensure that ```.init()``` is called if ```.chain()``` isn't the first function called.
@@ -183,6 +184,10 @@ package for Mocha, which enables the support for generators.
     npm test
 
 ## API
+
+### Node versions
+
+Nightmare is intended to be run on NodeJS 5.x or higher.
 
 #### new Nightmare(options)
 Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions), along with the following nightmare-specific options.
@@ -742,7 +747,7 @@ There are three good ways to get more information about what's happening inside 
 2. Pass `{ show: true }` to the [nightmare constructor](#nightmareoptions) to have it create a visible, rendered window that you can watch what's happening.
 3. Listen for [specific events](#onevent-callback).
 
-To run the same file with debugging output, run it like this `DEBUG=nightmare node --harmony cnn.js` (on Windows use `set DEBUG=nightmare & node cnn.js`).
+To run the same file with debugging output, run it like this `DEBUG=nightmare node cnn.js` (on Windows use `set DEBUG=nightmare & node cnn.js`).
 
 This will print out some additional information about what's going on:
 
