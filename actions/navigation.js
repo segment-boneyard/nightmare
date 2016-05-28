@@ -73,29 +73,29 @@ Nightmare.prototype.goto = [
 
                 let resolveGoto = function (message) {
                     cleanup();
-                    
+
                     done.resolve(responseData);
                 };
 
                 let rejectGoto = function (event, code, detail, failedUrl, isMainFrame) {
-                     if (!isMainFrame)
+                    if (!isMainFrame)
                         return;
-                        
-                     cleanup();
-                     
-                     done.reject({
-                         message: 'navigation error',
-                         code: code,
-                         details: detail,
-                         url: failedUrl || url
-                     });
+
+                    cleanup();
+
+                    done.reject({
+                        message: 'navigation error',
+                        code: code,
+                        details: detail,
+                        url: failedUrl || url
+                    });
                 };
 
-                let getDetails = function(event, status, newUrl, oldUrl, statusCode, method, referrer, headers, resourceType) {
+                let getDetails = function (event, status, newUrl, oldUrl, statusCode, method, referrer, headers, resourceType) {
 
                     if (resourceType != 'mainFrame')
                         return;
-                    
+
                     responseData = {
                         url: newUrl,
                         code: statusCode,
@@ -105,7 +105,7 @@ Nightmare.prototype.goto = [
                     };
                 };
 
-                let cleanup = function(data) {
+                let cleanup = function (data) {
                     win.webContents.removeListener('did-fail-load', rejectGoto);
                     win.webContents.removeListener('did-get-response-details', getDetails);
                     win.webContents.removeListener('did-finish-load', resolveGoto);
@@ -115,7 +115,7 @@ Nightmare.prototype.goto = [
 
                 // In most environments, loadURL handles this logic for us, but in some
                 // it just hangs for unhandled protocols. Mitigate by checking ourselves.
-                let canLoadProtocol = function(protocol, callback) {
+                let canLoadProtocol = function (protocol, callback) {
                     protocol = (protocol || '').replace(/:$/, '');
                     if (!protocol || KNOWN_PROTOCOLS.includes(protocol)) {
                         callback(true);
@@ -125,20 +125,20 @@ Nightmare.prototype.goto = [
                 };
 
                 var protocol = urlFormat.parse(url).protocol;
-                canLoadProtocol(protocol, function(canLoadProtocol) {
+                canLoadProtocol(protocol, function (canLoadProtocol) {
                     if (canLoadProtocol) {
                         win.webContents.on('did-fail-load', rejectGoto);
                         win.webContents.on('did-get-response-details', getDetails);
                         win.webContents.on('did-finish-load', resolveGoto);
 
                         win.webContents.loadURL(url, {
-                          extraHeaders: extraHeaders
+                            extraHeaders: extraHeaders
                         });
 
                         // javascript: URLs *may* trigger page loads; wait a bit to see
                         if (protocol === 'javascript:') {
                             setTimeout(function () {
-                                if (!win.webContents.isLoading()) {
+                                if (!win.webContents.isLoadingMainFrame()) {
                                     cleanup();
                                     done.resolve({
                                         url: url,

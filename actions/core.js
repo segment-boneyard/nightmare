@@ -378,7 +378,7 @@ Nightmare.prototype.waitUntilFinishLoad = [
                 start = resolve;
             });
 
-            if (!win.webContents.isLoading()) {
+            if (!win.webContents.isLoadingMainFrame()) {
                 init.then(function () {
                     return new Promise(function (resolve, reject) {
                         win.webContents.once('did-start-loading', function () {
