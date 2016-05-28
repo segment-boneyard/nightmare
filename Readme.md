@@ -144,7 +144,7 @@ You can run this with:
 
 ```shell
 npm install nightmare
-node yahoo.js
+node example.js
 ```
 
 Or, let's run some mocha tests:
