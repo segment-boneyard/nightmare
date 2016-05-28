@@ -59,6 +59,10 @@ Nightmare.prototype.goto = [
         const KNOWN_PROTOCOLS = ['http', 'https', 'file', 'about', 'javascript'];
 
         parent.respondTo('goto', function (url, headers, done) {
+            if (!url || typeof url !== 'string') {
+                return done.reject('goto: `url` must be a non-empty string');
+            }
+    
             var extraHeaders = '';
             for (var key in headers) {
                 extraHeaders += key + ': ' + headers[key] + '\n';

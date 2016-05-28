@@ -24,6 +24,24 @@ describe('Nightmare', function () {
             data.should.contain.keys('url', 'code', 'method', 'referrer', 'headers');
         });
 
+        it('should reject with a useful message when no URL', function () {
+            return nightmare.goto(undefined).then(
+                function () { throw new Error('goto(undefined) didn’t cause an error'); },
+                function (error) {
+                    error.should.include('url');
+                }
+            );
+        });
+
+        it('should reject with a useful message for an empty URL', function () {
+            return nightmare.goto('').then(
+                function () { throw new Error('goto(undefined) didn’t cause an error'); },
+                function (error) {
+                    error.should.include('url');
+                }
+            );
+        });
+
         it('should click on a link and then go back', function* () {
 
             var title = yield nightmare.chain()
