@@ -49,12 +49,12 @@ Nightmare.prototype.cookies.prototype.set = [
         parent.respondTo('cookie.set', function (cookies, done) {
             var pending = cookies.length;
             for (var cookie of cookies) {
-                var details = _.assign({}, {
+                _.assign(cookie, {
                     url: win.webContents.getURL()
-                }, cookie);
+                });
 
-                parent.emit('log', 'setting cookie: ' + JSON.stringify(details));
-                win.webContents.session.cookies.set(details, function (err) {
+                parent.emit('log', 'setting cookie: ' + JSON.stringify(cookie));
+                win.webContents.session.cookies.set(cookie, function (err) {
                     if (err) return done.reject(err);
                     if (!--pending) done.resolve();
                 });
@@ -86,37 +86,46 @@ Nightmare.prototype.cookies.prototype.set = [
   */
 Nightmare.prototype.cookies.prototype.clear = [
     function (ns, options, parent, win, renderer) {
-        parent.respondTo('cookie.clear', function (cookies,done) {
-            var pending = cookies.length;
-            parent.emit('log', 'listing params', cookies);
+        parent.respondTo('cookie.clear', function (cookies, done) {
+            let currentUrl = win.webContents.getURL();
+            let getCookies = (cb) => cb(null, cookies);
 
-            for (var cookie of cookies) {
-                let url = cookie.url || win.webContents.getURL();
-                let name = cookie.name;
-
-                parent.emit('log', 'clearing cookie: ' + JSON.stringify(cookie));
-                win.webContents.session.cookies.remove(url, name, function (err) {
-                    if (err) return done.reject(err);
-                    if (!--pending) done.resolve();
+            if (!cookies || cookies.length == 0) {
+                getCookies = (cb) => win.webContents.session.cookies.get({ url: currentUrl }, (error, cookies) => {
+                    cb(error, cookies);
                 });
             }
+
+            getCookies((error, cookies) => {
+                let pending = cookies.length;
+
+                for (let cookie of cookies) {
+                    let url = cookie.url || currentUrl;
+                    let name = cookie.name;
+
+                    parent.emit('log', 'clearing cookie: ' + JSON.stringify(cookie));
+                    win.webContents.session.cookies.remove(url, name, function (err) {
+                        if (err) return done.reject(err);
+                        if (!--pending) done.resolve();
+                    });
+                }
+            });
+
         });
     },
-    function(name, url) {
+    function (name, url) {
         debug('cookies.clear()');
 
         let cookies = [];
-        if(_.isArray(name))
-                cookies = name;
-        else if (_.isObject(name))
-                cookies.push(name);
-        else cookies.push({
-            name: name,
-            url: url
-        });
-
-        if(cookies.length == 0)
-                return this._noop();
+        if (_.isArray(name))
+            cookies = name;
+        else if (_.isString(name))
+            cookies.push({
+                name: name,
+                url: url
+            });
+        else if (_.isObject(name) && name.name)
+            cookies.push(name);
 
         return this._invokeRunnerOperation("cookie.clear", cookies);
     }

@@ -130,6 +130,28 @@ describe('Nightmare', function () {
 
             cookies.length.should.equal(0);
         });
+
+        it('.set([cookie]) & .clear() & .get()', function* () {
+            var cookies = nightmare.cookies;
+
+            yield cookies.set([
+                {
+                    name: 'hi',
+                    value: 'hello',
+                    path: '/'
+                },
+                {
+                    name: 'nightmare',
+                    value: 'rocks',
+                    path: '/cookie'
+                }
+            ]);
+
+            yield cookies.clear();
+
+           var cookies = yield cookies.get();
+           cookies.length.should.equal(0);
+        });
     });
 
 });
