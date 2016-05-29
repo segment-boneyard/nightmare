@@ -519,6 +519,12 @@ yield nightmare.chain()
 ###### .on(event, callback)
 Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents).
 
+###### .once(event, callback)
+Similar to `.on()`, but captures page events with the callback one time.
+
+###### .removeListener(event, callback)
+Removes a given listener callback for an event.
+
 ##### "page" events
 
 Listen for `window.addEventListener('error')`, `alert(...)`, `prompt(...)` & `confirm(...)`.
