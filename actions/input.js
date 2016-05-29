@@ -28,6 +28,9 @@ Nightmare.prototype.click = function (selector) {
     return this.evaluate_now(function (selector) {
         document.activeElement.blur();
         var element = document.querySelector(selector);
+        if (!element) {
+            throw new Error('Unable to find element by selector: ' + selector);
+        }
         var event = document.createEvent('MouseEvent');
         event.initEvent('click', true, true);
         element.dispatchEvent(event);
@@ -296,6 +299,9 @@ Nightmare.prototype.mousedown = function (selector) {
     debug('.mousedown() on ' + selector);
     return this.evaluate_now(function (selector) {
         var element = document.querySelector(selector);
+        if (!element) {
+            throw new Error('Unable to find element by selector: ' + selector);
+        }
         var event = document.createEvent('MouseEvent');
         event.initEvent('mousedown', true, true);
         element.dispatchEvent(event);
@@ -312,6 +318,9 @@ Nightmare.prototype.mouseover = function (selector) {
     debug('.mouseover() on ' + selector);
     return this.evaluate_now(function (selector) {
         var element = document.querySelector(selector);
+        if (!element) {
+            throw new Error('Unable to find element by selector: ' + selector);
+        }
         var event = document.createEvent('MouseEvent');
         event.initMouseEvent('mouseover', true, true);
         element.dispatchEvent(event);

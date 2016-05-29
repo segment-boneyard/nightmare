@@ -350,5 +350,33 @@ describe('Nightmare', function () {
                 });
             color.should.equal('rgb(255, 0, 0)');
         });
+
+        it('should provide useful errors for .click', function* () {
+            yield nightmare.chain()
+                .goto('about:blank')
+                .click('a.not-here')
+                .catch(function (error) {
+                    error.should.include('a.not-here');
+                });
+        });
+
+        it('should provide useful errors for .mousedown', function* () {
+            yield nightmare.chain()
+                .goto('about:blank')
+                .mousedown('a.not-here')
+                .catch(function (error) {
+                    error.should.include('a.not-here');
+                });
+        });
+
+        it('should provide useful errors for .mouseover', function* () {
+            yield nightmare.chain()
+                .goto('about:blank')
+                .mouseover('a.not-here')
+                .catch(function (error) {
+                    error.should.include('a.not-here');
+                });
+        });
+
     });
 });
