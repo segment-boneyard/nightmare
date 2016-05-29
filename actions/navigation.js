@@ -2,6 +2,9 @@
 
 const debug = require("debug")("nightmare:navigation");
 const Nightmare = require("../lib/nightmare");
+const _ = require("lodash");
+
+const DEFAULT_GOTO_TIMEOUT = 30 * 1000;
 
 /**
   * Go back to previous url.
@@ -56,6 +59,7 @@ Nightmare.prototype.goto = [
         const electron = require('electron');
         const urlFormat = require('url');
 
+        // URL protocols that don't need to be checked for validity
         const KNOWN_PROTOCOLS = ['http', 'https', 'file', 'about', 'javascript'];
 
         parent.respondTo('goto', function (url, headers, done) {
@@ -168,15 +172,30 @@ Nightmare.prototype.goto = [
             }
         });
     },
-    function (url, headers) {
+    function (url, headers, gotoTimeout) {
         debug('goto() starting navigation to %s', url);
 
-        headers = headers || {};
-        for (let key in this._headers) {
-            headers[key] = headers[key] || this._headers[key];
+        if (headers && _.isNumber(headers) && !gotoTimeout) {
+            gotoTimeout = headers;
+            headers = {};
         }
+        
+        if (!_.isNumber(gotoTimeout))
+            gotoTimeout = this._options.gotoTimeout || DEFAULT_GOTO_TIMEOUT;
 
-        return this._invokeRunnerOperation("goto", url, headers);
+        headers = headers || {};    
+        _.assign(headers, this._headers);
+        
+        let timeout = new Promise(function (resolve, reject) {
+            setTimeout(reject, gotoTimeout, {
+                message: 'navigation error',
+                code: -7, // chromium's generic networking timeout code
+                details: `.goto() timed out after ${gotoTimeout} ms`,
+                url: url
+            });
+        });
+        
+        return Promise.race([this._invokeRunnerOperation("goto", url, headers), timeout]);
     }];
 
 /**

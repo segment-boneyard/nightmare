@@ -67,6 +67,11 @@ app.get('/do-not-respond', function(req, res) {
   res.socket.end();
 });
 
+/**
+ * Wait forever and never respond
+ */
+
+app.get('/wait', function(req, res) {});
 
 /**
  * Serve the fixtures directory as static files.
