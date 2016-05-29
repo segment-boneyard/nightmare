@@ -66,7 +66,7 @@ Nightmare.prototype.goto = [
             if (!url || typeof url !== 'string') {
                 return done.reject('goto: `url` must be a non-empty string');
             }
-    
+
             var extraHeaders = '';
             for (var key in headers) {
                 extraHeaders += key + ': ' + headers[key] + '\n';
@@ -156,7 +156,7 @@ Nightmare.prototype.goto = [
                                         headers: {}
                                     });
                                 }
-                            }, 10);
+                            }, 10).unref();
                         }
                         return;
                     }
@@ -179,22 +179,22 @@ Nightmare.prototype.goto = [
             gotoTimeout = headers;
             headers = {};
         }
-        
+
         if (!_.isNumber(gotoTimeout))
             gotoTimeout = this._options.gotoTimeout || DEFAULT_GOTO_TIMEOUT;
 
-        headers = headers || {};    
+        headers = headers || {};
         _.assign(headers, this._headers);
-        
+
         let timeout = new Promise(function (resolve, reject) {
             setTimeout(reject, gotoTimeout, {
                 message: 'navigation error',
                 code: -7, // chromium's generic networking timeout code
                 details: `.goto() timed out after ${gotoTimeout} ms`,
                 url: url
-            });
+            }).unref();
         });
-        
+
         return Promise.race([this._invokeRunnerOperation("goto", url, headers), timeout]);
     }];
 

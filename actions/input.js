@@ -101,8 +101,7 @@ Nightmare.prototype.emulateClick = [
             setTimeout(function () {
                 win.webContents.sendInputEvent({ type: 'mouseUp', x: x, y: y, button: clickOpts.button, clickCount: clickOpts.clickCount });
                 done.resolve({ x: x, y: y });
-            }, clickOpts.clickDelay);
-
+            }, clickOpts.clickDelay).unref();
         });
     },
     function (y, x) {
@@ -173,15 +172,14 @@ Nightmare.prototype.emulateKeystrokes = [
                         modifiers: task.modifiers
                     });
                     callback();
-                }, keystrokeOpts.keystrokeDelay);
-
+                }, keystrokeOpts.keystrokeDelay).unref();
             }, 1);
 
             q.drain = function () {
                 //this is to allow the final keyup to be fired.
                 setTimeout(function () {
                     done.resolve();
-                }, keystrokeOpts.finalKeystrokeDelay);
+                }, keystrokeOpts.finalKeystrokeDelay).unref();
             };
 
             for (var keyCode of keystrokeOpts.keyCodes) {
@@ -241,7 +239,7 @@ Nightmare.prototype.expectNavigation = function (fn, timeout) {
     let waitPromise = Promise.all([this.waitUntilFinishLoad(), fn.apply(this)]);
 
     let timeoutPromise = new Promise(function (resolve, reject) {
-        setTimeout(reject, timeout, ".expectNavigation() timed out after " + timeout);
+        setTimeout(reject, timeout, ".expectNavigation() timed out after " + timeout).unref();
     });
     return Promise.race([waitPromise, timeoutPromise]);
 };
@@ -413,7 +411,7 @@ Nightmare.prototype.type = [
                 // nice balance between speed and correctness
                 // if you find that this value it too low,
                 // please open an issue.
-                setTimeout(type, 100);
+                setTimeout(type, 100).unref();
             }
 
             // start

@@ -4,4 +4,4 @@ dependencies:
 test:
   override:
     - nvm use 5 && npm test
-    - nvm use 6 && npm test
+    # - nvm use 6 && npm test

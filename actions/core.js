@@ -318,7 +318,7 @@ Nightmare.prototype.wait = function () {
     let self = this;
 
     let timeout = new Promise(function (resolve, reject) {
-        setTimeout(reject, self._options.waitTimeout, ".wait() timed out after " + self._options.waitTimeout);
+        setTimeout(reject, self._options.waitTimeout, ".wait() timed out after " + self._options.waitTimeout).unref();
     });
 
     let arg = args[0];
@@ -353,7 +353,7 @@ Nightmare.prototype.waitUntilTrue = function (fn/**, arg1, arg2...**/) {
     let self = this;
 
     let timeout = new Promise(function (resolve, reject) {
-        setTimeout(reject, self._options.waitTimeout, ".waitUntilTrue() timed out after " + self._options.waitTimeout);
+        setTimeout(reject, self._options.waitTimeout, ".waitUntilTrue() timed out after " + self._options.waitTimeout).unref();
     });
 
     let check = co(function* () {

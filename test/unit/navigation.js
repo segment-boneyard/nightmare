@@ -403,18 +403,26 @@ describe('Nightmare', function () {
 
             it('should allow loading a new page after timing out', function* () {
 
-                yield nightmare.chain()
-                    .goto(fixture('wait'), 1000)
-                    .catch(function (error) {
-                        nightmare.stop();
-                    });
+                try {
+                    yield nightmare.chain()
+                        .goto(fixture('wait'), 1000);
+                }
+                catch (ex) {
+                    ex.details.should.include('1000 ms');
+                }
 
+                try {
+                    yield nightmare.stop();
 
-                var title = yield nightmare.chain()
-                    .goto(fixture('navigation'))
-                    .title();
+                    var title = yield nightmare.chain()
+                        .goto(fixture('navigation'))
+                        .title();
 
-                title.should.equal("Navigation");
+                    title.should.equal("Navigation");
+                }
+                catch (ex) {
+                    //do nothing (catch ERR_ABORTED.)
+                }
             });
         });
 
