@@ -1,3 +1,19 @@
+3.2.0 / 2016-05-28
+==================
+
+  * forward port PRs and reach parity with 2.5.0
+
+
+3.1.0 / 2016-05-07
+==================
+
+  * forward port PRs and reach parity with 2.4.0
+
+3.0.4 / 2016-04-27
+==================
+
+  * forward port PRs and reach parity with 2.3.4
+  
 3.0.0 / 2016-03-16
 ==================
 
@@ -17,6 +33,89 @@
   * minimize dependencies when possible and for the remaining use highly visible dependencies.
   * update to latest electron
   * code coverage
+  
+  2.5.0 / 2015-05-27
+==================
+
+  * adds a timeout to `.goto()` such that pages that load the DOM but never finish are considered successful, otherwise failing, preventing a hang.
+  * updates the example script and readme file for consistency.
+  * reports with more helpful messages when the element does not exist when running `.click()`, `.mousedown()` and `.mouseover()`.
+  * `.coookies.clear()` with no arguments will clear all cookies for the current domain.
+  * adds Node engine information to package and ensures CircleCI builds and tests against 4.x, 5.x and 6.x.
+  * removes extranneous `javascript` event listeners upon execution completion or error.
+  * adds `.once()` and `.removeListener()` for more complete Electron process event handling.
+
+2.4.1 / 2016-05-19
+==================
+
+  * Points invalid test URLs to the `.tld` domain
+  * Switches javascript templates over to using template strings.
+  * Adds better switch tests
+  * Javascript `goto`s now only wait if the main frame is loading
+  * Allows a Nightmare instance to use `.catch()` without a `.then()`
+  * Fixes a deprecated IPC inclusion in tests
+  * `.goto()` rejects with a helpful message when `url` is not provided
+
+2.4.0 / 2016-05-05
+==================
+
+  * adds call safety with IPC callbacks
+  * adds `.engineVersions()` to get Electron and Chrome versions, as well as Nightmare.version
+  * changes Yahoo example to use more robust selectors, adds `.catch()`
+  * adds a check for `runner` arguments
+
+2.3.4 / 2016-04-23
+==================
+
+  * blurs text inputs when finished with `.type()` or `.input()`, including clearing selectors
+  * now errors properly for non-existent selectors when using `.type()` and `.input()`
+  * strips `sender` from Electron -> parent process forwarded events
+  * improves test speed for dev tools
+  * fixes `.then()` to comply with A+ promises
+  * pipes Electron output to `debug` prefixed with `electron:`
+  * cleans up several exception test cases using `.should.be.rejected` from `chai-as-promised`
+  * upgrades to Electron 0.37.7
+  * removes `process` event listeners when a Nightmare instance ends
+  * fixes support for `javascript:` urls
+
+2.3.3 / 2016-04-19
+==================
+
+  * fixes `.goto()` failing when the page does not load
+  * fixes deprecated Electron APIs
+  * adds testing for deprecated API usage in Electron
+
+2.3.2 / 2016-04-14
+==================
+
+  * fixes the `.wait(selector)` comment
+  * adds documentation about headers
+  * adds an interim gitter badge
+  * adds a unit test for `openDevTools`
+  * bumps to electron 0.37.5
+  * adds a wrapper to run unit tests when on CircleCI, when Xvfb is running, or the `HEADLESS` environment variable is set.  Prevents Nightmare from hanging when running headlessly.
+  * `.evaluate()` errors if a function to evaluate is not supplied
+
+2.3.1 / 2016-04-11
+==================
+
+  * fixes passing uncaught exceptions  back to the default handler after cleanup
+  * fixes overhead due to automatic subscription to frame data for screenshots
+  * Adds unicode documentation for `.type()`
+
+2.3.0 / 2016-04-02
+==================
+
+  * extends `.action()` to include adding actions on the Electron process
+  * adds a debugging message to inspect how Electron exited
+  * ensures multiple instances of Nightmare do not use the same `waitTimeout` value
+  * ensures cookies are not shared across tests
+  * adds basic HTTP authentication
+  * fixes `console.log` with injected/evaluated script
+  * ensures screenshots match the currently rendered frame
+  * adds ability to open and detach dev tools
+  * removes the double-injection from `.inject()`
+  * adds ability to save entire page as HTML
 
 2.2.0 / 2016-02-16
 ==================
