@@ -54,17 +54,4 @@ describe('Nightmare', function () {
             done();
         });
     });
-
-    it('should provide a .catch function', function (done) {
-        var nightmare = new Nightmare();
-
-        nightmare.chain()
-            .goto('about:blank')
-            .evaluate(function () {
-                throw new Error('Test');
-            })
-            .catch(function (err) {
-                done();
-            });
-    });
 });

@@ -5,10 +5,9 @@ require('mocha-generators').install();
 describe('Nightmare', function () {
 
     describe('Nightmare.action(name, fn)', function () {
-        var nightmare;
+        let nightmare;
 
         beforeEach(function* () {
-            nightmare = new Nightmare();
         });
 
         afterEach(function* () {
@@ -27,6 +26,7 @@ describe('Nightmare', function () {
                 });
             });
 
+            nightmare = new Nightmare();
             yield nightmare.init();
 
             var size = yield nightmare.chain()
@@ -35,6 +35,25 @@ describe('Nightmare', function () {
 
             size.height.should.be.a('number');
             size.width.should.be.a('number');
+        });
+        
+        it('should contain custom actions added after nightmare construction', function* () {
+
+            nightmare = new Nightmare();
+            
+            Nightmare.action("size", function* () {
+                return yield this.evaluate_now(function () {
+                    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+                    return {
+                        height: h,
+                        width: w
+                    };
+                });
+            });
+            
+            //Yay. Object.prototype works.
+            expect(nightmare.size).to.be.function;
         });
 
         it('should support custom actions that are promises', function* () {
@@ -49,6 +68,7 @@ describe('Nightmare', function () {
                 });
             });
 
+            nightmare = new Nightmare();
             yield nightmare.init();
 
             var size = yield nightmare.chain()
@@ -73,6 +93,7 @@ describe('Nightmare', function () {
                 }, scale, offset);
             });
 
+            nightmare = new Nightmare();
             yield nightmare.init();
 
             var scaleFactor = 2.0;
@@ -104,6 +125,7 @@ describe('Nightmare', function () {
                 }
             });
 
+            nightmare = new Nightmare();
             yield nightmare.init();
 
             yield nightmare.goto(fixture('simple'));
@@ -123,6 +145,7 @@ describe('Nightmare', function () {
                 }
             });
 
+            nightmare = new Nightmare();
             yield nightmare.init();
 
             yield nightmare.goto(fixture('simple'));
@@ -151,6 +174,7 @@ describe('Nightmare', function () {
                 }
             });
 
+            nightmare = new Nightmare();
             var color = yield nightmare.chain()
                 .goto(fixture('simple'))
                 .style2.background()
@@ -185,6 +209,7 @@ describe('Nightmare', function () {
 
             var eventResults;
 
+            nightmare = new Nightmare();
             yield nightmare.chain()
                 .on('sample-event', function () {
                     eventResults = arguments;
@@ -205,7 +230,7 @@ describe('Nightmare', function () {
     });
 
     describe('Nightmare.use', function () {
-        var nightmare;
+        let nightmare;
         beforeEach(function* () {
             nightmare = new Nightmare();
             yield nightmare.init();
@@ -216,7 +241,7 @@ describe('Nightmare', function () {
         });
 
         it('should support extending nightmare', function* () {
-            var tagName = yield nightmare.chain()
+            let tagName = yield nightmare.chain()
                 .goto(fixture('simple'))
                 .use(select('h1'));
 
@@ -233,9 +258,8 @@ describe('Nightmare', function () {
     });
 
     describe('Nightmare.prototype', function () {
-        var nightmare;
+        let nightmare;
         beforeEach(function* () {
-            nightmare = new Nightmare();
         });
 
         afterEach(function* () {
@@ -259,6 +283,7 @@ describe('Nightmare', function () {
             var scaleFactor = 2.0;
             var offsetFactor = 1;
 
+            nightmare = new Nightmare();
             var size = yield nightmare.chain()
                 .goto(fixture('simple'))
                 .size(scaleFactor, offsetFactor);
@@ -293,6 +318,7 @@ describe('Nightmare', function () {
 
             Nightmare.registerNamespace("MyStyle");
 
+            nightmare = new Nightmare();
             var color = yield nightmare.chain()
                 .goto(fixture('simple'))
                 .MyStyle.background()
@@ -301,6 +327,38 @@ describe('Nightmare', function () {
             color.should.equal('rgb(0, 0, 0)');
             colorCount.should.equal(1);
             backgroundCount.should.equal(1);
+        });
+        
+        it('should support namespaces added after nightmare object construction', function* () {
+
+            let backgroundCount = 0;
+            let colorCount = 0;
+            
+            nightmare = new Nightmare();
+            yield nightmare.init();
+                        
+            Nightmare.prototype.MyStyle1 = class {
+                *background() {
+                    backgroundCount++;
+                    return yield this.evaluate_now(function () {
+                        return window.getComputedStyle(document.body, null).backgroundColor;
+                    });
+                }
+                *color() {
+                    colorCount++;
+                    return yield this.evaluate_now(function () {
+                        return window.getComputedStyle(document.body, null).color;
+                    });
+                }
+            };
+            
+            Nightmare.registerNamespace("MyStyle1");
+            
+            yield nightmare.goto(fixture('simple'));
+            let color = yield nightmare.MyStyle1.color();
+            color.should.equal('rgb(0, 0, 0)');
+            colorCount.should.equal(1);
+            backgroundCount.should.equal(0);
         });
 
         it('should support custom namespaces by simply extending the prototype with deep this support', function* () {
@@ -318,6 +376,7 @@ describe('Nightmare', function () {
 
             Nightmare.registerNamespace("MyStyle2");
 
+            nightmare = new Nightmare();
             let color = yield nightmare.chain()
                 .goto(fixture('simple'))
                 .MyStyle2.outer();
@@ -338,6 +397,7 @@ describe('Nightmare', function () {
                 }
             ];
 
+            nightmare = new Nightmare();
             yield nightmare.init();
             yield nightmare.goto(fixture('simple'));
             let title = yield nightmare.getTitle();
@@ -357,6 +417,7 @@ describe('Nightmare', function () {
                 }
             ];
 
+            nightmare = new Nightmare();
             let title = yield nightmare.chain()
                 .goto(fixture('simple'))
                 .getTitle();
@@ -380,6 +441,7 @@ describe('Nightmare', function () {
 
             Nightmare.registerNamespace("MyTitle");
 
+            nightmare = new Nightmare();
             yield nightmare.init();
             yield nightmare.goto(fixture('simple'));
             let title = yield nightmare.MyTitle.getTitle();
@@ -402,6 +464,7 @@ describe('Nightmare', function () {
 
             Nightmare.registerNamespace("Mytitle");
 
+            nightmare = new Nightmare();
             var title = yield nightmare.chain()
                 .goto(fixture('simple'))
                 .MyTitle.getTitle();
@@ -461,6 +524,8 @@ describe('Nightmare', function () {
             };
 
             Nightmare.registerNamespace("maths", false);
+            
+            nightmare = new Nightmare();
             yield nightmare.init();
 
             nightmare.maths.a = 40;
@@ -489,7 +554,8 @@ describe('Nightmare', function () {
             };
 
             Nightmare.registerNamespace("moreMaths", false);
-
+            
+            nightmare = new Nightmare();
             var result = yield nightmare.chain()
                 .goto(fixture('simple'))
                 .moreMaths.getMeaningOfTitle();
