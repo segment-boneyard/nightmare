@@ -1,4 +1,11 @@
-2.5.0 / 2015-05-27
+2.5.1 / 2016-06-07
+==================
+
+  * Bumps Electron dependency to 1.2.1.
+  * Removes a `sender` workaround
+  * Moves the start of Electron from the constructor into the queue
+
+2.5.0 / 2016-05-27
 ==================
 
   * adds a timeout to `.goto()` such that pages that load the DOM but never finish are considered successful, otherwise failing, preventing a hang.
