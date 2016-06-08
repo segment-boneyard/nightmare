@@ -52,7 +52,7 @@ You can run this with:
 
 ```shell
 npm install nightmare
-node yahoo.js
+node example.js
 ```
 
 Or, let's run some mocha tests:
@@ -90,6 +90,10 @@ package for Mocha, which enables the support for generators.
 
     npm test
 
+### Node versions
+
+Nightmare is intended to be run on NodeJS 4.x or higher.
+
 ## API
 
 #### Nightmare(options)
@@ -104,6 +108,15 @@ This will throw an exception if the `.wait()` didn't return `true` within the se
 ```js
 var nightmare = Nightmare({
   waitTimeout: 1000 // in ms
+});
+```
+
+##### gotoTimeout (default: 30s)
+This will throw an exception if the `.goto()` didn't finish loading within the set timeframe. Note that, even though `goto` normally waits for all the resources on a page to load, a timeout exception is only raised if the DOM itself has not yet loaded.
+
+```js
+var nightmare = Nightmare({
+  gotoTimeout: 1000 // in ms
 });
 ```
 
@@ -194,6 +207,8 @@ If the page load fails, the error will be an object wit the following properties
 - `url`: The URL that failed to load
 
 Note that any valid response from a server is considered “successful.” That means things like 404 “not found” errors are successful results for `goto`. Only things that would cause no page to appear in the browser window, such as no server responding at the given address, the server hanging up in the middle of a response, or invalid URLs, are errors.
+
+You can also adjust how long `goto` will wait before timing out by setting the [`gotoTimeout` option](#gototimeout-default-30s) on the Nightmare constructor.
 
 #### .back()
 Go back to the previous page.
@@ -318,6 +333,12 @@ Listen for `console.log(...)`, `console.warn(...)`, and `console.error(...)`.
 ###### .on('console', function(type, errorMessage, errorStack))
 This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
 
+#### .once(event, callback)
+Similar to `.on()`, but captures page events with the callback one time.
+
+#### .removeListener(event, callback)
+Removes a given listener callback for an event.
+
 #### .screenshot([path][, clip])
 Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
 
@@ -385,9 +406,9 @@ Available properties are documented here:  https://github.com/atom/electron/blob
 
 Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a look at the `.cookies.set(cookie)` documentation above for a better idea of what `cookie` should look like.
 
-#### .cookies.clear(name)
+#### .cookies.clear([name])
 
-Clear a cookie for the current domain.
+Clear a cookie for the current domain.  If `name` is not specified, all cookies for the current domain will be cleared.
 
 ```js
 yield nightmare
@@ -512,7 +533,7 @@ If you save this as `cnn.js`, you can run it on the command line like this:
 
 ```bash
 npm install nightmare
-node --harmony cnn.js
+node cnn.js
 ```
 
 #### Debugging
@@ -522,7 +543,7 @@ There are three good ways to get more information about what's happening inside 
 2. Pass `{ show: true }` to the [nightmare constructor](#nightmareoptions) to have it create a visible, rendered window that you can watch what's happening.
 3. Listen for [specific events](#onevent-callback).
 
-To run the same file with debugging output, run it like this `DEBUG=nightmare node --harmony cnn.js` (on Windows use `set DEBUG=nightmare & node cnn.js`).
+To run the same file with debugging output, run it like this `DEBUG=nightmare node cnn.js` (on Windows use `set DEBUG=nightmare & node cnn.js`).
 
 This will print out some additional information about what's going on:
 

@@ -119,6 +119,42 @@ describe('Nightmare', function () {
       .then(() => nightmare.end())
       .then(() => done());
   });
+  
+  it('should provide useful errors for .click', function(done) {
+    var nightmare = Nightmare();
+
+    nightmare
+      .goto('about:blank')
+      .click('a.not-here')
+      .catch(function (error) {
+        error.should.include('a.not-here');
+        done();
+      });
+  });
+
+  it('should provide useful errors for .mousedown', function(done) {
+    var nightmare = Nightmare();
+
+    nightmare
+      .goto('about:blank')
+      .mousedown('a.not-here')
+      .catch(function (error) {
+        error.should.include('a.not-here');
+        done();
+      });
+  });
+
+  it('should provide useful errors for .mouseover', function(done) {
+    var nightmare = Nightmare();
+
+    nightmare
+      .goto('about:blank')
+      .mouseover('a.not-here')
+      .catch(function (error) {
+        error.should.include('a.not-here');
+        done();
+      });
+  });
 
   describe('navigation', function () {
     var nightmare;
@@ -379,6 +415,55 @@ describe('Nightmare', function () {
           return document.querySelector('.d').textContent;
         });
       linkText.should.equal('D');
+    });
+
+    describe('timeouts', function() {
+      it('should time out after 30 seconds of loading', function() {
+        // allow this test to go particularly long
+        this.timeout(40000);
+        return nightmare.goto(fixture('wait')).should.be.rejected
+          .then(function(error) {
+            error.code.should.equal(-7);
+          });
+      });
+
+      it('should allow custom goto timeout on the constructor', function() {
+        var startTime = Date.now();
+        return Nightmare({gotoTimeout: 1000}).goto(fixture('wait')).end()
+          .should.be.rejected
+          .then(function(error) {
+            // allow a few extra seconds for browser startup
+            (startTime - Date.now()).should.be.below(3000);
+          });
+      });
+
+      it('should allow a timeout to succeed if DOM loaded', function() {
+        return Nightmare({gotoTimeout: 1000})
+          .goto(fixture('navigation/hanging-resources.html'))
+          .end()
+          .then(function(data) {
+            data.details.should.include('1000 ms');
+          });
+      });
+
+      it('should allow actions on a hanging page', function() {
+        return Nightmare({gotoTimeout: 500})
+          .goto(fixture('navigation/hanging-resources.html'))
+          .evaluate(() => document.title)
+          .end()
+          .then(function(title) {
+            title.should.equal('Hanging resource load');
+          });
+      });
+
+      it('should allow loading a new page after timing out', function() {
+        nightmare.end().then();
+        nightmare = Nightmare({gotoTimeout: 1000});
+        return nightmare.goto(fixture('wait')).should.be.rejected
+          .then(function() {
+            return nightmare.goto(fixture('navigation'));
+          });
+      });
     });
   });
 
@@ -876,6 +961,29 @@ describe('Nightmare', function () {
       var cookies = yield cookies.get({ path: '/cookie' });
 
       cookies.length.should.equal(0);
+    });
+
+    it('.set([cookie]) & .clear() & .get()', function*() {
+      var cookies = nightmare.cookies
+
+      yield cookies.set([
+        {
+          name: 'hi',
+          value: 'hello',
+          path: '/'
+        },
+        {
+          name: 'nightmare',
+          value: 'rocks',
+          path: '/cookie'
+        }
+      ])
+
+      yield cookies.clear();
+
+      var cookies = yield cookies.get();
+
+      cookies.length.should.equal(0);
     })
   })
 
@@ -1161,6 +1269,43 @@ describe('Nightmare', function () {
         });
       confirm.should.equal('my confirm');
       response.should.equal('hello!');
+    });
+
+    it('should only fire once when using once', function*() {
+      var events = 0;
+      nightmare.once('page', function(type, message) {
+        events++;
+      });
+
+      yield nightmare
+        .goto(fixture('events'))
+      events.should.equal(1);
+    });
+
+    it('should remove event listener', function*() {
+      var events = 0;
+      var handler = function(type, message) {
+        if (type === 'alert') {
+          events++;
+        }
+      };
+
+      nightmare.on('page', handler);
+
+      yield nightmare
+        .goto(fixture('events'))
+        .evaluate(function(){
+          alert('alert one');
+        });
+
+      nightmare.removeListener('page', handler);
+      
+      yield nightmare
+        .evaluate(function(){
+          alert('alert two');
+        });
+
+      events.should.equal(1);
     });
   });
 

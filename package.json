@@ -1,6 +1,6 @@
 {
   "name": "nightmare",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "license": "MIT",
   "main": "lib/nightmare.js",
   "scripts": {
@@ -44,5 +44,8 @@
     "pngjs": "^2.2.0",
     "serve-static": "^1.10.0",
     "split": "^1.0.0"
+  },
+  "engines": {
+    "node":">=4.0.0"
   }
 }
