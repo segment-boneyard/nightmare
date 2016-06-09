@@ -977,8 +977,7 @@ describe('Nightmare', function () {
 
       cookies.length.should.equal(0);
     })
-  })
-
+  });
 
   describe('rendering', function () {
     var nightmare;
@@ -1143,6 +1142,32 @@ describe('Nightmare', function () {
       buf.length.should.be.at.least(1000);
       isBuffer.should.be.true;
     });
+  });
+
+  describe('referer', function() {
+    var nightmare;
+
+    beforeEach(function() {
+      nightmare = Nightmare({webPreferences: {partition: 'test-partition'}});
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
+    it('should return referer from headers', function*() {
+      var referer = 'http://my-referer.tld/';
+      var returnedReferer = yield nightmare
+        .goto(fixture('referer'), {
+          'Referer': referer
+        })
+        .evaluate(function () {
+          return document.body.innerText;
+        })
+        ;
+
+      referer.should.be.equal(returnedReferer.trim());
+    })
   });
 
   describe('events', function () {
