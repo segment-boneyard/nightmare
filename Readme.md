@@ -22,6 +22,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
   - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
+* [Supplementary Examples and Documentation](https://github.com/rosshinkley/nightmare-examples)
 
 ## Examples
 
