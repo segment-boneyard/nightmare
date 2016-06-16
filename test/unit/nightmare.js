@@ -54,4 +54,12 @@ describe('Nightmare', function () {
             done();
         });
     });
+
+    it('should allow ending more than once', function* () {
+         let nightmare = new Nightmare();
+        nightmare.chain()
+            .goto(fixture('navigation'))
+            .end()
+            .then(() => nightmare.end());
+    });
 });

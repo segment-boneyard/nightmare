@@ -425,7 +425,6 @@ Nightmare.prototype.type = [
         }
 
         debug('.type() %s into %s', text, selector);
-        let child = this.child;
         let self = this;
         return co(function* () {
             yield self.focus(selector);

@@ -82,6 +82,7 @@ function withDeprecationTracking(cls) {
 
     cls.prototype.childReady = function () {
         var self = this;
+
         self.proc.stderr.pipe(split2()).on('data', function (line) {
             if (line.indexOf('deprecated') > -1) {
                 Nightmare.__deprecations.unshift(line);
