@@ -18,6 +18,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
   - [Interact with the page](#interact-with-the-page)
   - [Extract from the page](#extract-from-the-page)
   - [Cookies](#cookies)
+  - [Proxies](#proxies)
   - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
@@ -413,6 +414,49 @@ Clear a cookie for the current domain.  If `name` is not specified, all cookies 
 yield nightmare
   .goto('http://google.com')
   .cookies.clear('SomeCookieName');
+```
+
+### Proxies
+
+Proxies are supported in Nightmare through [switches](#switches).
+
+If your proxy requires authentication you also need the [authentication](#authenticationuser-password) call.
+
+The following example not only demostrates how to use proxies, but you can run it to test if your proxy connection is working:
+
+```js
+var Nightmare = require('nightmare');
+
+var proxyNightmare = Nightmare({
+  switches: {
+    'proxy-server': 'my_proxy_server.example.com:8080' // set the proxy server here ...
+  },
+  show: true
+});
+
+proxyNightmare
+  .authentication('proxyUsername', 'proxyPassword') // ... and authenticate here before `goto`
+  .goto('http://www.ipchicken.com')
+  .evaluate(function() {
+    return document.querySelector('b').innerText.replace(/[^\d\.]/g, '');
+  })
+  .end()
+  .then(function(ip) { // This will log the Proxy's IP
+    console.log('proxy IP:', ip);
+  });
+
+// The rest is just normal Nightmare to get your local IP
+var regularNightmare = Nightmare({ show: true });
+
+regularNightmare
+  .goto('http://www.ipchicken.com')
+  .evaluate(function() {
+    return document.querySelector('b').innerText.replace(/[^\d\.]/g, '');
+  })
+  .end()
+  .then(function(ip) { // This will log the your local IP
+    console.log('local IP:', ip);
+  });
 ```
 
 ### Extending Nightmare
