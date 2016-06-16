@@ -1,7 +1,6 @@
 [![Build Status](https://circleci.com/gh/segmentio/nightmare.png?circle-token=dbb94336673268633371a89865e008b70ffedf6d)](https://circleci.com/gh/segmentio/nightmare) [![Join the chat at https://gitter.im/rosshinkley/nightmare](https://badges.gitter.im/rosshinkley/nightmare.svg)](https://gitter.im/rosshinkley/nightmare?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Nightmare
-=========
+# Nightmare
 
 Nightmare is a high-level browser automation library.
 
