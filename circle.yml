@@ -3,4 +3,4 @@ dependencies:
     - sudo apt-get update; sudo apt-get install libnotify-bin
 test:
   override:
-    - nvm use 6 && npm test
+    - nvm install 6 && nvm use 6 && npm test
