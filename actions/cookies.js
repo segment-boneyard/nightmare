@@ -75,7 +75,7 @@ Nightmare.prototype.cookies.prototype.set = [
         });
 
         if (cookies.length === 0)
-            return this._noop();
+            return Promise.resolve();
 
         return this._invokeRunnerOperation("cookie.set", cookies);
     }

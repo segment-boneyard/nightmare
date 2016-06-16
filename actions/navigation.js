@@ -56,7 +56,7 @@ Nightmare.prototype.forward = [
  */
 Nightmare.prototype.goto = [
     function (ns, options, parent, win, renderer) {
-        const electron = require('electron');
+        const {protocol} = require('electron');
         const urlFormat = require('url');
 
         // URL protocols that don't need to be checked for validity
@@ -123,17 +123,17 @@ Nightmare.prototype.goto = [
 
                 // In most environments, loadURL handles this logic for us, but in some
                 // it just hangs for unhandled protocols. Mitigate by checking ourselves.
-                let canLoadProtocol = function (protocol, callback) {
-                    protocol = (protocol || '').replace(/:$/, '');
-                    if (!protocol || KNOWN_PROTOCOLS.includes(protocol)) {
+                let canLoadProtocol = function (targetProtocol, callback) {
+                    targetProtocol = (targetProtocol || '').replace(/:$/, '');
+                    if (!targetProtocol || KNOWN_PROTOCOLS.includes(targetProtocol)) {
                         callback(true);
                         return;
                     }
-                    electron.protocol.isProtocolHandled(protocol, callback);
+                    protocol.isProtocolHandled(targetProtocol, callback);
                 };
 
-                var protocol = urlFormat.parse(url).protocol;
-                canLoadProtocol(protocol, function (canLoadProtocol) {
+                let targetProtocol = urlFormat.parse(url).protocol;
+                canLoadProtocol(targetProtocol, function (canLoadProtocol) {
                     if (canLoadProtocol) {
                         win.webContents.on('did-fail-load', rejectGoto);
                         win.webContents.on('did-get-response-details', getDetails);
@@ -144,7 +144,7 @@ Nightmare.prototype.goto = [
                         });
 
                         // javascript: URLs *may* trigger page loads; wait a bit to see
-                        if (protocol === 'javascript:') {
+                        if (targetProtocol === 'javascript:') {
                             setTimeout(function () {
                                 if (!win.webContents.isLoadingMainFrame()) {
                                     cleanup();

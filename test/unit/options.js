@@ -174,12 +174,10 @@ describe('Nightmare', function () {
             nightmare = new Nightmare({ webPreferences: { webSecurity: false } });
 
             var result = yield nightmare.chain()
-                .goto(fixture('options'));
-                
-                //In Electron 1.2.0 it seems that setting websecurity: false makes javascript evaluation fail. see https://github.com/electron/electron/issues/5712
-                // .evaluate(function () {
-                //    return "gump"; //document.getElementById('example-iframe').contentDocument;
-                // });
+                .goto(fixture('options'))
+                .evaluate(function () {
+                   return document.getElementById('example-iframe').contentDocument;
+                });
                 
             result.should.be.ok;
         });

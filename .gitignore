@@ -5,3 +5,4 @@ test/DevTools Extensions
 .vs/
 .vscode/
 coverage/
+npm-debug.log
