@@ -17,6 +17,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
   - [Set up an instance](#nightmareoptions)
   - [Interact with the page](#interact-with-the-page)
   - [Extract from the page](#extract-from-the-page)
+  - [Cookies](#cookies)
   - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
