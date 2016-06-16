@@ -1,8 +1,13 @@
+3.2.1 / 2016-06-16
+==================
+
+  * use a Nightmare proxy to simply namespace binding.
+  * forward port PRs and reach parity with 2.5.1
+
 3.2.0 / 2016-05-28
 ==================
 
   * forward port PRs and reach parity with 2.5.0
-
 
 3.1.0 / 2016-05-07
 ==================

@@ -1,6 +1,6 @@
 {
   "name": "nightmare",
-  "version": "3.1.0",
+  "version": "3.2.1",
   "license": "MIT",
   "main": "app.js",
   "scripts": {
