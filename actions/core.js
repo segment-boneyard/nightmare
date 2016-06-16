@@ -5,7 +5,7 @@ const Nightmare = require("../lib/nightmare");
 const _ = require("lodash");
 const fs = require("fs");
 const delay = require("delay");
-const co = require("co");
+const co = require("co-bluebird");
 
 /**
  * Contains the core set of actions

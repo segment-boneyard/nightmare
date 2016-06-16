@@ -2,7 +2,7 @@
 
 const debug = require("debug")("nightmare:input");
 const Nightmare = require("../lib/nightmare");
-const co = require("co");
+const co = require("co-bluebird");
 const _ = require("lodash");
 const delay = require("delay");
 

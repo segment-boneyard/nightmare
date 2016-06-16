@@ -19,7 +19,9 @@
   "description": "A high-level browser automation library.",
   "dependencies": {
     "async": "^1.5.2",
+    "bluebird": "^3.4.0",
     "co": "^4.6.0",
+    "co-bluebird": "^1.1.0",
     "debug": "^2.2.0",
     "delay": "^1.3.1",
     "electron-prebuilt": "^1.2.0",
