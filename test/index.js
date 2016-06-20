@@ -161,7 +161,8 @@ describe('Nightmare', function () {
 
     beforeEach(function() {
       nightmare = Nightmare({
-        webPreferences: {partition: 'test-partition' + Math.random()}
+        webPreferences: {partition: 'test-partition' + Math.random()},
+        loadTimeout: 45 * 1000
       });
     });
 
@@ -463,6 +464,16 @@ describe('Nightmare', function () {
           .then(function() {
             return nightmare.goto(fixture('navigation'));
           });
+      });
+
+      it('should allow for timeouts for non-goto loads', function*() { // ###
+        this.timeout(40000);
+        var nightmare = Nightmare({loadTimeout: 30000});
+        yield nightmare
+          .goto(fixture('navigation'))
+          .click('#never-ends');
+
+        yield nightmare.end();
       });
     });
   });

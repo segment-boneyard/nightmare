@@ -120,6 +120,15 @@ var nightmare = Nightmare({
 });
 ```
 
+##### loadTimeout (default: infinite)
+This will force Nightmare to move on if a page transition caused by an action (eg, `.click()`) didn't finish within the set timeframe.  If `loadTimeout` is shorter than `gotoTimeout`, the exceptions thrown by `gotoTimeout` will be suppressed.
+
+```js
+var nightmare = Nightmare({
+  loadTimeout: 1000 // in ms
+});
+```
+
 ##### paths
 The default system paths that Electron knows about. Here's a list of available paths: https://github.com/atom/electron/blob/master/docs/api/app.md#appgetpathname
 
