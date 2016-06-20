@@ -75,6 +75,7 @@ describe('test yahoo search results', function() {
       .end()
       .then(function(link) {
         expect(link).to.equal('https://github.com/segmentio/nightmare');
+        done();
       })
   });
 });
