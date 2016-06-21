@@ -1,3 +1,14 @@
+2.5.2 / 2016-06-20
+==================
+
+  * Fixes `Referer` header support
+  * Removes timeout between keystrokes when using `.type()`
+  * Checks instance existence when calling `.end()`
+  * Adds a link to `nightmare-examples`
+  * Changes `yield` to `.then()` in readme
+  * Swaps `did-finish-loading` for `did-stop-loading` when waiting for page transitions
+  * Adds optional `loadTimeout` for server responses that do not end
+
 2.5.1 / 2016-06-07
 ==================
 
