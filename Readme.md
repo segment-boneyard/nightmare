@@ -63,9 +63,9 @@ var Nightmare = require('nightmare');
 var expect = require('chai').expect; // jshint ignore:line
 
 describe('test yahoo search results', function() {
-  it('should find the nightmare github link first', function*() {
+  it('should find the nightmare github link first', function(done) {
     var nightmare = Nightmare()
-    var link = yield nightmare
+    nightmare
       .goto('http://yahoo.com')
       .type('form[action*="/search"] [name=p]', 'github nightmare')
       .click('form[action*="/search"] [type=submit]')
@@ -73,7 +73,11 @@ describe('test yahoo search results', function() {
       .evaluate(function () {
         return document.querySelector('#main .searchCenterMiddle li a').href
       })
-    expect(link).to.equal('https://github.com/segmentio/nightmare');
+      .end()
+      .then(function(link) {
+        expect(link).to.equal('https://github.com/segmentio/nightmare');
+        done();
+      })
   });
 });
 ```
@@ -264,11 +268,14 @@ Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On 
 
 ```js
 var selector = 'h1';
-var text = yield nightmare
+nightmare
   .evaluate(function (selector) {
     // now we're executing inside the browser scope.
     return document.querySelector(selector).innerText;
-   }, selector); // <-- that's how you pass parameters from Node scope to browser scope
+   }, selector) // <-- that's how you pass parameters from Node scope to browser scope
+  .then(function(text) {
+    // ...
+  })
 ```
 
 #### .wait(ms)
@@ -368,11 +375,14 @@ Query multiple cookies with the `query` object. If a `query.name` is set, it wil
 ```js
 // get all google cookies that are secure
 // and have the path `/query`
-var cookies = yield nightmare
+nightmare
   .goto('http://google.com')
   .cookies.get({
     path: '/query',
     secure: true
+  })
+  .then(function(cookies) { 
+    // do something with the cookies
   })
 ```
 
@@ -391,13 +401,17 @@ Set a cookie's `name` and `value`. Most basic form, the url will be the current 
 Set a `cookie`. If `cookie.url` is not set, it will set the cookie on the current url. Here's an example:
 
 ```js
-yield nightmare
+nightmare
   .goto('http://google.com')
   .cookies.set({
     name: 'token',
     value: 'some token',
     path: '/query',
     secure: true
+  })
+  // ... other actions ...
+  .then(function() { 
+    // ... 
   })
 ```
 
@@ -412,9 +426,13 @@ Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a 
 Clear a cookie for the current domain.  If `name` is not specified, all cookies for the current domain will be cleared.
 
 ```js
-yield nightmare
+nightmare
   .goto('http://google.com')
-  .cookies.clear('SomeCookieName');
+  .cookies.clear('SomeCookieName')
+  // ... other actions ...
+  .then(function() { 
+    // ...
+  })
 ```
 
 ### Extending Nightmare
@@ -435,9 +453,12 @@ Nightmare.action('size', function (done) {
   }, done)
 })
 
-var size = yield Nightmare()
+Nightmare()
   .goto('http://cnn.com')
   .size()
+  .then(function(size) {
+    //... do something with the size information
+  });
 ```
 
 > Remember, this is attached to the static class `Nightmare`, not the instance.
@@ -457,9 +478,12 @@ Nightmare.action('style', {
   }
 })
 
-var background = yield Nightmare()
+nightmare()
   .goto('http://google.com')
   .style.background()
+  .then(function(background) { 
+    // ... do something interesting with background  
+  })
 ```
 
 You can also add custom Electron actions.  The additional Electron action or namespace actions take `name`, `options`, `parent`, `win`, `renderer`, and `done`.  Note the Electron action comes first, mirroring how `.evaluate()` works.  For example:
@@ -476,9 +500,13 @@ Nightmare.action('clearCache',
     this.child.call('clearCache', done);
   });
 
-yield Nightmare()
+Nightmare()
   .clearCache()
-  .goto('http://example.org');
+  .goto('http://example.org')
+  //... more actions ...
+  .then(function() {
+    // ... 
+  });
 ```
 
 ...would clear the browser’s cache before navigating to `example.org`.
