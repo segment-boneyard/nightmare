@@ -72,14 +72,7 @@ app.get('/do-not-respond', function(req, res) {
  */
 app.get('/never-ends', function(req, res) {
   res.set('Content-Type', 'text/html');
-  var i = 0;
-  var fn = function(){
-    setTimeout(function() {
-      res.write(`${i++}<br>`);
-      fn();
-    }, 1000);
-  };
-  fn();
+  res.write(`<strong>this page will not stop</strong>`);
 });
 
 /**
