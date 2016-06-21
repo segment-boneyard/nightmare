@@ -68,6 +68,14 @@ app.get('/do-not-respond', function(req, res) {
 });
 
 /**
+ * Start the response but do not end the request
+ */
+app.get('/never-ends', function(req, res) {
+  res.set('Content-Type', 'text/html');
+  res.write(`<strong>this page will not stop</strong>`);
+});
+
+/**
  * Wait forever and never respond
  */
 
