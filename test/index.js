@@ -89,6 +89,19 @@ describe('Nightmare', function () {
     });
   });
 
+  it.only('should end gracefully if the chain has not been started', function(done) {
+    var child = child_process.fork(
+      path.join(__dirname, 'files', 'nightmare-created.js'));
+
+    child.once('message', function() {
+      child.once('exit', function(code) {
+        code.should.equal(0);
+        done();
+      });
+      child.kill();
+    });
+  });
+
   it('should exit with a non-zero code on uncaughtExecption', function(done) {
     var child = child_process.fork(
       path.join(__dirname, 'files', 'nightmare-error.js'), [], {silent: true});
