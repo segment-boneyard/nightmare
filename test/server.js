@@ -74,6 +74,14 @@ app.get('/do-not-respond', function(req, res) {
 app.get('/wait', function(req, res) {});
 
 /**
+ * Return 'Referer' header if presented
+ */
+
+app.get('/referer', function(req, res) {
+  res.send((typeof req.headers.referer != 'undefined') ? req.headers.referer : '');
+});
+
+/**
  * Serve the fixtures directory as static files.
  */
 
