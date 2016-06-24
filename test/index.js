@@ -75,7 +75,7 @@ describe('Nightmare', function () {
       });
   });
 
-  describe.only('navigation', function () {
+  describe('navigation', function () {
     var nightmare;
 
     beforeEach(function() {
