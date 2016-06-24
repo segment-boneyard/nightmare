@@ -75,7 +75,7 @@ describe('Nightmare', function () {
       });
   });
 
-  describe('navigation', function () {
+  describe.only('navigation', function () {
     var nightmare;
 
     beforeEach(function() {
@@ -187,6 +187,24 @@ describe('Nightmare', function () {
         })
         .then(function () {
           throw Error("Promise should have been rejected.");
+        })
+        .catch(function(error) {
+          error.message.should.be.equal(".wait() timed out after 1000msec");
+        });
+    })
+
+    it('should timeout on long running promises', function() {
+      var nightmare = Nightmare({waitTimeout:1000});
+
+      return nightmare
+        .goto(fixture('navigation'))
+        .wait(function() {
+          return new Promise(function(resolve) {
+            setTimeout(resolve, 2000, true);
+          })
+        })
+        .then(function () {
+          throw Error("Promise should have time out.");
         })
         .catch(function(error) {
           error.message.should.be.equal(".wait() timed out after 1000msec");
