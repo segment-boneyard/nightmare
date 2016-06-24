@@ -1,3 +1,72 @@
+2.5.2 / 2016-06-20
+==================
+
+  * Fixes `Referer` header support
+  * Removes timeout between keystrokes when using `.type()`
+  * Checks instance existence when calling `.end()`
+  * Adds a link to `nightmare-examples`
+  * Changes `yield` to `.then()` in readme
+  * Swaps `did-finish-loading` for `did-stop-loading` when waiting for page transitions
+  * Adds optional `loadTimeout` for server responses that do not end
+
+2.5.1 / 2016-06-07
+==================
+
+  * Bumps Electron dependency to 1.2.1.
+  * Removes a `sender` workaround
+  * Moves the start of Electron from the constructor into the queue
+
+2.5.0 / 2016-05-27
+==================
+
+  * adds a timeout to `.goto()` such that pages that load the DOM but never finish are considered successful, otherwise failing, preventing a hang.
+  * updates the example script and readme file for consistency.
+  * reports with more helpful messages when the element does not exist when running `.click()`, `.mousedown()` and `.mouseover()`.
+  * `.coookies.clear()` with no arguments will clear all cookies for the current domain.
+  * adds Node engine information to package and ensures CircleCI builds and tests against 4.x, 5.x and 6.x.
+  * removes extranneous `javascript` event listeners upon execution completion or error.
+  * adds `.once()` and `.removeListener()` for more complete Electron process event handling.
+
+2.4.1 / 2016-05-19
+==================
+
+  * Points invalid test URLs to the `.tld` domain
+  * Switches javascript templates over to using template strings.
+  * Adds better switch tests
+  * Javascript `goto`s now only wait if the main frame is loading
+  * Allows a Nightmare instance to use `.catch()` without a `.then()`
+  * Fixes a deprecated IPC inclusion in tests
+  * `.goto()` rejects with a helpful message when `url` is not provided
+
+2.4.0 / 2016-05-05
+==================
+
+  * adds call safety with IPC callbacks
+  * adds `.engineVersions()` to get Electron and Chrome versions, as well as Nightmare.version
+  * changes Yahoo example to use more robust selectors, adds `.catch()`
+  * adds a check for `runner` arguments
+
+2.3.4 / 2016-04-23
+==================
+
+  * blurs text inputs when finished with `.type()` or `.input()`, including clearing selectors
+  * now errors properly for non-existent selectors when using `.type()` and `.input()`
+  * strips `sender` from Electron -> parent process forwarded events
+  * improves test speed for dev tools
+  * fixes `.then()` to comply with A+ promises
+  * pipes Electron output to `debug` prefixed with `electron:`
+  * cleans up several exception test cases using `.should.be.rejected` from `chai-as-promised`
+  * upgrades to Electron 0.37.7
+  * removes `process` event listeners when a Nightmare instance ends
+  * fixes support for `javascript:` urls
+
+2.3.3 / 2016-04-19
+==================
+
+  * fixes `.goto()` failing when the page does not load
+  * fixes deprecated Electron APIs
+  * adds testing for deprecated API usage in Electron
+
 2.3.2 / 2016-04-14
 ==================
 

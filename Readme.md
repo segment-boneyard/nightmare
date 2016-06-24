@@ -22,6 +22,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
   - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
+* [Supplementary Examples and Documentation](https://github.com/rosshinkley/nightmare-examples)
 
 ## Examples
 
@@ -33,8 +34,8 @@ var nightmare = Nightmare({ show: true })
 
 nightmare
   .goto('http://yahoo.com')
-  .type('input[title="Search"]', 'github nightmare')
-  .click('#uh-search-button')
+  .type('form[action*="/search"] [name=p]', 'github nightmare')
+  .click('form[action*="/search"] [type=submit]')
   .wait('#main')
   .evaluate(function () {
     return document.querySelector('#main .searchCenterMiddle li a').href
@@ -43,14 +44,16 @@ nightmare
   .then(function (result) {
     console.log(result)
   })
-
+  .catch(function (error) {
+    console.error('Search failed:', error);
+  });
 ```
 
 You can run this with:
 
 ```shell
 npm install nightmare
-node yahoo.js
+node example.js
 ```
 
 Or, let's run some mocha tests:
@@ -60,17 +63,21 @@ var Nightmare = require('nightmare');
 var expect = require('chai').expect; // jshint ignore:line
 
 describe('test yahoo search results', function() {
-  it('should find the nightmare github link first', function*() {
+  it('should find the nightmare github link first', function(done) {
     var nightmare = Nightmare()
-    var link = yield nightmare
+    nightmare
       .goto('http://yahoo.com')
-      .type('input[title="Search"]', 'github nightmare')
-      .click('#UHSearchWeb')
+      .type('form[action*="/search"] [name=p]', 'github nightmare')
+      .click('form[action*="/search"] [type=submit]')
       .wait('#main')
       .evaluate(function () {
         return document.querySelector('#main .searchCenterMiddle li a').href
       })
-    expect(link).to.equal('https://github.com/segmentio/nightmare');
+      .end()
+      .then(function(link) {
+        expect(link).to.equal('https://github.com/segmentio/nightmare');
+        done();
+      })
   });
 });
 ```
@@ -88,10 +95,17 @@ package for Mocha, which enables the support for generators.
 
     npm test
 
+### Node versions
+
+Nightmare is intended to be run on NodeJS 4.x or higher.
+
 ## API
 
 #### Nightmare(options)
 Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions), along with the following nightmare-specific options.
+
+#### Nightmare.version
+Returns the version of Nightmare.
 
 ##### waitTimeout (default: 30s)
 This will throw an exception if the `.wait()` didn't return `true` within the set timeframe.
@@ -99,6 +113,24 @@ This will throw an exception if the `.wait()` didn't return `true` within the se
 ```js
 var nightmare = Nightmare({
   waitTimeout: 1000 // in ms
+});
+```
+
+##### gotoTimeout (default: 30s)
+This will throw an exception if the `.goto()` didn't finish loading within the set timeframe. Note that, even though `goto` normally waits for all the resources on a page to load, a timeout exception is only raised if the DOM itself has not yet loaded.
+
+```js
+var nightmare = Nightmare({
+  gotoTimeout: 1000 // in ms
+});
+```
+
+##### loadTimeout (default: infinite)
+This will force Nightmare to move on if a page transition caused by an action (eg, `.click()`) didn't finish within the set timeframe.  If `loadTimeout` is shorter than `gotoTimeout`, the exceptions thrown by `gotoTimeout` will be suppressed.
+
+```js
+var nightmare = Nightmare({
+  loadTimeout: 1000 // in ms
 });
 ```
 
@@ -156,6 +188,9 @@ var nightmare = Nightmare({
 });
 ```
 
+#### .engineVersions()
+Gets the versions for Electron and Chromium.
+
 #### .useragent(useragent)
 Set the `useragent` used by electron.
 
@@ -169,6 +204,25 @@ Complete any queue operations, disconnect and close the electron process.
 
 #### .goto(url[, headers])
 Load the page at `url`.  Optionally, a `headers` hash can be supplied to set headers on the `goto` request.
+
+When a page load is successful, `goto` returns an object with metadata about the page load, including:
+
+- `url`: The URL that was loaded
+- `code`: The HTTP status code (e.g. 200, 404, 500)
+- `method`: The HTTP method used (e.g. "GET", "POST")
+- `referrer`: The page that the window was displaying prior to this load or an empty string if this is the first page load.
+- `headers`: An object representing the response headers for the request as in `{header1-name: header1-value, header2-name: header2-value}`
+
+If the page load fails, the error will be an object wit the following properties:
+
+- `message`: A string describing the type of error
+- `code`: The underlying error code describing what went wrong. Note this is NOT the HTTP status code. For possible values, see https://code.google.com/p/chromium/codesearch#chromium/src/net/base/net_error_list.h
+- `details`: A string with additional details about the error. This may be null or an empty string.
+- `url`: The URL that failed to load
+
+Note that any valid response from a server is considered “successful.” That means things like 404 “not found” errors are successful results for `goto`. Only things that would cause no page to appear in the browser window, such as no server responding at the given address, the server hanging up in the middle of a response, or invalid URLs, are errors.
+
+You can also adjust how long `goto` will wait before timing out by setting the [`gotoTimeout` option](#gototimeout-default-30s) on the Nightmare constructor.
 
 #### .back()
 Go back to the previous page.
@@ -190,7 +244,7 @@ Enters the `text` provided into the `selector` element.  Empty or falsey values 
 
 `.type()` mimics a user typing in a textbox and will emit the proper keyboard events
 
-Key presses can also be fired using Unicode values with `.type()`. For example, if you wanted to fire an enter key press, you would  write `.type('document', '\u000d')`. 
+Key presses can also be fired using Unicode values with `.type()`. For example, if you wanted to fire an enter key press, you would  write `.type('document', '\u000d')`.
 
 > If you don't need the keyboard events, consider using `.insert()` instead as it will be faster and more robust.
 
@@ -223,11 +277,14 @@ Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On 
 
 ```js
 var selector = 'h1';
-var text = yield nightmare
+nightmare
   .evaluate(function (selector) {
     // now we're executing inside the browser scope.
     return document.querySelector(selector).innerText;
-   }, selector); // <-- that's how you pass parameters from Node scope to browser scope
+   }, selector) // <-- that's how you pass parameters from Node scope to browser scope
+  .then(function(text) {
+    // ...
+  })
 ```
 
 #### .wait(ms)
@@ -293,6 +350,12 @@ Listen for `console.log(...)`, `console.warn(...)`, and `console.error(...)`.
 ###### .on('console', function(type, errorMessage, errorStack))
 This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
 
+#### .once(event, callback)
+Similar to `.on()`, but captures page events with the callback one time.
+
+#### .removeListener(event, callback)
+Removes a given listener callback for an event.
+
 #### .screenshot([path][, clip])
 Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
 
@@ -321,11 +384,14 @@ Query multiple cookies with the `query` object. If a `query.name` is set, it wil
 ```js
 // get all google cookies that are secure
 // and have the path `/query`
-var cookies = yield nightmare
+nightmare
   .goto('http://google.com')
   .cookies.get({
     path: '/query',
     secure: true
+  })
+  .then(function(cookies) { 
+    // do something with the cookies
   })
 ```
 
@@ -344,13 +410,17 @@ Set a cookie's `name` and `value`. Most basic form, the url will be the current 
 Set a `cookie`. If `cookie.url` is not set, it will set the cookie on the current url. Here's an example:
 
 ```js
-yield nightmare
+nightmare
   .goto('http://google.com')
   .cookies.set({
     name: 'token',
     value: 'some token',
     path: '/query',
     secure: true
+  })
+  // ... other actions ...
+  .then(function() { 
+    // ... 
   })
 ```
 
@@ -360,14 +430,18 @@ Available properties are documented here:  https://github.com/atom/electron/blob
 
 Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a look at the `.cookies.set(cookie)` documentation above for a better idea of what `cookie` should look like.
 
-#### .cookies.clear(name)
+#### .cookies.clear([name])
 
-Clear a cookie for the current domain.
+Clear a cookie for the current domain.  If `name` is not specified, all cookies for the current domain will be cleared.
 
 ```js
-yield nightmare
+nightmare
   .goto('http://google.com')
-  .cookies.clear('SomeCookieName');
+  .cookies.clear('SomeCookieName')
+  // ... other actions ...
+  .then(function() { 
+    // ...
+  })
 ```
 
 ### Extending Nightmare
@@ -388,9 +462,12 @@ Nightmare.action('size', function (done) {
   }, done)
 })
 
-var size = yield Nightmare()
+Nightmare()
   .goto('http://cnn.com')
   .size()
+  .then(function(size) {
+    //... do something with the size information
+  });
 ```
 
 > Remember, this is attached to the static class `Nightmare`, not the instance.
@@ -410,33 +487,38 @@ Nightmare.action('style', {
   }
 })
 
-var background = yield Nightmare()
+nightmare()
   .goto('http://google.com')
   .style.background()
+  .then(function(background) { 
+    // ... do something interesting with background  
+  })
 ```
 
 You can also add custom Electron actions.  The additional Electron action or namespace actions take `name`, `options`, `parent`, `win`, `renderer`, and `done`.  Note the Electron action comes first, mirroring how `.evaluate()` works.  For example:
 
 ```javascript
-Nightmare.action('echo',
+Nightmare.action('clearCache',
   function(name, options, parent, win, renderer, done) {
-    parent.on('echo', function(message) {
-      parent.emit('log', 'echo: ' + message);
+    parent.respondTo('clearCache', function(done) {
+      win.webContents.session.clearCache(done);
     });
     done();
   },
   function(message, done) {
-    this.child.emit('echo', message);
-    done();
-    return this;
+    this.child.call('clearCache', done);
   });
 
-yield Nightmare()
+Nightmare()
+  .clearCache()
   .goto('http://example.org')
-  .echo('hello there!');
+  //... more actions ...
+  .then(function() {
+    // ... 
+  });
 ```
 
-...would have a `nightmare:log` showing "hello there!" when run with `DEBUG=nightmare*`.
+...would clear the browser’s cache before navigating to `example.org`.
 
 #### .use(plugin)
 
@@ -489,7 +571,7 @@ If you save this as `cnn.js`, you can run it on the command line like this:
 
 ```bash
 npm install nightmare
-node --harmony cnn.js
+node cnn.js
 ```
 
 #### Debugging
@@ -499,7 +581,7 @@ There are three good ways to get more information about what's happening inside 
 2. Pass `{ show: true }` to the [nightmare constructor](#nightmareoptions) to have it create a visible, rendered window that you can watch what's happening.
 3. Listen for [specific events](#onevent-callback).
 
-To run the same file with debugging output, run it like this `DEBUG=nightmare node --harmony cnn.js` (on Windows use `set DEBUG=nightmare & node cnn.js`).
+To run the same file with debugging output, run it like this `DEBUG=nightmare node cnn.js` (on Windows use `set DEBUG=nightmare & node cnn.js`).
 
 This will print out some additional information about what's going on:
 
