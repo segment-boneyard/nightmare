@@ -89,7 +89,7 @@ describe('Nightmare', function () {
     });
   });
 
-  it.only('should end gracefully if the chain has not been started', function(done) {
+  it('should end gracefully if the chain has not been started', function(done) {
     var child = child_process.fork(
       path.join(__dirname, 'files', 'nightmare-created.js'));
 
