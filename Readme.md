@@ -213,7 +213,7 @@ When a page load is successful, `goto` returns an object with metadata about the
 - `referrer`: The page that the window was displaying prior to this load or an empty string if this is the first page load.
 - `headers`: An object representing the response headers for the request as in `{header1-name: header1-value, header2-name: header2-value}`
 
-If the page load fails, the error will be an object wit the following properties:
+If the page load fails, the error will be an object with the following properties:
 
 - `message`: A string describing the type of error
 - `code`: The underlying error code describing what went wrong. Note this is NOT the HTTP status code. For possible values, see https://code.google.com/p/chromium/codesearch#chromium/src/net/base/net_error_list.h
