@@ -1,8 +1,6 @@
-[![Build Status](https://circleci.com/gh/segmentio/nightmare.png?circle-token=dbb94336673268633371a89865e008b70ffedf6d)](https://circleci.com/gh/segmentio/nightmare)
-Nightmare
-=========
+[![Build Status](https://circleci.com/gh/segmentio/nightmare.png?circle-token=dbb94336673268633371a89865e008b70ffedf6d)](https://circleci.com/gh/segmentio/nightmare) [![Join the chat at https://gitter.im/rosshinkley/nightmare](https://badges.gitter.im/rosshinkley/nightmare.svg)](https://gitter.im/rosshinkley/nightmare?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Join the chat at https://gitter.im/rosshinkley/nightmare](https://badges.gitter.im/rosshinkley/nightmare.svg)](https://gitter.im/rosshinkley/nightmare?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# Nightmare
 
 Nightmare is a high-level browser automation library.
 
@@ -19,6 +17,8 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
   - [Set up an instance](#nightmareoptions)
   - [Interact with the page](#interact-with-the-page)
   - [Extract from the page](#extract-from-the-page)
+  - [Cookies](#cookies)
+  - [Proxies](#proxies)
   - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
@@ -442,6 +442,49 @@ nightmare
   .then(function() { 
     // ...
   })
+```
+
+### Proxies
+
+Proxies are supported in Nightmare through [switches](#switches).
+
+If your proxy requires authentication you also need the [authentication](#authenticationuser-password) call.
+
+The following example not only demostrates how to use proxies, but you can run it to test if your proxy connection is working:
+
+```js
+var Nightmare = require('nightmare');
+
+var proxyNightmare = Nightmare({
+  switches: {
+    'proxy-server': 'my_proxy_server.example.com:8080' // set the proxy server here ...
+  },
+  show: true
+});
+
+proxyNightmare
+  .authentication('proxyUsername', 'proxyPassword') // ... and authenticate here before `goto`
+  .goto('http://www.ipchicken.com')
+  .evaluate(function() {
+    return document.querySelector('b').innerText.replace(/[^\d\.]/g, '');
+  })
+  .end()
+  .then(function(ip) { // This will log the Proxy's IP
+    console.log('proxy IP:', ip);
+  });
+
+// The rest is just normal Nightmare to get your local IP
+var regularNightmare = Nightmare({ show: true });
+
+regularNightmare
+  .goto('http://www.ipchicken.com')
+  .evaluate(function() {
+    return document.querySelector('b').innerText.replace(/[^\d\.]/g, '');
+  })
+  .end()
+  .then(function(ip) { // This will log the your local IP
+    console.log('local IP:', ip);
+  });
 ```
 
 ### Extending Nightmare
