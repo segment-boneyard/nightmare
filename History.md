@@ -1,3 +1,11 @@
+2.5.3 / 2016-07-08
+==================
+
+  * Adds better proxy information to the readme
+  * Fixes a readme typo
+  * Updates `ipcRenderer` usage for preload scripts in readme
+  * Bumps Electron to version 1.2.5
+
 2.5.2 / 2016-06-20
 ==================
 
