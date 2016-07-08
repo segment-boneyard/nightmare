@@ -1441,7 +1441,7 @@ describe('Nightmare', function () {
         .should.be.rejected;
     });
 
-    it.only('should be able to update authentication', function*(){
+    it('should be able to update authentication', function*(){
       nightmare = Nightmare();
       var data = yield nightmare
         .authentication('my', 'auth')
