@@ -1528,7 +1528,7 @@ describe('Nightmare', function () {
     it('should allow to use external Electron', function*() {
       nightmare = Nightmare({ electronPath: require('electron-prebuilt') });
       nightmare.should.be.ok;
-    })
+    });
   });
 
   describe('Nightmare.action(name, fn)', function() {
@@ -1630,6 +1630,32 @@ describe('Nightmare', function () {
       eventResults[0].should.equal('sample');
       eventResults[1].should.equal(3);
       eventResults[2].sample.should.equal('sample');
+    });
+
+    it('should allow env variables', function*() {
+      Nightmare.action('envtest',
+        function (name, options, parent, win, renderer, done) {
+          console.log(arguments);
+          parent.respondTo('envtest', function(done){
+            done(null, process.env);
+          });
+          done();
+        },
+        function(done) {
+          this.child.call('envtest', done);
+        }
+      );
+      nightmare = Nightmare({
+        env: {
+          TZ: 'UTC'
+        }
+      });
+      nightmare.should.be.ok;
+      var envTest = yield nightmare
+        .goto('about:bank')
+        .envtest();
+      envTest.should.be.ok;
+      envTest.should.have.property('TZ', 'UTC');
     });
   })
 
