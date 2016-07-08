@@ -1,6 +1,6 @@
 {
   "name": "nightmare",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "license": "MIT",
   "main": "lib/nightmare.js",
   "scripts": {
