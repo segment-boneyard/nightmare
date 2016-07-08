@@ -89,7 +89,7 @@ describe('Nightmare', function () {
     });
   });
 
-  it.only('should end gracefully if the chain has not been started', function(done) {
+  it('should end gracefully if the chain has not been started', function(done) {
     var child = child_process.fork(
       path.join(__dirname, 'files', 'nightmare-created.js'));
 
@@ -1431,6 +1431,14 @@ describe('Nightmare', function () {
           return JSON.parse(document.querySelector('pre').innerHTML);
         });
       data.should.eql({ name: 'my', pass: 'auth' });
+    });
+
+    it('should fail on authentication failure', function*() {
+      nightmare = Nightmare();
+      var data = yield nightmare
+        .authentication('my', 'wrong')
+        .goto(fixture('auth'))
+        .should.be.rejected;
     });
 
     it('should set viewport', function*() {

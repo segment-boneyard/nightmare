@@ -188,6 +188,14 @@ var nightmare = Nightmare({
 });
 ```
 
+##### maxAuthRetries
+Defines the number of times to retry an authentication when set up with `.authenticate()`.  Defaults to 3.
+```js
+var nightmare = Nightmare({
+  maxAuthRetries: 3
+});
+```
+
 #### .engineVersions()
 Gets the versions for Electron and Chromium.
 
