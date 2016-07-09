@@ -89,7 +89,7 @@ describe('Nightmare', function () {
     });
   });
 
-  it.only('should gracefully handle electron being killed', function(done) {
+  it('should gracefully handle electron being killed', function(done) {
     var child = child_process.fork(
       path.join(__dirname, 'files', 'nightmare-unended.js'));
       
