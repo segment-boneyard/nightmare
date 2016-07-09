@@ -188,6 +188,15 @@ var nightmare = Nightmare({
 });
 ```
 
+##### pollInterval
+How long to wait between checks for the `.wait()` condition to be successful.  Defaults to 250ms.
+
+```js
+var nightmare = Nightmare({
+  pollInterval: 50 //in ms
+});
+```
+
 #### .engineVersions()
 Gets the versions for Electron and Chromium.
 
