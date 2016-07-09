@@ -1009,6 +1009,47 @@ describe('Nightmare', function () {
 
       cookies.length.should.equal(0);
     })
+
+    it('.set([cookie]) & .clearAll() & .get()', function*() {
+      yield nightmare.cookies.set([
+        {
+          name: 'hi',
+          value: 'hello',
+          path: '/'
+        },
+        {
+          name: 'nightmare',
+          value: 'rocks',
+          path: '/cookie'
+        }
+      ]);
+
+      yield nightmare.goto(fixture('simple'));
+
+      yield nightmare.cookies.set([
+        {
+          name: 'hi',
+          value: 'hello',
+          path: '/'
+        },
+        {
+          name: 'nightmare',
+          value: 'rocks',
+          path: '/cookie'
+        }
+      ]);
+
+
+      yield nightmare.cookies.clearAll();
+
+      var cookies = yield nightmare.cookies.get();
+      cookies.length.should.equal(0);
+
+      yield nightmare.goto(fixture('cookie'))
+
+      cookies = yield nightmare.cookies.get();
+      cookies.length.should.equal(0);
+    })
   });
 
   describe('rendering', function () {
