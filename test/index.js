@@ -132,7 +132,7 @@ describe('Nightmare', function () {
       .then(() => nightmare.end())
       .then(() => done());
   });
-  
+
   it('should provide useful errors for .click', function(done) {
     var nightmare = Nightmare();
 
@@ -280,6 +280,56 @@ describe('Nightmare', function () {
           return (expectedA === textA && expectedB === textB);
         }, 'A', 'B');
     });
+
+    it('should wait for returned promise to be resolved', function*() {
+      const beginning = Date.now();
+
+      yield nightmare
+        .goto(fixture('navigation'))
+        .wait(function() {
+          return new Promise(function(resolve) {
+            setTimeout(resolve, 1000, true);
+          })
+        });
+
+      beginning.should.be.below(Date.now() - 1000);
+    });
+
+    it('should wait for returned promise to be resolved to truthy value', function() {
+      var nightmare = Nightmare({waitTimeout:1000});
+
+      return nightmare
+        .goto(fixture('navigation'))
+        .wait(function() {
+          return new Promise(function(resolve) {
+            setTimeout(resolve, 10, false);
+          })
+        })
+        .then(function () {
+          throw Error("Promise should have been rejected.");
+        })
+        .catch(function(error) {
+          error.message.should.be.equal(".wait() timed out after 1000msec");
+        });
+    })
+
+    it('should timeout on long running promises', function() {
+      var nightmare = Nightmare({waitTimeout:1000});
+
+      return nightmare
+        .goto(fixture('navigation'))
+        .wait(function() {
+          return new Promise(function(resolve) {
+            setTimeout(resolve, 2000, true);
+          })
+        })
+        .then(function () {
+          throw Error("Promise should have time out.");
+        })
+        .catch(function(error) {
+          error.message.should.be.equal(".wait() timed out after 1000msec");
+        });
+    })
 
     it('should fail if navigation target is invalid', function() {
       return nightmare.goto('http://this-is-not-a-real-domain.tld')
@@ -560,6 +610,39 @@ describe('Nightmare', function () {
         .goto(fixture('evaluation'))
         .evaluate('not_a_function')
         .should.be.rejected;
+    });
+
+    it('should resolve promise on the page, with parameters', function*() {
+      var title = yield nightmare
+        .goto(fixture('evaluation'))
+        .evaluate(function (parameter) {
+          return new Promise(function (resolve, reject) {
+            delayed = function () {
+              resolve(document.title + ' -- ' + parameter);
+            };
+            setTimeout(delayed, 500);
+          });
+        }, 'testparameter');
+      title.should.equal('Evaluation -- testparameter');
+    });
+
+    it('should capture a reason for rejected promises', function*() {
+      var didFail = false;
+      try {
+        yield nightmare
+        .goto(fixture('evaluation'))
+        .evaluate(function () {
+          return new Promise(function (resolve, reject) {
+            delayed = function () {
+              reject(Error("Terrible error!"));
+            };
+            setTimeout(delayed, 500);
+          });
+        });
+      } catch (e) {
+        didFail = e;
+      }
+      didFail.should.be.equal("Terrible error!");
     });
   });
 
@@ -1348,7 +1431,7 @@ describe('Nightmare', function () {
         });
 
       nightmare.removeListener('page', handler);
-      
+
       yield nightmare
         .evaluate(function(){
           alert('alert two');
