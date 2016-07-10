@@ -1635,7 +1635,6 @@ describe('Nightmare', function () {
     it('should allow env variables', function*() {
       Nightmare.action('envtest',
         function (name, options, parent, win, renderer, done) {
-          console.log(arguments);
           parent.respondTo('envtest', function(done){
             done(null, process.env);
           });
