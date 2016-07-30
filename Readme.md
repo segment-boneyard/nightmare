@@ -188,6 +188,15 @@ var nightmare = Nightmare({
 });
 ```
 
+##### typeInterval (default: 100ms)
+How long to wait between keystrokes when using `.type()`.
+
+```js
+var nightmare = Nightmare({
+  typeInterval: 20
+});
+```
+
 #### .engineVersions()
 Gets the versions for Electron and Chromium.
 
