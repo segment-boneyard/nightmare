@@ -60,6 +60,13 @@ app.get('/redirect', function (req, res) {
 });
 
 /**
+ * Start the response but do not end the request
+ */
+app.get('/not-modified', function(req, res) {
+  res.sendStatus(304);
+});
+
+/**
  * Simply hang up on the connection for testing interrupted page loads
  */
 

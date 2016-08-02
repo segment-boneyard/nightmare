@@ -431,6 +431,61 @@ describe('Nightmare', function () {
       linkText.should.equal('D');
     });
 
+    it('should fail immediately/not time out for 304 statuses', function() {
+      return Nightmare({gotoTimeout: 500})
+        .goto(fixture('not-modified'))
+        .end()
+        .then(function() {
+          throw new Error('Navigating to a 304 should return an error');
+        },
+        function(error) {
+          if (error.code === -7) {
+            throw new Error('Navigating to a 304 should not time out');
+          }
+        });
+    });
+
+    it('should not time out for aborted loads', function() {
+      Nightmare.action(
+        'abortRequests',
+        function(name, options, parent, win, renderer, done) {
+          win.webContents.session.webRequest.onBeforeRequest(
+            ['*://localhost:*'],
+            function(details, callback) {
+              if (win.shouldAbortRequests) {
+                setTimeout(() => win.webContents.stop(), 0);
+              }
+              callback({cancel: false});
+            }
+          );
+          parent.respondTo('abortRequests', function(shouldAbort, done) {
+            win.shouldAbortRequests = shouldAbort;
+            done();
+          });
+          done();
+        },
+        function(shouldAbort, done) {
+          if (arguments.length === 1) {
+            done = shouldAbort;
+            shouldAbort = true;
+          }
+          this.child.call('abortRequests', !!shouldAbort, done);
+        });
+
+      return Nightmare({gotoTimeout: 500})
+        .abortRequests(true)
+        .goto(fixture('navigation'))
+        .end()
+        .then(function() {
+          throw new Error('An aborted page load should return an error');
+        },
+        function(error) {
+          if (error.code === -7) {
+            throw new Error('Aborting a page load should not time out');
+          }
+        });
+    });
+
     describe('timeouts', function() {
       it('should time out after 30 seconds of loading', function() {
         // allow this test to go particularly long
