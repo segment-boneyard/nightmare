@@ -256,6 +256,15 @@ describe('Nightmare', function () {
         .wait('a');
     });
 
+    it('should wait until element is present with a modified poll interval', function*() {
+      nightamre = Nightmare({
+        pollInterval: 50
+      });
+      yield nightmare
+        .goto(fixture('navigation'))
+        .wait('a');
+    });
+
     it('should escape the css selector correctly when waiting for an element', function*() {
       yield nightmare
         .goto(fixture('navigation'))
