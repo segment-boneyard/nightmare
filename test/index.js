@@ -89,6 +89,19 @@ describe('Nightmare', function () {
     });
   });
 
+  it('should gracefully handle electron being killed', function(done) {
+    var child = child_process.fork(
+      path.join(__dirname, 'files', 'nightmare-unended.js'));
+      
+    child.once('message', function(electronPid) {
+      process.kill(electronPid, 'SIGINT');
+      child.once('exit', function(){
+        electronPid.should.not.be.a.process;
+        done();
+      });
+    });
+  });
+
   it('should end gracefully if the chain has not been started', function(done) {
     var child = child_process.fork(
       path.join(__dirname, 'files', 'nightmare-created.js'));
