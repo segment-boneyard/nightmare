@@ -1916,17 +1916,24 @@ function withDeprecationTracking(constructor) {
  */
 var _action = Nightmare.action;
 var _pluginNames = [];
+var _existingNamespaces = Nightmare.namespaces.slice();
+var _existingChildActions = Object.assign({}, Nightmare.childActions);
 Nightmare.action = function (name) {
   _pluginNames.push(name);
   return _action.apply(this, arguments);
 };
+// NOTE: this is somewhat fragile since there's no public API for removing
+// plugins. If you touch `Nightmare.action`, please be sure to update this.
 Nightmare.resetActions = function () {
   _pluginNames.splice(0, _pluginNames.length).forEach((name) => {
     delete this.prototype[name];
   });
   this.namespaces.splice(0, this.namespaces.length);
+  this.namespaces.push.apply(this.namespaces, _existingNamespaces);
   Object.keys(this.childActions).forEach((name) => {
-    delete this.childActions[name];
+    if (!_existingChildActions[name]) {
+      delete this.childActions[name];
+    }
   });
 };
 
