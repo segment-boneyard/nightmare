@@ -1433,6 +1433,27 @@ describe('Nightmare', function () {
       data.should.eql({ name: 'my', pass: 'auth' });
     });
 
+    it('should fail on authentication failure', function*() {
+      nightmare = Nightmare();
+      var data = yield nightmare
+        .authentication('my', 'wrong')
+        .goto(fixture('auth'))
+        .should.be.rejected;
+    });
+
+    it('should be able to update authentication', function*(){
+      nightmare = Nightmare();
+      var data = yield nightmare
+        .authentication('my', 'auth')
+        .goto(fixture('auth'))
+        .authentication('my2', 'auth2')
+        .goto(fixture('auth2'))
+        .evaluate(function () {
+          return JSON.parse(document.querySelector('pre').innerHTML);
+        });
+      data.should.eql({ name: 'my2', pass: 'auth2' });
+    });
+
     it('should set viewport', function*() {
       var size = { width: 400, height: 300, useContentSize: true };
       nightmare = Nightmare(size);

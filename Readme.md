@@ -184,17 +184,18 @@ Optionally show the DevTools in the Electron window using `true`, or use an obje
 
 ```js
 var nightmare = Nightmare({
-  openDevTools: true,
-  show: true
-});
-```
-
-```js
-var nightmare = Nightmare({
   openDevTools: {
     mode: 'detach'
   },
   show: true
+});
+```
+
+##### maxAuthRetries (default: 3)
+Defines the number of times to retry an authentication when set up with `.authenticate()`.
+```js
+var nightmare = Nightmare({
+  maxAuthRetries: 3
 });
 ```
 
