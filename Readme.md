@@ -1,4 +1,5 @@
-[![Build Status](https://circleci.com/gh/segmentio/nightmare.png?circle-token=dbb94336673268633371a89865e008b70ffedf6d)](https://circleci.com/gh/segmentio/nightmare) [![Join the chat at https://gitter.im/rosshinkley/nightmare](https://badges.gitter.im/rosshinkley/nightmare.svg)](https://gitter.im/rosshinkley/nightmare?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://img.shields.io/circleci/project/segmentio/nightmare/master.svg?maxAge=2592000)]()
+[![Join the chat at https://gitter.im/rosshinkley/nightmare](https://badges.gitter.im/rosshinkley/nightmare.svg)](https://gitter.im/rosshinkley/nightmare?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # Nightmare
 
@@ -179,11 +180,20 @@ var nightmare = Nightmare({
 ```
 
 ##### openDevTools
-Optionally show the DevTools in the Electron window using `true`, or use an object hash containing `detatch` to show in a separate window. The hash gets passed to [`webContents.openDevTools()`](https://github.com/atom/electron/blob/master/docs/api/web-contents.md#webcontentsopendevtoolsoptions) to be handled.  This is also useful for testing purposes.  Note that this option is honored only if `show` is set to `true`.
+Optionally show the DevTools in the Electron window using `true`, or use an object hash containing `mode: 'detach'` to show in a separate window. The hash gets passed to [`contents.openDevTools()`](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#contentsopendevtoolsoptions) to be handled.  This is also useful for testing purposes.  Note that this option is honored only if `show` is set to `true`.
 
 ```js
 var nightmare = Nightmare({
   openDevTools: true,
+  show: true
+});
+```
+
+```js
+var nightmare = Nightmare({
+  openDevTools: {
+    mode: 'detach'
+  },
   show: true
 });
 ```
@@ -590,7 +600,7 @@ window.__nightmare = {};
 __nightmare.ipc = require('electron').ipcRenderer;
 ```
 
-To benefit of all of nightmare's feedback from the browser, you can instead copy the contents of nightmare's [preload script](blob/master/lib/preload.js).
+To benefit of all of nightmare's feedback from the browser, you can instead copy the contents of nightmare's [preload script](lib/preload.js).
 
 ## Usage
 #### Installation
