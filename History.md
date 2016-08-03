@@ -1,3 +1,17 @@
+2.6.0 / 2016-08-02
+==================
+
+  * Makes the CircleCI badge an SVG
+  * Adds an option for `.type()` to control time elapsed between keystrokes with `typeInterval`
+  * Adds `.cookies.clearAll()` to clear all cookies
+  * Fixes crashing if the Electron process is closed first
+  * Adds `pollInterval` as an option to control the tick time for `.wait()`
+  * Forces Nightmare to error on bad HTTP authentication
+  * Fixes a crash by omitting event data due to circular references
+  * Adds environment variable forwarding to the Electron process
+  * Fixes `openDevTools` docs to be more explicit about detaching the devtools tray
+  * Fixes the link to the preload script
+
 2.5.3 / 2016-07-08
 ==================
 
