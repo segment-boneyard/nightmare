@@ -1,8 +1,7 @@
-[![Build Status](https://circleci.com/gh/segmentio/nightmare.png?circle-token=dbb94336673268633371a89865e008b70ffedf6d)](https://circleci.com/gh/segmentio/nightmare)
-Nightmare
-=========
-
+[![Build Status](https://img.shields.io/circleci/project/segmentio/nightmare/master.svg?maxAge=2592000)]()
 [![Join the chat at https://gitter.im/rosshinkley/nightmare](https://badges.gitter.im/rosshinkley/nightmare.svg)](https://gitter.im/rosshinkley/nightmare?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+# Nightmare
 
 Nightmare is a high-level browser automation library.
 
@@ -19,6 +18,8 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
   - [Set up an instance](#nightmareoptions)
   - [Interact with the page](#interact-with-the-page)
   - [Extract from the page](#extract-from-the-page)
+  - [Cookies](#cookies)
+  - [Proxies](#proxies)
   - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
@@ -179,17 +180,19 @@ var nightmare = Nightmare({
 ```
 
 ##### openDevTools
-Optionally show the DevTools in the Electron window using `true`, or use an object hash containing `detatch` to show in a separate window. The hash gets passed to [`webContents.openDevTools()`](https://github.com/atom/electron/blob/master/docs/api/web-contents.md#webcontentsopendevtoolsoptions) to be handled.  This is also useful for testing purposes.  Note that this option is honored only if `show` is set to `true`.
+Optionally show the DevTools in the Electron window using `true`, or use an object hash containing `mode: 'detach'` to show in a separate window. The hash gets passed to [`contents.openDevTools()`](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#contentsopendevtoolsoptions) to be handled.  This is also useful for testing purposes.  Note that this option is honored only if `show` is set to `true`.
 
 ```js
 var nightmare = Nightmare({
-  openDevTools: true,
+  openDevTools: {
+    mode: 'detach'
+  },
   show: true
 });
 ```
 
-##### maxAuthRetries
-Defines the number of times to retry an authentication when set up with `.authenticate()`.  Defaults to 3.
+##### maxAuthRetries (default: 3)
+Defines the number of times to retry an authentication when set up with `.authenticate()`.
 ```js
 var nightmare = Nightmare({
   maxAuthRetries: 3
@@ -221,7 +224,7 @@ When a page load is successful, `goto` returns an object with metadata about the
 - `referrer`: The page that the window was displaying prior to this load or an empty string if this is the first page load.
 - `headers`: An object representing the response headers for the request as in `{header1-name: header1-value, header2-name: header2-value}`
 
-If the page load fails, the error will be an object wit the following properties:
+If the page load fails, the error will be an object with the following properties:
 
 - `message`: A string describing the type of error
 - `code`: The underlying error code describing what went wrong. Note this is NOT the HTTP status code. For possible values, see https://code.google.com/p/chromium/codesearch#chromium/src/net/base/net_error_list.h
@@ -452,6 +455,49 @@ nightmare
   })
 ```
 
+### Proxies
+
+Proxies are supported in Nightmare through [switches](#switches).
+
+If your proxy requires authentication you also need the [authentication](#authenticationuser-password) call.
+
+The following example not only demostrates how to use proxies, but you can run it to test if your proxy connection is working:
+
+```js
+var Nightmare = require('nightmare');
+
+var proxyNightmare = Nightmare({
+  switches: {
+    'proxy-server': 'my_proxy_server.example.com:8080' // set the proxy server here ...
+  },
+  show: true
+});
+
+proxyNightmare
+  .authentication('proxyUsername', 'proxyPassword') // ... and authenticate here before `goto`
+  .goto('http://www.ipchicken.com')
+  .evaluate(function() {
+    return document.querySelector('b').innerText.replace(/[^\d\.]/g, '');
+  })
+  .end()
+  .then(function(ip) { // This will log the Proxy's IP
+    console.log('proxy IP:', ip);
+  });
+
+// The rest is just normal Nightmare to get your local IP
+var regularNightmare = Nightmare({ show: true });
+
+regularNightmare
+  .goto('http://www.ipchicken.com')
+  .evaluate(function() {
+    return document.querySelector('b').innerText.replace(/[^\d\.]/g, '');
+  })
+  .end()
+  .then(function(ip) { // This will log the your local IP
+    console.log('local IP:', ip);
+  });
+```
+
 ### Extending Nightmare
 
 #### Nightmare.action(name, [electronAction|electronNamespace], action|namespace)
@@ -538,9 +584,12 @@ If you need to do something custom when you first load the window environment, y
 can specify a custom preload script. Here's how you do that:
 
 ```js
+const path = require('path');
+
 var nightmare = Nightmare({
   webPreferences: {
-    preload: custom-script.js
+    preload: path.resolve("custom-script.js")
+    //alternative: preload: "absolute/path/to/custom-script.js"
   }
 })
 ```
@@ -549,8 +598,10 @@ The only requirement for that script is that you'll need the following prelude:
 
 ```js
 window.__nightmare = {};
-__nightmare.ipc = require('ipc');
+__nightmare.ipc = require('electron').ipcRenderer;
 ```
+
+To benefit of all of nightmare's feedback from the browser, you can instead copy the contents of nightmare's [preload script](lib/preload.js).
 
 ## Usage
 #### Installation
