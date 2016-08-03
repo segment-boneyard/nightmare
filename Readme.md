@@ -464,6 +464,20 @@ nightmare
   })
 ```
 
+#### .cookies.clearAll()
+
+Clears all cookies for all domains.
+
+```js
+nightmare
+  .goto('http://google.com')
+  .cookies.clearAll()
+  // ... other actions ...
+  .then(function() {
+    //...
+  });
+```
+
 ### Proxies
 
 Proxies are supported in Nightmare through [switches](#switches).
