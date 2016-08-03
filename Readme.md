@@ -191,21 +191,20 @@ var nightmare = Nightmare({
 });
 ```
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 ##### pollInterval (default: 250ms)
 How long to wait between checks for the `.wait()` condition to be successful.
 
 ```js
 var nightmare = Nightmare({
   pollInterval: 50 //in ms
-=======
+});
+```
+
 ##### maxAuthRetries (default: 3)
 Defines the number of times to retry an authentication when set up with `.authenticate()`.
 ```js
 var nightmare = Nightmare({
   maxAuthRetries: 3
->>>>>>> 2d0c88b7f2a632a7531367cfa54aee6bf6dff372
 });
 ```
 
