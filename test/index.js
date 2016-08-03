@@ -89,6 +89,19 @@ describe('Nightmare', function () {
     });
   });
 
+  it('should gracefully handle electron being killed', function(done) {
+    var child = child_process.fork(
+      path.join(__dirname, 'files', 'nightmare-unended.js'));
+      
+    child.once('message', function(electronPid) {
+      process.kill(electronPid, 'SIGINT');
+      child.once('exit', function(){
+        electronPid.should.not.be.a.process;
+        done();
+      });
+    });
+  });
+
   it('should end gracefully if the chain has not been started', function(done) {
     var child = child_process.fork(
       path.join(__dirname, 'files', 'nightmare-created.js'));
@@ -251,6 +264,15 @@ describe('Nightmare', function () {
     });
 
     it('should wait until element is present', function*() {
+      yield nightmare
+        .goto(fixture('navigation'))
+        .wait('a');
+    });
+
+    it('should wait until element is present with a modified poll interval', function*() {
+      nightamre = Nightmare({
+        pollInterval: 50
+      });
       yield nightmare
         .goto(fixture('navigation'))
         .wait('a');
@@ -1009,6 +1031,47 @@ describe('Nightmare', function () {
 
       cookies.length.should.equal(0);
     })
+
+    it('.set([cookie]) & .clearAll() & .get()', function*() {
+      yield nightmare.cookies.set([
+        {
+          name: 'hi',
+          value: 'hello',
+          path: '/'
+        },
+        {
+          name: 'nightmare',
+          value: 'rocks',
+          path: '/cookie'
+        }
+      ]);
+
+      yield nightmare.goto(fixture('simple'));
+
+      yield nightmare.cookies.set([
+        {
+          name: 'hi',
+          value: 'hello',
+          path: '/'
+        },
+        {
+          name: 'nightmare',
+          value: 'rocks',
+          path: '/cookie'
+        }
+      ]);
+
+
+      yield nightmare.cookies.clearAll();
+
+      var cookies = yield nightmare.cookies.get();
+      cookies.length.should.equal(0);
+
+      yield nightmare.goto(fixture('cookie'))
+
+      cookies = yield nightmare.cookies.get();
+      cookies.length.should.equal(0);
+    })
   });
 
   describe('rendering', function () {
@@ -1431,6 +1494,27 @@ describe('Nightmare', function () {
           return JSON.parse(document.querySelector('pre').innerHTML);
         });
       data.should.eql({ name: 'my', pass: 'auth' });
+    });
+
+    it('should fail on authentication failure', function*() {
+      nightmare = Nightmare();
+      var data = yield nightmare
+        .authentication('my', 'wrong')
+        .goto(fixture('auth'))
+        .should.be.rejected;
+    });
+
+    it('should be able to update authentication', function*(){
+      nightmare = Nightmare();
+      var data = yield nightmare
+        .authentication('my', 'auth')
+        .goto(fixture('auth'))
+        .authentication('my2', 'auth2')
+        .goto(fixture('auth2'))
+        .evaluate(function () {
+          return JSON.parse(document.querySelector('pre').innerHTML);
+        });
+      data.should.eql({ name: 'my2', pass: 'auth2' });
     });
 
     it('should set viewport', function*() {

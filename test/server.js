@@ -38,6 +38,10 @@ app.get('/auth', basicAuth('my', 'auth'), function (req, res) {
   res.send(auth(req));
 });
 
+app.get('/auth2', basicAuth('my2', 'auth2'), function (req, res) {
+  res.send(auth(req));
+});
+
 /**
  * Echo HTTP Headers for testing assertions.
  */

@@ -200,6 +200,23 @@ var nightmare = Nightmare({
 });
 ```
 
+##### pollInterval (default: 250ms)
+How long to wait between checks for the `.wait()` condition to be successful.
+
+```js
+var nightmare = Nightmare({
+  pollInterval: 50 //in ms
+});
+```
+
+##### maxAuthRetries (default: 3)
+Defines the number of times to retry an authentication when set up with `.authenticate()`.
+```js
+var nightmare = Nightmare({
+  maxAuthRetries: 3
+});
+```
+
 #### .engineVersions()
 Gets the versions for Electron and Chromium.
 
@@ -454,6 +471,20 @@ nightmare
   .then(function() { 
     // ...
   })
+```
+
+#### .cookies.clearAll()
+
+Clears all cookies for all domains.
+
+```js
+nightmare
+  .goto('http://google.com')
+  .cookies.clearAll()
+  // ... other actions ...
+  .then(function() {
+    //...
+  });
 ```
 
 ### Proxies
