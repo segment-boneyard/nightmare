@@ -194,6 +194,7 @@ describe('Nightmare', function () {
 
     afterEach(function*() {
       yield nightmare.end();
+      Nightmare.resetActions();
     });
 
     it('should return data about the response', function*() {
@@ -451,6 +452,50 @@ describe('Nightmare', function () {
           return document.querySelector('.d').textContent;
         });
       linkText.should.equal('D');
+    });
+
+    it('should fail immediately/not time out for 304 statuses', function() {
+      return Nightmare({gotoTimeout: 500})
+        .goto(fixture('not-modified'))
+        .end()
+        .then(function() {
+          throw new Error('Navigating to a 304 should return an error');
+        },
+        function(error) {
+          if (error.code === -7) {
+            throw new Error('Navigating to a 304 should not time out');
+          }
+        });
+    });
+
+    it('should not time out for aborted loads', function() {
+      Nightmare.action(
+        'abortRequests',
+        function(name, options, parent, win, renderer, done) {
+          win.webContents.session.webRequest.onBeforeRequest(
+            ['*://localhost:*'],
+            function(details, callback) {
+              setTimeout(() => win.webContents.stop(), 0);
+              callback({cancel: false});
+            }
+          );
+          done();
+        },
+        function() {
+          done();
+        });
+
+      return Nightmare({gotoTimeout: 500})
+        .goto(fixture('navigation'))
+        .end()
+        .then(function() {
+          throw new Error('An aborted page load should return an error');
+        },
+        function(error) {
+          if (error.code === -7) {
+            throw new Error('Aborting a page load should not time out');
+          }
+        });
     });
 
     describe('timeouts', function() {
@@ -1974,6 +2019,32 @@ function withDeprecationTracking(constructor) {
   Object.setPrototypeOf(newConstructor, constructor);
   return newConstructor;
 }
+
+/**
+ * Make plugins resettable for tests
+ */
+var _action = Nightmare.action;
+var _pluginNames = [];
+var _existingNamespaces = Nightmare.namespaces.slice();
+var _existingChildActions = Object.assign({}, Nightmare.childActions);
+Nightmare.action = function (name) {
+  _pluginNames.push(name);
+  return _action.apply(this, arguments);
+};
+// NOTE: this is somewhat fragile since there's no public API for removing
+// plugins. If you touch `Nightmare.action`, please be sure to update this.
+Nightmare.resetActions = function () {
+  _pluginNames.splice(0, _pluginNames.length).forEach((name) => {
+    delete this.prototype[name];
+  });
+  this.namespaces.splice(0, this.namespaces.length);
+  this.namespaces.push.apply(this.namespaces, _existingNamespaces);
+  Object.keys(this.childActions).forEach((name) => {
+    if (!_existingChildActions[name]) {
+      delete this.childActions[name];
+    }
+  });
+};
 
 /**
  * Simple assertion for running processes
