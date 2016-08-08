@@ -1,3 +1,8 @@
+2.6.1 / 2016-08-08
+==================
+
+  * Fixes treating provisional load failures as real load failures
+
 2.6.0 / 2016-08-02
 ==================
 
