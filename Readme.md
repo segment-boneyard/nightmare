@@ -60,25 +60,26 @@ node example.js
 Or, let's run some mocha tests:
 
 ```js
-var Nightmare = require('nightmare');
-var expect = require('chai').expect; // jshint ignore:line
+const Nightmare = require('nightmare');
+const expect = require('chai').expect; // jshint ignore:line
+
+require('mocha-generators').install();
 
 describe('test yahoo search results', function() {
-  it('should find the nightmare github link first', function(done) {
-    var nightmare = Nightmare()
-    nightmare
+  it('should find the nightmare github link first', function* () {
+    const nightmare = Nightmare();
+    yield nightmare
       .goto('http://yahoo.com')
       .type('form[action*="/search"] [name=p]', 'github nightmare')
       .click('form[action*="/search"] [type=submit]')
       .wait('#main')
       .evaluate(function () {
-        return document.querySelector('#main .searchCenterMiddle li a').href
+        return document.querySelector('#main .searchCenterMiddle > li:nth-child(2) a').href;
       })
       .end()
       .then(function(link) {
         expect(link).to.equal('https://github.com/segmentio/nightmare');
-        done();
-      })
+      });
   });
 });
 ```
