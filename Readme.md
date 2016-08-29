@@ -227,7 +227,7 @@ Set the `useragent` used by electron.
 Set the `user` and `password` for accessing a web page using basic authentication. Be sure to set it before calling `.goto(url)`.
 
 #### .end()
-Complete any queue operations, disconnect and close the electron process.
+Complete any queue operations, disconnect and close the electron process.  Note that if you're using promises, `.then()` must be called after `.end()` to run the `.end()` task.
 
 ### Interact with the Page
 
