@@ -270,8 +270,14 @@ describe('Nightmare', function () {
         .wait('a');
     });
 
+    it('should soft timeout if element does not appear', function*() {
+      yield nightmare
+        .goto(fixture('navigation'))
+        .wait('ul', 150);
+    });
+
     it('should wait until element is present with a modified poll interval', function*() {
-      nightamre = Nightmare({
+      nightmare = Nightmare({
         pollInterval: 50
       });
       yield nightmare
