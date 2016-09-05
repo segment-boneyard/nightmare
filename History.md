@@ -1,3 +1,10 @@
+2.7.0 / 2016-09-05
+==================
+
+  * Adds `.wait(element, timeout)` to wait for whichever comes first
+  * `.end()` will now end Electron gracefully instead of issuing a `SIGKILL`
+  * Touches up readme for `.end()`
+
 2.6.1 / 2016-08-08
 ==================
 
