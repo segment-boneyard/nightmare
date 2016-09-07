@@ -31,7 +31,7 @@ Let's search on Yahoo:
 
 ```js
 var Nightmare = require('nightmare');
-var nightmare = Nightmare({ show: true })
+var nightmare = Nightmare({ show: true });
 
 nightmare
   .goto('http://yahoo.com')
