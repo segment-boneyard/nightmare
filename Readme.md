@@ -134,6 +134,14 @@ var nightmare = Nightmare({
   loadTimeout: 1000 // in ms
 });
 ```
+##### executionTimeout (default: 30s)
+The maxiumum amount of time to wait for an `.evaluate()` statement to complete.
+
+```js
+var nightmare = Nightmare({
+  executionTimeout: 1000 // in ms
+});
+```
 
 ##### paths
 The default system paths that Electron knows about. Here's a list of available paths: https://github.com/atom/electron/blob/master/docs/api/app.md#appgetpathname
@@ -311,6 +319,35 @@ nightmare
     // now we're executing inside the browser scope.
     return document.querySelector(selector).innerText;
    }, selector) // <-- that's how you pass parameters from Node scope to browser scope
+  .then(function(text) {
+    // ...
+  })
+```
+
+Callbacks are supported as a part of evaluate.  If the arguments passed are one fewer than the arguments expected for the evaluated function, the evaluation will be passed a callback as the last parameter to the function.  For example:
+
+```js
+var selector = 'h1';
+nightmare
+  .evaluate(function (selector, done) {
+    // now we're executing inside the browser scope.
+    setTimeout(() => done(null, document.querySelector(selector).innerText), 2000);
+   }, selector)
+  .then(function(text) {
+    // ...
+  })
+```
+Note that callbacks support only one value argument.  Ultimately, the callback will get wrapped in a native Promise and only be able to resolve a single value.
+
+Promises are also supported as a part of evaluate.  If the return value of the function has a `then` member, `.evaluate()` assumes it is waiting for a promise.  For example:
+
+```js
+var selector = 'h1';
+nightmare
+  .evaluate(function (selector, done) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => resolve(document.querySelector(selector).innerText), 2000);
+   }, selector)
   .then(function(text) {
     // ...
   })
