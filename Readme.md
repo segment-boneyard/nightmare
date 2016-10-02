@@ -493,7 +493,7 @@ Proxies are supported in Nightmare through [switches](#switches).
 
 If your proxy requires authentication you also need the [authentication](#authenticationuser-password) call.
 
-The following example not only demostrates how to use proxies, but you can run it to test if your proxy connection is working:
+The following example not only demonstrates how to use proxies, but you can run it to test if your proxy connection is working:
 
 ```js
 var Nightmare = require('nightmare');
