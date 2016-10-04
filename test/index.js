@@ -709,7 +709,7 @@ describe('Nightmare', function () {
       });
 
       it('should allow for timeouts in asynchronous evaluation with a callback', function*() {
-        this.timeout(15000);
+        this.timeout(40000);
         yield nightmare
           .goto(fixture('evaluation'))
           .evaluate(function(done) {
@@ -752,7 +752,7 @@ describe('Nightmare', function () {
       });
 
       it('should allow for timeouts in asynchronous evaluation with a promise', function*() {
-        this.timeout(15000);
+        this.timeout(40000);
         yield nightmare
           .goto(fixture('evaluation'))
           .evaluate(function() {
