@@ -92,7 +92,7 @@ describe('Nightmare', function () {
   it('should gracefully handle electron being killed', function(done) {
     var child = child_process.fork(
       path.join(__dirname, 'files', 'nightmare-unended.js'));
-      
+
     child.once('message', function(electronPid) {
       process.kill(electronPid, 'SIGINT');
       child.once('exit', function(){
@@ -143,6 +143,20 @@ describe('Nightmare', function () {
     nightmare.goto(fixture('navigation'))
       .end()
       .then(() => nightmare.end())
+      .then(() => done());
+  });
+
+  it('should successfully end on pages setting onunload or onbeforeunload', function(done) {
+    var nightmare = Nightmare();
+    nightmare.goto(fixture('unload'))
+      .end()
+      .then(() => done());
+  });
+
+  it('should successfully end on pages binding unload or beforeunload', function(done) {
+    var nightmare = Nightmare();
+    nightmare.goto(fixture('unload/add-event-listener.html'))
+      .end()
       .then(() => done());
   });
 

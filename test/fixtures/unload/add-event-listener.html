@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Unload</title>
+    <script>
+      var unloadHandler = function (event) {
+        var confirmationMessage = 'Are you sure?';
+        event.returnValue = confirmationMessage;
+        return confirmationMessage;
+      };
+      window.addEventListener('unload', unloadHandler);
+      window.addEventListener('beforeunload', unloadHandler);
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
