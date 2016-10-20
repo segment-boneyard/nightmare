@@ -8,6 +8,7 @@
     <form action="results.html">
       <input type="search" name="q">
       <input type="checkbox" name="advanced">
+      <input type='text' id='disappears'>
       <select name="options">
         <option value="a">A</option>
         <option value="b">B</option>
@@ -80,6 +81,14 @@
   <script>
   var h1 = document.getElementsByTagName("h1");
   var search = document.querySelector('input[type=search]')
+  var disappears = document.querySelector('#disappears');
+
+  disappears.addEventListener('keydown', function(e){
+    if(e.which == 69){
+      var form = document.querySelector('form');
+      form.removeChild(disappears);
+    }
+  });
 
   h1[0].addEventListener("mouseover", function(){
     this.style.background = "#66ff66";

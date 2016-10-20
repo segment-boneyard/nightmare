@@ -853,6 +853,13 @@ describe('Nightmare', function () {
       isBody.should.be.true;
     });
 
+    it('should not fail if selector no longer exists to blur after typing', function*() {
+      yield nightmare
+        .on('console', function(){ console.log(arguments)})
+        .goto(fixture('manipulation'))
+        .type('input#disappears', 'nightmare');
+    });
+
     it('should type and click', function*() {
       var title = yield nightmare
         .goto(fixture('manipulation'))
