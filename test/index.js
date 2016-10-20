@@ -210,7 +210,8 @@ describe('Nightmare', function () {
     beforeEach(function() {
       nightmare = Nightmare({
         webPreferences: {partition: 'test-partition' + Math.random()},
-        loadTimeout: 45 * 1000
+        loadTimeout: 45 * 1000,
+        waitTimeout: 5 * 1000,
       });
     });
 
@@ -330,6 +331,50 @@ describe('Nightmare', function () {
           var textB = document.querySelector('a.b').textContent;
           return (expectedA === textA && expectedB === textB);
         }, 'A', 'B');
+    });
+
+    describe('asynchronous wait', function(){
+      it('should wait until the evaluate fn with arguments returns true with a callback', function*() {
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait(function (expectedA, expectedB, done) {
+            setTimeout(() => {
+              var textA = document.querySelector('a.a').textContent;
+              var textB = document.querySelector('a.b').textContent;
+              done(null, expectedA === textA && expectedB === textB);
+            }, 2000);
+          }, 'A', 'B');
+      });
+
+      it('should wait until the evaluate fn with arguments returns true with a promise', function*() {
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait(function (expectedA, expectedB) {
+            return new Promise(function(resolve) {
+              setTimeout(() => {
+                var textA = document.querySelector('a.a').textContent;
+                var textB = document.querySelector('a.b').textContent;
+                resolve(expectedA === textA && expectedB === textB);
+              }, 2000);
+            });
+          }, 'A', 'B');
+      });
+
+      it('should reject timeout on wait', function*() {
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait(function (done) {
+            //never call done
+          }).should.be.rejected;
+      });
+
+      it('should run multiple times before timeout on wait', function*() {
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait(function (done) {
+            setTimeout(() => done(null, false), 500);
+          }).should.be.rejected;
+      });
     });
 
     it('should fail if navigation target is invalid', function() {
@@ -655,6 +700,89 @@ describe('Nightmare', function () {
         .goto(fixture('evaluation'))
         .evaluate('not_a_function')
         .should.be.rejected;
+    });
+
+    describe('asynchronous', function(){
+      it('should allow for asynchronous evaluation with a callback', function*() {
+        var asyncValue = yield nightmare
+          .goto(fixture('evaluation'))
+          .evaluate(function(done) {
+            setTimeout(() => done(null, 'nightmare'), 1000);
+          });
+
+          asyncValue.should.equal('nightmare');
+      });
+      it('should allow for arguments with asynchronous evaluation with a callback', function*() {
+        var asyncValue = yield nightmare
+          .goto(fixture('evaluation'))
+          .evaluate(function(str, done) {
+            setTimeout(() => done(null, str), 1000);
+          }, 'nightmare');
+
+          asyncValue.should.equal('nightmare');
+      });
+
+      it('should allow for errors in asynchronous evaluation with a callback', function*() {
+        yield nightmare
+          .goto(fixture('evaluation'))
+          .evaluate(function(done) {
+            setTimeout(() => done(new Error('nightmare')), 1000);
+          }).should.be.rejected;
+      });
+
+      it('should allow for timeouts in asynchronous evaluation with a callback', function*() {
+        this.timeout(40000);
+        yield nightmare
+          .goto(fixture('evaluation'))
+          .evaluate(function(done) {
+            //don't call done
+          }).should.be.rejected;
+      });
+
+      it('should allow for asynchronous evaluation with a promise', function*() {
+        var asyncValue =  yield nightmare
+          .goto(fixture('evaluation'))
+          .evaluate(function() {
+            return new Promise(resolve => {
+              setTimeout(() => resolve('nightmare'), 1000);
+            });
+          })
+
+          asyncValue.should.equal('nightmare');
+      });
+
+      it('should allow for arguments with asynchronous evaluation with a promise', function*() {
+        var asyncValue =  yield nightmare
+          .goto(fixture('evaluation'))
+          .evaluate(function(str) {
+            return new Promise(resolve => {
+              setTimeout(() => resolve(str), 1000);
+            });
+          }, 'nightmare')
+
+          asyncValue.should.equal('nightmare');
+      });
+
+      it('should allow for errors in asynchronous evaluation with a promise', function*() {
+        yield nightmare
+          .goto(fixture('evaluation'))
+          .evaluate(function() {
+            return new Promise((resolve, reject) => {
+              setTimeout(() => reject(new Error('nightmare')), 1000);
+            });
+          }).should.be.rejected;
+      });
+
+      it('should allow for timeouts in asynchronous evaluation with a promise', function*() {
+        this.timeout(40000);
+        yield nightmare
+          .goto(fixture('evaluation'))
+          .evaluate(function() {
+            return new Promise((resolve, reject) => {
+              return 'nightmare';
+            });
+          }).should.be.rejected;
+      });
     });
   });
 
