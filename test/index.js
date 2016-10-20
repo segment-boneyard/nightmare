@@ -981,6 +981,26 @@ describe('Nightmare', function () {
       isBody.should.be.true;
     });
 
+    it('should allow for clicking on elements with attribute selectors', function*() {
+      yield nightmare
+        .goto(fixture('manipulation'))
+        .click('div[data-test="test"]')
+    });
+
+    it('should not allow for code injection with .click()', function(done){
+      var exception;
+      nightmare
+        .goto(fixture('manipulation'))
+        .click('"]\'); document.title = \'injected title\'; (\'"')
+        .catch((e) => exception = e)
+        .then(()=> nightmare.title())
+        .then((title) => {
+          exception.should.exist;
+          title.should.equal('Manipulation');
+          done();
+        });
+    });
+
     it('should not fail if selector no longer exists to blur after typing', function*() {
       yield nightmare
         .on('console', function(){ console.log(arguments)})
