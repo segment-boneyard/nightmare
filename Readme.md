@@ -229,6 +229,9 @@ Set the `user` and `password` for accessing a web page using basic authenticatio
 #### .end()
 Complete any queue operations, disconnect and close the electron process.  Note that if you're using promises, `.then()` must be called after `.end()` to run the `.end()` task.
 
+#### .halt(error, done)
+Clears all queued operations, kills the electron process, and passes error message or 'Nightmare Halted' to an unresolved promise. Done will be called after the process has exited.
+
 ### Interact with the Page
 
 #### .goto(url[, headers])
@@ -422,7 +425,7 @@ nightmare
     path: '/query',
     secure: true
   })
-  .then(function(cookies) { 
+  .then(function(cookies) {
     // do something with the cookies
   })
 ```
@@ -451,8 +454,8 @@ nightmare
     secure: true
   })
   // ... other actions ...
-  .then(function() { 
-    // ... 
+  .then(function() {
+    // ...
   })
 ```
 
@@ -471,7 +474,7 @@ nightmare
   .goto('http://google.com')
   .cookies.clear('SomeCookieName')
   // ... other actions ...
-  .then(function() { 
+  .then(function() {
     // ...
   })
 ```
@@ -579,7 +582,7 @@ Nightmare.action('style', {
 nightmare()
   .goto('http://google.com')
   .style.background()
-  .then(function(background) { 
+  .then(function(background) {
     // ... do something interesting with background  
   })
 ```
@@ -603,7 +606,7 @@ Nightmare()
   .goto('http://example.org')
   //... more actions ...
   .then(function() {
-    // ... 
+    // ...
   });
 ```
 
