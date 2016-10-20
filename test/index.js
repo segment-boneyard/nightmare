@@ -92,7 +92,7 @@ describe('Nightmare', function () {
   it('should gracefully handle electron being killed', function(done) {
     var child = child_process.fork(
       path.join(__dirname, 'files', 'nightmare-unended.js'));
-      
+
     child.once('message', function(electronPid) {
       process.kill(electronPid, 'SIGINT');
       child.once('exit', function(){
@@ -144,6 +144,28 @@ describe('Nightmare', function () {
       .end()
       .then(() => nightmare.end())
       .then(() => done());
+  });
+
+  it('should kill electron process when halted', function () {
+    var nightmare = Nightmare();
+
+    const check1 = nightmare.goto(fixture('navigation'))
+      .wait(1000)
+      .wait(500)
+      .end()
+      .then(() => {})
+      .should.be.rejectedWith('Nightmare Halted');
+
+    const electronPid = nightmare.proc.pid;
+
+    const check2 = new Promise((resolve, reject) => {
+      nightmare.halt('Nightmare Halted', () => {
+        electronPid.should.not.be.a.process;
+        resolve();
+      });
+    });
+
+    return Promise.all([check1, check2]);
   });
 
   it('should provide useful errors for .click', function(done) {
@@ -957,6 +979,13 @@ describe('Nightmare', function () {
           return document.activeElement === document.body;
         });
       isBody.should.be.true;
+    });
+
+    it('should not fail if selector no longer exists to blur after typing', function*() {
+      yield nightmare
+        .on('console', function(){ console.log(arguments)})
+        .goto(fixture('manipulation'))
+        .type('input#disappears', 'nightmare');
     });
 
     it('should type and click', function*() {
