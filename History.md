@@ -1,3 +1,15 @@
+2.8.0 / 2016-10-20
+==================
+
+  * Fixes a missing semicolon in the first readme example
+  * Fixes a reference error inside `.wait()` when using `node --use_strict`
+  * Adds missing documentation for `.mouseover()`
+  * Corrects a typo in the readme
+  * Removes dependency on `object-assign`
+  * Adds `.halt()` API to stop Nightmare execution immediately
+  * Fixes `blur` exception when elements are removed by keyboard events
+  * **Possibly breaking change:** Changes `.evaluate()` to allow for asynchronous execution.  If the `.evaluate()`d function's arity is one less than the passed in parameters, it'll assume the last argument to the function is the callback. If the return value is a thenable, it'll call `then()` to wait for promise fulfillment. Otherwise, the call will behave synchronously as it does now.
+
 2.7.0 / 2016-09-05
 ==================
 

@@ -31,7 +31,7 @@ Let's search on Yahoo:
 
 ```js
 var Nightmare = require('nightmare');
-var nightmare = Nightmare({ show: true })
+var nightmare = Nightmare({ show: true });
 
 nightmare
   .goto('http://yahoo.com')
@@ -134,6 +134,14 @@ var nightmare = Nightmare({
   loadTimeout: 1000 // in ms
 });
 ```
+##### executionTimeout (default: 30s)
+The maxiumum amount of time to wait for an `.evaluate()` statement to complete.
+
+```js
+var nightmare = Nightmare({
+  executionTimeout: 1000 // in ms
+});
+```
 
 ##### paths
 The default system paths that Electron knows about. Here's a list of available paths: https://github.com/atom/electron/blob/master/docs/api/app.md#appgetpathname
@@ -229,6 +237,9 @@ Set the `user` and `password` for accessing a web page using basic authenticatio
 #### .end()
 Complete any queue operations, disconnect and close the electron process.  Note that if you're using promises, `.then()` must be called after `.end()` to run the `.end()` task.
 
+#### .halt(error, done)
+Clears all queued operations, kills the electron process, and passes error message or 'Nightmare Halted' to an unresolved promise. Done will be called after the process has exited.
+
 ### Interact with the Page
 
 #### .goto(url[, headers])
@@ -267,6 +278,9 @@ Clicks the `selector` element once.
 
 #### .mousedown(selector)
 Mousedown the `selector` element once.
+
+#### .mouseover(selector)
+Mouseover the `selector` element once.
 
 #### .type(selector[, text])
 Enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
@@ -311,6 +325,35 @@ nightmare
     // now we're executing inside the browser scope.
     return document.querySelector(selector).innerText;
    }, selector) // <-- that's how you pass parameters from Node scope to browser scope
+  .then(function(text) {
+    // ...
+  })
+```
+
+Callbacks are supported as a part of evaluate.  If the arguments passed are one fewer than the arguments expected for the evaluated function, the evaluation will be passed a callback as the last parameter to the function.  For example:
+
+```js
+var selector = 'h1';
+nightmare
+  .evaluate(function (selector, done) {
+    // now we're executing inside the browser scope.
+    setTimeout(() => done(null, document.querySelector(selector).innerText), 2000);
+   }, selector)
+  .then(function(text) {
+    // ...
+  })
+```
+Note that callbacks support only one value argument.  Ultimately, the callback will get wrapped in a native Promise and only be able to resolve a single value.
+
+Promises are also supported as a part of evaluate.  If the return value of the function has a `then` member, `.evaluate()` assumes it is waiting for a promise.  For example:
+
+```js
+var selector = 'h1';
+nightmare
+  .evaluate(function (selector, done) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => resolve(document.querySelector(selector).innerText), 2000);
+   }, selector)
   .then(function(text) {
     // ...
   })
@@ -419,7 +462,7 @@ nightmare
     path: '/query',
     secure: true
   })
-  .then(function(cookies) { 
+  .then(function(cookies) {
     // do something with the cookies
   })
 ```
@@ -448,8 +491,8 @@ nightmare
     secure: true
   })
   // ... other actions ...
-  .then(function() { 
-    // ... 
+  .then(function() {
+    // ...
   })
 ```
 
@@ -468,7 +511,7 @@ nightmare
   .goto('http://google.com')
   .cookies.clear('SomeCookieName')
   // ... other actions ...
-  .then(function() { 
+  .then(function() {
     // ...
   })
 ```
@@ -493,7 +536,7 @@ Proxies are supported in Nightmare through [switches](#switches).
 
 If your proxy requires authentication you also need the [authentication](#authenticationuser-password) call.
 
-The following example not only demostrates how to use proxies, but you can run it to test if your proxy connection is working:
+The following example not only demonstrates how to use proxies, but you can run it to test if your proxy connection is working:
 
 ```js
 var Nightmare = require('nightmare');
@@ -576,7 +619,7 @@ Nightmare.action('style', {
 nightmare()
   .goto('http://google.com')
   .style.background()
-  .then(function(background) { 
+  .then(function(background) {
     // ... do something interesting with background  
   })
 ```
@@ -600,7 +643,7 @@ Nightmare()
   .goto('http://example.org')
   //... more actions ...
   .then(function() {
-    // ... 
+    // ...
   });
 ```
 
