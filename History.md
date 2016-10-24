@@ -1,3 +1,9 @@
+2.8.1 / 2016-10-20
+==================
+
+  * Fixes parsing issues with arguments to `evaluate_now`
+  * Upgrades to Electron 1.4.4
+
 2.8.0 / 2016-10-20
 ==================
 

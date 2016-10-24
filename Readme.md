@@ -174,7 +174,7 @@ The path to prebuilt Electron binary.  This is useful for testing on different v
 
 ```js
 var nightmare = Nightmare({
-  electronPath: require('electron-prebuilt')
+  electronPath: require('electron')
 });
 ```
 
