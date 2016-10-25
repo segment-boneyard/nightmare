@@ -353,7 +353,7 @@ nightmare
   .evaluate(function (selector, done) {
       return new Promise((resolve, reject) => {
         setTimeout(() => resolve(document.querySelector(selector).innerText), 2000);
-   }, selector)
+   })}, selector)
   .then(function(text) {
     // ...
   })
