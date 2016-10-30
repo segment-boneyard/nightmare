@@ -279,6 +279,9 @@ Clicks the `selector` element once.
 #### .mousedown(selector)
 Mousedown the `selector` element once.
 
+#### .mouseup(selector)
+Mouseup the `selector` element once.
+
 #### .mouseover(selector)
 Mouseover the `selector` element once.
 
