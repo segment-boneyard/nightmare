@@ -192,6 +192,18 @@ describe('Nightmare', function () {
       });
   });
 
+  it('should provide useful errors for .mouseup', function(done) {
+    var nightmare = Nightmare();
+
+    nightmare
+      .goto('about:blank')
+      .mouseup('a.not-here')
+      .catch(function (error) {
+        error.should.include('a.not-here');
+        done();
+      });
+  });
+
   it('should provide useful errors for .mouseover', function(done) {
     var nightmare = Nightmare();
 
