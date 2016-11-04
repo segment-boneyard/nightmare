@@ -330,7 +330,7 @@ nightmare
   })
 ```
 
-Callbacks are supported as a part of evaluate.  If the arguments passed are one fewer than the arguments expected for the evaluated function, the evaluation will be passed a callback as the last parameter to the function.  For example:
+Error-first callbacks are supported as a part of evaluate.  If the arguments passed are one fewer than the arguments expected for the evaluated function, the evaluation will be passed a callback as the last parameter to the function.  For example:
 
 ```js
 var selector = 'h1';
@@ -343,7 +343,7 @@ nightmare
     // ...
   })
 ```
-Note that callbacks support only one value argument.  Ultimately, the callback will get wrapped in a native Promise and only be able to resolve a single value.
+Note that callbacks support only one value argument (eg `function(err, value)`).  Ultimately, the callback will get wrapped in a native Promise and only be able to resolve a single value.
 
 Promises are also supported as a part of evaluate.  If the return value of the function has a `then` member, `.evaluate()` assumes it is waiting for a promise.  For example:
 
