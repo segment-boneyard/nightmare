@@ -634,7 +634,7 @@ Nightmare.action('clearCache',
     });
     done();
   },
-  function(message, done) {
+  function(done) {
     this.child.call('clearCache', done);
   });
 
