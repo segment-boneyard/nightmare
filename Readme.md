@@ -616,7 +616,7 @@ Nightmare.action('style', {
   }
 })
 
-nightmare()
+Nightmare()
   .goto('http://google.com')
   .style.background()
   .then(function(background) {
