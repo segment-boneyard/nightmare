@@ -2159,6 +2159,91 @@ describe('Nightmare', function () {
       logged.should.be.true;
     });
   });
+
+  describe('partitioning', function(){
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
+    // The default behavior for nightmare is to use a non-persistent partition name
+    it('should not persist between instances by default', function *() {
+      nightmare = Nightmare();
+      yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          window.localStorage.setItem('testing', 'This string should not persist between instances.')
+        })
+        .end();
+
+      nightmare = Nightmare();
+      var value = yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          return window.localStorage.getItem('testing') || ''
+        });
+
+      value.should.equal('');
+    })
+
+    // Setting the partition to null we default to the electron default behavior
+    // which is to use a persistent storage between instances.
+    it('should persist between instances if partition is null', function *() {
+      nightmare = Nightmare({ webPreferences: { partition: null } });
+      yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          window.localStorage.setItem('testing', 'This string should persist between instances.')
+        })
+        .end();
+
+      nightmare = Nightmare({ webPreferences: { partition: null } });
+      var value = yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          return window.localStorage.getItem('testing') || ''
+        });
+
+      value.should.equal('This string should persist between instances.');
+    });
+
+    it('should not persist between instances if partition name doesnt start with "persist:"', function *(){
+      nightmare = Nightmare({ webPreferences: { partition: 'nonpersist' } });
+      yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          window.localStorage.setItem('testing', 'This string not should persist between instances.')
+        })
+        .end();
+
+      nightmare = Nightmare({ webPreferences: { partition: 'nonpersist' } });
+      var value = yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          return window.localStorage.getItem('testing') || ''
+        });
+
+      value.should.equal('');
+    });
+
+    it('should persist between instances if partition starts with "persist:"', function *() {
+      nightmare = Nightmare({ webPreferences: { partition: 'persist: testing' } });
+      yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          window.localStorage.setItem('testing', 'This string should persist between instances.')
+        })
+        .end();
+
+      nightmare = Nightmare({ webPreferences: { partition: 'persist: testing' } });
+      var value = yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          return window.localStorage.getItem('testing') || ''
+        });
+
+      value.should.equal('This string should persist between instances.');
+    });
+  })
 });
 
 /**
