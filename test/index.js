@@ -656,6 +656,15 @@ describe('Nightmare', function () {
       url.should.have.string(fixture('evaluation'));
     });
 
+    it('should get the path', function*() {
+      var path = yield nightmare
+        .goto(fixture('evaluation'))
+        .path();
+      var formalUrl = fixture('evaluation') + '/';
+
+      formalUrl.should.have.string(path);
+    });
+
     it('should check if the selector exists', function*() {
       // existent element
       var exists = yield nightmare

@@ -443,6 +443,9 @@ Returns the title of the current page.
 #### .url()
 Returns the url of the current page.
 
+#### .path()
+Returns the path name of the current page.
+
 ### Cookies
 
 #### .cookies.get(name)
