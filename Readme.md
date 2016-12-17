@@ -350,10 +350,10 @@ Promises are also supported as a part of evaluate.  If the return value of the f
 ```js
 var selector = 'h1';
 nightmare
-  .evaluate(function (selector, done) {
+  .evaluate(function (selector) {
       return new Promise((resolve, reject) => {
         setTimeout(() => resolve(document.querySelector(selector).innerText), 2000);
-   }, selector)
+   })}, selector)
   .then(function(text) {
     // ...
   })
