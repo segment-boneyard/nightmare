@@ -1,3 +1,13 @@
+2.9.0 / 2016-12-17
+==================
+
+  * Prevents unload dialogs, allowing Nightmare to end gracefully
+  * `.end(fn)` now uses `.then()` under the covers
+  * **Possibly breaking change:** Nightmare will now default to using a non-persistent partition.  Data between executions of Nightmare will no longer be saved.
+  * Adds `.mouseup()` action
+  * Fixes several typos/copy-paste errors in the readme, as well as clarifying error-first callbacks
+  * Adds `.path()` to get the URL's route (as opposed to the fully-qualified URL)
+
 2.8.1 / 2016-10-20
 ==================
 
