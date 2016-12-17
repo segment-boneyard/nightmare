@@ -183,6 +183,20 @@ describe('Nightmare', function () {
 
     return Promise.all([check1, check2]);
   });
+  
+  it('should successfully end on pages setting onunload or onbeforeunload', function(done) {
+    var nightmare = Nightmare();
+    nightmare.goto(fixture('unload'))
+      .end()
+      .then(() => done());
+  });
+
+  it('should successfully end on pages binding unload or beforeunload', function(done) {
+    var nightmare = Nightmare();
+    nightmare.goto(fixture('unload/add-event-listener.html'))
+      .end()
+      .then(() => done());
+  });
 
   it('should provide useful errors for .click', function(done) {
     var nightmare = Nightmare();
