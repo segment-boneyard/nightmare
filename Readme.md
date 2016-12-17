@@ -235,7 +235,15 @@ Set the `useragent` used by electron.
 Set the `user` and `password` for accessing a web page using basic authentication. Be sure to set it before calling `.goto(url)`.
 
 #### .end()
-Complete any queue operations, disconnect and close the electron process.  Note that if you're using promises, `.then()` must be called after `.end()` to run the `.end()` task.
+Complete any queue operations, disconnect and close the electron process.  Note that if you're using promises, `.then()` must be called after `.end()` to run the `.end()` task.  Also note that if using a `.end()` callback, the `.end()` call is equivalent to calling `.end()` followed by `.then(fn)`.  Consider:
+
+```js
+nightmare
+  .goto(someUrl)
+  .end(() => "some value")
+  //prints "some value"
+  .then((value) => console.log(value));
+```
 
 #### .halt(error, done)
 Clears all queued operations, kills the electron process, and passes error message or 'Nightmare Halted' to an unresolved promise. Done will be called after the process has exited.

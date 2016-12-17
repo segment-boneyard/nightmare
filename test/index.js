@@ -146,6 +146,22 @@ describe('Nightmare', function () {
       .then(() => done());
   });
 
+  it('should allow end with a callback', function(done){
+    var nightmare = Nightmare();
+    nightmare.goto(fixture('navigation'))
+      .end(() => done());
+  });
+
+  it('should allow end with a callback to be thenable', function(done){
+    var nightmare = Nightmare();
+    nightmare.goto(fixture('navigation'))
+      .end(() => 'nightmare')
+      .then((str) => {
+        str.should.equal('nightmare');
+        done();
+      });
+  });
+
   it('should kill electron process when halted', function () {
     var nightmare = Nightmare();
 
