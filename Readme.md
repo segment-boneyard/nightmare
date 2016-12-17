@@ -684,6 +684,34 @@ __nightmare.ipc = require('electron').ipcRenderer;
 
 To benefit of all of nightmare's feedback from the browser, you can instead copy the contents of nightmare's [preload script](lib/preload.js).
 
+#### Storage Persistence between nightmare instances
+
+By default nightmare will create an in-memory partition for each instance. This means that any localStorage or cookies or any other form of persistent state will be destroyed when nightmare is ended. If you would like to persist state between instances you can use the [webPreferences.partition](http://electron.atom.io/docs/api/browser-window/#new-browserwindowoptions) api in electron.
+
+```js
+var Nightmare = require('nightmare');
+
+nightmare = Nightmare(); // non persistent paritition by default
+yield nightmare
+  .evaluate(function () { 
+    window.localStorage.setItem('testing', 'This will not be persisted');
+  })
+  .end();
+
+nightmare = Nightmare({
+  webPreferences: {
+    partition: 'persist: testing'
+  }
+});
+yield nightmare
+  .evaluate(function () {
+    window.localStorage.setItem('testing', 'This is persisted for other instances with the same paritition name');
+  })
+  .end();
+```
+
+If you specify a `null` paritition then it will use the electron default behavior (persistent) or any string that starts with `'persist:'` will persist under that partition name, any other string will result in in-memory only storage.
+
 ## Usage
 #### Installation
 Nightmare is a Node.js module, so you'll need to [have Node.js installed](http://nodejs.org/). Then you just need to `npm install` the module:
