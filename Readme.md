@@ -27,7 +27,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
 
 ## Examples
 
-Let's search on Yahoo:
+Let's search on DuckDuckGo:
 
 ```js
 nightmare
@@ -60,7 +60,7 @@ Or, let's run some mocha tests:
 var Nightmare = require('nightmare');
 var expect = require('chai').expect; // jshint ignore:line
 
-describe('test yahoo search results', function() {
+describe('test duckduckgo search results', function() {
   it('should find the nightmare github link first', function(done) {
     var nightmare = Nightmare()
     nightmare
