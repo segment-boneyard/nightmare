@@ -64,12 +64,12 @@ describe('test yahoo search results', function() {
   it('should find the nightmare github link first', function(done) {
     var nightmare = Nightmare()
     nightmare
-      .goto('http://yahoo.com')
-      .type('form[action*="/search"] [name=p]', 'github nightmare')
-      .click('form[action*="/search"] [type=submit]')
-      .wait('#main')
+      .goto('https://duckduckgo.com')
+      .type('#search_form_input_homepage', 'github nightmare')
+      .click('#search_button_homepage')
+      .wait('#zero_click_wrapper .c-info__title a')
       .evaluate(function () {
-        return document.querySelector('#main .searchCenterMiddle li a').href
+        return document.querySelector('#zero_click_wrapper .c-info__title a').href
       })
       .end()
       .then(function(link) {
