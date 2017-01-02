@@ -1,3 +1,13 @@
+2.9.1 / 2017-01-02
+==================
+
+  * Minor touchups to key press documentation
+  * Link to Electron documentation updated
+  * Updates speed information on the readme
+  * Swaps Yahoo example out for a faster DuckDuckGo example
+  * Fixes an issue where `nightmare` may be undefined in the browser at injection time
+  * Changes screenshot rendering to use debugger API instead of forcing a DOM change
+
 2.9.0 / 2016-12-17
 ==================
 
