@@ -1463,6 +1463,31 @@ describe('Nightmare', function () {
       didSubscribe.should.be.false;
     });
 
+    it.only('should subscribe to frames when requested necessary', function(done) {
+      var didSubscribe = false;
+      var didUnsubscribe = false;
+      var FrameManager = require('../lib/frame-manager.js');
+      var fn;
+      var manager = FrameManager({
+        webContents: {
+          debugger: {
+            isAttached: function() { return true; },
+            sendCommand: function(command) { if (command === 'DOM.highlightRect') { fn('mock-data'); }}
+          },
+          beginFrameSubscription: function(_fn) { didSubscribe = true; fn = _fn; },
+          endFrameSubscription: function() { didUnsubscribe = true; },
+          executeJavaScript: function() {}
+        }
+      });
+      manager.requestFrame(function (data) {
+        console.log('uhhh', data);
+        didSubscribe.should.be.true;
+        didUnsubscribe.should.be.true;
+        data.should.equal('mock-data');
+        done();
+      });
+    });
+
     it('should load jquery correctly', function*() {
       var loaded = yield nightmare
         .goto(fixture('rendering'))
