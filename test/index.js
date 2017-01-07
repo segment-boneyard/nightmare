@@ -1564,7 +1564,7 @@ describe('Nightmare', function () {
     });
 
     // DEV: We can have multiple timeouts if page is static
-    it.only('should support multiple series timing out frame subscriptions', function(done) {
+    it('should support multiple series timing out frame subscriptions', function(done) {
       var subscribeCount = 0;
       var unsubscribeCount = 0;
       var FrameManager = require('../lib/frame-manager.js');
