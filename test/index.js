@@ -1563,6 +1563,39 @@ describe('Nightmare', function () {
       });
     });
 
+    // DEV: We can have multiple timeouts if page is static
+    it.only('should support multiple series timing out frame subscriptions', function(done) {
+      var subscribeCount = 0;
+      var unsubscribeCount = 0;
+      var FrameManager = require('../lib/frame-manager.js');
+      var fn = null;
+      var assert = require('assert');
+      var async = require('async');
+      var manager = FrameManager({
+        webContents: {
+          debugger: {
+            isAttached: function() { return true; },
+            sendCommand: function() { /* Ignore command so it times out */ }
+          },
+          beginFrameSubscription: function(_fn) { subscribeCount += 1; assert.strictEqual(fn, null); fn = _fn; },
+          endFrameSubscription: function() { unsubscribeCount += 1; fn = null; },
+          executeJavaScript: function() {}
+        }
+      });
+      async.timesSeries(2, function requestFrameFn (i, cb) {
+        manager.requestFrame(function handleFrame (data) {
+          cb(null, data);
+        }, 100);
+      }, function handleResults (err, results) {
+        if (err) { done(err); }
+        subscribeCount.should.equal(1);
+        unsubscribeCount.should.equal(1);
+        should.equal(results[0], null);
+        should.equal(results[1], null);
+        done();
+      });
+    });
+
     it('should load jquery correctly', function*() {
       var loaded = yield nightmare
         .goto(fixture('rendering'))
