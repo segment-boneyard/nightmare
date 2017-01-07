@@ -1525,7 +1525,7 @@ describe('Nightmare', function () {
       });
     });
 
-    it.only('should support multiple series frame subscriptions', function(done) {
+    it('should support multiple series frame subscriptions', function(done) {
       var subscribeCount = 0;
       var unsubscribeCount = 0;
       var FrameManager = require('../lib/frame-manager.js');
