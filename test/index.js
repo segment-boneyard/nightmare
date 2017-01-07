@@ -1463,7 +1463,7 @@ describe('Nightmare', function () {
       didSubscribe.should.be.false;
     });
 
-    it.only('should subscribe to frames when requested necessary', function(done) {
+    it('should subscribe to frames when requested necessary', function(done) {
       var didSubscribe = false;
       var didUnsubscribe = false;
       var FrameManager = require('../lib/frame-manager.js');
@@ -1480,7 +1480,69 @@ describe('Nightmare', function () {
         }
       });
       manager.requestFrame(function (data) {
-        console.log('uhhh', data);
+        didSubscribe.should.be.true;
+        didUnsubscribe.should.be.true;
+        data.should.equal('mock-data');
+        done();
+      });
+    });
+
+    it.only('should support multiple concurrent frame subscriptions', function(done) {
+      var subscribeCount = 0;
+      var unsubscribeCount = 0;
+      var FrameManager = require('../lib/frame-manager.js');
+      var fn = null;
+      var assert = require('assert');
+      var async = require('async');
+      var manager = FrameManager({
+        webContents: {
+          debugger: {
+            isAttached: function() { return true; },
+            sendCommand: function(command) {
+              if (command === 'DOM.highlightRect') {
+                setTimeout(function () {
+                  fn('mock-data');
+                }, 100);
+              }
+            }
+          },
+          beginFrameSubscription: function(_fn) { subscribeCount += 1; assert.strictEqual(fn, null); fn = _fn; },
+          endFrameSubscription: function() { unsubscribeCount += 1; fn = null; },
+          executeJavaScript: function() {}
+        }
+      });
+      async.times(2, function requestFrameFn (i, cb) {
+        manager.requestFrame(function handleFrame (data) {
+          cb(null, data);
+        });
+      }, function handleResults (err, results) {
+        if (err) { done(err); }
+        subscribeCount.should.equal(1);
+        unsubscribeCount.should.equal(1);
+        results[0].should.equal('mock-data');
+        results[1].should.equal('mock-data');
+        done();
+      });
+    });
+
+    // TODO: Implement/test me
+    it.skip('should support multiple series frame subscriptions', function(done) {
+      var subscribeCount = 0;
+      var unsubscribeCount = 0;
+      var FrameManager = require('../lib/frame-manager.js');
+      var fn;
+      var manager = FrameManager({
+        webContents: {
+          debugger: {
+            isAttached: function() { return true; },
+            sendCommand: function(command) { if (command === 'DOM.highlightRect') { fn('mock-data'); }}
+          },
+          beginFrameSubscription: function(_fn) { didSubscribe = true; fn = _fn; },
+          endFrameSubscription: function() { didUnsubscribe = true; },
+          executeJavaScript: function() {}
+        }
+      });
+      manager.requestFrame(function (data) {
         didSubscribe.should.be.true;
         didUnsubscribe.should.be.true;
         data.should.equal('mock-data');
