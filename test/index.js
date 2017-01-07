@@ -1487,7 +1487,7 @@ describe('Nightmare', function () {
       });
     });
 
-    it.only('should support multiple concurrent frame subscriptions', function(done) {
+    it('should support multiple concurrent frame subscriptions', function(done) {
       var subscribeCount = 0;
       var unsubscribeCount = 0;
       var FrameManager = require('../lib/frame-manager.js');
@@ -1525,27 +1525,40 @@ describe('Nightmare', function () {
       });
     });
 
-    // TODO: Implement/test me
-    it.skip('should support multiple series frame subscriptions', function(done) {
+    it.only('should support multiple series frame subscriptions', function(done) {
       var subscribeCount = 0;
       var unsubscribeCount = 0;
       var FrameManager = require('../lib/frame-manager.js');
-      var fn;
+      var fn = null;
+      var assert = require('assert');
+      var async = require('async');
       var manager = FrameManager({
         webContents: {
           debugger: {
             isAttached: function() { return true; },
-            sendCommand: function(command) { if (command === 'DOM.highlightRect') { fn('mock-data'); }}
+            sendCommand: function(command) {
+              if (command === 'DOM.highlightRect') {
+                setTimeout(function () {
+                  fn('mock-data');
+                }, 100);
+              }
+            }
           },
-          beginFrameSubscription: function(_fn) { didSubscribe = true; fn = _fn; },
-          endFrameSubscription: function() { didUnsubscribe = true; },
+          beginFrameSubscription: function(_fn) { subscribeCount += 1; assert.strictEqual(fn, null); fn = _fn; },
+          endFrameSubscription: function() { unsubscribeCount += 1; fn = null; },
           executeJavaScript: function() {}
         }
       });
-      manager.requestFrame(function (data) {
-        didSubscribe.should.be.true;
-        didUnsubscribe.should.be.true;
-        data.should.equal('mock-data');
+      async.timesSeries(2, function requestFrameFn (i, cb) {
+        manager.requestFrame(function handleFrame (data) {
+          cb(null, data);
+        });
+      }, function handleResults (err, results) {
+        if (err) { done(err); }
+        subscribeCount.should.equal(2);
+        unsubscribeCount.should.equal(2);
+        results[0].should.equal('mock-data');
+        results[1].should.equal('mock-data');
         done();
       });
     });
