@@ -1588,8 +1588,8 @@ describe('Nightmare', function () {
         }, 100);
       }, function handleResults (err, results) {
         if (err) { done(err); }
-        subscribeCount.should.equal(1);
-        unsubscribeCount.should.equal(1);
+        subscribeCount.should.equal(2);
+        unsubscribeCount.should.equal(2);
         should.equal(results[0], null);
         should.equal(results[1], null);
         done();
