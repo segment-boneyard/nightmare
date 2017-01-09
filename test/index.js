@@ -1372,6 +1372,66 @@ describe('Nightmare', function () {
       yield nightmare.end();
     });
 
+    /* screenshot jpeg */
+    it('should take a jpeg screenshot', function*() {
+      yield nightmare
+        .goto('https://github.com/')
+        .toJpeg(tmp_dir+'/test.jpg');
+      var stats = fs.statSync(tmp_dir+'/test.jpg');
+      stats.size.should.be.at.least(1000);
+    });
+
+    it('should buffer a jpeg screenshot', function*() {
+      var image = yield nightmare
+        .goto('https://github.com')
+        .toJpeg();
+      Buffer.isBuffer(image).should.be.true;
+      image.length.should.be.at.least(1000);
+    });
+    it('should take a clipped jpeg screenshot', function*() {
+      yield nightmare
+        .goto('https://github.com/')
+        .toJpeg(tmp_dir+'/test-clipped.jpg',5, {
+          x: 200,
+          y: 100,
+          width: 100,
+          height: 100
+        });
+      var stats = fs.statSync(tmp_dir+'/test.jpg');
+      var statsClipped = fs.statSync(tmp_dir+'/test-clipped.jpg');
+      statsClipped.size.should.be.at.least(300);
+      stats.size.should.be.at.least(10*statsClipped.size);
+    });
+    it('should take a clipped jpeg screenshot with default compression', function*() {
+      yield nightmare
+        .goto('https://github.com/')
+        .toJpeg(tmp_dir+'/test-clipped.jpg', {
+          x: 200,
+          y: 100,
+          width: 100,
+          height: 100
+        });
+      var stats = fs.statSync(tmp_dir+'/test.jpg');
+      var statsClipped = fs.statSync(tmp_dir+'/test-clipped.jpg');
+      statsClipped.size.should.be.at.least(300);
+      stats.size.should.be.at.least(10*statsClipped.size);
+    });
+
+    it('should buffer a clipped jpeg screenshot', function*() {
+      var image = yield nightmare
+        .goto('https://github.com')
+        .toJpeg({
+          x: 200,
+          y: 100,
+          width: 100,
+          height: 100
+        });
+      Buffer.isBuffer(image).should.be.true;
+      image.length.should.be.at.least(300);
+    });
+
+/* screenshot png */
+
     it('should take a screenshot', function*() {
       yield nightmare
         .goto('https://github.com/')
