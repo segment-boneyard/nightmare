@@ -5,17 +5,17 @@ nightmare = new Nightmare({ show: false, frame:false });
    nightmare
    .goto('https://github.com')
    .viewport(1200,800)
-   .toPng('png_default.png')
-   .toJpeg('jpeg_default.jpg')
-   .toJpeg('jpeg_compress.jpg',5)
-   .toJpeg('jpeg_compress_clip.jpg',5,{
+   .toPNG('png_default.png')
+   .toJPEG('jpeg_default.jpg')
+   .toJPEG('jpeg_compress.jpg',5)
+   .toJPEG('jpeg_compress_clip.jpg',5,{
      x: 50,
      y: 50,
      width: 100,
      height: 100
    })
    //string object function
-   .toJpeg('jpeg_clip_default.jpg',{
+   .toJPEG('jpeg_clip_default.jpg',{
      x: 50,
      y: 50,
      width: 100,

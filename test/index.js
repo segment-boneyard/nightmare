@@ -1376,7 +1376,7 @@ describe('Nightmare', function () {
     it('should take a jpeg screenshot', function*() {
       yield nightmare
         .goto('https://github.com/')
-        .toJpeg(tmp_dir+'/test.jpg');
+        .toJPEG(tmp_dir+'/test.jpg');
       var stats = fs.statSync(tmp_dir+'/test.jpg');
       stats.size.should.be.at.least(1000);
     });
@@ -1384,14 +1384,14 @@ describe('Nightmare', function () {
     it('should buffer a jpeg screenshot', function*() {
       var image = yield nightmare
         .goto('https://github.com')
-        .toJpeg();
+        .toJPEG();
       Buffer.isBuffer(image).should.be.true;
       image.length.should.be.at.least(1000);
     });
     it('should take a clipped jpeg screenshot', function*() {
       yield nightmare
         .goto('https://github.com/')
-        .toJpeg(tmp_dir+'/test-clipped.jpg',5, {
+        .toJPEG(tmp_dir+'/test-clipped.jpg',5, {
           x: 200,
           y: 100,
           width: 100,
@@ -1405,7 +1405,7 @@ describe('Nightmare', function () {
     it('should take a clipped jpeg screenshot with default compression', function*() {
       yield nightmare
         .goto('https://github.com/')
-        .toJpeg(tmp_dir+'/test-clipped.jpg', {
+        .toJPEG(tmp_dir+'/test-clipped.jpg', {
           x: 200,
           y: 100,
           width: 100,
@@ -1420,7 +1420,7 @@ describe('Nightmare', function () {
     it('should buffer a clipped jpeg screenshot', function*() {
       var image = yield nightmare
         .goto('https://github.com')
-        .toJpeg({
+        .toJPEG({
           x: 200,
           y: 100,
           width: 100,
