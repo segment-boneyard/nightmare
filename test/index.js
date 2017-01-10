@@ -1376,7 +1376,7 @@ describe('Nightmare', function () {
     it('should take a jpeg screenshot', function*() {
       yield nightmare
         .goto('https://github.com/')
-        .toJPEG(tmp_dir+'/test.jpg');
+        .screenshot(tmp_dir+'/test.jpg');
       var stats = fs.statSync(tmp_dir+'/test.jpg');
       stats.size.should.be.at.least(1000);
     });
@@ -1384,14 +1384,14 @@ describe('Nightmare', function () {
     it('should buffer a jpeg screenshot', function*() {
       var image = yield nightmare
         .goto('https://github.com')
-        .toJPEG();
+        .screenshot();
       Buffer.isBuffer(image).should.be.true;
       image.length.should.be.at.least(1000);
     });
     it('should take a clipped jpeg screenshot', function*() {
       yield nightmare
         .goto('https://github.com/')
-        .toJPEG(tmp_dir+'/test-clipped.jpg',5, {
+        .screenshot(tmp_dir+'/test-clipped.jpg',5, {
           x: 200,
           y: 100,
           width: 100,
@@ -1405,7 +1405,7 @@ describe('Nightmare', function () {
     it('should take a clipped jpeg screenshot with default compression', function*() {
       yield nightmare
         .goto('https://github.com/')
-        .toJPEG(tmp_dir+'/test-clipped.jpg', {
+        .screenshot(tmp_dir+'/test-clipped.jpg', {
           x: 200,
           y: 100,
           width: 100,
@@ -1420,7 +1420,7 @@ describe('Nightmare', function () {
     it('should buffer a clipped jpeg screenshot', function*() {
       var image = yield nightmare
         .goto('https://github.com')
-        .toJPEG({
+        .screenshot({
           x: 200,
           y: 100,
           width: 100,
@@ -1474,6 +1474,16 @@ describe('Nightmare', function () {
         });
       Buffer.isBuffer(image).should.be.true;
       image.length.should.be.at.least(300);
+    });
+
+    it('should create a png screenshot when the extension is unknown ', function*() {
+      var image = yield nightmare
+        .goto('https://github.com')
+        .screenshot(tmp_dir+"/test.xyz").wait(500);
+        var stats = fs.statSync(tmp_dir+'/test.png');
+        var statsUnknown = fs.statSync(tmp_dir+'/test.xyz');
+        statsUnknown.size.should.be.at.least(1000);
+        statsUnknown.size.should.be.equal(stats.size);
     });
 
     // repeat this test 3 times, since the concern here is non-determinism in
