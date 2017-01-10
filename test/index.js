@@ -1384,7 +1384,7 @@ describe('Nightmare', function () {
     it('should buffer a jpeg screenshot', function*() {
       var image = yield nightmare
         .goto('https://github.com')
-        .screenshot();
+        .screenshot(90);
       Buffer.isBuffer(image).should.be.true;
       image.length.should.be.at.least(1000);
     });
@@ -1420,7 +1420,7 @@ describe('Nightmare', function () {
     it('should buffer a clipped jpeg screenshot', function*() {
       var image = yield nightmare
         .goto('https://github.com')
-        .screenshot({
+        .screenshot(90,{
           x: 200,
           y: 100,
           width: 100,
@@ -1479,7 +1479,7 @@ describe('Nightmare', function () {
     it('should create a png screenshot when the extension is unknown ', function*() {
       var image = yield nightmare
         .goto('https://github.com')
-        .screenshot(tmp_dir+"/test.xyz").wait(500);
+        .screenshot(tmp_dir+"/test.xyz").wait(1000);
         var stats = fs.statSync(tmp_dir+'/test.png');
         var statsUnknown = fs.statSync(tmp_dir+'/test.xyz');
         statsUnknown.size.should.be.at.least(1000);
