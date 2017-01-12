@@ -1380,9 +1380,9 @@ describe('Nightmare', function () {
         .goto('https://github.com/')
         .screenshot(tmp_dir+'/test.jpg');
       var stats = fs.statSync(tmp_dir+'/test.jpg');
-      var fileHeader = readChunk.sync(tmp_dir+'/test.jpg',0,4100);
-      var mime = fileType(fileHeader).mime;
-      mime.should.be.eql('image/jpeg');
+      var fileChunk = readChunk.sync(tmp_dir+'/test.jpg',0,4100);
+      var mime = fileType(fileChunk).mime;
+      mime.should.equal('image/jpeg');
       stats.size.should.be.at.least(1000);
     });
 
@@ -1393,7 +1393,7 @@ describe('Nightmare', function () {
       var stats = fs.statSync(tmp_dir+'/test.jpg');
       Buffer.isBuffer(image).should.be.true;
       var mime = fileType(image).mime;
-      mime.should.be.equal("image/jpeg");
+      mime.should.equal("image/jpeg");
       image.length.should.be.at.least(1000);
     });
     it('should take a clipped jpeg screenshot', function*() {
@@ -1438,7 +1438,7 @@ describe('Nightmare', function () {
       var statsClipped = fs.statSync(tmp_dir+'/test-clipped.jpg');
       image.length.should.be.eql(statsClipped.size);
       var mime = fileType(image).mime;
-      mime.should.be.equal("image/jpeg");
+      mime.should.equal("image/jpeg");
       image.length.should.be.at.least(300);
     });
 
@@ -1492,22 +1492,22 @@ describe('Nightmare', function () {
       var image = yield nightmare
         .goto('https://github.com')
         .screenshot(tmp_dir+"/test.xyz");
-        var statsUnknown = fs.statSync(tmp_dir+'/test.xyz');
+      var statsUnknown = fs.statSync(tmp_dir+'/test.xyz');
       statsUnknown.size.should.be.at.least(1000);
-        fileHandler= readChunk.sync(tmp_dir+'/test.xyz',0,4100);
-        mime = fileType(fileHandler).mime;
-        mime.should.be.equal('image/png');
+      fileChunk= readChunk.sync(tmp_dir+'/test.xyz',0,4100);
+      mime = fileType(fileChunk).mime;
+      mime.should.equal('image/png');
     });
 
     it('should create a png screenshot when there is no extension', function*() {
       var image = yield nightmare
         .goto('https://github.com')
         .screenshot(tmp_dir+"/testNoExt");
-        var statsUnknown = fs.statSync(tmp_dir+'/test.xyz');
+      var statsUnknown = fs.statSync(tmp_dir+'/testNoExt');
       statsUnknown.size.should.be.at.least(1000);
-        fileHandler= readChunk.sync(tmp_dir+'/testNoExt',0,4100);
-        mime = fileType(fileHandler).mime;
-        mime.should.be.equal('image/png');
+      fileHandler= readChunk.sync(tmp_dir+'/testNoExt',0,4100);
+      mime = fileType(fileHandler).mime;
+      mime.should.equal('image/png');
     });
 
     // repeat this test 3 times, since the concern here is non-determinism in
