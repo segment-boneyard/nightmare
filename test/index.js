@@ -19,6 +19,8 @@ var PNG = require('pngjs').PNG;
 var should = chai.should();
 var split = require('split');
 var asPromised = require('chai-as-promised');
+var fileType = require('file-type');
+var readChunk = require('read-chunk');
 
 chai.use(asPromised);
 
@@ -1378,6 +1380,9 @@ describe('Nightmare', function () {
         .goto('https://github.com/')
         .screenshot(tmp_dir+'/test.jpg');
       var stats = fs.statSync(tmp_dir+'/test.jpg');
+      var fileHeader = readChunk.sync(tmp_dir+'/test.jpg',0,4100);
+      var mime = fileType(fileHeader).mime;
+      mime.should.be.eql('image/jpeg');
       stats.size.should.be.at.least(1000);
     });
 
@@ -1385,7 +1390,10 @@ describe('Nightmare', function () {
       var image = yield nightmare
         .goto('https://github.com')
         .screenshot(90);
+      var stats = fs.statSync(tmp_dir+'/test.jpg');
       Buffer.isBuffer(image).should.be.true;
+      var mime = fileType(image).mime;
+      mime.should.be.equal("image/jpeg");
       image.length.should.be.at.least(1000);
     });
     it('should take a clipped jpeg screenshot', function*() {
@@ -1427,6 +1435,10 @@ describe('Nightmare', function () {
           height: 100
         });
       Buffer.isBuffer(image).should.be.true;
+      var statsClipped = fs.statSync(tmp_dir+'/test-clipped.jpg');
+      image.length.should.be.eql(statsClipped.size);
+      var mime = fileType(image).mime;
+      mime.should.be.equal("image/jpeg");
       image.length.should.be.at.least(300);
     });
 
@@ -1479,11 +1491,23 @@ describe('Nightmare', function () {
     it('should create a png screenshot when the extension is unknown ', function*() {
       var image = yield nightmare
         .goto('https://github.com')
-        .screenshot(tmp_dir+"/test.xyz").wait(1000);
-        var stats = fs.statSync(tmp_dir+'/test.png');
+        .screenshot(tmp_dir+"/test.xyz");
         var statsUnknown = fs.statSync(tmp_dir+'/test.xyz');
-        statsUnknown.size.should.be.at.least(1000);
-        statsUnknown.size.should.be.equal(stats.size);
+      statsUnknown.size.should.be.at.least(1000);
+        fileHandler= readChunk.sync(tmp_dir+'/test.xyz',0,4100);
+        mime = fileType(fileHandler).mime;
+        mime.should.be.equal('image/png');
+    });
+
+    it('should create a png screenshot when there is no extension', function*() {
+      var image = yield nightmare
+        .goto('https://github.com')
+        .screenshot(tmp_dir+"/testNoExt");
+        var statsUnknown = fs.statSync(tmp_dir+'/test.xyz');
+      statsUnknown.size.should.be.at.least(1000);
+        fileHandler= readChunk.sync(tmp_dir+'/testNoExt',0,4100);
+        mime = fileType(fileHandler).mime;
+        mime.should.be.equal('image/png');
     });
 
     // repeat this test 3 times, since the concern here is non-determinism in
