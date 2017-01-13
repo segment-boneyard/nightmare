@@ -1393,7 +1393,7 @@ describe('Nightmare', function () {
       var stats = fs.statSync(tmp_dir+'/test.jpg');
       Buffer.isBuffer(image).should.be.true;
       var mime = fileType(image).mime;
-      mime.should.equal("image/jpeg");
+      mime.should.equal('image/jpeg');
       image.length.should.be.at.least(1000);
     });
     it('should take a clipped jpeg screenshot', function*() {
@@ -1436,9 +1436,9 @@ describe('Nightmare', function () {
         });
       Buffer.isBuffer(image).should.be.true;
       var statsClipped = fs.statSync(tmp_dir+'/test-clipped.jpg');
-      image.length.should.be.eql(statsClipped.size);
+      image.length.should.be.equal(statsClipped.size);
       var mime = fileType(image).mime;
-      mime.should.equal("image/jpeg");
+      mime.should.equal('image/jpeg');
       image.length.should.be.at.least(300);
     });
 
