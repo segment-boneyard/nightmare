@@ -30,22 +30,18 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
 Let's search on DuckDuckGo:
 
 ```js
-var Nightmare = require('nightmare');		
-var nightmare = Nightmare({ show: true });
+const Nightmare = require('nightmare');		
+const nightmare = Nightmare({ show: true });
 
 nightmare
   .goto('https://duckduckgo.com')
   .type('#search_form_input_homepage', 'github nightmare')
   .click('#search_button_homepage')
   .wait('#zero_click_wrapper .c-info__title a')
-  .evaluate(function () {
-    return document.querySelector('#zero_click_wrapper .c-info__title a').href;
-  })
+  .evaluate(() => document.querySelector('#zero_click_wrapper .c-info__title a').href)
   .end()
-  .then(function (result) {
-    console.log(result);
-  })
-  .catch(function (error) {
+  .then(console.log)
+  .catch((error) => {
     console.error('Search failed:', error);
   });
 ```
@@ -53,29 +49,29 @@ nightmare
 You can run this with:
 
 ```shell
-npm install nightmare
+npm install --save nightmare
 node example.js
 ```
 
 Or, let's run some mocha tests:
 
 ```js
-var Nightmare = require('nightmare');
-var expect = require('chai').expect; // jshint ignore:line
+const Nightmare = require('nightmare');
+const {expect} = require('chai');
 
-describe('test duckduckgo search results', function() {
-  it('should find the nightmare github link first', function(done) {
-    var nightmare = Nightmare()
+describe('test duckduckgo search results', () => {
+  it('should find the nightmare github link first', (done) => {
+    const nightmare = Nightmare()
     nightmare
       .goto('https://duckduckgo.com')
       .type('#search_form_input_homepage', 'github nightmare')
       .click('#search_button_homepage')
       .wait('#zero_click_wrapper .c-info__title a')
-      .evaluate(function () {
-        return document.querySelector('#zero_click_wrapper .c-info__title a').href
-      })
+      .evaluate(() =>
+        document.querySelector('#zero_click_wrapper .c-info__title a').href
+      )
       .end()
-      .then(function(link) {
+      .then((link) => {
         expect(link).to.equal('https://github.com/segmentio/nightmare');
         done();
       })
@@ -89,12 +85,13 @@ Please note that the examples are using the [mocha-generators](https://www.npmjs
 package for Mocha, which enables the support for generators.
 
 ### To install dependencies
-
-    npm install
-
+```
+npm install
+```
 ### To run the mocha tests
-
-    npm test
+```
+npm test
+```
 
 ### Node versions
 
@@ -112,7 +109,7 @@ Returns the version of Nightmare.
 This will throw an exception if the `.wait()` didn't return `true` within the set timeframe.
 
 ```js
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   waitTimeout: 1000 // in ms
 });
 ```
@@ -121,7 +118,7 @@ var nightmare = Nightmare({
 This will throw an exception if the `.goto()` didn't finish loading within the set timeframe. Note that, even though `goto` normally waits for all the resources on a page to load, a timeout exception is only raised if the DOM itself has not yet loaded.
 
 ```js
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   gotoTimeout: 1000 // in ms
 });
 ```
@@ -130,7 +127,7 @@ var nightmare = Nightmare({
 This will force Nightmare to move on if a page transition caused by an action (eg, `.click()`) didn't finish within the set timeframe.  If `loadTimeout` is shorter than `gotoTimeout`, the exceptions thrown by `gotoTimeout` will be suppressed.
 
 ```js
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   loadTimeout: 1000 // in ms
 });
 ```
@@ -138,7 +135,7 @@ var nightmare = Nightmare({
 The maxiumum amount of time to wait for an `.evaluate()` statement to complete.
 
 ```js
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   executionTimeout: 1000 // in ms
 });
 ```
@@ -149,7 +146,7 @@ The default system paths that Electron knows about. Here's a list of available p
 You can overwrite them in Nightmare by doing the following:
 
 ```js
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   paths: {
     userData: '/user/data'
   }
@@ -161,7 +158,7 @@ The command line switches used by the Chrome browser that are also supported by 
 https://github.com/atom/electron/blob/master/docs/api/chrome-command-line-switches.md
 
 ```js
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   switches: {
     'proxy-server': '1.2.3.4:5678',
     'ignore-certificate-errors': true
@@ -173,7 +170,7 @@ var nightmare = Nightmare({
 The path to prebuilt Electron binary.  This is useful for testing on different version Electron.  Note that Nightmare only supports the version this package depending on.  Please use this option at your own risk.
 
 ```js
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   electronPath: require('electron')
 });
 ```
@@ -182,7 +179,7 @@ var nightmare = Nightmare({
 A boolean to optionally show the Electron icon in the dock (defaults to `false`).  This is useful for testing purposes.
 
 ```js
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   dock: true
 });
 ```
@@ -191,7 +188,7 @@ var nightmare = Nightmare({
 Optionally show the DevTools in the Electron window using `true`, or use an object hash containing `mode: 'detach'` to show in a separate window. The hash gets passed to [`contents.openDevTools()`](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#contentsopendevtoolsoptions) to be handled.  This is also useful for testing purposes.  Note that this option is honored only if `show` is set to `true`.
 
 ```js
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   openDevTools: {
     mode: 'detach'
   },
@@ -203,7 +200,7 @@ var nightmare = Nightmare({
 How long to wait between keystrokes when using `.type()`.
 
 ```js
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   typeInterval: 20
 });
 ```
@@ -212,7 +209,7 @@ var nightmare = Nightmare({
 How long to wait between checks for the `.wait()` condition to be successful.
 
 ```js
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   pollInterval: 50 //in ms
 });
 ```
@@ -220,7 +217,7 @@ var nightmare = Nightmare({
 ##### maxAuthRetries (default: 3)
 Defines the number of times to retry an authentication when set up with `.authenticate()`.
 ```js
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   maxAuthRetries: 3
 });
 ```
@@ -242,7 +239,7 @@ nightmare
   .goto(someUrl)
   .end(() => "some value")
   //prints "some value"
-  .then((value) => console.log(value));
+  .then(console.log);
 ```
 
 #### .halt(error, done)
@@ -330,13 +327,13 @@ Inject a local `file` onto the current page. The file `type` must be either `js`
 Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On completion it returns the return value of `fn`. Useful for extracting information from the page. Here's an example:
 
 ```js
-var selector = 'h1';
+const selector = 'h1';
 nightmare
-  .evaluate(function (selector) {
+  .evaluate((selector) => {
     // now we're executing inside the browser scope.
     return document.querySelector(selector).innerText;
    }, selector) // <-- that's how you pass parameters from Node scope to browser scope
-  .then(function(text) {
+  .then((text) => {
     // ...
   })
 ```
@@ -344,13 +341,13 @@ nightmare
 Error-first callbacks are supported as a part of evaluate.  If the arguments passed are one fewer than the arguments expected for the evaluated function, the evaluation will be passed a callback as the last parameter to the function.  For example:
 
 ```js
-var selector = 'h1';
+const selector = 'h1';
 nightmare
-  .evaluate(function (selector, done) {
+  .evaluate((selector, done) => {
     // now we're executing inside the browser scope.
     setTimeout(() => done(null, document.querySelector(selector).innerText), 2000);
    }, selector)
-  .then(function(text) {
+  .then((text) => {
     // ...
   })
 ```
@@ -359,13 +356,14 @@ Note that callbacks support only one value argument (eg `function(err, value)`).
 Promises are also supported as a part of evaluate.  If the return value of the function has a `then` member, `.evaluate()` assumes it is waiting for a promise.  For example:
 
 ```js
-var selector = 'h1';
+const selector = 'h1';
 nightmare
-  .evaluate(function (selector) {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => resolve(document.querySelector(selector).innerText), 2000);
-   })}, selector)
-  .then(function(text) {
+  .evaluate((selector) => (
+    new Promise((resolve, reject) => {
+      setTimeout(() => resolve(document.querySelector(selector).innerText), 2000);
+    )}, selector)
+  )
+  .then((text) => {
     // ...
   })
 ```
@@ -476,7 +474,7 @@ nightmare
     path: '/query',
     secure: true
   })
-  .then(function(cookies) {
+  .then((cookies) => {
     // do something with the cookies
   })
 ```
@@ -505,7 +503,7 @@ nightmare
     secure: true
   })
   // ... other actions ...
-  .then(function() {
+  .then(() => {
     // ...
   })
 ```
@@ -525,7 +523,7 @@ nightmare
   .goto('http://google.com')
   .cookies.clear('SomeCookieName')
   // ... other actions ...
-  .then(function() {
+  .then(() => {
     // ...
   })
 ```
@@ -539,7 +537,7 @@ nightmare
   .goto('http://google.com')
   .cookies.clearAll()
   // ... other actions ...
-  .then(function() {
+  .then(() => {
     //...
   });
 ```
@@ -553,9 +551,9 @@ If your proxy requires authentication you also need the [authentication](#authen
 The following example not only demonstrates how to use proxies, but you can run it to test if your proxy connection is working:
 
 ```js
-var Nightmare = require('nightmare');
+const Nightmare = require('nightmare');
 
-var proxyNightmare = Nightmare({
+const proxyNightmare = Nightmare({
   switches: {
     'proxy-server': 'my_proxy_server.example.com:8080' // set the proxy server here ...
   },
@@ -565,24 +563,24 @@ var proxyNightmare = Nightmare({
 proxyNightmare
   .authentication('proxyUsername', 'proxyPassword') // ... and authenticate here before `goto`
   .goto('http://www.ipchicken.com')
-  .evaluate(function() {
+  .evaluate(() => {
     return document.querySelector('b').innerText.replace(/[^\d\.]/g, '');
   })
   .end()
-  .then(function(ip) { // This will log the Proxy's IP
+  .then((ip) => { // This will log the Proxy's IP
     console.log('proxy IP:', ip);
   });
 
 // The rest is just normal Nightmare to get your local IP
-var regularNightmare = Nightmare({ show: true });
+const regularNightmare = Nightmare({ show: true });
 
 regularNightmare
   .goto('http://www.ipchicken.com')
-  .evaluate(function() {
-    return document.querySelector('b').innerText.replace(/[^\d\.]/g, '');
-  })
+  .evaluate(() =>
+    document.querySelector('b').innerText.replace(/[^\d\.]/g, '');
+  )
   .end()
-  .then(function(ip) { // This will log the your local IP
+  .then((ip) => { // This will log the your local IP
     console.log('local IP:', ip);
   });
 ```
@@ -594,10 +592,10 @@ regularNightmare
 You can add your own custom actions to the Nightmare prototype. Here's an example:
 
 ```js
-Nightmare.action('size', function (done) {
-  this.evaluate_now(function() {
-    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+Nightmare.action('size', function(done) {
+  this.evaluate_now(() => {
+    const w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
     return {
       height: h,
       width: w
@@ -608,7 +606,7 @@ Nightmare.action('size', function (done) {
 Nightmare()
   .goto('http://cnn.com')
   .size()
-  .then(function(size) {
+  .then((size) => {
     //... do something with the size information
   });
 ```
@@ -623,17 +621,17 @@ We can also create custom namespaces. We do this internally for `nightmare.cooki
 
 ```js
 Nightmare.action('style', {
-  background: function (done) {
-    this.evaluate_now(function () {
-      return window.getComputedStyle(document.body, null).backgroundColor
-    }, done)
+  background(done) {
+    this.evaluate_now(
+      () => window.getComputedStyle(document.body, null).backgroundColor, done
+    )
   }
 })
 
 Nightmare()
   .goto('http://google.com')
   .style.background()
-  .then(function(background) {
+  .then((background) => {
     // ... do something interesting with background  
   })
 ```
@@ -641,14 +639,13 @@ Nightmare()
 You can also add custom Electron actions.  The additional Electron action or namespace actions take `name`, `options`, `parent`, `win`, `renderer`, and `done`.  Note the Electron action comes first, mirroring how `.evaluate()` works.  For example:
 
 ```javascript
-Nightmare.action('clearCache',
-  function(name, options, parent, win, renderer, done) {
-    parent.respondTo('clearCache', function(done) {
+Nightmare.action('clearCache', (name, options, parent, win, renderer, done) => {
+    parent.respondTo('clearCache', (done) => {
       win.webContents.session.clearCache(done);
     });
     done();
   },
-  function(done) {
+  function (done) {
     this.child.call('clearCache', done);
   });
 
@@ -656,7 +653,7 @@ Nightmare()
   .clearCache()
   .goto('http://example.org')
   //... more actions ...
-  .then(function() {
+  .then(() => {
     // ...
   });
 ```
@@ -675,7 +672,7 @@ can specify a custom preload script. Here's how you do that:
 ```js
 const path = require('path');
 
-var nightmare = Nightmare({
+const nightmare = Nightmare({
   webPreferences: {
     preload: path.resolve("custom-script.js")
     //alternative: preload: "absolute/path/to/custom-script.js"
@@ -697,11 +694,11 @@ To benefit of all of nightmare's feedback from the browser, you can instead copy
 By default nightmare will create an in-memory partition for each instance. This means that any localStorage or cookies or any other form of persistent state will be destroyed when nightmare is ended. If you would like to persist state between instances you can use the [webPreferences.partition](http://electron.atom.io/docs/api/browser-window/#new-browserwindowoptions) api in electron.
 
 ```js
-var Nightmare = require('nightmare');
+const Nightmare = require('nightmare');
 
 nightmare = Nightmare(); // non persistent paritition by default
 yield nightmare
-  .evaluate(function () { 
+  .evaluate(() => {
     window.localStorage.setItem('testing', 'This will not be persisted');
   })
   .end();
@@ -712,7 +709,7 @@ nightmare = Nightmare({
   }
 });
 yield nightmare
-  .evaluate(function () {
+  .evaluate(() => {
     window.localStorage.setItem('testing', 'This is persisted for other instances with the same paritition name');
   })
   .end();
@@ -731,22 +728,22 @@ $ npm install --save nightmare
 #### Execution
 Nightmare is a node module that can be used in a Node.js script or module. Here's a simple script to open a web page:
 ```js
-var Nightmare = require('nightmare'),
-  nightmare = Nightmare();
+const Nightmare = require('nightmare'),
+      nightmare = Nightmare();
 
 nightmare.goto('http://cnn.com')
-  .evaluate(function(){
+  .evaluate(() => {
     return document.title;
   })
   .end()
-  .then(function(title){
+  .then((title) => {
     console.log(title);
   })
 ```
 If you save this as `cnn.js`, you can run it on the command line like this:
 
 ```bash
-npm install nightmare
+npm install --save nightmare
 node cnn.js
 ```
 
@@ -762,9 +759,9 @@ To run the same file with debugging output, run it like this `DEBUG=nightmare no
 This will print out some additional information about what's going on:
 
 ```bash
-  nightmare queueing action "goto" +0ms
-  nightmare queueing action "evaluate" +4ms
-  Breaking News, U.S., World, Weather, Entertainment & Video News - CNN.com
+nightmare queueing action "goto" +0ms
+nightmare queueing action "evaluate" +4ms
+Breaking News, U.S., World, Weather, Entertainment & Video News - CNN.com
 ```
 
 ##### Debug Flags
