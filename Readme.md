@@ -82,6 +82,7 @@ describe('test duckduckgo search results', function() {
   });
 });
 ```
+Unless you have a very fast computer you have to increase the default mocha timeout of 2 seconds — e.g. `mocha --timeout 500000 test.js`.
 
 You can see examples of every function [in the tests here](https://github.com/segmentio/nightmare/blob/master/test/index.js).
 
