@@ -30,7 +30,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
 Let's search on DuckDuckGo:
 
 ```js
-const Nightmare = require('nightmare');		
+import Nightmare from 'nightmare';
 const nightmare = Nightmare({ show: true });
 
 nightmare
@@ -56,8 +56,8 @@ node example.js
 Or, let's run some mocha tests:
 
 ```js
-const Nightmare = require('nightmare');
-const {expect} = require('chai');
+import Nightmare from 'nightmare';
+import {expect} from 'chai';
 
 describe('test duckduckgo search results', () => {
   it('should find the nightmare github link first', (done) => {
@@ -551,7 +551,7 @@ If your proxy requires authentication you also need the [authentication](#authen
 The following example not only demonstrates how to use proxies, but you can run it to test if your proxy connection is working:
 
 ```js
-const Nightmare = require('nightmare');
+import Nightmare from 'nightmare';
 
 const proxyNightmare = Nightmare({
   switches: {
@@ -670,7 +670,7 @@ If you need to do something custom when you first load the window environment, y
 can specify a custom preload script. Here's how you do that:
 
 ```js
-const path = require('path');
+import path from 'path';
 
 const nightmare = Nightmare({
   webPreferences: {
@@ -694,7 +694,7 @@ To benefit of all of nightmare's feedback from the browser, you can instead copy
 By default nightmare will create an in-memory partition for each instance. This means that any localStorage or cookies or any other form of persistent state will be destroyed when nightmare is ended. If you would like to persist state between instances you can use the [webPreferences.partition](http://electron.atom.io/docs/api/browser-window/#new-browserwindowoptions) api in electron.
 
 ```js
-const Nightmare = require('nightmare');
+import Nightmare from 'nightmare';
 
 nightmare = Nightmare(); // non persistent paritition by default
 yield nightmare
@@ -728,8 +728,9 @@ $ npm install --save nightmare
 #### Execution
 Nightmare is a node module that can be used in a Node.js script or module. Here's a simple script to open a web page:
 ```js
-const Nightmare = require('nightmare'),
-      nightmare = Nightmare();
+import Nightmare from 'nightmare',
+
+const nightmare = Nightmare();
 
 nightmare.goto('http://cnn.com')
   .evaluate(() => {
