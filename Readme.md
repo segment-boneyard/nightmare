@@ -391,7 +391,7 @@ Returns whether the selector exists or not on the page.
 Returns whether the selector is visible or not
 
 #### .on(event, callback)
-Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents).
+Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/api/web-contents/#class-webcontents).
 
 ##### Additional "page" events
 
