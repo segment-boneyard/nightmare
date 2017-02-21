@@ -1896,13 +1896,13 @@ describe('Nightmare', function () {
     it('should allow to use external Promise', function*() {
       nightmare = Nightmare({ Promise: require('bluebird') });
       nightmare.should.be.ok;
-      var thenPromise = nightmare.goto('about:blank').then();
+      const thenPromise = nightmare.goto('about:blank').then();
       thenPromise.should.be.an.instanceof(require('bluebird'));
       yield thenPromise;
-      var catchPromise = nightmare.goto('about:blank').catch();
+      const catchPromise = nightmare.goto('about:blank').catch();
       catchPromise.should.be.an.instanceof(require('bluebird'));
       yield catchPromise;
-      var endPromise = nightmare.goto('about:blank').end().then();
+      const endPromise = nightmare.goto('about:blank').end().then();
       endPromise.constructor.should.equal(require('bluebird'));
       endPromise.should.be.an.instanceof(require('bluebird'));
       yield endPromise;
