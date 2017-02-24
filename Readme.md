@@ -420,18 +420,7 @@ Nightmare disables `window.confirm` from popping up by default, but you can stil
 
 ###### .on('console', function(type [, arguments, ...]))
 
-`type` will be either `log`, `warn` or `error` and `arguments` are what gets passed from the console.
-
-##### Additional "console" events
-
-Listen for `console.log(...)`, `console.warn(...)`, and `console.error(...)`.
-
-###### .on('console', function(type [, arguments, ...]))
-
-`type` will be either `log`, `warn` or `error` and `arguments` are what gets passed from the console.
-
-###### .on('console', function(type, errorMessage, errorStack))
-This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
+`type` will be either `log`, `warn` or `error` and `arguments` are what gets passed from the console. This event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
 
 #### .once(event, callback)
 Similar to `.on()`, but captures page events with the callback one time.
