@@ -1,3 +1,14 @@
+
+2.10.0 / 2017-02-23
+===================
+
+  * Remove redundant docs for 'log' event from README
+  * changed some `var` declarations to `const`
+  * replace the 404 link with valid link
+  * added Promise override tests
+  * added docs for new Promise override features
+  * added ability to override internal Promise library
+
 2.9.1 / 2017-01-02
 ==================
 
