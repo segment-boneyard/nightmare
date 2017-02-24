@@ -20,6 +20,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
   - [Extract from the page](#extract-from-the-page)
   - [Cookies](#cookies)
   - [Proxies](#proxies)
+  - [Promises](#promises)
   - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
@@ -574,6 +575,46 @@ regularNightmare
   .then(function(ip) { // This will log the your local IP
     console.log('local IP:', ip);
   });
+```
+
+### Promises
+
+By default, Nightmare uses default native ES6 promises. You can plug in your favorite [ES6-style promises library](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) like [bluebird](https://www.npmjs.com/package/bluebird) or [q](https://www.npmjs.com/package/q) for convenience!
+
+Here's an example:
+
+```js
+var Nightmare = require('nightmare');
+
+Nightmare.Promise = require('bluebird');
+// OR:
+Nightmare.Promise = require('q').Promise;
+```
+
+You can also specify a custom Promise library per-instance with the `Promise` constructor option like so:
+
+```js
+var Nightmare = require('nightmare');
+
+var es6Nightmare = Nightmare();
+var bluebirdNightmare = Nightmare({
+    Promise: require('bluebird')
+});
+
+var es6Promise = es6Nightmare.goto('https://github.com/segmentio/nightmare').then();
+var bluebirdPromise = bluebirdNightmare.goto('https://github.com/segmentio/nightmare').then();
+
+es6Promise.isFulfilled() // throws: `TypeError: es6EndPromise.isFulfilled is not a function`
+bluebirdPromise.isFulfilled() // returns: `true | false`
+```
+
+If you're using [ES6 with Enhanced Object Literals](benmvp.com/learning-es6-enhanced-object-literals/) then specifying your custom Promise library is even easier:
+
+```js
+var Nightmare = require('nightmare');
+var Promise = require('bluebird');
+
+var nightmare = Nightmare({ Promise });
 ```
 
 ### Extending Nightmare
