@@ -1,9 +1,17 @@
 dependencies:
   pre:
     - sudo apt-get update; sudo apt-get install libnotify-bin
+    - npm config set "//registry.npmjs.org/:_authToken" $NPM_AUTH
     - nvm install 4; nvm install 5; nvm install 6
+
 test:
   override:
     - nvm use 4 && npm test
     - nvm use 5 && npm test
     - nvm use 6 && npm test
+
+deployment:
+  publish:
+    tag: /v?[0-9]+(\.[0-9]+)*(-.+)?/
+    commands:
+      - npm publish
