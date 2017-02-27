@@ -3,9 +3,9 @@
 
 # Nightmare
 
-Nightmare is a high-level browser automation library.
+Nightmare is a high-level browser automation library from [Segment](https://segment.com).
 
-The goal is to expose just a few simple methods, and have an API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
+The goal is to expose a few simple methods that mimic user actions (like `goto`, `type` and `click`), with an API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It was originally designed for automating tasks across sites that don't have APIs, but is most often used for UI testing and crawling.
 
 Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but roughly [2 times faster](https://github.com/segmentio/nightmare/issues/484#issuecomment-184519591) and more modern.
 
@@ -14,6 +14,7 @@ Under the covers it uses [Electron](http://electron.atom.io/), which is similar 
 Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshinkley](https://github.com/rosshinkley) for their help on Nightmare.
 
 * [Examples](#examples)
+  - [UI Testing Quick Start](https://segment.com/blog/ui-testing-with-nightmare)
 * [API](#api)
   - [Set up an instance](#nightmareoptions)
   - [Interact with the page](#interact-with-the-page)
@@ -88,6 +89,8 @@ You can see examples of every function [in the tests here](https://github.com/se
 
 Please note that the examples are using the [mocha-generators](https://www.npmjs.com/package/mocha-generators)
 package for Mocha, which enables the support for generators.
+
+To get started with UI Testing, check out this [quick start guide](https://segment.com/blog/ui-testing-with-nightmare).
 
 ### To install dependencies
 
@@ -731,7 +734,7 @@ var Nightmare = require('nightmare');
 
 nightmare = Nightmare(); // non persistent paritition by default
 yield nightmare
-  .evaluate(function () { 
+  .evaluate(function () {
     window.localStorage.setItem('testing', 'This will not be persisted');
   })
   .end();
