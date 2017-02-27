@@ -14,7 +14,7 @@ Under the covers it uses [Electron](http://electron.atom.io/), which is similar 
 Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshinkley](https://github.com/rosshinkley) for their help on Nightmare.
 
 * [Examples](#examples)
-  - [UI Testing Quick Start](https://segment.com/blog/ui-testing-with-nightmare)
+  - [UI Testing Quick Start](https://segment.com/blog/ui-testing-with-nightmare/)
 * [API](#api)
   - [Set up an instance](#nightmareoptions)
   - [Interact with the page](#interact-with-the-page)
