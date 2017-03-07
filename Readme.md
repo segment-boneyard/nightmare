@@ -783,6 +783,11 @@ npm install nightmare
 node cnn.js
 ```
 
+#### Common Execution Problems
+Nightmare heavily relies on [Electron](http://electron.atom.io/) for heavy lifting. And Electron in turn relies on several UI-focused dependencies (eg. libgtk+) which are often missing from server distros. 
+
+For help running nightmare on your server distro check out [How to run nightmare on Amazon Linux and CentOS](https://gist.github.com/dimkir/f4afde77366ff041b66d2252b45a13db) guide.
+
 #### Debugging
 There are three good ways to get more information about what's happening inside the headless browser:
 
