@@ -788,6 +788,14 @@ Nightmare heavily relies on [Electron](http://electron.atom.io/) for heavy lifti
 
 For help running nightmare on your server distro check out [How to run nightmare on Amazon Linux and CentOS](https://gist.github.com/dimkir/f4afde77366ff041b66d2252b45a13db) guide.
 
+#### Memory Profiling
+Nightmare exposes Electron's [process memory API](https://github.com/electron/electron/blob/master/docs/api/process.md#processgetprocessmemoryinfo).
+
+```js
+var memoryStats = yield nightmare.getElectronMemoryInfo();
+console.log(memoryStats.sharedBytes);
+```
+
 #### Debugging
 There are three good ways to get more information about what's happening inside the headless browser:
 

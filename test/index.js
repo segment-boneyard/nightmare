@@ -2075,6 +2075,24 @@ describe('Nightmare', function () {
     });
   })
 
+  describe('Nightmare.getElectronMemoryInfo', function() {
+    beforeEach(function() {
+      nightmare = Nightmare();
+    });
+
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
+    it('should return memory info', function*() {
+      var stats = yield nightmare
+        .getElectronMemoryInfo();
+
+      stats.should.have.property('privateBytes');
+      stats.should.have.property('sharedBytes');
+    })
+  })
+
   describe('Nightmare.use', function() {
     beforeEach(function() {
       nightmare = Nightmare();
