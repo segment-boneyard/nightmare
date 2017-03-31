@@ -192,7 +192,7 @@ var nightmare = Nightmare({
 ```
 
 ##### openDevTools
-Optionally show the DevTools in the Electron window using `true`, or use an object hash containing `mode: 'detach'` to show in a separate window. The hash gets passed to [`contents.openDevTools()`](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#contentsopendevtoolsoptions) to be handled.  This is also useful for testing purposes.  Note that this option is honored only if `show` is set to `true`.
+Optionally show the DevTools in the Electron window using `true`, or use an object hash containing `mode: 'detach'` to show in a separate window. The hash gets passed to [`contents.openDevTools()`](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#contentsopendevtoolsoptions) to be handled.  This is also useful for testing purposes.
 
 ```js
 var nightmare = Nightmare({
