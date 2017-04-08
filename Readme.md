@@ -15,6 +15,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
 
 * [Examples](#examples)
   - [UI Testing Quick Start](https://segment.com/blog/ui-testing-with-nightmare/)
+  - [Perceptual Diffing with Niffy & Nightmare](https://segment.com/blog/perceptual-diffing-with-niffy/)
 * [API](#api)
   - [Set up an instance](#nightmareoptions)
   - [Interact with the page](#interact-with-the-page)
