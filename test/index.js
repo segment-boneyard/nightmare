@@ -2144,7 +2144,7 @@ describe('Nightmare', function () {
           this.child.once('waitForDevTools', done);
           this.child.emit('waitForDevTools');
         });
-      nightmare = Nightmare({show:true, openDevTools:true});
+      nightmare = Nightmare({openDevTools:true});
 
     });
 
