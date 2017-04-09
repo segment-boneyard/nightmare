@@ -29,6 +29,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
 * [Usage](#usage)
 * [Debugging](#debugging)
 * [Supplementary Examples and Documentation](https://github.com/rosshinkley/nightmare-examples)
+* [Gitter chat](https://gitter.im/rosshinkley/nightmare)
 
 ## Examples
 
