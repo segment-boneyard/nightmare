@@ -731,6 +731,11 @@ describe('Nightmare', function () {
         .visible('.hidden');
       visible.should.be.false;
 
+      // element outside of the viewport
+      visible = yield nightmare
+        .visible('.away');
+      visible.should.be.false;
+
         // non-existent element
       visible = yield nightmare
         .visible('#asdfasdfasdf');
