@@ -1,6 +1,6 @@
 {
   "name": "nightmare",
-  "version": "2.8.1",
+  "version": "2.10.0",
   "license": "MIT",
   "main": "lib/nightmare.js",
   "scripts": {
@@ -34,6 +34,7 @@
   "devDependencies": {
     "basic-auth": "^1.0.3",
     "basic-auth-connect": "^1.0.0",
+    "bluebird": "^3.4.0",
     "chai": "^3.4.1",
     "chai-as-promised": "^5.3.0",
     "express": "^4.13.3",

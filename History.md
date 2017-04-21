@@ -1,3 +1,34 @@
+
+2.10.0 / 2017-02-23
+===================
+
+  * Remove redundant docs for 'log' event from README
+  * changed some `var` declarations to `const`
+  * replace the 404 link with valid link
+  * added Promise override tests
+  * added docs for new Promise override features
+  * added ability to override internal Promise library
+
+2.9.1 / 2017-01-02
+==================
+
+  * Minor touchups to key press documentation
+  * Link to Electron documentation updated
+  * Updates speed information on the readme
+  * Swaps Yahoo example out for a faster DuckDuckGo example
+  * Fixes an issue where `nightmare` may be undefined in the browser at injection time
+  * Changes screenshot rendering to use debugger API instead of forcing a DOM change
+
+2.9.0 / 2016-12-17
+==================
+
+  * Prevents unload dialogs, allowing Nightmare to end gracefully
+  * `.end(fn)` now uses `.then()` under the covers
+  * **Possibly breaking change:** Nightmare will now default to using a non-persistent partition.  Data between executions of Nightmare will no longer be saved.
+  * Adds `.mouseup()` action
+  * Fixes several typos/copy-paste errors in the readme, as well as clarifying error-first callbacks
+  * Adds `.path()` to get the URL's route (as opposed to the fully-qualified URL)
+
 2.8.1 / 2016-10-20
 ==================
 

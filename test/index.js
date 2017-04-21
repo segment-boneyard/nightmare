@@ -146,6 +146,22 @@ describe('Nightmare', function () {
       .then(() => done());
   });
 
+  it('should allow end with a callback', function(done){
+    var nightmare = Nightmare();
+    nightmare.goto(fixture('navigation'))
+      .end(() => done());
+  });
+
+  it('should allow end with a callback to be thenable', function(done){
+    var nightmare = Nightmare();
+    nightmare.goto(fixture('navigation'))
+      .end(() => 'nightmare')
+      .then((str) => {
+        str.should.equal('nightmare');
+        done();
+      });
+  });
+
   it('should kill electron process when halted', function () {
     var nightmare = Nightmare();
 
@@ -167,6 +183,20 @@ describe('Nightmare', function () {
 
     return Promise.all([check1, check2]);
   });
+  
+  it('should successfully end on pages setting onunload or onbeforeunload', function(done) {
+    var nightmare = Nightmare();
+    nightmare.goto(fixture('unload'))
+      .end()
+      .then(() => done());
+  });
+
+  it('should successfully end on pages binding unload or beforeunload', function(done) {
+    var nightmare = Nightmare();
+    nightmare.goto(fixture('unload/add-event-listener.html'))
+      .end()
+      .then(() => done());
+  });
 
   it('should provide useful errors for .click', function(done) {
     var nightmare = Nightmare();
@@ -186,6 +216,18 @@ describe('Nightmare', function () {
     nightmare
       .goto('about:blank')
       .mousedown('a.not-here')
+      .catch(function (error) {
+        error.should.include('a.not-here');
+        done();
+      });
+  });
+
+  it('should provide useful errors for .mouseup', function(done) {
+    var nightmare = Nightmare();
+
+    nightmare
+      .goto('about:blank')
+      .mouseup('a.not-here')
       .catch(function (error) {
         error.should.include('a.not-here');
         done();
@@ -654,6 +696,15 @@ describe('Nightmare', function () {
         .goto(fixture('evaluation'))
         .url();
       url.should.have.string(fixture('evaluation'));
+    });
+
+    it('should get the path', function*() {
+      var path = yield nightmare
+        .goto(fixture('evaluation'))
+        .path();
+      var formalUrl = fixture('evaluation') + '/';
+
+      formalUrl.should.have.string(path);
     });
 
     it('should check if the selector exists', function*() {
@@ -1841,7 +1892,61 @@ describe('Nightmare', function () {
       nightmare = Nightmare({ electronPath: require('electron') });
       nightmare.should.be.ok;
     });
+
+    it('should allow to use external Promise', function*() {
+      nightmare = Nightmare({ Promise: require('bluebird') });
+      nightmare.should.be.ok;
+      const thenPromise = nightmare.goto('about:blank').then();
+      thenPromise.should.be.an.instanceof(require('bluebird'));
+      yield thenPromise;
+      const catchPromise = nightmare.goto('about:blank').catch();
+      catchPromise.should.be.an.instanceof(require('bluebird'));
+      yield catchPromise;
+      const endPromise = nightmare.goto('about:blank').end().then();
+      endPromise.constructor.should.equal(require('bluebird'));
+      endPromise.should.be.an.instanceof(require('bluebird'));
+      yield endPromise;
+    });
   });
+
+  describe('Nightmare.Promise', function() {
+    var nightmare;
+    afterEach(function*() {
+      // `withDeprecationTracking()` messes w/ prototype constructor references
+      Nightmare.Promise = require('..').Promise = Promise;
+      yield nightmare.end();
+    });
+
+    it('should default to native Promise', function*() {
+      Nightmare.Promise.should.equal(Promise);
+      nightmare = Nightmare();
+      nightmare.should.be.ok;
+      var thenPromise = nightmare.goto('about:blank').then();
+      thenPromise.should.be.an.instanceof(Promise);
+      yield thenPromise;
+    });
+
+    it('should override default Promise library', function*() {
+      // `withDeprecationTracking()` messes w/ prototype constructor references
+      Nightmare.Promise = require('..').Promise = require('bluebird');
+      Nightmare.Promise.should.equal(require('bluebird'));
+      nightmare = Nightmare();
+      nightmare.should.be.ok;
+      var thenPromise = nightmare.goto('about:blank').then();
+      thenPromise.should.be.an.instanceof(require('bluebird'));
+      yield thenPromise;
+    });
+
+    it('should not override per-instance Promise library', function*() {
+      Nightmare.Promise.should.equal(Promise);
+      nightmare = Nightmare({ Promise: require('bluebird') });
+      nightmare.should.be.ok;
+      var thenPromise = nightmare.goto('about:blank').then();
+      thenPromise.should.not.be.an.instanceof(Promise);
+      thenPromise.should.be.an.instanceof(require('bluebird'));
+      yield thenPromise;
+    });
+  })
 
   describe('Nightmare.action(name, fn)', function() {
     afterEach(function*() {
@@ -2159,6 +2264,91 @@ describe('Nightmare', function () {
       logged.should.be.true;
     });
   });
+
+  describe('partitioning', function(){
+    afterEach(function*() {
+      yield nightmare.end();
+    });
+
+    // The default behavior for nightmare is to use a non-persistent partition name
+    it('should not persist between instances by default', function *() {
+      nightmare = Nightmare();
+      yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          window.localStorage.setItem('testing', 'This string should not persist between instances.')
+        })
+        .end();
+
+      nightmare = Nightmare();
+      var value = yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          return window.localStorage.getItem('testing') || ''
+        });
+
+      value.should.equal('');
+    })
+
+    // Setting the partition to null we default to the electron default behavior
+    // which is to use a persistent storage between instances.
+    it('should persist between instances if partition is null', function *() {
+      nightmare = Nightmare({ webPreferences: { partition: null } });
+      yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          window.localStorage.setItem('testing', 'This string should persist between instances.')
+        })
+        .end();
+
+      nightmare = Nightmare({ webPreferences: { partition: null } });
+      var value = yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          return window.localStorage.getItem('testing') || ''
+        });
+
+      value.should.equal('This string should persist between instances.');
+    });
+
+    it('should not persist between instances if partition name doesnt start with "persist:"', function *(){
+      nightmare = Nightmare({ webPreferences: { partition: 'nonpersist' } });
+      yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          window.localStorage.setItem('testing', 'This string not should persist between instances.')
+        })
+        .end();
+
+      nightmare = Nightmare({ webPreferences: { partition: 'nonpersist' } });
+      var value = yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          return window.localStorage.getItem('testing') || ''
+        });
+
+      value.should.equal('');
+    });
+
+    it('should persist between instances if partition starts with "persist:"', function *() {
+      nightmare = Nightmare({ webPreferences: { partition: 'persist: testing' } });
+      yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          window.localStorage.setItem('testing', 'This string should persist between instances.')
+        })
+        .end();
+
+      nightmare = Nightmare({ webPreferences: { partition: 'persist: testing' } });
+      var value = yield nightmare
+        .goto(fixture('simple'))
+        .evaluate(function() {
+          return window.localStorage.getItem('testing') || ''
+        });
+
+      value.should.equal('This string should persist between instances.');
+    });
+  })
 });
 
 /**
