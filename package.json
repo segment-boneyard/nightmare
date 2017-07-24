@@ -19,7 +19,6 @@
   "dependencies": {
     "chrome-launcher": "^0.3.2",
     "chrome-remote-interface": "^0.24.2",
-    "co": "^4.6.0",
     "debug": "^2.2.0",
     "deep-defaults": "^1.0.3",
     "defaults": "^1.0.2",
@@ -56,7 +55,11 @@
     "space": 2,
     "rules": {
       "prefer-arrow-callback": 0,
-      "unicorn/catch-error-name": 0
+      "unicorn/catch-error-name": 0,
+      "unicorn/explicit-length-check": 0,
+      "capitalized-comments": 0,
+      "no-implicit-coercion": 0,
+      "guard-for-in": 0
     }
   }
 }
