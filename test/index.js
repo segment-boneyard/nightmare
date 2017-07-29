@@ -5,7 +5,6 @@
 require('mocha-generators').install();
 
 var Nightmare = require('..');
-var IPC = require('../lib/ipc');
 var chai = require('chai');
 var url = require('url');
 var server = require('./server');
