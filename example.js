@@ -1,17 +1,23 @@
-var Nightmare = require('nightmare');
-var nightmare = Nightmare({ show: true })
+'use strict';
+
+/* global document */
+
+const Nightmare = require('./lib/nightmare');
+
+const nightmare = new Nightmare();
 
 nightmare
   .goto('http://yahoo.com')
   .type('form[action*="/search"] [name=p]', 'github nightmare')
   .click('form[action*="/search"] [type=submit]')
   .wait('#main')
+  .wait(1000)
   .evaluate(function () {
-    return document.querySelector('#main .searchCenterMiddle li a').href
+    return document.querySelector('#main .searchCenterMiddle li a').href;
   })
   .end()
   .then(function (result) {
-    console.log(result)
+    console.log(result);
   })
   .catch(function (error) {
     console.error('Search failed:', error);
