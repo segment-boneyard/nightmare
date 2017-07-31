@@ -4,6 +4,8 @@
  * Module dependencies.
  */
 
+'use strict';
+
 require('mocha-generators').install();
 
 const Nightmare = require('..');
