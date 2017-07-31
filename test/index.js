@@ -1725,6 +1725,8 @@ describe('Nightmare', function () {
   });
 
   describe('Nightmare.action(name, fn)', function () {
+    var nightmare;
+
     afterEach(function * () {
       yield nightmare.end();
     });

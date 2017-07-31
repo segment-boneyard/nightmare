@@ -17,7 +17,6 @@
   ],
   "description": "A high-level browser automation library.",
   "dependencies": {
-    "chrome-launcher": "^0.3.2",
     "chrome-remote-interface": "^0.24.2",
     "debug": "^2.2.0",
     "deep-defaults": "^1.0.3",
@@ -45,8 +44,7 @@
     "multer": "1.1.0",
     "pngjs": "^2.2.0",
     "serve-static": "^1.10.0",
-    "split": "^1.0.0",
-    "xo": "^0.18.2"
+    "split": "^1.0.0"
   },
   "engines": {
     "node": ">=4.0.0"
