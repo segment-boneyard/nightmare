@@ -3,6 +3,15 @@ dependencies:
     - sudo apt-get update; sudo apt-get install libnotify-bin
     - npm config set "//registry.npmjs.org/:_authToken" $NPM_AUTH
     - nvm install 4; nvm install 5; nvm install 6
+    - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+    - sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+    - sudo apt-get update
+    - sudo apt-get --only-upgrade install google-chrome-stable
+  post:
+    - google-chrome --version
+
+    - google-chrome --headless --remote-debugging-port=9222 --disable-gpu:
+          background: true
 
 test:
   override:
