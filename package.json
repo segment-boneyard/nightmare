@@ -43,32 +43,9 @@
     "multer": "1.1.0",
     "pngjs": "^2.2.0",
     "serve-static": "^1.10.0",
-    "split": "^1.0.0",
-    "xo": "^0.18.2"
+    "split": "^1.0.0"
   },
   "engines": {
     "node": ">=4.0.0"
-  },
-  "xo": {
-    "space": 2,
-    "rules": {
-      "prefer-arrow-callback": 0,
-      "unicorn/catch-error-name": 0,
-      "unicorn/explicit-length-check": 0,
-      "capitalized-comments": 0,
-      "no-implicit-coercion": 0,
-      "guard-for-in": 0,
-      "camelcase": 0,
-      "no-inner-declarations": 0,
-      "new-cap": 0,
-      "no-unused-expressions": 0,
-      "max-nested-callbacks": 0,
-      "no-script-url": 0,
-      "no-var": 0,
-      "no-eval": 0,
-      "default-case": 0,
-      "no-multi-assign": 0,
-      "unicorn/no-new-buffer": 0
-    }
   }
 }
