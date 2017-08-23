@@ -2,9 +2,10 @@
 // Electron process's pid, then we kill it and test to see whether that pid is
 // still running.
 var Nightmare = require('../..');
+
 var nightmare = Nightmare();
 nightmare
   .goto('about:blank')
-  .run(function() {
+  .run(function () {
     process.send(nightmare.proc.pid);
   });

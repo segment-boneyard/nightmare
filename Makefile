@@ -6,6 +6,9 @@ CIRCLE_PROJECT_REPONAME ?= 1
 #set headless if not set
 HEADLESS ?= 1
 
+lint: node_modules
+	node_modules/.bin/xo
+
 test: node_modules
 	@rm -rf /tmp/nightmare
 #if this build is not on circle, is not headless, and xvfb is not already running,

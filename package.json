@@ -29,7 +29,8 @@
     "once": "^1.3.3",
     "rimraf": "^2.4.3",
     "sliced": "1.0.1",
-    "split2": "^2.0.1"
+    "split2": "^2.0.1",
+    "xo": "^0.18.2"
   },
   "devDependencies": {
     "basic-auth": "^1.0.3",
@@ -46,6 +47,38 @@
     "split": "^1.0.0"
   },
   "engines": {
-    "node":">=4.0.0"
+    "node": ">=4.0.0"
+  },
+  "xo": {
+    "space": 2,
+    "rules": {
+      "prefer-arrow-callback": 0,
+      "unicorn/catch-error-name": 0,
+      "unicorn/explicit-length-check": 0,
+      "capitalized-comments": 0,
+      "no-implicit-coercion": 0,
+      "guard-for-in": 0,
+      "camelcase": 0,
+      "no-inner-declarations": 0,
+      "new-cap": 0,
+      "no-unused-expressions": 0,
+      "max-nested-callbacks": 0,
+      "no-script-url": 0,
+      "no-var": 0,
+      "no-eval": 0,
+      "default-case": 0,
+      "no-multi-assign": 0,
+      "unicorn/no-new-buffer": 0,
+      "import/no-extraneous-dependencies": 0,
+      "import/no-unresolved": 0,
+      "unicorn/no-process-exit": 0,
+      "max-params": 0,
+      "no-use-before-define": 0,
+      "no-cond-assign": 0,
+      "no-new-func": 0,
+      "no-negated-condition": 0,
+      "no-alert": 0,
+      "unicorn/no-abusive-eslint-disable": 0
+    }
   }
 }
