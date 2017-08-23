@@ -7,7 +7,7 @@ Nightmare is a high-level browser automation library from [Segment](https://segm
 
 The goal is to expose a few simple methods that mimic user actions (like `goto`, `type` and `click`), with an API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It was originally designed for automating tasks across sites that don't have APIs, but is most often used for UI testing and crawling.
 
-Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but roughly [2 times faster](https://github.com/segmentio/nightmare/issues/484#issuecomment-184519591) and more modern.
+Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but roughly [2 times faster](https://github.com/segmentio/nightmare/issues/484#issuecomment-184519591) and more modern. **[Because Nightmare uses Electron, it is your responsibility to ensure that the webpages loaded by Nightmare are not malicious](https://github.com/electron/electron/blob/master/docs/tutorial/security.md). If you do load a malicious website, that website can execute arbitrary code on your computer.**
 
 [Niffy](https://github.com/segmentio/niffy) is a perceptual diffing tool built on Nightmare. It helps you detect UI changes and bugs across releases of your web app.
 
