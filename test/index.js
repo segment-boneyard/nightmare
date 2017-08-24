@@ -1151,6 +1151,26 @@ describe('Nightmare', function () {
       color.should.equal('rgb(102, 255, 102)');
     });
 
+    it('should release hover from an element', function*() {
+      var hoverColor = 'rgb(0, 255, 255)';
+      var hoveredColor = yield nightmare
+        .goto(fixture('manipulation'))
+        .mouseover('h2')
+        .evaluate(function () {
+          var element = document.querySelector('h2');
+          return element.style.background;
+        });
+      hoveredColor.should.equal(hoverColor);
+
+      var nonHoveredColor = yield nightmare
+        .mouseout('h2')
+        .evaluate(function () {
+          var element = document.querySelector('h2');
+          return element.style.background;
+        });
+      nonHoveredColor.should.not.equal(hoverColor);
+    });
+
     it('should mousedown on an element', function*() {
       var color = yield nightmare
         .goto(fixture('manipulation'))
