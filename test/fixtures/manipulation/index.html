@@ -86,6 +86,7 @@
   <script>
   var h1 = document.getElementsByTagName("h1");
   var search = document.querySelector('input[type=search]')
+  var checkboxes = document.querySelector('input[type=checkbox]')
   var disappears = document.querySelector('#disappears');
 
   disappears.addEventListener('keydown', function(e){
@@ -101,22 +102,52 @@
 
   h1[0].addEventListener("mousedown", function(){
     this.style.background = "#ff0000";
-  })
+  });
 
   h1[0].addEventListener("mouseup", function(){
     this.style.background = "#0000ff";
-  })
+  });
 
   search.addEventListener("keyup", function(e) {
     console.log('keyup', e.which)
-  })
+  });
 
   search.addEventListener("keydown", function(e) {
     console.log('keydown', e.which)
-  })
+  });
 
   search.addEventListener('input', function(e) {
     console.log('input', e.which)
-  })
+  });
+   
+  var lastClickedBox = 0;
+  checkboxes.addEventListener('click', function(e) {
+    var clickedBox = 0;
+    var checkboxes = document.querySelectorAll('input[type=checkbox]');
+    for(var i = 0; i < checkboxes.length; i++){
+      if(checkboxes[i].name === e.target.name){
+        clickedBox = i;
+      }
+    }
+    if(event.shiftKey) {
+        setCheckboxes(lastClickedBox, clickedBox);
+    };
+    lastClickedBox = clickedBox;
+  });
+    
+  function setCheckboxes(end, start) {
+    if(start > end) {
+        var temp = start;
+        start = end;
+        end = temp;
+    };
+
+    var checkboxes = document.querySelectorAll('input[type=checkbox]');
+    for(var i = 0; i < checkboxes.length; i++){
+      if(i >= start && i <= end){
+        checkboxes[i].attrubute('checked', true);
+      }
+    }
+  }
   </script>
 </html>
