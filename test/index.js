@@ -1106,12 +1106,13 @@ describe('Nightmare', function () {
     it('should shift check', function*() {
       var checkboxes = yield nightmare
         .goto(fixture('manipulation'))
+        .uncheck('input[type=checkbox][name=advanced]')
         .check('input[type=checkbox][name=cb1]')
-        .checkWithKeymap('input[type=checkbox][name=cb3]', {shiftKey: true})
+        .clickWithKeymap('input[type=checkbox][name=cb3]', {shiftKey: true})
         .evaluate(function () {
           return document.querySelectorAll('input[type=checkbox]:checked');
         });
-     checkboxes.length.should.equal(3);
+     Object.keys(checkboxes).length.should.equal(3);
     });
 
     it('should select', function*() {
