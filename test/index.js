@@ -183,7 +183,7 @@ describe('Nightmare', function () {
 
     return Promise.all([check1, check2]);
   });
-  
+
   it('should successfully end on pages setting onunload or onbeforeunload', function(done) {
     var nightmare = Nightmare();
     nightmare.goto(fixture('unload'))
@@ -1102,7 +1102,7 @@ describe('Nightmare', function () {
         });
       checkbox.should.be.false;
     });
-    
+
     it('should shift check', function*() {
       var checkboxes = yield nightmare
         .goto(fixture('manipulation'))
@@ -1112,7 +1112,7 @@ describe('Nightmare', function () {
         .evaluate(function () {
           return document.querySelectorAll('input[type=checkbox]:checked');
         });
-     Object.keys(checkboxes).length.should.equal(3);
+      Object.keys(checkboxes).length.should.equal(3);
     });
 
     it('should select', function*() {
