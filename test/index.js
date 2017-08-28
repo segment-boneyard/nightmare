@@ -1085,7 +1085,7 @@ describe('Nightmare', function () {
     it('should checkbox', function*() {
       var checkbox = yield nightmare
         .goto(fixture('manipulation'))
-        .check('input[type=checkbox]')
+        .check('input[type=checkbox][name=advanced]')
         .evaluate(function () {
           return document.querySelector('input[type=checkbox]').checked;
         });
@@ -1095,12 +1095,23 @@ describe('Nightmare', function () {
     it('should uncheck', function*() {
       var checkbox = yield nightmare
         .goto(fixture('manipulation'))
-        .check('input[type=checkbox]')
-        .uncheck('input[type=checkbox]')
+        .check('input[type=checkbox][name=advanced]')
+        .uncheck('input[type=checkbox][name=advanced]')
         .evaluate(function () {
-          return document.querySelector('input[type=checkbox]').checked;
+          return document.querySelector('input[type=checkbox][name=advanced]').checked;
         });
       checkbox.should.be.false;
+    });
+    
+    it('should shift check', function*() {
+      var checkboxes = yield nightmare
+        .goto(fixture('manipulation'))
+        .check('input[type=checkbox][name=cb1]')
+        .checkWithKeymap('input[type=checkbox][name=cb3]', {shiftKey: true})
+        .evaluate(function () {
+          return document.querySelectorAll('input[type=checkbox]:checked');
+        });
+     checkboxes.length.should.equal(3);
     });
 
     it('should select', function*() {
