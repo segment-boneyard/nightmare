@@ -119,35 +119,35 @@
   search.addEventListener('input', function(e) {
     console.log('input', e.which)
   });
-   
+
   var lastClickedBox = 0;
   checkboxes.forEach((checkbox) => {
     checkbox.addEventListener('click', function(e) {
       var clickedBox = 0;
       var checkboxes = document.querySelectorAll('input[type=checkbox]');
       for(var i = 0; i < checkboxes.length; i++){
-       if(checkboxes[i].name === e.target.name){
-         clickedBox = i;
-       }
-     }
-     if(event.shiftKey) {
-         setCheckboxes(lastClickedBox, clickedBox);
-     };
-     lastClickedBox = clickedBox;
-   });
+        if(checkboxes[i].name === e.target.name){
+          clickedBox = i;
+        }
+      }
+      if(event.shiftKey) {
+        setCheckboxes(lastClickedBox, clickedBox);
+      };
+      lastClickedBox = clickedBox;
+    });
   });
-    
+
   function setCheckboxes(end, start) {
     if(start > end) {
-        var temp = start;
-        start = end;
-        end = temp;
+      var temp = start;
+      start = end;
+      end = temp;
     };
 
     var checkboxes = document.querySelectorAll('input[type=checkbox]');
     for(var i = 0; i < checkboxes.length; i++){
       if(i >= start && i <= end){
-        checkboxes[i].setAttrubute('checked', true);
+        checkboxes[i].setAttribute('checked', true);
       }
     }
   }
