@@ -291,6 +291,32 @@ Refresh the current page.
 #### .click(selector)
 Clicks the `selector` element once.
 
+#### .clickWithKeymap(selector, keyMap)
+Clicks the `selector` element once while pressing a key specified in the keymap. Keymap should contain the key to press with a true value.
+
+Available keys:
+```js
+{
+  shiftKey: true,
+  altKey: true,
+  ctrlKey: true,
+  mediaKey: true
+}
+```
+Example:
+```js
+nightmare
+  .goto(someUrl)
+  .click('input[type=checkbox].first')
+  .clickWithKeymap('input[type=checkbox].third', {shiftKey: true})
+  .evaluate(function () {
+    return document.querySelectorAll('input[type=checkbox]:checked');
+  })
+  .then((checkboxes) => {
+    Object.keys(checkboxes).length.should.equal(3);
+  });
+```
+
 #### .mousedown(selector)
 Mousedown the `selector` element once.
 
