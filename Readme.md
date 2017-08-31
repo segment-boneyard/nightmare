@@ -7,7 +7,7 @@ Nightmare is a high-level browser automation library from [Segment](https://segm
 
 The goal is to expose a few simple methods that mimic user actions (like `goto`, `type` and `click`), with an API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It was originally designed for automating tasks across sites that don't have APIs, but is most often used for UI testing and crawling.
 
-Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but roughly [2 times faster](https://github.com/segmentio/nightmare/issues/484#issuecomment-184519591) and more modern. **[Because Nightmare uses Electron, it is your responsibility to ensure that the webpages loaded by Nightmare are not malicious](https://github.com/electron/electron/blob/master/docs/tutorial/security.md). If you do load a malicious website, that website can execute arbitrary code on your computer.**
+Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but roughly [twice as fast](https://github.com/segmentio/nightmare/issues/484#issuecomment-184519591) and more modern. **[Because Nightmare uses Electron, it is your responsibility to ensure that the webpages loaded by Nightmare are not malicious](https://github.com/electron/electron/blob/master/docs/tutorial/security.md). If you do load a malicious website, that website can execute arbitrary code on your computer.**
 
 [Niffy](https://github.com/segmentio/niffy) is a perceptual diffing tool built on Nightmare. It helps you detect UI changes and bugs across releases of your web app.
 
@@ -107,13 +107,13 @@ Nightmare is intended to be run on NodeJS 4.x or higher.
 ## API
 
 #### Nightmare(options)
-Create a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions), along with the following nightmare-specific options.
+Creates a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions), along with the following nightmare-specific options.
 
 #### Nightmare.version
 Returns the version of Nightmare.
 
 ##### waitTimeout (default: 30s)
-This will throw an exception if the `.wait()` didn't return `true` within the set timeframe.
+Throws an exception if the `.wait()` didn't return `true` within the set timeframe.
 
 ```js
 const nightmare = Nightmare({
@@ -122,7 +122,7 @@ const nightmare = Nightmare({
 ```
 
 ##### gotoTimeout (default: 30s)
-This will throw an exception if the `.goto()` didn't finish loading within the set timeframe. Note that, even though `goto` normally waits for all the resources on a page to load, a timeout exception is only raised if the DOM itself has not yet loaded.
+Throws an exception if the `.goto()` didn't finish loading within the set timeframe. Note that, even though `goto` normally waits for all the resources on a page to load, a timeout exception is only raised if the DOM itself has not yet loaded.
 
 ```js
 const nightmare = Nightmare({
@@ -131,7 +131,7 @@ const nightmare = Nightmare({
 ```
 
 ##### loadTimeout (default: infinite)
-This will force Nightmare to move on if a page transition caused by an action (eg, `.click()`) didn't finish within the set timeframe.  If `loadTimeout` is shorter than `gotoTimeout`, the exceptions thrown by `gotoTimeout` will be suppressed.
+Forces Nightmare to move on if a page transition caused by an action (eg, `.click()`) didn't finish within the set timeframe.  If `loadTimeout` is shorter than `gotoTimeout`, the exceptions thrown by `gotoTimeout` will be suppressed.
 
 ```js
 const nightmare = Nightmare({
@@ -139,7 +139,7 @@ const nightmare = Nightmare({
 });
 ```
 ##### executionTimeout (default: 30s)
-The maxiumum amount of time to wait for an `.evaluate()` statement to complete.
+The maximum amount of time to wait for an `.evaluate()` statement to complete.
 
 ```js
 const nightmare = Nightmare({
@@ -174,7 +174,7 @@ const nightmare = Nightmare({
 ```
 
 ##### electronPath
-The path to prebuilt Electron binary.  This is useful for testing on different version Electron.  Note that Nightmare only supports the version this package depending on.  Please use this option at your own risk.
+The path to the prebuilt Electron binary.  This is useful for testing on different versions of Electron.  Note that Nightmare only supports the version on which this package depends. Use this option at your own risk.
 
 ```js
 const nightmare = Nightmare({
@@ -192,7 +192,7 @@ const nightmare = Nightmare({
 ```
 
 ##### openDevTools
-Optionally show the DevTools in the Electron window using `true`, or use an object hash containing `mode: 'detach'` to show in a separate window. The hash gets passed to [`contents.openDevTools()`](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#contentsopendevtoolsoptions) to be handled.  This is also useful for testing purposes.  Note that this option is honored only if `show` is set to `true`.
+Optionally shows the DevTools in the Electron window using `true`, or use an object hash containing `mode: 'detach'` to show in a separate window. The hash gets passed to [`contents.openDevTools()`](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#contentsopendevtoolsoptions) to be handled.  This is also useful for testing purposes.  Note that this option is honored only if `show` is set to `true`.
 
 ```js
 const nightmare = Nightmare({
@@ -233,13 +233,13 @@ const nightmare = Nightmare({
 Gets the versions for Electron and Chromium.
 
 #### .useragent(useragent)
-Set the `useragent` used by electron.
+Sets the `useragent` used by electron.
 
 #### .authentication(user, password)
-Set the `user` and `password` for accessing a web page using basic authentication. Be sure to set it before calling `.goto(url)`.
+Sets the `user` and `password` for accessing a web page using basic authentication. Be sure to set it before calling `.goto(url)`.
 
 #### .end()
-Complete any queue operations, disconnect and close the electron process.  Note that if you're using promises, `.then()` must be called after `.end()` to run the `.end()` task.  Also note that if using a `.end()` callback, the `.end()` call is equivalent to calling `.end()` followed by `.then(fn)`.  Consider:
+Completes any queue operations, disconnect and close the electron process.  Note that if you're using promises, `.then()` must be called after `.end()` to run the `.end()` task.  Also note that if using an `.end()` callback, the `.end()` call is equivalent to calling `.end()` followed by `.then(fn)`.  Consider:
 
 ```js
 nightmare
@@ -255,7 +255,7 @@ Clears all queued operations, kills the electron process, and passes error messa
 ### Interact with the Page
 
 #### .goto(url[, headers])
-Load the page at `url`.  Optionally, a `headers` hash can be supplied to set headers on the `goto` request.
+Loads the page at `url`.  Optionally, a `headers` hash can be supplied to set headers on the `goto` request.
 
 When a page load is successful, `goto` returns an object with metadata about the page load, including:
 
@@ -277,25 +277,25 @@ Note that any valid response from a server is considered “successful.” That 
 You can also adjust how long `goto` will wait before timing out by setting the [`gotoTimeout` option](#gototimeout-default-30s) on the Nightmare constructor.
 
 #### .back()
-Go back to the previous page.
+Goes back to the previous page.
 
 #### .forward()
-Go forward to the next page.
+Goes forward to the next page.
 
 #### .refresh()
-Refresh the current page.
+Refreshes the current page.
 
 #### .click(selector)
 Clicks the `selector` element once.
 
 #### .mousedown(selector)
-Mousedown the `selector` element once.
+Mousedowns the `selector` element once.
 
 #### .mouseup(selector)
-Mouseup the `selector` element once.
+Mouseups the `selector` element once.
 
 #### .mouseover(selector)
-Mouseover the `selector` element once.
+Mouseovers the `selector` element once.
 
 #### .mouseout(selector)
 Mouseout the `selector` element once.
@@ -303,22 +303,22 @@ Mouseout the `selector` element once.
 #### .type(selector[, text])
 Enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
 
-`.type()` mimics a user typing in a textbox and will emit the proper keyboard events
+`.type()` mimics a user typing in a textbox and will emit the proper keyboard events.
 
 Key presses can also be fired using Unicode values with `.type()`. For example, if you wanted to fire an enter key press, you would  write `.type('body', '\u000d')`.
 
 > If you don't need the keyboard events, consider using `.insert()` instead as it will be faster and more robust.
 
 #### .insert(selector[, text])
-Similar to `.type()`. `.insert()` enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
+Similar to `.type()`, `.insert()` enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
 
 `.insert()` is faster than `.type()` but does not trigger the keyboard events.
 
 #### .check(selector)
-checks the `selector` checkbox element.
+Checks the `selector` checkbox element.
 
 #### .uncheck(selector)
-unchecks the `selector` checkbox element.
+Unchecks the `selector` checkbox element.
 
 #### .select(selector, option)
 Changes the `selector` dropdown element to the option with attribute [value=`option`]
@@ -328,10 +328,10 @@ Scrolls the page to desired position. `top` and `left` are always relative to th
 
 #### .viewport(width, height)
 
-Set the viewport size.
+Sets the viewport size.
 
 #### .inject(type, file)
-Inject a local `file` onto the current page. The file `type` must be either `js` or `css`.
+Injects a local `file` onto the current page. The file `type` must be either `js` or `css`.
 
 #### .evaluate(fn[, arg1, arg2,...])
 Invokes `fn` on the page with `arg1, arg2,...`. All the `args` are optional. On completion it returns the return value of `fn`. Useful for extracting information from the page. Here's an example:
@@ -348,7 +348,7 @@ nightmare
   })
 ```
 
-Error-first callbacks are supported as a part of evaluate.  If the arguments passed are one fewer than the arguments expected for the evaluated function, the evaluation will be passed a callback as the last parameter to the function.  For example:
+Error-first callbacks are supported as a part of `evaluate()`.  If the arguments passed are one fewer than the arguments expected for the evaluated function, the evaluation will be passed a callback as the last parameter to the function.  For example:
 
 ```js
 const selector = 'h1';
@@ -363,7 +363,7 @@ nightmare
 ```
 Note that callbacks support only one value argument (eg `function(err, value)`).  Ultimately, the callback will get wrapped in a native Promise and only be able to resolve a single value.
 
-Promises are also supported as a part of evaluate.  If the return value of the function has a `then` member, `.evaluate()` assumes it is waiting for a promise.  For example:
+Promises are also supported as a part of `evaluate()`.  If the return value of the function has a `then` member, `.evaluate()` assumes it is waiting for a promise.  For example:
 
 ```js
 const selector = 'h1';
@@ -379,16 +379,16 @@ nightmare
 ```
 
 #### .wait(ms)
-Wait for `ms` milliseconds e.g. `.wait(5000)`
+Waits for `ms` milliseconds e.g. `.wait(5000)`.
 
 #### .wait(selector)
-Wait until the element `selector` is present e.g. `.wait('#pay-button')`
+Waits until the element `selector` is present e.g. `.wait('#pay-button')`.
 
 #### .wait(fn[, arg1, arg2,...])
-Wait until the `fn` evaluated on the page with `arg1, arg2,...` returns `true`. All the `args` are optional. See `.evaluate()` for usage.
+Waits until the `fn` evaluated on the page with `arg1, arg2,...` returns `true`. All the `args` are optional. See `.evaluate()` for usage.
 
 #### .header(header, value)
-Add a header override for all HTTP requests.  If `header` is undefined, the header overrides will be reset.
+Adds a header override for all HTTP requests.  If `header` is undefined, the header overrides will be reset.
 
 ### Extract from the Page
 
@@ -396,10 +396,10 @@ Add a header override for all HTTP requests.  If `header` is undefined, the head
 Returns whether the selector exists or not on the page.
 
 #### .visible(selector)
-Returns whether the selector is visible or not
+Returns whether the selector is visible or not.
 
 #### .on(event, callback)
-Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/api/web-contents/#class-webcontents).
+Captures page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/api/web-contents/#class-webcontents).
 
 ##### Additional "page" events
 
@@ -408,11 +408,11 @@ This event is triggered if any javascript exception is thrown on the page. But t
 
 ##### "page" events
 
-Listen for `window.addEventListener('error')`, `alert(...)`, `prompt(...)` & `confirm(...)`.
+Listens for `window.addEventListener('error')`, `alert(...)`, `prompt(...)` & `confirm(...)`.
 
 ###### .on('page', function(type="error", message, stack))
 
-Listen for top-level page errors. This will get triggered when an error is thrown on the page.
+Listens for top-level page errors. This will get triggered when an error is thrown on the page.
 
 ###### .on('page', function(type="alert", message))
 
@@ -440,7 +440,7 @@ Removes a given listener callback for an event.
 Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
 
 #### .html(path, saveType)
-Save the current page as html as files to disk at the given path. Save type options are [here](https://github.com/atom/electron/blob/master/docs/api/web-contents.md#webcontentssavepagefullpath-savetype-callback).
+Saves the current page as html as files to disk at the given path. Save type options are [here](https://github.com/atom/electron/blob/master/docs/api/web-contents.md#webcontentssavepagefullpath-savetype-callback).
 
 #### .pdf(path, options)
 Saves a PDF to the specified `path`. Options are [here](https://github.com/electron/electron/blob/v1.4.4/docs/api/web-contents.md#contentsprinttopdfoptions-callback).
@@ -458,11 +458,11 @@ Returns the path name of the current page.
 
 #### .cookies.get(name)
 
-Get a cookie by it's `name`. The url will be the current url.
+Gets a cookie by it's `name`. The url will be the current url.
 
 #### .cookies.get(query)
 
-Query multiple cookies with the `query` object. If a `query.name` is set, it will return the first cookie it finds with that name, otherwise it will query for an array of cookies. If no `query.url` is set, it will use the current url. Here's an example:
+Queries multiple cookies with the `query` object. If a `query.name` is set, it will return the first cookie it finds with that name, otherwise it will query for an array of cookies. If no `query.url` is set, it will use the current url. Here's an example:
 
 ```js
 // get all google cookies that are secure
@@ -482,15 +482,15 @@ Available properties are documented here: https://github.com/atom/electron/blob/
 
 #### .cookies.get()
 
-Get all the cookies for the current url. If you'd like get all cookies for all urls, use: `.get({ url: null })`.
+Gets all the cookies for the current url. If you'd like get all cookies for all urls, use: `.get({ url: null })`.
 
 #### .cookies.set(name, value)
 
-Set a cookie's `name` and `value`. Most basic form, the url will be the current url.
+Sets a cookie's `name` and `value`. This is the most basic form, and the url will be the current url.
 
 #### .cookies.set(cookie)
 
-Set a `cookie`. If `cookie.url` is not set, it will set the cookie on the current url. Here's an example:
+Sets a `cookie`. If `cookie.url` is not set, it will set the cookie on the current url. Here's an example:
 
 ```js
 nightmare
@@ -511,11 +511,11 @@ Available properties are documented here:  https://github.com/atom/electron/blob
 
 #### .cookies.set(cookies)
 
-Set multiple cookies at once. `cookies` is an array of `cookie` objects. Take a look at the `.cookies.set(cookie)` documentation above for a better idea of what `cookie` should look like.
+Sets multiple cookies at once. `cookies` is an array of `cookie` objects. Take a look at the `.cookies.set(cookie)` documentation above for a better idea of what `cookie` should look like.
 
 #### .cookies.clear([name])
 
-Clear a cookie for the current domain.  If `name` is not specified, all cookies for the current domain will be cleared.
+Clears a cookie for the current domain.  If `name` is not specified, all cookies for the current domain will be cleared.
 
 ```js
 nightmare
@@ -781,7 +781,7 @@ node cnn.js
 ```
 
 #### Common Execution Problems
-Nightmare heavily relies on [Electron](http://electron.atom.io/) for heavy lifting. And Electron in turn relies on several UI-focused dependencies (eg. libgtk+) which are often missing from server distros. 
+Nightmare heavily relies on [Electron](http://electron.atom.io/) for heavy lifting. And Electron in turn relies on several UI-focused dependencies (eg. libgtk+) which are often missing from server distros.
 
 For help running nightmare on your server distro check out [How to run nightmare on Amazon Linux and CentOS](https://gist.github.com/dimkir/f4afde77366ff041b66d2252b45a13db) guide.
 
@@ -789,7 +789,7 @@ For help running nightmare on your server distro check out [How to run nightmare
 There are three good ways to get more information about what's happening inside the headless browser:
 
 1. Use the `DEBUG=*` flag described below.
-2. Pass `{ show: true }` to the [nightmare constructor](#nightmareoptions) to have it create a visible, rendered window that you can watch what's happening.
+2. Pass `{ show: true }` to the [nightmare constructor](#nightmareoptions) to have it create a visible, rendered window where you can watch what is happening.
 3. Listen for [specific events](#onevent-callback).
 
 To run the same file with debugging output, run it like this `DEBUG=nightmare node cnn.js` (on Windows use `set DEBUG=nightmare & node cnn.js`).
