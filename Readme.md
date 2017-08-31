@@ -3,23 +3,28 @@
 
 # Nightmare
 
-Nightmare is a high-level browser automation library.
+Nightmare is a high-level browser automation library from [Segment](https://segment.com).
 
-The goal is to expose just a few simple methods, and have an API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It's designed for automating tasks across sites that don't have APIs.
+The goal is to expose a few simple methods that mimic user actions (like `goto`, `type` and `click`), with an API that feels synchronous for each block of scripting, rather than deeply nested callbacks. It was originally designed for automating tasks across sites that don't have APIs, but is most often used for UI testing and crawling.
 
-Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but roughly [2 times faster](https://github.com/segmentio/nightmare/issues/484#issuecomment-184519591) and more modern.
+Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but roughly [2 times faster](https://github.com/segmentio/nightmare/issues/484#issuecomment-184519591) and more modern. **[Because Nightmare uses Electron, it is your responsibility to ensure that the webpages loaded by Nightmare are not malicious](https://github.com/electron/electron/blob/master/docs/tutorial/security.md). If you do load a malicious website, that website can execute arbitrary code on your computer.**
+
+[Niffy](https://github.com/segmentio/niffy) is a perceptual diffing tool built on Nightmare. It helps you detect UI changes and bugs across releases of your web app.
 
 [Daydream](https://github.com/segmentio/daydream) is a complementary chrome extension built by [@stevenmiller888](https://github.com/stevenmiller888) that generates Nightmare scripts for you while you browse.
 
 Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshinkley](https://github.com/rosshinkley) for their help on Nightmare.
 
 * [Examples](#examples)
+  - [UI Testing Quick Start](https://segment.com/blog/ui-testing-with-nightmare/)
+  - [Perceptual Diffing with Niffy & Nightmare](https://segment.com/blog/perceptual-diffing-with-niffy/)
 * [API](#api)
   - [Set up an instance](#nightmareoptions)
   - [Interact with the page](#interact-with-the-page)
   - [Extract from the page](#extract-from-the-page)
   - [Cookies](#cookies)
   - [Proxies](#proxies)
+  - [Promises](#promises)
   - [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
@@ -37,8 +42,8 @@ nightmare
   .goto('https://duckduckgo.com')
   .type('#search_form_input_homepage', 'github nightmare')
   .click('#search_button_homepage')
-  .wait('#zero_click_wrapper .c-info__title a')
-  .evaluate(() => document.querySelector('#zero_click_wrapper .c-info__title a').href)
+  .wait('#r1-0 a.result__a')
+  .evaluate(() => document.querySelector('#r1-0 a.result__a').href)
   .end()
   .then(console.log)
   .catch((error) => {
@@ -83,6 +88,8 @@ You can see examples of every function [in the tests here](https://github.com/se
 
 Please note that the examples are using the [mocha-generators](https://www.npmjs.com/package/mocha-generators)
 package for Mocha, which enables the support for generators.
+
+To get started with UI Testing, check out this [quick start guide](https://segment.com/blog/ui-testing-with-nightmare).
 
 ### To install dependencies
 ```
@@ -389,7 +396,7 @@ Returns whether the selector exists or not on the page.
 Returns whether the selector is visible or not
 
 #### .on(event, callback)
-Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/v0.30.0/api/browser-window/#class-webcontents).
+Capture page events with the callback. You have to call `.on()` before calling `.goto()`. Supported events are [documented here](http://electron.atom.io/docs/api/web-contents/#instance-events).
 
 ##### Additional "page" events
 
@@ -418,18 +425,7 @@ Nightmare disables `window.confirm` from popping up by default, but you can stil
 
 ###### .on('console', function(type [, arguments, ...]))
 
-`type` will be either `log`, `warn` or `error` and `arguments` are what gets passed from the console.
-
-##### Additional "console" events
-
-Listen for `console.log(...)`, `console.warn(...)`, and `console.error(...)`.
-
-###### .on('console', function(type [, arguments, ...]))
-
-`type` will be either `log`, `warn` or `error` and `arguments` are what gets passed from the console.
-
-###### .on('console', function(type, errorMessage, errorStack))
-This event is triggered if `console.log` is used on the page. But this event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
+`type` will be either `log`, `warn` or `error` and `arguments` are what gets passed from the console. This event is not triggered if the injected javascript code (e.g. via `.evaluate()`) is using `console.log`.
 
 #### .once(event, callback)
 Similar to `.on()`, but captures page events with the callback one time.
@@ -583,6 +579,46 @@ regularNightmare
   .then((ip) => { // This will log the your local IP
     console.log('local IP:', ip);
   });
+```
+
+### Promises
+
+By default, Nightmare uses default native ES6 promises. You can plug in your favorite [ES6-style promises library](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) like [bluebird](https://www.npmjs.com/package/bluebird) or [q](https://www.npmjs.com/package/q) for convenience!
+
+Here's an example:
+
+```js
+var Nightmare = require('nightmare');
+
+Nightmare.Promise = require('bluebird');
+// OR:
+Nightmare.Promise = require('q').Promise;
+```
+
+You can also specify a custom Promise library per-instance with the `Promise` constructor option like so:
+
+```js
+var Nightmare = require('nightmare');
+
+var es6Nightmare = Nightmare();
+var bluebirdNightmare = Nightmare({
+    Promise: require('bluebird')
+});
+
+var es6Promise = es6Nightmare.goto('https://github.com/segmentio/nightmare').then();
+var bluebirdPromise = bluebirdNightmare.goto('https://github.com/segmentio/nightmare').then();
+
+es6Promise.isFulfilled() // throws: `TypeError: es6EndPromise.isFulfilled is not a function`
+bluebirdPromise.isFulfilled() // returns: `true | false`
+```
+
+If you're using [ES6 with Enhanced Object Literals](benmvp.com/learning-es6-enhanced-object-literals/) then specifying your custom Promise library is even easier:
+
+```js
+var Nightmare = require('nightmare');
+var Promise = require('bluebird');
+
+var nightmare = Nightmare({ Promise });
 ```
 
 ### Extending Nightmare
@@ -747,6 +783,11 @@ If you save this as `cnn.js`, you can run it on the command line like this:
 npm install --save nightmare
 node cnn.js
 ```
+
+#### Common Execution Problems
+Nightmare heavily relies on [Electron](http://electron.atom.io/) for heavy lifting. And Electron in turn relies on several UI-focused dependencies (eg. libgtk+) which are often missing from server distros. 
+
+For help running nightmare on your server distro check out [How to run nightmare on Amazon Linux and CentOS](https://gist.github.com/dimkir/f4afde77366ff041b66d2252b45a13db) guide.
 
 #### Debugging
 There are three good ways to get more information about what's happening inside the headless browser:
