@@ -46,7 +46,7 @@ describe('Nightmare', function () {
     Nightmare = withDeprecationTracking(Nightmare);
   });
 
-  after(function() {
+  after(function () {
     Nightmare.assertNoDeprecations();
   });
 
@@ -56,7 +56,7 @@ describe('Nightmare', function () {
     yield nightmare.end();
   });
 
-  it('should have version information', function*(){
+  it('should have version information', function*() {
     var nightmare = Nightmare();
     var versions = yield nightmare.engineVersions();
     nightmare.engineVersions.electron.should.be.ok;
@@ -69,16 +69,16 @@ describe('Nightmare', function () {
     yield nightmare.end();
   });
 
-  it('should kill its electron process when it is killed', function(done) {
+  it('should kill its electron process when it is killed', function (done) {
     var child = child_process.fork(
       path.join(__dirname, 'files', 'nightmare-unended.js'));
 
-    child.once('message', function(electronPid) {
-      child.once('exit', function() {
+    child.once('message', function (electronPid) {
+      child.once('exit', function () {
         try {
           electronPid.should.not.be.a.process;
         }
-        catch(error) {
+        catch (error) {
           // if the test failed, clean up the still-running process
           process.kill(electronPid, 'SIGINT');
           throw error;
@@ -89,25 +89,25 @@ describe('Nightmare', function () {
     });
   });
 
-  it('should gracefully handle electron being killed', function(done) {
+  it('should gracefully handle electron being killed', function (done) {
     var child = child_process.fork(
       path.join(__dirname, 'files', 'nightmare-unended.js'));
 
-    child.once('message', function(electronPid) {
+    child.once('message', function (electronPid) {
       process.kill(electronPid, 'SIGINT');
-      child.once('exit', function(){
+      child.once('exit', function () {
         electronPid.should.not.be.a.process;
         done();
       });
     });
   });
 
-  it('should end gracefully if the chain has not been started', function(done) {
+  it('should end gracefully if the chain has not been started', function (done) {
     var child = child_process.fork(
       path.join(__dirname, 'files', 'nightmare-created.js'));
 
-    child.once('message', function() {
-      child.once('exit', function(code) {
+    child.once('message', function () {
+      child.once('exit', function (code) {
         code.should.equal(0);
         done();
       });
@@ -115,30 +115,30 @@ describe('Nightmare', function () {
     });
   });
 
-  it('should exit with a non-zero code on uncaughtExecption', function(done) {
+  it('should exit with a non-zero code on uncaughtExecption', function (done) {
     var child = child_process.fork(
       path.join(__dirname, 'files', 'nightmare-error.js'), [], {silent: true});
 
-      child.once('exit', function(code) {
-        code.should.not.equal(0);
-        done();
-      });
+    child.once('exit', function (code) {
+      code.should.not.equal(0);
+      done();
+    });
   });
 
-  it('should provide a .catch function', function(done) {
+  it('should provide a .catch function', function (done) {
     var nightmare = Nightmare();
 
     nightmare
       .goto('about:blank')
-      .evaluate(function() {
+      .evaluate(function () {
         throw new Error('Test');
       })
-      .catch(function(err) {
+      .catch(function (err) {
         done();
       });
   });
 
-  it('should allow ending more than once', function(done){
+  it('should allow ending more than once', function (done) {
     var nightmare = Nightmare();
     nightmare.goto(fixture('navigation'))
       .end()
@@ -146,13 +146,13 @@ describe('Nightmare', function () {
       .then(() => done());
   });
 
-  it('should allow end with a callback', function(done){
+  it('should allow end with a callback', function (done) {
     var nightmare = Nightmare();
     nightmare.goto(fixture('navigation'))
       .end(() => done());
   });
 
-  it('should allow end with a callback to be thenable', function(done){
+  it('should allow end with a callback to be thenable', function (done) {
     var nightmare = Nightmare();
     nightmare.goto(fixture('navigation'))
       .end(() => 'nightmare')
@@ -169,7 +169,8 @@ describe('Nightmare', function () {
       .wait(1000)
       .wait(500)
       .end()
-      .then(() => {})
+      .then(() => {
+      })
       .should.be.rejectedWith('Nightmare Halted');
 
     const electronPid = nightmare.proc.pid;
@@ -183,22 +184,22 @@ describe('Nightmare', function () {
 
     return Promise.all([check1, check2]);
   });
-  
-  it('should successfully end on pages setting onunload or onbeforeunload', function(done) {
+
+  it('should successfully end on pages setting onunload or onbeforeunload', function (done) {
     var nightmare = Nightmare();
     nightmare.goto(fixture('unload'))
       .end()
       .then(() => done());
   });
 
-  it('should successfully end on pages binding unload or beforeunload', function(done) {
+  it('should successfully end on pages binding unload or beforeunload', function (done) {
     var nightmare = Nightmare();
     nightmare.goto(fixture('unload/add-event-listener.html'))
       .end()
       .then(() => done());
   });
 
-  it('should provide useful errors for .click', function(done) {
+  it('should provide useful errors for .click', function (done) {
     var nightmare = Nightmare();
 
     nightmare
@@ -210,7 +211,7 @@ describe('Nightmare', function () {
       });
   });
 
-  it('should provide useful errors for .mousedown', function(done) {
+  it('should provide useful errors for .mousedown', function (done) {
     var nightmare = Nightmare();
 
     nightmare
@@ -222,7 +223,7 @@ describe('Nightmare', function () {
       });
   });
 
-  it('should provide useful errors for .mouseup', function(done) {
+  it('should provide useful errors for .mouseup', function (done) {
     var nightmare = Nightmare();
 
     nightmare
@@ -234,7 +235,7 @@ describe('Nightmare', function () {
       });
   });
 
-  it('should provide useful errors for .mouseover', function(done) {
+  it('should provide useful errors for .mouseover', function (done) {
     var nightmare = Nightmare();
 
     nightmare
@@ -249,7 +250,7 @@ describe('Nightmare', function () {
   describe('navigation', function () {
     var nightmare;
 
-    beforeEach(function() {
+    beforeEach(function () {
       nightmare = Nightmare({
         webPreferences: {partition: 'test-partition' + Math.random()},
         loadTimeout: 45 * 1000,
@@ -267,19 +268,23 @@ describe('Nightmare', function () {
       data.should.contain.keys('url', 'code', 'method', 'referrer', 'headers');
     });
 
-    it('should reject with a useful message when no URL', function() {
+    it('should reject with a useful message when no URL', function () {
       return nightmare.goto(undefined).then(
-        function() {throw new Error('goto(undefined) didn’t cause an error');},
-        function(error) {
+        function () {
+          throw new Error('goto(undefined) didn’t cause an error');
+        },
+        function (error) {
           error.should.include('url');
         }
       );
     });
 
-    it('should reject with a useful message for an empty URL', function() {
+    it('should reject with a useful message for an empty URL', function () {
       return nightmare.goto('').then(
-        function() {throw new Error('goto(undefined) didn’t cause an error');},
-        function(error) {
+        function () {
+          throw new Error('goto(undefined) didn’t cause an error');
+        },
+        function (error) {
           error.should.include('url');
         }
       );
@@ -375,7 +380,7 @@ describe('Nightmare', function () {
         }, 'A', 'B');
     });
 
-    describe('asynchronous wait', function(){
+    describe('asynchronous wait', function () {
       it('should wait until the evaluate fn with arguments returns true with a callback', function*() {
         yield nightmare
           .goto(fixture('navigation'))
@@ -392,7 +397,7 @@ describe('Nightmare', function () {
         yield nightmare
           .goto(fixture('navigation'))
           .wait(function (expectedA, expectedB) {
-            return new Promise(function(resolve) {
+            return new Promise(function (resolve) {
               setTimeout(() => {
                 var textA = document.querySelector('a.a').textContent;
                 var textB = document.querySelector('a.b').textContent;
@@ -419,42 +424,42 @@ describe('Nightmare', function () {
       });
     });
 
-    it('should fail if navigation target is invalid', function() {
+    it('should fail if navigation target is invalid', function () {
       return nightmare.goto('http://this-is-not-a-real-domain.tld')
         .then(
-          function() {
+          function () {
             throw new Error('Navigation to an invalid domain succeeded');
-          }, function(error) {
+          }, function (error) {
             error.should.contain.keys('message', 'code', 'url');
             error.code.should.be.a('number');
           });
     });
 
-    it('should fail if navigation target is a malformed URL', function(done) {
+    it('should fail if navigation target is a malformed URL', function (done) {
       nightmare.goto('somewhere out there')
-        .then(function() {
+        .then(function () {
           done(new Error('Navigation to an invalid domain succeeded'));
         })
-        .catch(function(error) {
+        .catch(function (error) {
           done();
         });
     });
 
-    it('should fail if navigating to an unknown protocol', function(done) {
+    it('should fail if navigating to an unknown protocol', function (done) {
       nightmare.goto('fake-protocol://blahblahblah')
-        .then(function() {
+        .then(function () {
           done(new Error('Navigation to an invalid protocol succeeded'));
         })
-        .catch(function(error) {
+        .catch(function (error) {
           done();
         });
     });
 
-    it('should not fail if the URL loads but a resource fails', function() {
+    it('should not fail if the URL loads but a resource fails', function () {
       return nightmare.goto(fixture('navigation/invalid-image'));
     });
 
-    it('should not fail if a child frame fails', function() {
+    it('should not fail if a child frame fails', function () {
       return nightmare.goto(fixture('navigation/invalid-frame'));
     });
 
@@ -464,48 +469,48 @@ describe('Nightmare', function () {
       data.url.should.equal(fixture('navigation/valid-frame'));
     });
 
-    it('should not fail if response was a valid error (e.g. 404)', function() {
+    it('should not fail if response was a valid error (e.g. 404)', function () {
       return nightmare.goto(fixture('navigation/not-a-real-page'));
     });
 
-    it('should fail if the response dies in flight', function(done) {
+    it('should fail if the response dies in flight', function (done) {
       nightmare.goto(fixture('do-not-respond'))
-        .then(function() {
+        .then(function () {
           done(new Error('Navigation succeeded but server connection died'));
         })
-        .catch(function(error) {
+        .catch(function (error) {
           done();
         });
     });
 
-    it('should not fail for a redirect', function() {
+    it('should not fail for a redirect', function () {
       return nightmare.goto(fixture('redirect?url=%2Fnavigation'));
     });
 
-    it('should fail for a redirect to an invalid URL', function(done) {
+    it('should fail for a redirect to an invalid URL', function (done) {
       nightmare.goto(
         fixture('redirect?url=http%3A%2F%2Fthis-is-not-a-real-domain.tld'))
-        .then(function() {
+        .then(function () {
           done(new Error('Navigation succeeded with redirect to bad location'));
         })
-        .catch(function(error) {
+        .catch(function (error) {
           done();
         });
     });
 
-    it('should succeed properly if request handler is present', function() {
+    it('should succeed properly if request handler is present', function () {
       Nightmare.action(
         'monitorRequest',
-        function(name, options, parent, win, renderer, done) {
+        function (name, options, parent, win, renderer, done) {
           win.webContents.session.webRequest.onBeforeRequest(
             ['*://localhost:*'],
-            function(details, callback) {
+            function (details, callback) {
               callback({cancel: false});
             }
           );
           done();
         },
-        function(done) {
+        function (done) {
           done();
           return this;
         });
@@ -515,29 +520,29 @@ describe('Nightmare', function () {
         .end();
     });
 
-    it('should fail properly if request handler is present', function(done) {
+    it('should fail properly if request handler is present', function (done) {
       Nightmare.action(
         'monitorRequest',
-        function(name, options, parent, win, renderer, done) {
+        function (name, options, parent, win, renderer, done) {
           win.webContents.session.webRequest.onBeforeRequest(
             ['*://localhost:*'],
-            function(details, callback) {
+            function (details, callback) {
               callback({cancel: false});
             }
           );
           done();
         },
-        function(done) {
+        function (done) {
           done();
           return this;
         });
 
       Nightmare({webPreferences: {partition: 'test-partition'}})
         .goto('http://this-is-not-a-real-domain.tld')
-        .then(function() {
+        .then(function () {
           done(new Error('Navigation to an invalid domain succeeded'));
         })
-        .catch(function(error) {
+        .catch(function (error) {
           done();
         });
     });
@@ -549,7 +554,7 @@ describe('Nightmare', function () {
       gotoResult.should.be.an('object');
 
       var linkText = yield nightmare
-        .evaluate(function() {
+        .evaluate(function () {
           return document.querySelector('.a').textContent;
         });
       linkText.should.equal('LINK');
@@ -563,100 +568,100 @@ describe('Nightmare', function () {
       data.url.should.equal(fixture('navigation/a.html'));
 
       var linkText = yield nightmare
-        .evaluate(function() {
+        .evaluate(function () {
           return document.querySelector('.d').textContent;
         });
       linkText.should.equal('D');
     });
 
-    it('should fail immediately/not time out for 304 statuses', function() {
+    it('should fail immediately/not time out for 304 statuses', function () {
       return Nightmare({gotoTimeout: 500})
         .goto(fixture('not-modified'))
         .end()
-        .then(function() {
-          throw new Error('Navigating to a 304 should return an error');
-        },
-        function(error) {
-          if (error.code === -7) {
-            throw new Error('Navigating to a 304 should not time out');
-          }
-        });
+        .then(function () {
+            throw new Error('Navigating to a 304 should return an error');
+          },
+          function (error) {
+            if (error.code === -7) {
+              throw new Error('Navigating to a 304 should not time out');
+            }
+          });
     });
 
-    it('should not time out for aborted loads', function() {
+    it('should not time out for aborted loads', function () {
       Nightmare.action(
         'abortRequests',
-        function(name, options, parent, win, renderer, done) {
+        function (name, options, parent, win, renderer, done) {
           win.webContents.session.webRequest.onBeforeRequest(
             ['*://localhost:*'],
-            function(details, callback) {
+            function (details, callback) {
               setTimeout(() => win.webContents.stop(), 0);
               callback({cancel: false});
             }
           );
           done();
         },
-        function() {
+        function () {
           done();
         });
 
       return Nightmare({gotoTimeout: 500})
         .goto(fixture('navigation'))
         .end()
-        .then(function() {
-          throw new Error('An aborted page load should return an error');
-        },
-        function(error) {
-          if (error.code === -7) {
-            throw new Error('Aborting a page load should not time out');
-          }
-        });
+        .then(function () {
+            throw new Error('An aborted page load should return an error');
+          },
+          function (error) {
+            if (error.code === -7) {
+              throw new Error('Aborting a page load should not time out');
+            }
+          });
     });
 
-    describe('timeouts', function() {
-      it('should time out after 30 seconds of loading', function() {
+    describe('timeouts', function () {
+      it('should time out after 30 seconds of loading', function () {
         // allow this test to go particularly long
         this.timeout(40000);
         return nightmare.goto(fixture('wait')).should.be.rejected
-          .then(function(error) {
+          .then(function (error) {
             error.code.should.equal(-7);
           });
       });
 
-      it('should allow custom goto timeout on the constructor', function() {
+      it('should allow custom goto timeout on the constructor', function () {
         var startTime = Date.now();
         return Nightmare({gotoTimeout: 1000}).goto(fixture('wait')).end()
           .should.be.rejected
-          .then(function(error) {
+          .then(function (error) {
             // allow a few extra seconds for browser startup
             (startTime - Date.now()).should.be.below(3000);
           });
       });
 
-      it('should allow a timeout to succeed if DOM loaded', function() {
+      it('should allow a timeout to succeed if DOM loaded', function () {
         return Nightmare({gotoTimeout: 1000})
           .goto(fixture('navigation/hanging-resources.html'))
           .end()
-          .then(function(data) {
+          .then(function (data) {
             data.details.should.include('1000 ms');
           });
       });
 
-      it('should allow actions on a hanging page', function() {
+      it('should allow actions on a hanging page', function () {
         return Nightmare({gotoTimeout: 500})
           .goto(fixture('navigation/hanging-resources.html'))
           .evaluate(() => document.title)
           .end()
-          .then(function(title) {
+          .then(function (title) {
             title.should.equal('Hanging resource load');
           });
       });
 
-      it('should allow loading a new page after timing out', function() {
+      it('should allow loading a new page after timing out', function () {
         nightmare.end().then();
         nightmare = Nightmare({gotoTimeout: 1000});
         return nightmare.goto(fixture('wait')).should.be.rejected
-          .then(function() {
+          .then(function () {
             return nightmare.goto(fixture('navigation'));
           });
       });
@@ -676,7 +681,7 @@ describe('Nightmare', function () {
   describe('evaluation', function () {
     var nightmare;
 
-    beforeEach(function() {
+    beforeEach(function () {
       nightmare = Nightmare();
     });
 
@@ -731,7 +736,25 @@ describe('Nightmare', function () {
         .visible('.hidden');
       visible.should.be.false;
 
-        // non-existent element
+      // non-existent element
+      visible = yield nightmare
+        .visible('#asdfasdfasdf');
+      visible.should.be.false;
+    });
+
+    it('should check if an element is visible', function*() {
+      // visible element
+      var visible = yield nightmare
+        .goto(fixture('evaluation'))
+        .visible('h1.title');
+      visible.should.be.true;
+
+      // hidden element
+      visible = yield nightmare
+        .visible('.hidden');
+      visible.should.be.false;
+
+      // non-existent element
       visible = yield nightmare
         .visible('#asdfasdfasdf');
       visible.should.be.false;
@@ -746,37 +769,37 @@ describe('Nightmare', function () {
       title.should.equal('Evaluation -- testparameter');
     });
 
-    it('should capture invalid evaluate fn', function() {
+    it('should capture invalid evaluate fn', function () {
       return nightmare
         .goto(fixture('evaluation'))
         .evaluate('not_a_function')
         .should.be.rejected;
     });
 
-    describe('asynchronous', function(){
+    describe('asynchronous', function () {
       it('should allow for asynchronous evaluation with a callback', function*() {
         var asyncValue = yield nightmare
           .goto(fixture('evaluation'))
-          .evaluate(function(done) {
+          .evaluate(function (done) {
             setTimeout(() => done(null, 'nightmare'), 1000);
           });
 
-          asyncValue.should.equal('nightmare');
+        asyncValue.should.equal('nightmare');
       });
       it('should allow for arguments with asynchronous evaluation with a callback', function*() {
         var asyncValue = yield nightmare
           .goto(fixture('evaluation'))
-          .evaluate(function(str, done) {
+          .evaluate(function (str, done) {
             setTimeout(() => done(null, str), 1000);
           }, 'nightmare');
 
-          asyncValue.should.equal('nightmare');
+        asyncValue.should.equal('nightmare');
       });
 
       it('should allow for errors in asynchronous evaluation with a callback', function*() {
         yield nightmare
           .goto(fixture('evaluation'))
-          .evaluate(function(done) {
+          .evaluate(function (done) {
             setTimeout(() => done(new Error('nightmare')), 1000);
           }).should.be.rejected;
       });
@@ -785,39 +808,39 @@ describe('Nightmare', function () {
         this.timeout(40000);
         yield nightmare
           .goto(fixture('evaluation'))
-          .evaluate(function(done) {
+          .evaluate(function (done) {
             //don't call done
           }).should.be.rejected;
       });
 
       it('should allow for asynchronous evaluation with a promise', function*() {
-        var asyncValue =  yield nightmare
+        var asyncValue = yield nightmare
           .goto(fixture('evaluation'))
-          .evaluate(function() {
+          .evaluate(function () {
             return new Promise(resolve => {
               setTimeout(() => resolve('nightmare'), 1000);
             });
           })
 
-          asyncValue.should.equal('nightmare');
+        asyncValue.should.equal('nightmare');
       });
 
       it('should allow for arguments with asynchronous evaluation with a promise', function*() {
-        var asyncValue =  yield nightmare
+        var asyncValue = yield nightmare
           .goto(fixture('evaluation'))
-          .evaluate(function(str) {
+          .evaluate(function (str) {
             return new Promise(resolve => {
               setTimeout(() => resolve(str), 1000);
             });
           }, 'nightmare')
 
-          asyncValue.should.equal('nightmare');
+        asyncValue.should.equal('nightmare');
       });
 
       it('should allow for errors in asynchronous evaluation with a promise', function*() {
         yield nightmare
           .goto(fixture('evaluation'))
-          .evaluate(function() {
+          .evaluate(function () {
             return new Promise((resolve, reject) => {
               setTimeout(() => reject(new Error('nightmare')), 1000);
             });
@@ -828,7 +851,7 @@ describe('Nightmare', function () {
         this.timeout(40000);
         yield nightmare
           .goto(fixture('evaluation'))
-          .evaluate(function() {
+          .evaluate(function () {
             return new Promise((resolve, reject) => {
               return 'nightmare';
             });
@@ -840,7 +863,7 @@ describe('Nightmare', function () {
   describe('manipulation', function () {
     var nightmare;
 
-    beforeEach(function() {
+    beforeEach(function () {
       nightmare = Nightmare();
     });
 
@@ -916,7 +939,7 @@ describe('Nightmare', function () {
         })
         .goto(fixture('manipulation'))
         .type('input[type=search]', input)
-        .evaluate(function() {
+        .evaluate(function () {
           return document.querySelector('input[type=search]').value;
         });
 
@@ -924,43 +947,43 @@ describe('Nightmare', function () {
       events.should.equal(0);
     });
 
-    it('should type integer', function* () {
-        var input = 10;
-        var events = input.toString().length * 3;
+    it('should type integer', function*() {
+      var input = 10;
+      var events = input.toString().length * 3;
 
-        var value = yield nightmare
-          .on('console', function (type, input, message) {
-            if (type === 'log') events--;
-          })
-          .goto(fixture('manipulation'))
-          .type('input[type=search]', input)
-          .evaluate(function() {
-            return document.querySelector('input[type=search]').value;
-          });
+      var value = yield nightmare
+        .on('console', function (type, input, message) {
+          if (type === 'log') events--;
+        })
+        .goto(fixture('manipulation'))
+        .type('input[type=search]', input)
+        .evaluate(function () {
+          return document.querySelector('input[type=search]').value;
+        });
 
-        value.should.equal('10');
-        events.should.equal(0);
+      value.should.equal('10');
+      events.should.equal(0);
     });
 
 
-    it('should type object', function* () {
-        var input = {
-          foo: 'bar'
-        };
-        var events = input.toString().length * 3;
+    it('should type object', function*() {
+      var input = {
+        foo: 'bar'
+      };
+      var events = input.toString().length * 3;
 
-        var value = yield nightmare
-          .on('console', function (type, input, message) {
-            if (type === 'log') events--;
-          })
-          .goto(fixture('manipulation'))
-          .type('input[type=search]', input)
-          .evaluate(function() {
-            return document.querySelector('input[type=search]').value;
-          });
+      var value = yield nightmare
+        .on('console', function (type, input, message) {
+          if (type === 'log') events--;
+        })
+        .goto(fixture('manipulation'))
+        .type('input[type=search]', input)
+        .evaluate(function () {
+          return document.querySelector('input[type=search]').value;
+        });
 
-        value.should.equal('[object Object]');
-        events.should.equal(0);
+      value.should.equal('[object Object]');
+      events.should.equal(0);
     });
 
     it('should clear inputs', function*() {
@@ -974,7 +997,7 @@ describe('Nightmare', function () {
         .goto(fixture('manipulation'))
         .type('input[type=search]', input)
         .type('input[type=search]')
-        .evaluate(function() {
+        .evaluate(function () {
           return document.querySelector('input[type=search]').value;
         });
 
@@ -988,7 +1011,7 @@ describe('Nightmare', function () {
       var value = yield nightmare
         .goto(fixture('manipulation'))
         .insert('input[type=search]', input)
-        .evaluate(function() {
+        .evaluate(function () {
           return document.querySelector('input[type=search]').value;
         });
 
@@ -1000,21 +1023,21 @@ describe('Nightmare', function () {
       var value = yield nightmare
         .goto(fixture('manipulation'))
         .insert('input[type=search]')
-        .evaluate(function() {
+        .evaluate(function () {
           return document.querySelector('input[type=search]').value;
         });
 
       value.should.equal('');
     })
 
-    it('should not type in a nonexistent selector', function(){
+    it('should not type in a nonexistent selector', function () {
       return nightmare
         .goto(fixture('manipulation'))
         .type('does-not-exist', 'nightmare')
         .should.be.rejected;
     });
 
-    it('should not insert in a nonexistent selector', function(){
+    it('should not insert in a nonexistent selector', function () {
       return nightmare
         .goto(fixture('manipulation'))
         .insert('does-not-exist', 'nightmare')
@@ -1026,7 +1049,7 @@ describe('Nightmare', function () {
         .goto(fixture('manipulation'))
         .type('input[type=search]', 'test')
         .click('p')
-        .evaluate(function() {
+        .evaluate(function () {
           return document.activeElement === document.body;
         });
       isBody.should.be.true;
@@ -1038,13 +1061,13 @@ describe('Nightmare', function () {
         .click('div[data-test="test"]')
     });
 
-    it('should not allow for code injection with .click()', function(done){
+    it('should not allow for code injection with .click()', function (done) {
       var exception;
       nightmare
         .goto(fixture('manipulation'))
         .click('"]\'); document.title = \'injected title\'; (\'"')
         .catch((e) => exception = e)
-        .then(()=> nightmare.title())
+        .then(() => nightmare.title())
         .then((title) => {
           exception.should.exist;
           title.should.equal('Manipulation');
@@ -1054,7 +1077,9 @@ describe('Nightmare', function () {
 
     it('should not fail if selector no longer exists to blur after typing', function*() {
       yield nightmare
-        .on('console', function(){ console.log(arguments)})
+        .on('console', function () {
+          console.log(arguments)
+        })
         .goto(fixture('manipulation'))
         .type('input#disappears', 'nightmare');
     });
@@ -1163,10 +1188,10 @@ describe('Nightmare', function () {
     });
   });
 
-  describe('cookies', function() {
+  describe('cookies', function () {
     var nightmare;
 
-    beforeEach(function() {
+    beforeEach(function () {
       nightmare = Nightmare({webPreferences: {partition: 'test-partition'}})
         .goto(fixture('cookie'));
     });
@@ -1256,7 +1281,7 @@ describe('Nightmare', function () {
         }
       ])
 
-      var cookies = yield cookies.get({ path: '/cookie'})
+      var cookies = yield cookies.get({path: '/cookie'})
       cookies.length.should.equal(1)
 
       cookies[0].name.should.equal('nightmare')
@@ -1283,7 +1308,7 @@ describe('Nightmare', function () {
 
       yield cookies.clear('nightmare');
 
-      var cookies = yield cookies.get({ path: '/cookie' });
+      var cookies = yield cookies.get({path: '/cookie'});
 
       cookies.length.should.equal(0);
     });
@@ -1356,15 +1381,15 @@ describe('Nightmare', function () {
   describe('rendering', function () {
     var nightmare;
 
-    before(function(done) {
+    before(function (done) {
       mkdirp(tmp_dir, done)
     })
 
-    after(function(done) {
+    after(function (done) {
       rimraf(tmp_dir, done)
     })
 
-    beforeEach(function() {
+    beforeEach(function () {
       nightmare = Nightmare();
     });
 
@@ -1375,8 +1400,8 @@ describe('Nightmare', function () {
     it('should take a screenshot', function*() {
       yield nightmare
         .goto('https://github.com/')
-        .screenshot(tmp_dir+'/test.png');
-      var stats = fs.statSync(tmp_dir+'/test.png');
+        .screenshot(tmp_dir + '/test.png');
+      var stats = fs.statSync(tmp_dir + '/test.png');
       stats.size.should.be.at.least(1000);
     });
 
@@ -1391,16 +1416,16 @@ describe('Nightmare', function () {
     it('should take a clipped screenshot', function*() {
       yield nightmare
         .goto('https://github.com/')
-        .screenshot(tmp_dir+'/test-clipped.png', {
+        .screenshot(tmp_dir + '/test-clipped.png', {
           x: 200,
           y: 100,
           width: 100,
           height: 100
         });
-      var stats = fs.statSync(tmp_dir+'/test.png');
-      var statsClipped = fs.statSync(tmp_dir+'/test-clipped.png');
+      var stats = fs.statSync(tmp_dir + '/test.png');
+      var statsClipped = fs.statSync(tmp_dir + '/test-clipped.png');
       statsClipped.size.should.be.at.least(300);
-      stats.size.should.be.at.least(10*statsClipped.size);
+      stats.size.should.be.at.least(10 * statsClipped.size);
     });
 
     it('should buffer a clipped screenshot', function*() {
@@ -1424,8 +1449,12 @@ describe('Nightmare', function () {
         var image = yield nightmare
           .goto('about:blank')
           .viewport(100, 100)
-          .evaluate(function() { document.body.style.background = '#900'; })
-          .evaluate(function() { document.body.style.background = '#090'; })
+          .evaluate(function () {
+            document.body.style.background = '#900';
+          })
+          .evaluate(function () {
+            document.body.style.background = '#090';
+          })
           .screenshot();
 
         var png = new PNG();
@@ -1439,8 +1468,12 @@ describe('Nightmare', function () {
       var image = yield nightmare
         .goto('about:blank')
         .viewport(100, 100)
-        .evaluate(function() { document.body.style.background = '#900'; })
-        .evaluate(function() { document.body.style.background = '#090'; })
+        .evaluate(function () {
+          document.body.style.background = '#900';
+        })
+        .evaluate(function () {
+          document.body.style.background = '#090';
+        })
         .wait(1000)
         .screenshot();
 
@@ -1450,14 +1483,18 @@ describe('Nightmare', function () {
       firstPixel.should.deep.equal([0, 153, 0]);
     });
 
-    it('should not subscribe to frames until necessary', function() {
+    it('should not subscribe to frames until necessary', function () {
       var didSubscribe = false;
       var FrameManager = require('../lib/frame-manager.js');
       var manager = FrameManager({
         webContents: {
-          beginFrameSubscription: function() { didSubscribe = true; },
-          endFrameSubscription: function() {},
-          executeJavaScript: function() {}
+          beginFrameSubscription: function () {
+            didSubscribe = true;
+          },
+          endFrameSubscription: function () {
+          },
+          executeJavaScript: function () {
+          }
         }
       });
       didSubscribe.should.be.false;
@@ -1600,7 +1637,7 @@ describe('Nightmare', function () {
       var loaded = yield nightmare
         .goto(fixture('rendering'))
         .wait(2000)
-        .evaluate(function() {
+        .evaluate(function () {
           return !!window.jQuery;
         });
       loaded.should.be.at.least(true);
@@ -1610,32 +1647,32 @@ describe('Nightmare', function () {
       yield nightmare
         .goto(fixture('rendering'))
         .wait(2000)
-        .screenshot(tmp_dir+'/font-rendering.png');
-      var stats = fs.statSync(tmp_dir+'/font-rendering.png');
+        .screenshot(tmp_dir + '/font-rendering.png');
+      var stats = fs.statSync(tmp_dir + '/font-rendering.png');
       stats.size.should.be.at.least(1000);
     });
 
     it('should save as html', function*() {
       yield nightmare
         .goto(fixture('manipulation'))
-        .html(tmp_dir+'/test.html');
-      var stats = fs.statSync(tmp_dir+'/test.html');
+        .html(tmp_dir + '/test.html');
+      var stats = fs.statSync(tmp_dir + '/test.html');
       stats.should.be.ok;
     });
 
     it('should render a PDF', function*() {
       yield nightmare
         .goto(fixture('manipulation'))
-        .pdf(tmp_dir+'/test.pdf');
-      var stats = fs.statSync(tmp_dir+'/test.pdf');
+        .pdf(tmp_dir + '/test.pdf');
+      var stats = fs.statSync(tmp_dir + '/test.pdf');
       stats.size.should.be.at.least(1000);
     });
 
     it('should accept options to render a PDF', function*() {
       yield nightmare
         .goto(fixture('manipulation'))
-        .pdf(tmp_dir+'/test2.pdf', {printBackground: false});
-      var stats = fs.statSync(tmp_dir+'/test2.pdf');
+        .pdf(tmp_dir + '/test2.pdf', {printBackground: false});
+      var stats = fs.statSync(tmp_dir + '/test2.pdf');
       stats.size.should.be.at.least(1000);
     });
 
@@ -1651,10 +1688,10 @@ describe('Nightmare', function () {
     });
   });
 
-  describe('referer', function() {
+  describe('referer', function () {
     var nightmare;
 
-    beforeEach(function() {
+    beforeEach(function () {
       nightmare = Nightmare({webPreferences: {partition: 'test-partition'}});
     });
 
@@ -1671,7 +1708,7 @@ describe('Nightmare', function () {
         .evaluate(function () {
           return document.body.innerText;
         })
-        ;
+      ;
 
       referer.should.be.equal(returnedReferer.trim());
     })
@@ -1680,7 +1717,7 @@ describe('Nightmare', function () {
   describe('events', function () {
     var nightmare;
 
-    beforeEach(function() {
+    beforeEach(function () {
       nightmare = Nightmare();
     });
 
@@ -1737,13 +1774,14 @@ describe('Nightmare', function () {
         yield nightmare
           .goto('https://alskdjfasdfuuu.com');
       }
-      catch(error) {}
+      catch (error) {
+      }
       fired.should.be.true;
     });
 
-    it('should fire an event on javascript window.alert', function*(){
+    it('should fire an event on javascript window.alert', function*() {
       var alert = '';
-      nightmare.on('page', function(type, message){
+      nightmare.on('page', function (type, message) {
         if (type === 'alert') {
           alert = message;
         }
@@ -1751,16 +1789,16 @@ describe('Nightmare', function () {
 
       yield nightmare
         .goto(fixture('events'))
-        .evaluate(function(){
+        .evaluate(function () {
           alert('my alert');
         });
       alert.should.equal('my alert');
     });
 
-    it('should fire an event on javascript window.prompt', function*(){
+    it('should fire an event on javascript window.prompt', function*() {
       var prompt = '';
       var response = ''
-      nightmare.on('page', function(type, message, res){
+      nightmare.on('page', function (type, message, res) {
         if (type === 'prompt') {
           prompt = message;
           response = res
@@ -1769,17 +1807,17 @@ describe('Nightmare', function () {
 
       yield nightmare
         .goto(fixture('events'))
-        .evaluate(function(){
+        .evaluate(function () {
           prompt('my prompt', 'hello!');
         });
       prompt.should.equal('my prompt');
       response.should.equal('hello!');
     });
 
-    it('should fire an event on javascript window.confirm', function*(){
+    it('should fire an event on javascript window.confirm', function*() {
       var confirm = '';
       var response = ''
-      nightmare.on('page', function(type, message, res){
+      nightmare.on('page', function (type, message, res) {
         if (type === 'confirm') {
           confirm = message;
           response = res
@@ -1788,7 +1826,7 @@ describe('Nightmare', function () {
 
       yield nightmare
         .goto(fixture('events'))
-        .evaluate(function(){
+        .evaluate(function () {
           confirm('my confirm', 'hello!');
         });
       confirm.should.equal('my confirm');
@@ -1797,7 +1835,7 @@ describe('Nightmare', function () {
 
     it('should only fire once when using once', function*() {
       var events = 0;
-      nightmare.once('page', function(type, message) {
+      nightmare.once('page', function (type, message) {
         events++;
       });
 
@@ -1808,7 +1846,7 @@ describe('Nightmare', function () {
 
     it('should remove event listener', function*() {
       var events = 0;
-      var handler = function(type, message) {
+      var handler = function (type, message) {
         if (type === 'alert') {
           events++;
         }
@@ -1818,14 +1856,14 @@ describe('Nightmare', function () {
 
       yield nightmare
         .goto(fixture('events'))
-        .evaluate(function(){
+        .evaluate(function () {
           alert('alert one');
         });
 
       nightmare.removeListener('page', handler);
 
       yield nightmare
-        .evaluate(function(){
+        .evaluate(function () {
           alert('alert two');
         });
 
@@ -1837,22 +1875,22 @@ describe('Nightmare', function () {
     var nightmare;
     var server;
 
-    before(function(done) {
+    before(function (done) {
       // set up an HTTPS server using self-signed certificates -- Nightmare
       // will only be able to talk to it if 'ignore-certificate-errors' is set.
       server = https.createServer({
         key: fs.readFileSync(path.join(__dirname, 'files', 'server.key')),
         cert: fs.readFileSync(path.join(__dirname, 'files', 'server.crt'))
-      }, function(request, response) {
+      }, function (request, response) {
         response.end('ok\n');
-      }).listen(0, 'localhost', function() {
+      }).listen(0, 'localhost', function () {
         var address = server.address();
         server.url = `https://${address.address}:${address.port}`;
         done();
       });
     });
 
-    after(function() {
+    after(function () {
       server.close();
       server = null;
     });
@@ -1861,7 +1899,7 @@ describe('Nightmare', function () {
       yield nightmare.end();
     });
 
-    it('should set useragent', function* () {
+    it('should set useragent', function*() {
       nightmare = new Nightmare();
       var useragent = yield nightmare
         .useragent('firefox')
@@ -1872,7 +1910,7 @@ describe('Nightmare', function () {
       useragent.should.eql('firefox');
     });
 
-    it('should wait and fail with waitTimeout', function() {
+    it('should wait and fail with waitTimeout', function () {
       nightmare = Nightmare({waitTimeout: 254});
       return nightmare
         .goto(fixture('navigation'))
@@ -1880,7 +1918,7 @@ describe('Nightmare', function () {
         .should.be.rejected;
     });
 
-    it('should wait and fail with waitTimeout and a ms wait time', function() {
+    it('should wait and fail with waitTimeout and a ms wait time', function () {
       nightmare = Nightmare({waitTimeout: 254});
       return nightmare
         .goto(fixture('navigation'))
@@ -1888,7 +1926,7 @@ describe('Nightmare', function () {
         .should.be.rejected;
     });
 
-    it('should wait and fail with waitTimeout with queued functions', function() {
+    it('should wait and fail with waitTimeout with queued functions', function () {
       nightmare = Nightmare({waitTimeout: 254});
       return nightmare
         .goto(fixture('navigation'))
@@ -1905,7 +1943,7 @@ describe('Nightmare', function () {
         .evaluate(function () {
           return JSON.parse(document.querySelector('pre').innerHTML);
         });
-      data.should.eql({ name: 'my', pass: 'auth' });
+      data.should.eql({name: 'my', pass: 'auth'});
     });
 
     it('should fail on authentication failure', function*() {
@@ -1916,7 +1954,7 @@ describe('Nightmare', function () {
         .should.be.rejected;
     });
 
-    it('should be able to update authentication', function*(){
+    it('should be able to update authentication', function*() {
       nightmare = Nightmare();
       var data = yield nightmare
         .authentication('my', 'auth')
@@ -1926,11 +1964,11 @@ describe('Nightmare', function () {
         .evaluate(function () {
           return JSON.parse(document.querySelector('pre').innerHTML);
         });
-      data.should.eql({ name: 'my2', pass: 'auth2' });
+      data.should.eql({name: 'my2', pass: 'auth2'});
     });
 
     it('should set viewport', function*() {
-      var size = { width: 400, height: 300, useContentSize: true };
+      var size = {width: 400, height: 300, useContentSize: true};
       nightmare = Nightmare(size);
       var result = yield nightmare
         .goto(fixture('options'))
@@ -1958,7 +1996,7 @@ describe('Nightmare', function () {
     it('should set all headers', function*() {
       nightmare = Nightmare();
       var headers = yield nightmare
-        .header({ 'X-Foo': 'foo', 'X-Bar': 'bar'})
+        .header({'X-Foo': 'foo', 'X-Bar': 'bar'})
         .goto(fixture('headers'))
         .evaluate(function () {
           return JSON.parse(document.querySelector('pre').innerHTML);
@@ -1970,7 +2008,7 @@ describe('Nightmare', function () {
     it('should set headers for that request', function*() {
       nightmare = Nightmare();
       var headers = yield nightmare
-        .goto(fixture('headers'), { 'X-Nightmare-Header': 'hello world' })
+        .goto(fixture('headers'), {'X-Nightmare-Header': 'hello world'})
         .evaluate(function () {
           return JSON.parse(document.querySelector('pre').innerHTML);
         });
@@ -1989,7 +2027,7 @@ describe('Nightmare', function () {
     });
 
     it('should be constructable with paths', function*() {
-      nightmare = Nightmare({ paths:{ userData : __dirname } });
+      nightmare = Nightmare({paths: {userData: __dirname}});
       nightmare.should.be.ok;
     });
 
@@ -2004,30 +2042,30 @@ describe('Nightmare', function () {
       nightmare.should.be.ok;
       var touchEvents = yield nightmare
         .goto(server.url)
-        .evaluate(function() {
+        .evaluate(function () {
           return 'ontouchstart' in window;
         });
       touchEvents.should.be.true;
     });
 
     it('should support switches with values', function*() {
-      nightmare = Nightmare({ switches: { 'force-device-scale-factor': '5' } });
+      nightmare = Nightmare({switches: {'force-device-scale-factor': '5'}});
       nightmare.should.be.ok;
       var scaleFactor = yield nightmare
         .goto('about:blank')
-        .evaluate(function() {
+        .evaluate(function () {
           return window.devicePixelRatio;
         });
       scaleFactor.should.equal(5);
     });
 
     it('should allow to use external Electron', function*() {
-      nightmare = Nightmare({ electronPath: require('electron') });
+      nightmare = Nightmare({electronPath: require('electron')});
       nightmare.should.be.ok;
     });
 
     it('should allow to use external Promise', function*() {
-      nightmare = Nightmare({ Promise: require('bluebird') });
+      nightmare = Nightmare({Promise: require('bluebird')});
       nightmare.should.be.ok;
       const thenPromise = nightmare.goto('about:blank').then();
       thenPromise.should.be.an.instanceof(require('bluebird'));
@@ -2042,7 +2080,7 @@ describe('Nightmare', function () {
     });
   });
 
-  describe('Nightmare.Promise', function() {
+  describe('Nightmare.Promise', function () {
     var nightmare;
     afterEach(function*() {
       // `withDeprecationTracking()` messes w/ prototype constructor references
@@ -2072,7 +2110,7 @@ describe('Nightmare', function () {
 
     it('should not override per-instance Promise library', function*() {
       Nightmare.Promise.should.equal(Promise);
-      nightmare = Nightmare({ Promise: require('bluebird') });
+      nightmare = Nightmare({Promise: require('bluebird')});
       nightmare.should.be.ok;
       var thenPromise = nightmare.goto('about:blank').then();
       thenPromise.should.not.be.an.instanceof(Promise);
@@ -2081,14 +2119,14 @@ describe('Nightmare', function () {
     });
   })
 
-  describe('Nightmare.action(name, fn)', function() {
+  describe('Nightmare.action(name, fn)', function () {
     afterEach(function*() {
       yield nightmare.end();
     });
 
     it('should support custom actions', function*() {
       Nightmare.action('size', function (done) {
-        this.evaluate_now(function() {
+        this.evaluate_now(function () {
           var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
           var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
           return {
@@ -2131,14 +2169,14 @@ describe('Nightmare', function () {
       color.should.equal('rgb(0, 0, 0)')
     })
 
-    it('should support extending Electron', function*(){
+    it('should support extending Electron', function*() {
       Nightmare.action('bind',
-        function(ns, options, parent, win, renderer, done) {
+        function (ns, options, parent, win, renderer, done) {
           var sliced = require('sliced');
-          parent.on('bind', function(name) {
+          parent.on('bind', function (name) {
             if (renderer.listeners(name)
-              .length == 0) {
-              renderer.on(name, function() {
+                .length == 0) {
+              renderer.on(name, function () {
                 parent.emit.apply(parent, [name].concat(sliced(arguments, 1)))
               });
             }
@@ -2146,7 +2184,7 @@ describe('Nightmare', function () {
           });
           done();
         },
-        function() {
+        function () {
           var name = arguments[0],
             handler, done;
           if (arguments.length == 2) {
@@ -2166,11 +2204,11 @@ describe('Nightmare', function () {
       nightmare = new Nightmare();
       yield nightmare
         .goto('http://example.com')
-        .on('sample-event', function() {
+        .on('sample-event', function () {
           eventResults = arguments;
         })
         .bind('sample-event')
-        .evaluate(function() {
+        .evaluate(function () {
           ipc.send('sample-event', 'sample', 3, {
             sample: 'sample'
           });
@@ -2185,12 +2223,12 @@ describe('Nightmare', function () {
     it('should allow env variables', function*() {
       Nightmare.action('envtest',
         function (name, options, parent, win, renderer, done) {
-          parent.respondTo('envtest', function(done){
+          parent.respondTo('envtest', function (done) {
             done(null, process.env);
           });
           done();
         },
-        function(done) {
+        function (done) {
           this.child.call('envtest', done);
         }
       );
@@ -2208,8 +2246,8 @@ describe('Nightmare', function () {
     });
   })
 
-  describe('Nightmare.use', function() {
-    beforeEach(function() {
+  describe('Nightmare.use', function () {
+    beforeEach(function () {
       nightmare = Nightmare();
     });
 
@@ -2224,7 +2262,7 @@ describe('Nightmare', function () {
 
       tagName.should.equal('H1')
 
-      function select (tagname) {
+      function select(tagname) {
         return function (nightmare) {
           nightmare.evaluate(function (tagname) {
             return document.querySelector(tagname).tagName
@@ -2234,8 +2272,8 @@ describe('Nightmare', function () {
     })
   })
 
-  describe('custom preload script', function() {
-    beforeEach(function() {
+  describe('custom preload script', function () {
+    beforeEach(function () {
       nightmare = Nightmare();
     });
 
@@ -2252,7 +2290,7 @@ describe('Nightmare', function () {
 
       var value = yield nightmare
         .goto(fixture('preload'))
-        .evaluate(function() {
+        .evaluate(function () {
           return window.preload
         })
 
@@ -2260,12 +2298,15 @@ describe('Nightmare', function () {
     })
   })
 
-  describe('devtools', function(){
-    beforeEach(function() {
+  describe('devtools', function () {
+    beforeEach(function () {
       Nightmare.action('waitForDevTools',
-        function(ns, options, parent, win, renderer, done){
-          parent.on('waitForDevTools', function() {
-            function opened() { parent.emit('waitForDevTools', null, true); }
+        function (ns, options, parent, win, renderer, done) {
+          parent.on('waitForDevTools', function () {
+            function opened() {
+              parent.emit('waitForDevTools', null, true);
+            }
+
             if (win.webContents.isDevToolsOpened()) {
               return opened();
             }
@@ -2273,19 +2314,19 @@ describe('Nightmare', function () {
           });
           done();
         },
-        function(done){
+        function (done) {
           this.child.once('waitForDevTools', done);
           this.child.emit('waitForDevTools');
         });
-      nightmare = Nightmare({show:true, openDevTools:true});
+      nightmare = Nightmare({show: true, openDevTools: true});
 
     });
 
-    afterEach(function*(){
+    afterEach(function*() {
       yield nightmare.end();
     });
 
-    it('should open devtools', function*(){
+    it('should open devtools', function*() {
       var devToolsOpen = yield nightmare
         .goto(fixture('simple'))
         .waitForDevTools();
@@ -2294,11 +2335,11 @@ describe('Nightmare', function () {
     });
   });
 
-  describe('ipc', function(){
-    beforeEach(function() {
+  describe('ipc', function () {
+    beforeEach(function () {
       Nightmare.action('test',
-        function(_, __, parent, ___, ____, done) {
-          parent.respondTo('test', function(arg1, done) {
+        function (_, __, parent, ___, ____, done) {
+          parent.respondTo('test', function (arg1, done) {
             done.progress('one');
             done.progress('two');
             if (arg1 === 'error') {
@@ -2310,24 +2351,32 @@ describe('Nightmare', function () {
           });
           done();
         },
-        function(options, done) {
+        function (options, done) {
           var channel = this.child.call('test', options.arg || options, done);
-          if (options.onData) { channel.on('data', options.onData); }
-          if (options.onEnd) { channel.on('end', options.onEnd); }
+          if (options.onData) {
+            channel.on('data', options.onData);
+          }
+          if (options.onEnd) {
+            channel.on('end', options.onEnd);
+          }
         });
       Nightmare.action('noImplementation',
-        function(done) {
+        function (done) {
           this.child.call('noImplementation', done);
         });
       nightmare = Nightmare();
     });
 
-    afterEach(function*(){
+    afterEach(function*() {
       yield nightmare.end();
     });
 
-    it('should only make one IPC instance per process', function() {
-      var processStub = {send: function() {}, on: function(){}};
+    it('should only make one IPC instance per process', function () {
+      var processStub = {
+        send: function () {
+        }, on: function () {
+        }
+      };
       var ipc1 = IPC(processStub);
       var ipc2 = IPC(processStub);
       ipc1.should.equal(ipc2);
@@ -2338,12 +2387,12 @@ describe('Nightmare', function () {
       result.should.equal('Got x');
     });
 
-    it('should support errors across IPC', function(done) {
+    it('should support errors across IPC', function (done) {
       nightmare.test('error').then(
-        function() {
+        function () {
           done(new Error('Action succeeded when it should have errored!'));
         },
-        function() {
+        function () {
           done();
         });
     });
@@ -2358,32 +2407,32 @@ describe('Nightmare', function () {
       progress.should.deep.equal(['one', 'two', [null, 'Got x']]);
     });
 
-    it('should trigger error if no responder is registered', function(done) {
+    it('should trigger error if no responder is registered', function (done) {
       nightmare.noImplementation().then(
-        function() {
+        function () {
           done(new Error('Action succeeded when it should have errored!'));
         },
-        function() {
+        function () {
           done();
         });
     });
 
     it('should log a warning when replacing a responder', function*() {
       Nightmare.action('uhoh',
-        function(_, __, parent, ___, ____, done) {
-          parent.respondTo('test', function(done) {
+        function (_, __, parent, ___, ____, done) {
+          parent.respondTo('test', function (done) {
             done();
           });
           done();
         },
-        function(done) {
+        function (done) {
           this.child.call('test', done);
         });
 
       var logged = false;
       var instance = Nightmare();
-      instance._queue.splice(1, 0, [function(done) {
-        this.child.on('nightmare:ipc:debug', function(message) {
+      instance._queue.splice(1, 0, [function (done) {
+        this.child.on('nightmare:ipc:debug', function (message) {
           if (message.toLowerCase().indexOf('replacing') > -1) {
             logged = true;
           }
@@ -2398,7 +2447,7 @@ describe('Nightmare', function () {
     });
   });
 
-  describe('partitioning', function(){
+  describe('partitioning', function () {
     afterEach(function*() {
       yield nightmare.end();
     });
@@ -2408,7 +2457,7 @@ describe('Nightmare', function () {
       nightmare = Nightmare();
       yield nightmare
         .goto(fixture('simple'))
-        .evaluate(function() {
+        .evaluate(function () {
           window.localStorage.setItem('testing', 'This string should not persist between instances.')
         })
         .end();
@@ -2416,7 +2465,7 @@ describe('Nightmare', function () {
       nightmare = Nightmare();
       var value = yield nightmare
         .goto(fixture('simple'))
-        .evaluate(function() {
+        .evaluate(function () {
           return window.localStorage.getItem('testing') || ''
         });
 
@@ -2426,37 +2475,37 @@ describe('Nightmare', function () {
     // Setting the partition to null we default to the electron default behavior
     // which is to use a persistent storage between instances.
     it('should persist between instances if partition is null', function *() {
-      nightmare = Nightmare({ webPreferences: { partition: null } });
+      nightmare = Nightmare({webPreferences: {partition: null}});
       yield nightmare
         .goto(fixture('simple'))
-        .evaluate(function() {
+        .evaluate(function () {
           window.localStorage.setItem('testing', 'This string should persist between instances.')
         })
         .end();
 
-      nightmare = Nightmare({ webPreferences: { partition: null } });
+      nightmare = Nightmare({webPreferences: {partition: null}});
       var value = yield nightmare
         .goto(fixture('simple'))
-        .evaluate(function() {
+        .evaluate(function () {
           return window.localStorage.getItem('testing') || ''
         });
 
       value.should.equal('This string should persist between instances.');
     });
 
-    it('should not persist between instances if partition name doesnt start with "persist:"', function *(){
-      nightmare = Nightmare({ webPreferences: { partition: 'nonpersist' } });
+    it('should not persist between instances if partition name doesnt start with "persist:"', function *() {
+      nightmare = Nightmare({webPreferences: {partition: 'nonpersist'}});
       yield nightmare
         .goto(fixture('simple'))
-        .evaluate(function() {
+        .evaluate(function () {
           window.localStorage.setItem('testing', 'This string not should persist between instances.')
         })
         .end();
 
-      nightmare = Nightmare({ webPreferences: { partition: 'nonpersist' } });
+      nightmare = Nightmare({webPreferences: {partition: 'nonpersist'}});
       var value = yield nightmare
         .goto(fixture('simple'))
-        .evaluate(function() {
+        .evaluate(function () {
           return window.localStorage.getItem('testing') || ''
         });
 
@@ -2464,25 +2513,428 @@ describe('Nightmare', function () {
     });
 
     it('should persist between instances if partition starts with "persist:"', function *() {
-      nightmare = Nightmare({ webPreferences: { partition: 'persist: testing' } });
+      nightmare = Nightmare({webPreferences: {partition: 'persist: testing'}});
       yield nightmare
         .goto(fixture('simple'))
-        .evaluate(function() {
+        .evaluate(function () {
           window.localStorage.setItem('testing', 'This string should persist between instances.')
         })
         .end();
 
-      nightmare = Nightmare({ webPreferences: { partition: 'persist: testing' } });
+      nightmare = Nightmare({webPreferences: {partition: 'persist: testing'}});
       var value = yield nightmare
         .goto(fixture('simple'))
-        .evaluate(function() {
+        .evaluate(function () {
           return window.localStorage.getItem('testing') || ''
         });
 
       value.should.equal('This string should persist between instances.');
     });
-  })
+  });
+
+  describe('xpath selector', function () {
+
+    it('should provide useful errors for .click', function (done) {
+      var nightmare = Nightmare({useXpath: true});
+
+      nightmare
+        .goto('about:blank')
+        .click('//a[@class="not-here"]')
+        .catch(function (error) {
+          error.should.include('//a[@class="not-here"]');
+          done();
+        });
+    });
+
+    it('should provide useful errors for .mousedown', function (done) {
+      var nightmare = Nightmare({useXpath: true});
+
+      nightmare
+        .goto('about:blank')
+        .mousedown('//a[@class="not-here"]')
+        .catch(function (error) {
+          error.should.include('//a[@class="not-here"]');
+          done();
+        });
+    });
+
+    it('should provide useful errors for .mouseup', function (done) {
+      var nightmare = Nightmare({useXpath: true});
+
+      nightmare
+        .goto('about:blank')
+        .mouseup('//a[@class="not-here"]')
+        .catch(function (error) {
+          error.should.include('//a[@class="not-here"]');
+          done();
+        });
+    });
+
+    it('should provide useful errors for .mouseover', function (done) {
+      var nightmare = Nightmare({useXpath: true});
+
+      nightmare
+        .goto('about:blank')
+        .mouseover('//a[@class="not-here"]')
+        .catch(function (error) {
+          error.should.include('//a[@class="not-here"]');
+          done();
+        });
+    });
+
+    describe('navigation', function () {
+      var nightmare;
+
+      beforeEach(function () {
+        nightmare = Nightmare({
+          webPreferences: {partition: 'test-partition' + Math.random()},
+          loadTimeout: 45 * 1000,
+          waitTimeout: 5 * 1000,
+          useXpath: true
+        });
+      });
+
+      afterEach(function*() {
+        yield nightmare.end();
+        Nightmare.resetActions();
+      });
+
+      it('should click on a link and then go back', function*() {
+        var title = yield nightmare
+          .goto(fixture('navigation'))
+          .click('//a')
+          .title();
+
+        title.should.equal('A');
+
+        var title = yield nightmare
+          .back()
+          .title();
+
+        title.should.equal('Navigation')
+      });
+
+      it('should work for links that dont go anywhere', function*() {
+        var title = yield nightmare
+          .goto(fixture('navigation'))
+          .click('//a')
+          .title();
+
+        title.should.equal('A');
+
+        var title = yield nightmare
+          .click('//a[@class="d"]')
+          .title();
+
+        title.should.equal('A')
+      })
+
+      it('should click on a link, go back, and then go forward', function*() {
+        yield nightmare
+          .goto(fixture('navigation'))
+          .click('//a')
+          .back()
+          .forward();
+      });
+
+      it('should wait until element is present', function*() {
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait('//a');
+      });
+
+      it('should soft timeout if element does not appear', function*() {
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait('//ul', 150);
+      });
+
+      it('should wait until element is present with a modified poll interval', function*() {
+        nightmare = Nightmare({
+          pollInterval: 50,
+          useXpath: true
+        });
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait('//a');
+      });
+
+    });
+
+    describe('evaluation', function () {
+      var nightmare;
+
+      beforeEach(function () {
+        nightmare = Nightmare({useXpath: true});
+      });
+
+      afterEach(function*() {
+        yield nightmare.end();
+      });
+
+      it('should check if the selector exists', function*() {
+        // existent element
+        var exists = yield nightmare
+          .goto(fixture('evaluation'))
+          .exists('//h1[@class="title"]');
+        exists.should.be.true;
+
+        // non-existent element
+        exists = yield nightmare.exists('//a[@class="blahblahblah"]');
+        exists.should.be.false;
+      });
+
+      it('should check if an element is visible', function*() {
+        // visible element
+        var visible = yield nightmare
+          .goto(fixture('evaluation'))
+          .visible('//h1[@class="title"]');
+        visible.should.be.true;
+
+        // hidden element
+        visible = yield nightmare
+          .visible('//div[@class="hidden"]');
+        visible.should.be.false;
+
+        // non-existent element
+        visible = yield nightmare
+          .visible('//[@id="asdfasdfasdf"]');
+        visible.should.be.false;
+      });
+
+    });
+
+    describe('manipulation', function () {
+      var nightmare;
+
+      beforeEach(function () {
+        nightmare = Nightmare({useXpath: true});
+      });
+
+      afterEach(function*() {
+        yield nightmare.end();
+      });
+
+      it('should type', function*() {
+        var input = 'nightmare'
+        var events = input.length * 3
+
+        var value = yield nightmare
+          .on('console', function (type, input, message) {
+            if (type === 'log') events--;
+          })
+          .goto(fixture('manipulation'))
+          .type('//input[@type="search"]', input)
+          .evaluate(function () {
+            return document.querySelector('input[type=search]').value;
+          });
+
+        value.should.equal('nightmare');
+        events.should.equal(0);
+      });
+
+      it('should type integer', function*() {
+        var input = 10;
+        var events = input.toString().length * 3;
+
+        var value = yield nightmare
+          .on('console', function (type, input, message) {
+            if (type === 'log') events--;
+          })
+          .goto(fixture('manipulation'))
+          .type('//input[@type="search"]', input)
+          .evaluate(function () {
+            return document.querySelector('input[type=search]').value;
+          });
+
+        value.should.equal('10');
+        events.should.equal(0);
+      });
+
+
+      it('should type object', function*() {
+        var input = {
+          foo: 'bar'
+        };
+        var events = input.toString().length * 3;
+
+        var value = yield nightmare
+          .on('console', function (type, input, message) {
+            if (type === 'log') events--;
+          })
+          .goto(fixture('manipulation'))
+          .type('//input[@type="search"]', input)
+          .evaluate(function () {
+            return document.querySelector('input[type=search]').value;
+          });
+
+        value.should.equal('[object Object]');
+        events.should.equal(0);
+      });
+
+      it('should clear inputs', function*() {
+        var input = 'nightmare'
+        var events = input.length * 3
+
+        var value = yield nightmare
+          .on('console', function (type, input, message) {
+            if (type === 'log') events--;
+          })
+          .goto(fixture('manipulation'))
+          .type('//input[@type="search"]', input)
+          .type('//input[@type="search"]')
+          .evaluate(function () {
+            return document.querySelector('input[type=search]').value;
+          });
+
+        value.should.equal('');
+        events.should.equal(0);
+      });
+
+      it('should support inserting text', function*() {
+        var input = 'nightmare insert typing';
+
+        var value = yield nightmare
+          .goto(fixture('manipulation'))
+          .insert('//input[@type="search"]', input)
+          .evaluate(function () {
+            return document.querySelector('input[type=search]').value;
+          });
+
+        value.should.equal('nightmare insert typing');
+      });
+
+      it('should support clearing inserted text', function*() {
+
+        var value = yield nightmare
+          .goto(fixture('manipulation'))
+          .insert('//input[@type="search"]')
+          .evaluate(function () {
+            return document.querySelector('input[type=search]').value;
+          });
+
+        value.should.equal('');
+      });
+
+      it('should not type in a nonexistent selector', function () {
+        return nightmare
+          .goto(fixture('manipulation'))
+          .type('//[@class="does-not-exist"]', 'nightmare')
+          .should.be.rejected;
+      });
+
+      it('should not insert in a nonexistent selector', function () {
+        return nightmare
+          .goto(fixture('manipulation'))
+          .insert('//[@class="does-not-exist"]', 'nightmare')
+          .should.be.rejected;
+      });
+
+      it('should blur the active element when something is clicked', function*() {
+        var isBody = yield nightmare
+          .goto(fixture('manipulation'))
+          .type('//input[@type="search"]', 'test')
+          .click('//p')
+          .evaluate(function () {
+            return document.activeElement === document.body;
+          });
+        isBody.should.be.true;
+      });
+
+      it('should allow for clicking on elements with attribute selectors', function*() {
+        yield nightmare
+          .goto(fixture('manipulation'))
+          .click('//div[@data-test="test"]')
+      });
+
+      it('should not fail if selector no longer exists to blur after typing', function*() {
+        yield nightmare
+          .on('console', function () {
+            console.log(arguments)
+          })
+          .goto(fixture('manipulation'))
+          .type('//input[@id="disappears"]', 'nightmare');
+      });
+
+      it('should type and click', function*() {
+        var title = yield nightmare
+          .goto(fixture('manipulation'))
+          .type('//input[@type="search"]', 'nightmare')
+          .click('//button[@type="submit"]')
+          .wait(500)
+          .title();
+
+        title.should.equal('Manipulation - Results');
+      });
+
+      it('should type and click several times', function*() {
+        var title = yield nightmare
+          .goto(fixture('manipulation'))
+          .type('//input[@type="search"]', 'github nightmare')
+          .click('//button[@type="submit"]')
+          .wait(500)
+          .click('//a')
+          .wait(500)
+          .title();
+        title.should.equal('Manipulation - Result - Nightmare');
+      });
+
+      it('should checkbox', function*() {
+        var checkbox = yield nightmare
+          .goto(fixture('manipulation'))
+          .check('//input[@type="checkbox"]')
+          .evaluate(function () {
+            return document.querySelector('input[type=checkbox]').checked;
+          });
+        checkbox.should.be.true;
+      });
+
+      it('should uncheck', function*() {
+        var checkbox = yield nightmare
+          .goto(fixture('manipulation'))
+          .check('//input[@type="checkbox"]')
+          .uncheck('//input[@type="checkbox"]')
+          .evaluate(function () {
+            return document.querySelector('input[type=checkbox]').checked;
+          });
+        checkbox.should.be.false;
+      });
+
+      it('should select', function*() {
+        var select = yield nightmare
+          .goto(fixture('manipulation'))
+          .select('//select', '//option[@value="b"]')
+          .evaluate(function () {
+            return document.querySelector('select').value;
+          });
+        select.should.equal('b');
+      });
+
+      it('should hover over an element', function*() {
+        var color = yield nightmare
+          .goto(fixture('manipulation'))
+          .mouseover('//h1')
+          .evaluate(function () {
+            var element = document.querySelector('h1');
+            return element.style.background;
+          });
+        color.should.equal('rgb(102, 255, 102)');
+      });
+
+      it('should mousedown on an element', function*() {
+        var color = yield nightmare
+          .goto(fixture('manipulation'))
+          .mousedown('//h1')
+          .evaluate(function () {
+            var element = document.querySelector('h1');
+            return element.style.background;
+          });
+        color.should.equal('rgb(255, 0, 0)');
+      });
+    });
+  });
 });
+
 
 /**
  * Generate a URL to a specific fixture.
@@ -2500,9 +2952,9 @@ function fixture(path) {
  */
 
 function withDeprecationTracking(constructor) {
-  var newConstructor = function() {
+  var newConstructor = function () {
     var instance = constructor.apply(this, arguments);
-    instance.queue((done)=>{
+    instance.queue((done) => {
       instance.proc.stderr.pipe(split()).on('data', (line) => {
         if (line.indexOf('deprecated') > -1) {
           newConstructor.__deprecations.add(line);
@@ -2513,7 +2965,7 @@ function withDeprecationTracking(constructor) {
     return instance;
   };
   newConstructor.__deprecations = new Set();
-  newConstructor.assertNoDeprecations = function() {
+  newConstructor.assertNoDeprecations = function () {
     var deprecations = Nightmare.__deprecations;
     if (deprecations.size) {
       var plural = deprecations.size === 1 ? '' : 's';
@@ -2555,9 +3007,13 @@ Nightmare.resetActions = function () {
 /**
  * Simple assertion for running processes
  */
-chai.Assertion.addProperty('process', function() {
+chai.Assertion.addProperty('process', function () {
   var running = true;
-  try { process.kill(this._obj, 0); } catch(e) { running = false; }
+  try {
+    process.kill(this._obj, 0);
+  } catch (e) {
+    running = false;
+  }
   this.assert(
     running,
     'expected process ##{this} to be running',
