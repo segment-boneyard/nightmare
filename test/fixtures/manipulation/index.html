@@ -5,6 +5,7 @@
   </head>
   <body>
     <h1>Hello World!</h1>
+    <h2>this is nightmare</h2>
     <form action="results.html">
       <input type="search" name="q">
       <input type="checkbox" name="advanced">
@@ -82,6 +83,7 @@
   </body>
   <script>
   var h1 = document.getElementsByTagName("h1");
+  var h2 = document.getElementsByTagName("h2");
   var search = document.querySelector('input[type=search]')
   var disappears = document.querySelector('#disappears');
 
@@ -102,6 +104,14 @@
 
   h1[0].addEventListener("mouseup", function(){
     this.style.background = "#0000ff";
+  })
+
+  h2[0].addEventListener("mouseover", function(){
+    this.style.background = "#00ffff";
+  })
+
+  h2[0].addEventListener("mouseout", function(){
+    this.style.background = "";
   })
 
   search.addEventListener("keyup", function(e) {
