@@ -44,7 +44,9 @@
     "multer": "1.1.0",
     "pngjs": "^2.2.0",
     "serve-static": "^1.10.0",
-    "split": "^1.0.0"
+    "split": "^1.0.0",
+    "file-type": "^4.0.0",
+    "read-chunk": "^2.0.0"
   },
   "engines": {
     "node":">=4.0.0"

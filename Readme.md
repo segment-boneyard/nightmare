@@ -436,7 +436,8 @@ Similar to `.on()`, but captures page events with the callback one time.
 Removes a given listener callback for an event.
 
 #### .screenshot([path][, clip])
-Takes a screenshot of the current page. Useful for debugging. The output is always a `png`. Both arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
+Takes a screenshot of the current page. Useful for debugging. The output can be a `png` or a `jpg/jpeg` according to the file extension.The default mime type is `png`. All arguments are optional. If `path` is provided, it saves the image to the disk. Otherwise it returns a `Buffer` of the image data.  If `compression` is provided, it will compress to the specified compression. Otherwise it will default to `90`.  Note that compression is only available with `jpg/jpeg`. If `clip` is provided (as [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#wincapturepagerect-callback)), the image will be clipped to the rectangle.
+
 
 #### .html(path, saveType)
 Save the current page as html as files to disk at the given path. Save type options are [here](https://github.com/atom/electron/blob/master/docs/api/web-contents.md#webcontentssavepagefullpath-savetype-callback).

@@ -19,6 +19,8 @@ var PNG = require('pngjs').PNG;
 var should = chai.should();
 var split = require('split');
 var asPromised = require('chai-as-promised');
+var fileType = require('file-type');
+var readChunk = require('read-chunk');
 
 chai.use(asPromised);
 
@@ -1372,6 +1374,76 @@ describe('Nightmare', function () {
       yield nightmare.end();
     });
 
+    /* screenshot jpeg */
+    it('should take a jpeg screenshot', function*() {
+      yield nightmare
+        .goto('https://github.com/')
+        .screenshot(tmp_dir+'/test.jpg');
+      var stats = fs.statSync(tmp_dir+'/test.jpg');
+      var fileChunk = readChunk.sync(tmp_dir+'/test.jpg',0,4100);
+      var mime = fileType(fileChunk).mime;
+      mime.should.equal('image/jpeg');
+      stats.size.should.be.at.least(1000);
+    });
+
+    it('should buffer a jpeg screenshot', function*() {
+      var image = yield nightmare
+        .goto('https://github.com')
+        .screenshot(90);
+      var stats = fs.statSync(tmp_dir+'/test.jpg');
+      Buffer.isBuffer(image).should.be.true;
+      var mime = fileType(image).mime;
+      mime.should.equal('image/jpeg');
+      image.length.should.be.at.least(1000);
+    });
+    it('should take a clipped jpeg screenshot', function*() {
+      yield nightmare
+        .goto('https://github.com/')
+        .screenshot(tmp_dir+'/test-clipped.jpg',5, {
+          x: 200,
+          y: 100,
+          width: 100,
+          height: 100
+        });
+      var stats = fs.statSync(tmp_dir+'/test.jpg');
+      var statsClipped = fs.statSync(tmp_dir+'/test-clipped.jpg');
+      statsClipped.size.should.be.at.least(300);
+      stats.size.should.be.at.least(10*statsClipped.size);
+    });
+    it('should take a clipped jpeg screenshot with default compression', function*() {
+      yield nightmare
+        .goto('https://github.com/')
+        .screenshot(tmp_dir+'/test-clipped.jpg', {
+          x: 200,
+          y: 100,
+          width: 100,
+          height: 100
+        });
+      var stats = fs.statSync(tmp_dir+'/test.jpg');
+      var statsClipped = fs.statSync(tmp_dir+'/test-clipped.jpg');
+      statsClipped.size.should.be.at.least(300);
+      stats.size.should.be.at.least(10*statsClipped.size);
+    });
+
+    it('should buffer a clipped jpeg screenshot', function*() {
+      var image = yield nightmare
+        .goto('https://github.com')
+        .screenshot(90,{
+          x: 200,
+          y: 100,
+          width: 100,
+          height: 100
+        });
+      Buffer.isBuffer(image).should.be.true;
+      var statsClipped = fs.statSync(tmp_dir+'/test-clipped.jpg');
+      image.length.should.be.equal(statsClipped.size);
+      var mime = fileType(image).mime;
+      mime.should.equal('image/jpeg');
+      image.length.should.be.at.least(300);
+    });
+
+/* screenshot png */
+
     it('should take a screenshot', function*() {
       yield nightmare
         .goto('https://github.com/')
@@ -1414,6 +1486,28 @@ describe('Nightmare', function () {
         });
       Buffer.isBuffer(image).should.be.true;
       image.length.should.be.at.least(300);
+    });
+
+    it('should create a png screenshot when the extension is unknown ', function*() {
+      var image = yield nightmare
+        .goto('https://github.com')
+        .screenshot(tmp_dir+"/test.xyz");
+      var statsUnknown = fs.statSync(tmp_dir+'/test.xyz');
+      statsUnknown.size.should.be.at.least(1000);
+      fileChunk= readChunk.sync(tmp_dir+'/test.xyz',0,4100);
+      mime = fileType(fileChunk).mime;
+      mime.should.equal('image/png');
+    });
+
+    it('should create a png screenshot when there is no extension', function*() {
+      var image = yield nightmare
+        .goto('https://github.com')
+        .screenshot(tmp_dir+"/testNoExt");
+      var statsUnknown = fs.statSync(tmp_dir+'/testNoExt');
+      statsUnknown.size.should.be.at.least(1000);
+      fileHandler= readChunk.sync(tmp_dir+'/testNoExt',0,4100);
+      mime = fileType(fileHandler).mime;
+      mime.should.equal('image/png');
     });
 
     // repeat this test 3 times, since the concern here is non-determinism in
