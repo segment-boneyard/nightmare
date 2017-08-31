@@ -612,7 +612,7 @@ es6Promise.isFulfilled() // throws: `TypeError: es6EndPromise.isFulfilled is not
 bluebirdPromise.isFulfilled() // returns: `true | false`
 ```
 
-If you're using [ES6 with Enhanced Object Literals](benmvp.com/learning-es6-enhanced-object-literals/) then specifying your custom Promise library is even easier:
+If you're using [ES6 with Enhanced Object Literals](http://benmvp.com/learning-es6-enhanced-object-literals/) then specifying your custom Promise library is even easier:
 
 ```js
 var Nightmare = require('nightmare');
