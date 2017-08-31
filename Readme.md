@@ -696,6 +696,8 @@ Nightmare()
 
 ...would clear the browser’s cache before navigating to `example.org`.
 
+See [this document](https://github.com/rosshinkley/nightmare-examples/blob/master/docs/beginner/action.md) for more details on creating custom actions.
+
 #### .use(plugin)
 
 `nightmare.use` is useful for reusing a set of tasks on an instance. Check out [nightmare-swiftly](https://github.com/segmentio/nightmare-swiftly) for some examples.
