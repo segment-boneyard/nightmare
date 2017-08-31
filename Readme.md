@@ -387,7 +387,7 @@ Wait until the element `selector` is present e.g. `.wait('#pay-button')`
 #### .wait(fn[, arg1, arg2,...])
 Wait until the `fn` evaluated on the page with `arg1, arg2,...` returns `true`. All the `args` are optional. See `.evaluate()` for usage.
 
-#### .header([header, value])
+#### .header(header, value)
 Add a header override for all HTTP requests.  If `header` is undefined, the header overrides will be reset.
 
 ### Extract from the Page
