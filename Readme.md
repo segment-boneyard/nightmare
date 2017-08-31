@@ -297,6 +297,9 @@ Mouseup the `selector` element once.
 #### .mouseover(selector)
 Mouseover the `selector` element once.
 
+#### .mouseout(selector)
+Mouseout the `selector` element once.
+
 #### .type(selector[, text])
 Enters the `text` provided into the `selector` element.  Empty or falsey values provided for `text` will clear the selector's value.
 
