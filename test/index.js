@@ -183,7 +183,7 @@ describe('Nightmare', function () {
 
     return Promise.all([check1, check2]);
   });
-  
+
   it('should successfully end on pages setting onunload or onbeforeunload', function(done) {
     var nightmare = Nightmare();
     nightmare.goto(fixture('unload'))
@@ -2502,6 +2502,14 @@ describe('Nightmare', function () {
       value.should.equal('This string should persist between instances.');
     });
   })
+
+  describe('in-process', function() {
+      it('some in process test', function* () {
+          yield nightmare
+              .goto(fixture('in-process'))
+      });
+  })
+
 });
 
 /**
