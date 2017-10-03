@@ -760,7 +760,7 @@ $ npm install --save nightmare
 #### Execution
 Nightmare is a node module that can be used in a Node.js script or module. Here's a simple script to open a web page:
 ```js
-import Nightmare from 'nightmare',
+import Nightmare from 'nightmare';
 
 const nightmare = Nightmare();
 
