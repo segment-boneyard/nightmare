@@ -1,0 +1,92 @@
+test: &test
+  working_directory: ~/repo
+  steps:
+    - checkout
+    - run:
+        name: Print system information
+        command: |
+          echo "node $(node -v)"
+          echo "npm v$(npm --version)"
+    - run:
+        name: Install dependencies
+        command: sudo apt-get update && sudo apt-get install dbus-x11 -y
+    - restore_cache:
+        keys:
+          - v1-npm-deps-{{ checksum "package.json" }}
+          - v1-npm-deps
+    - run:
+        name: npm install
+        command: npm install
+    - save_cache:
+        key: v1-npm-deps-{{ checksum "package.json" }}
+        paths:
+          - node_modules
+    - run:
+        name: npm test
+        command: npm test
+
+publish: &publish
+  working_directory: ~/repo
+  steps:
+    - checkout
+    - run:
+        name: Print system information
+        command: |
+          echo "node $(node -v)"
+          echo "npm v$(npm --version)"
+    - run:
+        name: Install dependencies
+        command: sudo apt-get update && sudo apt-get install dbus-x11 -y
+    # Do not explicitly use caching when publishing
+    - run:
+        name: npm install
+        command: npm install
+    - run:
+        name: set npm auth token
+        command: npm config set "//registry.npmjs.org/:_authToken" $NPM_AUTH
+    - run:
+        name: npm publish
+        command: npm publish
+
+version: 2
+jobs:
+  test-node4:
+    <<: *test
+    docker:
+      - image: circleci/node:4-browsers
+  test-node6:
+    <<: *test
+    docker:
+      - image: circleci/node:6-browsers
+  test-node7:
+    <<: *test
+    docker:
+      - image: circleci/node:7-browsers
+  test-node-latest:
+    <<: *test
+    docker:
+      - image: circleci/node:latest-browsers
+  publish:
+    <<: *publish
+    docker:
+      - image: circleci/node:6-browsers
+
+workflows:
+  version: 2
+  build-test-and-publish:
+    jobs:
+      - test-node4
+      - test-node6
+      - test-node7
+      - test-node-latest
+      - publish:
+          filters:
+            tags:
+              only: '/v?[0-9]+(\.[0-9]+)*(-.+)?/'
+            branches:
+              ignore: /.*/
+          requires:
+            - test-node4
+            - test-node6
+            - test-node7
+            - test-node-latest
