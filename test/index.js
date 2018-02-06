@@ -1444,18 +1444,20 @@ describe('Nightmare', function () {
         var image = yield nightmare
           .goto('about:blank')
           .viewport(100, 100)
-          .evaluate(function() { document.body.style.background = '#900'; })
           .evaluate(function() { document.body.style.background = '#090'; })
+          .evaluate(function() { document.body.style.background = '#090'; })
+          .wait(1000)
           .screenshot();
 
         var png = new PNG();
         var imageData = yield png.parse.bind(png, image);
         var firstPixel = Array.from(imageData.data.slice(0, 3));
         firstPixel.should.deep.equal([0, 153, 0]);
+        
       });
     }
 
-    it('should screenshot an an idle page', function*() {
+    it('should screenshot an idle page', function*() {
       var image = yield nightmare
         .goto('about:blank')
         .viewport(100, 100)
