@@ -54,7 +54,7 @@ nightmare
 You can run this with:
 
 ```shell
-npm install --save nightmare
+npm install --save-dev nightmare
 node example.js
 ```
 
