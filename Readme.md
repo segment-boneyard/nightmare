@@ -86,9 +86,6 @@ describe('test duckduckgo search results', () => {
 
 You can see examples of every function [in the tests here](https://github.com/segmentio/nightmare/blob/master/test/index.js).
 
-Please note that the examples are using the [mocha-generators](https://www.npmjs.com/package/mocha-generators)
-package for Mocha, which enables the support for generators.
-
 To get started with UI Testing, check out this [quick start guide](https://segment.com/blog/ui-testing-with-nightmare).
 
 ### To install dependencies
@@ -226,6 +223,15 @@ Defines the number of times to retry an authentication when set up with `.authen
 ```js
 const nightmare = Nightmare({
   maxAuthRetries: 3
+});
+```
+
+#### certificateSubjectName
+A string to determine the client certificate selected by electron. If this options is set, the [`select-client-certificate`](https://github.com/electron/electron/blob/master/docs/api/app.md#event-select-client-certificate) event will be set to loop through the certificateList and find the first certificate that matches `subjectName` on the electron [`Certificate Object`](https://electronjs.org/docs/api/structures/certificate).
+
+```js
+const nightmare = Nightmare({
+  certificateSubjectName: "tester"
 });
 ```
 
