@@ -1,0 +1,48 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/home/plur/.nvm/versions/node/v6.12.3/bin/node',
+1 verbose cli   '/home/plur/.nvm/versions/node/v6.12.3/bin/npm',
+1 verbose cli   'run',
+1 verbose cli   'test' ]
+2 info using npm@3.10.10
+3 info using node@v6.12.3
+4 verbose run-script [ 'pretest', 'test', 'posttest' ]
+5 info lifecycle nightmare@2.10.0~pretest: nightmare@2.10.0
+6 silly lifecycle nightmare@2.10.0~pretest: no script for pretest, continuing
+7 info lifecycle nightmare@2.10.0~test: nightmare@2.10.0
+8 verbose lifecycle nightmare@2.10.0~test: unsafe-perm in lifecycle true
+9 verbose lifecycle nightmare@2.10.0~test: PATH: /home/plur/.nvm/versions/node/v6.12.3/lib/node_modules/npm/bin/node-gyp-bin:/home/plur/code/nightmare/node_modules/.bin:/home/plur/google-cloud-sdk/bin:/home/plur/git-subrepo/lib:/home/plur/.nvm/versions/node/v6.12.3/bin:~/.local/bin:/usr/local/heroku/bin:/home/plur/Android/Sdk/tools:/usr/lib/jvm/default-java:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+10 verbose lifecycle nightmare@2.10.0~test: CWD: /home/plur/code/nightmare
+11 silly lifecycle nightmare@2.10.0~test: Args: [ '-c', 'make test' ]
+12 silly lifecycle nightmare@2.10.0~test: Returned: code: 2  signal: null
+13 info lifecycle nightmare@2.10.0~test: Failed to exec test script
+14 verbose stack Error: nightmare@2.10.0 test: `make test`
+14 verbose stack Exit status 2
+14 verbose stack     at EventEmitter.<anonymous> (/home/plur/.nvm/versions/node/v6.12.3/lib/node_modules/npm/lib/utils/lifecycle.js:255:16)
+14 verbose stack     at emitTwo (events.js:106:13)
+14 verbose stack     at EventEmitter.emit (events.js:191:7)
+14 verbose stack     at ChildProcess.<anonymous> (/home/plur/.nvm/versions/node/v6.12.3/lib/node_modules/npm/lib/utils/spawn.js:40:14)
+14 verbose stack     at emitTwo (events.js:106:13)
+14 verbose stack     at ChildProcess.emit (events.js:191:7)
+14 verbose stack     at maybeClose (internal/child_process.js:920:16)
+14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:230:5)
+15 verbose pkgid nightmare@2.10.0
+16 verbose cwd /home/plur/code/nightmare
+17 error Linux 4.4.0-112-generic
+18 error argv "/home/plur/.nvm/versions/node/v6.12.3/bin/node" "/home/plur/.nvm/versions/node/v6.12.3/bin/npm" "run" "test"
+19 error node v6.12.3
+20 error npm  v3.10.10
+21 error code ELIFECYCLE
+22 error nightmare@2.10.0 test: `make test`
+22 error Exit status 2
+23 error Failed at the nightmare@2.10.0 test script 'make test'.
+23 error Make sure you have the latest version of node.js and npm installed.
+23 error If you do, this is most likely a problem with the nightmare package,
+23 error not with npm itself.
+23 error Tell the author that this fails on your system:
+23 error     make test
+23 error You can get information on how to open an issue for this project with:
+23 error     npm bugs nightmare
+23 error Or if that isn't available, you can get their info via:
+23 error     npm owner ls nightmare
+23 error There is likely additional logging output above.
+24 verbose exit [ 1, true ]
