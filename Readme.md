@@ -111,10 +111,6 @@ Nightmare is intended to be run on NodeJS 4.x or higher.
 
 Creates a new instance that can navigate around the web. The available options are [documented here](https://github.com/atom/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions), along with the following nightmare-specific options.
 
-#### Nightmare.version
-
-Returns the version of Nightmare.
-
 ##### waitTimeout (default: 30s)
 
 Throws an exception if the `.wait()` didn't return `true` within the set timeframe.
