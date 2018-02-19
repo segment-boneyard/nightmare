@@ -410,6 +410,16 @@ describe('Nightmare', function () {
           }).should.be.rejected;
       });
 
+      it('should reject timeout on wait with selector', function*() {
+        yield nightmare
+          .goto(fixture('navigation'))
+          .wait('#non-existent')
+          .should.be.rejected
+          .then(function(error) {
+            error.message.should.include('#non-existent');
+          });
+      });
+
       it('should run multiple times before timeout on wait', function*() {
         yield nightmare
           .goto(fixture('navigation'))
