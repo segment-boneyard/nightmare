@@ -908,7 +908,7 @@ Only logs
 
 * [Nightmarishly good scraping](https://hackernoon.com/nightmarishly-good-scraping-with-nightmare-js-and-async-await-b7b20a38438f) is a great tutorial by [Ændrew Rininsland](https://twitter.com/@aendrew) on getting up & running with Nightmare using real-life data.
 
-#### Tests
+## Tests
 
 Automated tests for nightmare itself are run using [Mocha](http://mochajs.org/) and Chai, both of which will be installed via `npm install`. To run nightmare's tests, just run `make test`.
 
