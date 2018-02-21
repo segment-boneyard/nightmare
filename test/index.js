@@ -183,7 +183,7 @@ describe('Nightmare', function () {
 
     return Promise.all([check1, check2]);
   });
-  
+
   it('should successfully end on pages setting onunload or onbeforeunload', function(done) {
     var nightmare = Nightmare();
     nightmare.goto(fixture('unload'))
@@ -1095,7 +1095,7 @@ describe('Nightmare', function () {
     it('should checkbox', function*() {
       var checkbox = yield nightmare
         .goto(fixture('manipulation'))
-        .check('input[type=checkbox]')
+        .check('input[type=checkbox][name=advanced]')
         .evaluate(function () {
           return document.querySelector('input[type=checkbox]').checked;
         });
@@ -1105,12 +1105,24 @@ describe('Nightmare', function () {
     it('should uncheck', function*() {
       var checkbox = yield nightmare
         .goto(fixture('manipulation'))
-        .check('input[type=checkbox]')
-        .uncheck('input[type=checkbox]')
+        .check('input[type=checkbox][name=advanced]')
+        .uncheck('input[type=checkbox][name=advanced]')
         .evaluate(function () {
-          return document.querySelector('input[type=checkbox]').checked;
+          return document.querySelector('input[type=checkbox][name=advanced]').checked;
         });
       checkbox.should.be.false;
+    });
+
+    it('should shift check', function*() {
+      var checkboxes = yield nightmare
+        .goto(fixture('manipulation'))
+        .uncheck('input[type=checkbox][name=advanced]')
+        .check('input[type=checkbox][name=cb1]')
+        .clickWithKeymap('input[type=checkbox][name=cb3]', {shiftKey: true})
+        .evaluate(function () {
+          return document.querySelectorAll('input[type=checkbox]:checked');
+        });
+      Object.keys(checkboxes).length.should.equal(3);
     });
 
     it('should select', function*() {

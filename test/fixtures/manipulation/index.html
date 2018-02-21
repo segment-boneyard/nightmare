@@ -9,6 +9,9 @@
     <form action="results.html">
       <input type="search" name="q">
       <input type="checkbox" name="advanced">
+      <input type="checkbox" name="cb1">
+      <input type="checkbox" name="cb2">
+      <input type="checkbox" name="cb3">
       <input type='text' id='disappears'>
       <select name="options">
         <option value="a">A</option>
@@ -85,6 +88,7 @@
   var h1 = document.getElementsByTagName("h1");
   var h2 = document.getElementsByTagName("h2");
   var search = document.querySelector('input[type=search]')
+  var checkboxes = document.querySelectorAll('input[type=checkbox]')
   var disappears = document.querySelector('#disappears');
 
   disappears.addEventListener('keydown', function(e){
@@ -100,11 +104,11 @@
 
   h1[0].addEventListener("mousedown", function(){
     this.style.background = "#ff0000";
-  })
+  });
 
   h1[0].addEventListener("mouseup", function(){
     this.style.background = "#0000ff";
-  })
+  });
 
   h2[0].addEventListener("mouseover", function(){
     this.style.background = "#00ffff";
@@ -116,14 +120,46 @@
 
   search.addEventListener("keyup", function(e) {
     console.log('keyup', e.which)
-  })
+  });
 
   search.addEventListener("keydown", function(e) {
     console.log('keydown', e.which)
-  })
+  });
 
   search.addEventListener('input', function(e) {
     console.log('input', e.which)
-  })
+  });
+
+  var lastClickedBox = 0;
+  checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener('click', function(e) {
+      var clickedBox = 0;
+      var checkboxes = document.querySelectorAll('input[type=checkbox]');
+      for(var i = 0; i < checkboxes.length; i++){
+        if(checkboxes[i].name === e.target.name){
+          clickedBox = i;
+        }
+      }
+      if(event.shiftKey) {
+        setCheckboxes(lastClickedBox, clickedBox);
+      };
+      lastClickedBox = clickedBox;
+    });
+  });
+
+  function setCheckboxes(end, start) {
+    if(start > end) {
+      var temp = start;
+      start = end;
+      end = temp;
+    };
+
+    var checkboxes = document.querySelectorAll('input[type=checkbox]');
+    for(var i = 0; i < checkboxes.length; i++){
+      if(i >= start && i <= end){
+        checkboxes[i].setAttribute('checked', true);
+      }
+    }
+  }
   </script>
 </html>
