@@ -28,7 +28,7 @@ Many thanks to [@matthewmueller](https://github.com/matthewmueller) and [@rosshi
   * [Extending Nightmare](#extending-nightmare)
 * [Usage](#usage)
 * [Debugging](#debugging)
-* [Supplementary Examples and Documentation](https://github.com/rosshinkley/nightmare-examples)
+* [Additional Resources](#additional-resources)
 
 ## Examples
 
@@ -901,6 +901,12 @@ Only actions
 Only logs
 
 `DEBUG=nightmare:log*`
+
+## Additional Resources
+
+* [Ross Hinkley's Nightmare Examples](https://github.com/rosshinkley/nightmare-examples) is a great resource for setting up nightmare, learning about custom actions, and avoiding common pitfalls.
+
+* [Nightmarishly good scraping](https://hackernoon.com/nightmarishly-good-scraping-with-nightmare-js-and-async-await-b7b20a38438f) is a great tutorial by [Ændrew Rininsland](https://twitter.com/@aendrew) on getting up & running with Nightmare using real-life data.
 
 #### Tests
 
