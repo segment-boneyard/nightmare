@@ -1373,6 +1373,7 @@ describe('Nightmare', function() {
   })
 
   describe('rendering', function() {
+    this.timeout('30s')
     var nightmare
 
     before(function(done) {
