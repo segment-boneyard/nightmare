@@ -1,4 +1,6 @@
-var Nightmare = require('nightmare');
+/* eslint-disable no-console */
+
+var Nightmare = require('nightmare')
 var nightmare = Nightmare({ show: true })
 
 nightmare
@@ -6,13 +8,13 @@ nightmare
   .type('form[action*="/search"] [name=p]', 'github nightmare')
   .click('form[action*="/search"] [type=submit]')
   .wait('#main')
-  .evaluate(function () {
+  .evaluate(function() {
     return document.querySelector('#main .searchCenterMiddle li a').href
   })
   .end()
-  .then(function (result) {
+  .then(function(result) {
     console.log(result)
   })
-  .catch(function (error) {
-    console.error('Search failed:', error);
-  });
+  .catch(function(error) {
+    console.error('Search failed:', error)
+  })

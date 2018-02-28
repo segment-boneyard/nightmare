@@ -6,7 +6,7 @@ CIRCLE_PROJECT_REPONAME ?= 1
 #set headless if not set
 HEADLESS ?= 1
 
-test: node_modules
+test: node_modules lint
 	@rm -rf /tmp/nightmare
 #if this build is not on circle, is not headless, and xvfb is not already running,
 #run mocha as usual
@@ -17,7 +17,10 @@ else
 	@./test/bb-xvfb node_modules/.bin/mocha --grep "$(GREP)"
 endif
 
-node_modules: package.json
-	@npm install
+lint: node_modules
+	@./node_modules/.bin/eslint --fix lib/*.js test/*.js 
 
-.PHONY: test
+node_modules: package.json
+	@./node_modules/.bin/yarn
+
+.PHONY: test lint
