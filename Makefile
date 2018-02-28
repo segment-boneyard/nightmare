@@ -21,6 +21,6 @@ lint: node_modules
 	@./node_modules/.bin/eslint --fix lib/*.js test/*.js 
 
 node_modules: package.json
-	@./node_modules/.bin/yarn
+	@npm install
 
 .PHONY: test lint
