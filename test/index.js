@@ -141,7 +141,9 @@ describe('Nightmare', function() {
       .evaluate(function() {
         throw new Error('Test')
       })
-      .catch(function(_err) {
+      .catch(function(err) {
+        assert.equal(err instanceof Error, true)
+        assert.equal(err.message, 'Test')
         done()
       })
   })
@@ -216,8 +218,9 @@ describe('Nightmare', function() {
     nightmare
       .goto('about:blank')
       .click('a.not-here')
-      .catch(function(error) {
-        error.should.include('a.not-here')
+      .catch(function(err) {
+        assert.equal(err instanceof Error, true)
+        err.message.should.include('a.not-here')
         done()
       })
   })
@@ -228,8 +231,9 @@ describe('Nightmare', function() {
     nightmare
       .goto('about:blank')
       .mousedown('a.not-here')
-      .catch(function(error) {
-        error.should.include('a.not-here')
+      .catch(function(err) {
+        assert.equal(err instanceof Error, true)
+        err.message.should.include('a.not-here')
         done()
       })
   })
@@ -240,8 +244,9 @@ describe('Nightmare', function() {
     nightmare
       .goto('about:blank')
       .mouseup('a.not-here')
-      .catch(function(error) {
-        error.should.include('a.not-here')
+      .catch(function(err) {
+        assert.equal(err instanceof Error, true)
+        err.message.should.include('a.not-here')
         done()
       })
   })
@@ -252,8 +257,9 @@ describe('Nightmare', function() {
     nightmare
       .goto('about:blank')
       .mouseover('a.not-here')
-      .catch(function(error) {
-        error.should.include('a.not-here')
+      .catch(function(err) {
+        assert.equal(err instanceof Error, true)
+        err.message.should.include('a.not-here')
         done()
       })
   })
@@ -284,8 +290,9 @@ describe('Nightmare', function() {
         function() {
           throw new Error('goto(undefined) didn’t cause an error')
         },
-        function(error) {
-          error.should.include('url')
+        function(err) {
+          assert.equal(err instanceof Error, true)
+          err.message.should.include('url')
         }
       )
     })
@@ -295,8 +302,9 @@ describe('Nightmare', function() {
         function() {
           throw new Error('goto(undefined) didn’t cause an error')
         },
-        function(error) {
-          error.should.include('url')
+        function(err) {
+          assert.equal(err instanceof Error, true)
+          err.message.should.include('url')
         }
       )
     })
@@ -435,9 +443,12 @@ describe('Nightmare', function() {
         function() {
           throw new Error('Navigation to an invalid domain succeeded')
         },
-        function(error) {
-          error.should.contain.keys('message', 'code', 'url')
-          error.code.should.be.a('number')
+        function(err) {
+          assert.equal(err instanceof Error, true)
+          assert.equal(err.message, 'navigation error')
+          assert.equal(err.details, 'ERR_NAME_NOT_RESOLVED')
+          assert.equal(err.code, -105)
+          assert.equal(err.url, 'http://this-is-not-a-real-domain.tld/')
         }
       )
     })
@@ -1370,6 +1381,19 @@ describe('Nightmare', function() {
 
       cookies = yield nightmare.cookies.get()
       cookies.length.should.equal(0)
+    })
+
+    it('should return a proper error', function*() {
+      try {
+        yield nightmare.goto(fixture('cookie')).cookies.set({
+          name: 'hi',
+          value: 'there',
+          domain: 'https://www.google.com'
+        })
+        assert.fail("shouldn't have got here")
+      } catch (e) {
+        assert.equal(e.message, 'Setting cookie failed')
+      }
     })
   })
 
