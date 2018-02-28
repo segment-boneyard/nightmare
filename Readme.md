@@ -179,6 +179,18 @@ const nightmare = Nightmare({
 })
 ```
 
+##### chromiumArguments
+Append an argument to Chromium’s command line for low level tweaking of the runtime.
+
+A list of switches can be found here
+http://peter.sh/experiments/chromium-command-line-switches/
+
+```js
+var nightmare = Nightmare({
+  chromiumArguments: ['disable-gpu-vsync']
+});
+```
+
 ##### electronPath
 
 The path to the prebuilt Electron binary. This is useful for testing on different versions of Electron. Note that Nightmare only supports the version on which this package depends. Use this option at your own risk.
