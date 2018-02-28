@@ -793,14 +793,7 @@ const nightmare = Nightmare({
 })
 ```
 
-The only requirement for that script is that you'll need the following prelude:
-
-```js
-window.__nightmare = {}
-__nightmare.ipc = require('electron').ipcRenderer
-```
-
-To benefit of all of nightmare's feedback from the browser, you can instead copy the contents of nightmare's [preload script](lib/preload.js).
+You'll also need to copy the contents of nightmare's [preload script](lib/preload.js) into your custom script to support Nightmare's API.
 
 #### Storage Persistence between nightmare instances
 
