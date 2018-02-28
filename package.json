@@ -4,7 +4,8 @@
   "license": "MIT",
   "main": "lib/nightmare.js",
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "precommit": "make test"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
     "jsesc": "^0.5.0",
     "minstache": "^1.2.0",
     "mkdirp": "^0.5.1",
+    "multiline": "^1.0.2",
     "once": "^1.3.3",
     "rimraf": "^2.4.3",
     "sliced": "1.0.1",
@@ -38,13 +40,19 @@
     "bluebird": "^3.4.0",
     "chai": "^3.4.1",
     "chai-as-promised": "^5.3.0",
-    "express": "^4.13.3",
+    "eslint": "4.18.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "express": "4.16.2",
+    "husky": "^0.14.3",
     "mocha": "^2.3.0",
     "mocha-generators": "^1.2.0",
     "multer": "1.1.0",
     "pngjs": "^2.2.0",
+    "prettier": "1.11.0",
     "serve-static": "^1.10.0",
-    "split": "^1.0.0"
+    "split": "^1.0.0",
+    "yarn": "1.5.1"
   },
   "engines": {
     "node": ">=4.0.0"
