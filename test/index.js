@@ -21,6 +21,7 @@ var PNG = require('pngjs').PNG
 var should = chai.should()
 var split = require('split')
 var asPromised = require('chai-as-promised')
+var assert = require('assert')
 
 chai.use(asPromised)
 
@@ -140,7 +141,9 @@ describe('Nightmare', function() {
       .evaluate(function() {
         throw new Error('Test')
       })
-      .catch(function(_err) {
+      .catch(function(err) {
+        assert.equal(err instanceof Error, true)
+        assert.equal(err.message, 'Test')
         done()
       })
   })
@@ -215,8 +218,9 @@ describe('Nightmare', function() {
     nightmare
       .goto('about:blank')
       .click('a.not-here')
-      .catch(function(error) {
-        error.should.include('a.not-here')
+      .catch(function(err) {
+        assert.equal(err instanceof Error, true)
+        err.message.should.include('a.not-here')
         done()
       })
   })
@@ -227,8 +231,9 @@ describe('Nightmare', function() {
     nightmare
       .goto('about:blank')
       .mousedown('a.not-here')
-      .catch(function(error) {
-        error.should.include('a.not-here')
+      .catch(function(err) {
+        assert.equal(err instanceof Error, true)
+        err.message.should.include('a.not-here')
         done()
       })
   })
@@ -239,8 +244,9 @@ describe('Nightmare', function() {
     nightmare
       .goto('about:blank')
       .mouseup('a.not-here')
-      .catch(function(error) {
-        error.should.include('a.not-here')
+      .catch(function(err) {
+        assert.equal(err instanceof Error, true)
+        err.message.should.include('a.not-here')
         done()
       })
   })
@@ -251,8 +257,9 @@ describe('Nightmare', function() {
     nightmare
       .goto('about:blank')
       .mouseover('a.not-here')
-      .catch(function(error) {
-        error.should.include('a.not-here')
+      .catch(function(err) {
+        assert.equal(err instanceof Error, true)
+        err.message.should.include('a.not-here')
         done()
       })
   })
@@ -283,8 +290,9 @@ describe('Nightmare', function() {
         function() {
           throw new Error('goto(undefined) didn’t cause an error')
         },
-        function(error) {
-          error.should.include('url')
+        function(err) {
+          assert.equal(err instanceof Error, true)
+          err.message.should.include('url')
         }
       )
     })
@@ -294,8 +302,9 @@ describe('Nightmare', function() {
         function() {
           throw new Error('goto(undefined) didn’t cause an error')
         },
-        function(error) {
-          error.should.include('url')
+        function(err) {
+          assert.equal(err instanceof Error, true)
+          err.message.should.include('url')
         }
       )
     })
@@ -434,9 +443,12 @@ describe('Nightmare', function() {
         function() {
           throw new Error('Navigation to an invalid domain succeeded')
         },
-        function(error) {
-          error.should.contain.keys('message', 'code', 'url')
-          error.code.should.be.a('number')
+        function(err) {
+          assert.equal(err instanceof Error, true)
+          assert.equal(err.message, 'navigation error')
+          assert.equal(err.details, 'ERR_NAME_NOT_RESOLVED')
+          assert.equal(err.code, -105)
+          assert.equal(err.url, 'http://this-is-not-a-real-domain.tld/')
         }
       )
     })
@@ -1370,6 +1382,19 @@ describe('Nightmare', function() {
       cookies = yield nightmare.cookies.get()
       cookies.length.should.equal(0)
     })
+
+    it('should return a proper error', function*() {
+      try {
+        yield nightmare.goto(fixture('cookie')).cookies.set({
+          name: 'hi',
+          value: 'there',
+          domain: 'https://www.google.com'
+        })
+        assert.fail("shouldn't have got here")
+      } catch (e) {
+        assert.equal(e.message, 'Setting cookie failed')
+      }
+    })
   })
 
   describe('rendering', function() {
@@ -1531,7 +1556,6 @@ describe('Nightmare', function() {
       var unsubscribeCount = 0
       var FrameManager = require('../lib/frame-manager.js')
       var fn = null
-      var assert = require('assert')
       var async = require('async')
       var manager = FrameManager({
         webContents: {
@@ -1584,7 +1608,6 @@ describe('Nightmare', function() {
       var unsubscribeCount = 0
       var FrameManager = require('../lib/frame-manager.js')
       var fn = null
-      var assert = require('assert')
       var async = require('async')
       var manager = FrameManager({
         webContents: {
@@ -1638,7 +1661,6 @@ describe('Nightmare', function() {
       var unsubscribeCount = 0
       var FrameManager = require('../lib/frame-manager.js')
       var fn = null
-      var assert = require('assert')
       var async = require('async')
       var manager = FrameManager({
         webContents: {
@@ -2200,59 +2222,6 @@ describe('Nightmare', function() {
       color.should.equal('rgb(0, 0, 0)')
     })
 
-    it('should support extending Electron', function*() {
-      Nightmare.action(
-        'bind',
-        function(ns, options, parent, win, renderer, done) {
-          var sliced = require('sliced')
-          parent.on('bind', function(name) {
-            if (renderer.listeners(name).length == 0) {
-              renderer.on(name, function() {
-                parent.emit.apply(parent, [name].concat(sliced(arguments, 1)))
-              })
-            }
-            parent.emit('bind')
-          })
-          done()
-        },
-        function() {
-          var name = arguments[0],
-            handler,
-            done
-          if (arguments.length == 2) {
-            done = arguments[1]
-          } else if (arguments.length == 3) {
-            handler = arguments[1]
-            done = arguments[2]
-          }
-          if (handler) {
-            this.child.on(name, handler)
-          }
-          this.child.once('bind', done)
-          this.child.emit('bind', name)
-        }
-      )
-
-      var eventResults
-      nightmare = new Nightmare()
-      yield nightmare
-        .goto('http://example.com')
-        .on('sample-event', function() {
-          eventResults = arguments
-        })
-        .bind('sample-event')
-        .evaluate(function() {
-          window.__nightmare.ipc.send('sample-event', 'sample', 3, {
-            sample: 'sample'
-          })
-        })
-
-      eventResults.length.should.equal(3)
-      eventResults[0].should.equal('sample')
-      eventResults[1].should.equal(3)
-      eventResults[2].sample.should.equal('sample')
-    })
-
     it('should allow env variables', function*() {
       Nightmare.action(
         'envtest',
@@ -2578,6 +2547,39 @@ describe('Nightmare', function() {
       value.should.equal('This string should persist between instances.')
     })
   })
+
+  describe('security', function() {
+    it('should not expose the ipc in evaluate', function*() {
+      const nightmare = Nightmare()
+      const result = yield nightmare.goto(fixture('simple')).evaluate(() => {
+        return this.send || this.window.send || this.ipc || window.ipc
+      })
+      assert.strictEqual(result, null)
+    })
+
+    it('should not expose the ipc to the 3rd party', function*() {
+      const nightmare = Nightmare()
+      const deferred = new Deferred()
+
+      nightmare.on('console', function(
+        _type,
+        ipc,
+        windowIPC,
+        send,
+        windowSend
+      ) {
+        assert.strictEqual(ipc, 'undefined')
+        assert.strictEqual(windowIPC, 'undefined')
+        assert.strictEqual(send, 'undefined')
+        assert.strictEqual(windowSend, 'undefined')
+        deferred.resolve()
+      })
+
+      yield nightmare.goto(fixture('security'))
+
+      yield deferred
+    })
+  })
 })
 
 /**
@@ -2589,6 +2591,20 @@ describe('Nightmare', function() {
 
 function fixture(path) {
   return url.resolve(base, path)
+}
+
+/**
+ * Deferred helper
+ */
+
+function Deferred() {
+  const p = new Promise((resolve, reject) => {
+    this.resolve = resolve
+    this.reject = reject
+  })
+
+  this.then = p.then.bind(p)
+  this.catch = p.catch.bind(p)
 }
 
 /**
