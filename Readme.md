@@ -9,7 +9,9 @@ The goal is to expose a few simple methods that mimic user actions (like `goto`,
 
 Under the covers it uses [Electron](http://electron.atom.io/), which is similar to [PhantomJS](http://phantomjs.org/) but roughly [twice as fast](https://github.com/segmentio/nightmare/issues/484#issuecomment-184519591) and more modern. 
 
-**We've implemented [many](https://github.com/segmentio/nightmare/issues/1388) of the security recommendations [outlined by Electron](https://github.com/electron/electron/blob/master/docs/tutorial/security.md) to try and keep you safe, but vulnerabilities may exist in Electron that may allow a malicious website to execute code on your company. Avoid visiting untrusted websites.**
+**⚠️ Security Warning:** We've implemented [many](https://github.com/segmentio/nightmare/issues/1388) of the security recommendations [outlined by Electron](https://github.com/electron/electron/blob/master/docs/tutorial/security.md) to try and keep you safe, but undiscovered vulnerabilities may exist in Electron that could allow a malicious website to execute code on your company. Avoid visiting untrusted websites.
+
+**🛠 Migrating to 3.x:** We've worked hard to make improvements to nightmare while limiting the breaking changes. You'll want to check out [this issue](https://github.com/segmentio/nightmare/issues/1396) before upgrading. There's a good chance you won't need to do anything.
 
 [Niffy](https://github.com/segmentio/niffy) is a perceptual diffing tool built on Nightmare. It helps you detect UI changes and bugs across releases of your web app.
 
