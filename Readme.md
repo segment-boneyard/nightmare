@@ -910,6 +910,8 @@ Only logs
 
 * [Ross Hinkley's Nightmare Examples](https://github.com/rosshinkley/nightmare-examples) is a great resource for setting up nightmare, learning about custom actions, and avoiding common pitfalls.
 
+* [Nightmare Issues](https://github.com/matthewmueller/nightmare-issues) has a bunch of standalone runnable examples. The script numbers correspond to nightmare issue numbers.
+
 * [Nightmarishly good scraping](https://hackernoon.com/nightmarishly-good-scraping-with-nightmare-js-and-async-await-b7b20a38438f) is a great tutorial by [Ændrew Rininsland](https://twitter.com/@aendrew) on getting up & running with Nightmare using real-life data.
 
 ## Tests
