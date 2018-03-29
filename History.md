@@ -1,3 +1,7 @@
+# 3.0.1 / 2018-03-29
+
+* bump electron to fix #1424
+
 # 3.0.0 / 2018-03-02
 
 * BREAKING: remove window.\_\_nightmare.ipc to resolve the major security issues (#1390)
