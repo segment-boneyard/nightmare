@@ -11,20 +11,12 @@ test: &test
     - run:
         name: Install dependencies
         command: sudo apt-get update && sudo apt-get install dbus-x11 -y
-    - restore_cache:
-        keys:
-          - v1-npm-deps-{{ checksum ".circle-node" }}-{{ checksum "package-lock.json" }}
-          - v1-npm-deps-{{ checksum ".circle-node" }}
     - run:
         name: upgrade npm
         command: sudo npm install -g npm@latest
     - run:
         name: npm ci
         command: npm ci
-    - save_cache:
-        key: v1-npm-deps-{{ checksum ".circle-node" }}-{{ checksum ".nvmrc" }}-{{ checksum "package-lock.json" }}
-        paths:
-          - node_modules
     - run:
         name: npm test
         command: npm test
