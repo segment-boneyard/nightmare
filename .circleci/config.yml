@@ -15,8 +15,11 @@ test: &test
           - v1-npm-deps-{{ checksum "package.json" }}
           - v1-npm-deps
     - run:
-        name: npm install
-        command: npm install
+        name: upgrade npm
+        command: npm install -g npm@latest
+    - run:
+        name: npm ci
+        command: npm ci
     - save_cache:
         key: v1-npm-deps-{{ checksum "package.json" }}
         paths:
@@ -39,8 +42,11 @@ publish: &publish
         command: sudo apt-get update && sudo apt-get install dbus-x11 -y
     # Do not explicitly use caching when publishing
     - run:
-        name: npm install
-        command: npm install
+        name: upgrade npm
+        command: npm install -g npm@latest
+    - run:
+        name: npm ci
+        command: npm ci
     - run:
         name: set npm auth token
         command: npm config set "//registry.npmjs.org/:_authToken" $NPM_AUTH
