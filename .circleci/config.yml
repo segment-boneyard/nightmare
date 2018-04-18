@@ -43,7 +43,7 @@ publish: &publish
     # Do not explicitly use caching when publishing
     - run:
         name: upgrade npm
-        command: npm install -g npm@latest
+        command: sudo npm install -g npm@latest
     - run:
         name: npm ci
         command: npm ci
