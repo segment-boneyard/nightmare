@@ -13,7 +13,6 @@ test: &test
     - restore_cache:
         keys:
           - v1-npm-deps-{{ checksum "package-lock.json" }}
-          - v1-npm-deps
     - run:
         name: upgrade npm
         command: sudo npm install -g npm@latest
