@@ -13,6 +13,7 @@ test: &test
     - restore_cache:
         keys:
           - v1-npm-deps-{{ checksum "package-lock.json" }}
+          - v1-npm-deps-
     - run:
         name: upgrade npm
         command: sudo npm install -g npm@latest
@@ -20,7 +21,7 @@ test: &test
         name: npm ci
         command: npm ci
     - save_cache:
-        key: v1-npm-deps-{{ checksum "package-lock.json" }}
+        key: v1-npm-deps-{{ checksum ".nvmrc" }}-{{ checksum "package-lock.json" }}
         paths:
           - node_modules
     - run:
