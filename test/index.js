@@ -894,7 +894,7 @@ describe('Nightmare', function() {
 
       var numAnchors = yield nightmare
         .goto(fixture('manipulation'))
-        .inject('js', 'test/files/jquery-1.9.0.min.js')
+        .inject('js', 'test/files/jquery-2.1.1.min.js')
         .evaluate(function() {
           return window.$('h1').length
         })
@@ -1477,7 +1477,7 @@ describe('Nightmare', function() {
         var imageData = yield png.parse.bind(png, image);
         var firstPixel = Array.from(imageData.data.slice(0, 3));
         firstPixel.should.deep.equal([0, 153, 0]);
-        
+
       });
     }
     */
