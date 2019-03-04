@@ -248,7 +248,7 @@ const nightmare = Nightmare({
 
 #### certificateSubjectName
 
-A string to determine the client certificate selected by electron. If this options is set, the [`select-client-certificate`](https://github.com/electron/electron/blob/master/docs/api/app.md#event-select-client-certificate) event will be set to loop through the certificateList and find the first certificate that matches `subjectName` on the electron [`Certificate Object`](https://electronjs.org/docs/api/structures/certificate).
+A string to determine the client certificate selected by electron. If this option is set, the [`select-client-certificate`](https://github.com/electron/electron/blob/master/docs/api/app.md#event-select-client-certificate) event will be set to loop through the certificateList and find the first certificate that matches `subjectName` on the electron [`Certificate Object`](https://electronjs.org/docs/api/structures/certificate).
 
 ```js
 const nightmare = Nightmare({
