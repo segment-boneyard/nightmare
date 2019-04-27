@@ -1,6 +1,6 @@
 {
   "name": "nightmare",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "license": "MIT",
   "main": "lib/nightmare.js",
   "scripts": {
@@ -12,10 +12,7 @@
     "url": "https://github.com/segmentio/nightmare.git"
   },
   "author": "Segment",
-  "keywords": [
-    "nightmare",
-    "electron"
-  ],
+  "keywords": ["nightmare", "electron"],
   "description": "A high-level browser automation library.",
   "dependencies": {
     "debug": "^2.2.0",
