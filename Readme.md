@@ -906,6 +906,39 @@ Only logs
 
 `DEBUG=nightmare:log*`
 
+Debuging Electron (Parent Library for Nightmare)
+
+`DEBUG=electron:*`
+
+##### Debuging Nightmare inside of Docker/VM/headless
+
+###### Virutal Screen (XVFB)
+Docker and Headless VM do not have a montor which does not give nightmare/electron anywhere to draw the window
+
+```bash
+DEBUG=nightmare xvfb-run --server-args="-screen 0 1024x768x24" node cnn.js
+```
+https://github.com/segmentio/nightmare/issues/224
+https://gist.github.com/lucasbrigida/f9d606a6888cbd1c7874a84607486c3e
+
+###### ALAS Audio Dummy Sound Card
+Headless deployments dont have a sound card so if the web page has audio it can cause errors. If you have electron debing enabled you will see `ALSA lib confmisc.c:767:(parse_card) cannot find card '0'` 
+```bash
+docker run --device /dev/snd --group-add $(getent group audio | cut -d: -f3)
+```
+https://github.com/mviereck/x11docker/wiki/Container-sound:-ALSA-or-Pulseaudio
+https://developpaper.com/question/how-to-make-alsa-play-available-in-docker/
+
+
+###### Shared memory (SHM)
+The default amount of shared memory for a docker container is 64MB. You can find the error with this output `nightmare electron child process exited with code null: undefined` You will need to have DEBUG from above enabled. Some other indications where freezing or very slow events/actions, blank screenshots. These are sometimes intermitate and sometimes thought to be resolved by smaller promise blocks but really a SHM issue. Raise the SHM until your happy. 
+```bash
+docker run --shm-size=128m 
+```
+https://bugs.chromium.org/p/chromium/issues/detail?id=522853
+https://github.com/segmentio/nightmare/issues/224#issuecomment-267195843
+https://github.com/segmentio/nightmare/issues/587
+
 ## Additional Resources
 
 * [Ross Hinkley's Nightmare Examples](https://github.com/rosshinkley/nightmare-examples) is a great resource for setting up nightmare, learning about custom actions, and avoiding common pitfalls.
