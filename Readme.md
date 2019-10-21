@@ -830,7 +830,7 @@ yield nightmare
   .end();
 ```
 
-If you specify a `null` paritition then it will use the electron default behavior (persistent) or any string that starts with `'persist:'` will persist under that partition name, any other string will result in in-memory only storage.
+If you specify a `null` partition then it will use the electron default behavior (persistent) or any string that starts with `'persist:'` will persist under that partition name, any other string will result in in-memory only storage.
 
 ## Usage
 
