@@ -1392,7 +1392,7 @@ describe('Nightmare', function() {
         })
         assert.fail("shouldn't have got here")
       } catch (e) {
-        assert.equal(e.message, 'Setting cookie failed')
+        assert.equal(e.message, 'Failed to parse cookie')
       }
     })
   })
