@@ -50,14 +50,14 @@ publish: &publish
 
 version: 2
 jobs:
-  test-node6:
+  test-node14:
     <<: *test
     docker:
-      - image: circleci/node:6-browsers
-  test-node7:
+      - image: circleci/node:14-browsers
+  test-node16:
     <<: *test
     docker:
-      - image: circleci/node:7-browsers
+      - image: circleci/node:16-browsers
   test-node-latest:
     <<: *test
     docker:
@@ -65,14 +65,14 @@ jobs:
   publish:
     <<: *publish
     docker:
-      - image: circleci/node:6-browsers
+      - image: circleci/node:14-browsers
 
 workflows:
   version: 2
   build-test-and-publish:
     jobs:
-      - test-node6
-      - test-node7
+      - test-node14
+      - test-node16
       - test-node-latest
       - publish:
           filters:
@@ -81,6 +81,6 @@ workflows:
             branches:
               ignore: /.*/
           requires:
-            - test-node6
-            - test-node7
+            - test-node14
+            - test-node16
             - test-node-latest

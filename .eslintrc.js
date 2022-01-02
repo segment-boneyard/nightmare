@@ -1,7 +1,6 @@
-module.exports = 
-{
-  extends: [ 'eslint:recommended', 'prettier' ],
-  plugins: ['prettier' ], // activating esling-plugin-prettier (--fix stuff)
+module.exports = {
+  extends: ['eslint:recommended', 'prettier'],
+  plugins: ['prettier'], // activating esling-plugin-prettier (--fix stuff)
   env: {
     browser: true,
     node: true,
@@ -13,11 +12,13 @@ module.exports =
       'error',
       {
         singleQuote: true,
-        semi: false
+        semi: false,
+        'trailing-comma': false
       }
     ],
-    'semi': ['error', 'never' ],
-    'no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
-    'no-inner-declarations': 'off'
+    semi: ['error', 'never'],
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'no-inner-declarations': 'off',
+    'comma-dangle': ['error', 'never']
   }
 }
