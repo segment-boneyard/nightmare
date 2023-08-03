@@ -34,7 +34,7 @@
     "split2": "^2.0.1"
   },
   "devDependencies": {
-    "async": "~2.1.4",
+    "async": "~2.6.4",
     "basic-auth": "^1.0.3",
     "basic-auth-connect": "^1.0.0",
     "bluebird": "^3.4.0",
