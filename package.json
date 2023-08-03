@@ -45,7 +45,7 @@
     "eslint-plugin-prettier": "^2.6.0",
     "express": "4.16.2",
     "husky": "^0.14.3",
-    "mocha": "^2.3.0",
+    "mocha": "^10.1.0",
     "mocha-generators": "^1.2.0",
     "multer": "1.1.0",
     "pngjs": "^2.2.0",
