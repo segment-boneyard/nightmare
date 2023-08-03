@@ -1383,6 +1383,43 @@ describe('Nightmare', function() {
       cookies.length.should.equal(0)
     })
 
+    it('cookies.flush() should flush cookies to dist', function*() {
+      nightmare = Nightmare({
+        webPreferences: { partition: 'persist:test-partition' }
+      })
+
+      yield nightmare.goto(fixture('cookie'))
+
+      // set expirationDate to make a non-session cookie
+      var expiration = new Date()
+      expiration.setHours(expiration.getHours() + 6)
+
+      yield nightmare.cookies.set({
+        name: 'flushedcookie',
+        value: 'hello',
+        path: '/',
+        expirationDate: expiration.getTime()
+      })
+
+      var cookies = yield nightmare.cookies.get()
+      cookies.length.should.equal(1)
+
+      yield nightmare.cookies.flush()
+
+      yield nightmare.end()
+
+      nightmare = Nightmare({
+        webPreferences: { partition: 'persist:test-partition' }
+      })
+
+      yield nightmare.goto(fixture('cookie'))
+
+      cookies = yield nightmare.cookies.get({ url: null })
+      cookies.length.should.equal(1)
+
+      yield nightmare.cookies.clearAll()
+    })
+
     it('should return a proper error', function*() {
       try {
         yield nightmare.goto(fixture('cookie')).cookies.set({
